@@ -3,10 +3,12 @@ XpressEngine
 
 [![Build Status](https://travis-ci.org/xpressengine/xe-core.svg?branch=master)](https://travis-ci.org/xpressengine/xe-core)
 [![License](http://img.shields.io/badge/license-GNU%20LGPL-brightgreen.svg)](http://www.gnu.org/licenses/gpl.html)
-[![Latest release](http://img.shields.io/github/release/xpressengine/xe-core.svg)](https://github.com/xpressengine/xe-core/releases)
+[![Latest release](http://img.shields.io/github/release/YJSoft/xe-core.svg)](https://github.com/YJSoft/xe-core/releases)
 
 XpressEngine(XE)은 누구나 쉽고 편하고 자유롭게 콘텐츠를 발행을 할 수 있도록 하기 위한 CMS(Content Management System)입니다.
 오픈소스 라이선스로 누구나 사용 또는 개작할 수 있으며, 개방형 프로젝트로서 누구나 개발에 참여할 수 있습니다.
+
+본 저장소는 사실상 유지보수가 전면 중단된 [XEHub측 저장소](https://github.com/xpressengine/xe-core)를 포크하여 운영하고 있었으나, 검색의 편의성 등 여러 이유로 원본 저장소에서 분리하여 운영하고 있습니다.
 
 ### 확장형 구조
 
@@ -38,6 +40,8 @@ https://www.xpressengine.com/contributors
 * Official site (Korean) : https://www.xpressengine.com
 
 ## License
+XpressEngine의 이름 및 로고는 (주)엑스이허브 소유입니다. [브랜드 가이드라인](https://xe1.xpressengine.com/brand)에 따라 XpressEngine의 이름 및 로고를 사용하고 있습니다.
+
 Copyright 2014 XEHub. <https://www.xehub.io>
 
 This program is free software; you can redistribute it and/or
