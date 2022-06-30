@@ -92,9 +92,10 @@ class TemplateHandler
 	{
 		// verify arguments
 		$tpl_path = preg_replace('/[\{\}\(\)\[\]<>\$\'"]/', '', $tpl_path);
-		if(substr($tpl_path, -1) != '/')
+		$tpl_path = trim(preg_replace('@^' . preg_quote(_XE_PATH_, '@') . '|\./@', '', str_replace('\\', '/', $tpl_path)), '/') . '/';
+		if($tpl_path === '/')
 		{
-			$tpl_path .= '/';
+			$tpl_path = '';
 		}
 		if(!is_dir($tpl_path))
 		{
