@@ -98,11 +98,11 @@
 		<label class="x_control-label">{$lang->opage_postprocessing}</label>
 		<div class="x_controls">
 			<label for="opage_proc_php" class="x_inline">
-				<input type="checkbox" name="opage_proc_php" id="opage_proc_php" value="Y" checked="checked"|cond="($module_info->opage_proc_php ?? 'Y') === 'Y'" />
+				<input type="checkbox" name="opage_proc_php" id="opage_proc_php" value="Y" checked="checked"|cond="(isset($module_info->opage_proc_php) ? $module_info->opage_proc_php : 'Y') === 'Y'" />
 				{$lang->opage_proc_php}
 			</label>
 			<label for="opage_proc_tpl" class="x_inline">
-				<input type="checkbox" name="opage_proc_tpl" id="opage_proc_tpl" value="Y" checked="checked"|cond="($module_info->opage_proc_tpl ?? 'N') === 'Y'" />
+				<input type="checkbox" name="opage_proc_tpl" id="opage_proc_tpl" value="Y" checked="checked"|cond="(isset($module_info->opage_proc_tpl) ? $module_info->opage_proc_tpl : 'N') === 'Y'" />
 				{$lang->opage_proc_tpl}
 			</label>
 			<p class="x_help-block">{$lang->about_opage_postprocessing}</p>

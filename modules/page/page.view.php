@@ -75,7 +75,7 @@ class pageView extends page
 
 		// Get page content according to page type.
 		$page_type_name = strtolower($this->module_info->page_type);
-		if (!in_array($page_type_name, ['widget', 'article', 'outside']))
+		if (!in_array($page_type_name, array('widget', 'article', 'outside')))
 		{
 			$page_type_name = 'widget';
 		}
@@ -118,7 +118,7 @@ class pageView extends page
 			}
 			else
 			{
-				$oWidgetController = WidgetController::getInstance();
+				$oWidgetController = getController('widget');
 				$page_content = $oWidgetController->transWidgetCode($page_content);
 				FileHandler::writeFile($this->cache_file, $page_content);
 			}
@@ -231,7 +231,7 @@ class pageView extends page
 		// Parse as template if enabled.
 		if ($this->proc_tpl){
 			// Store compiled template in a temporary file.
-			$oTemplate = TemplateHandler::getInstance();
+			$oTemplate = &TemplateHandler::getInstance();
 			$real_target_dir = dirname($real_target_file);
 			$tmp_cache_file = preg_replace('/\.cache\.php$/', '.compiled.php', $cache_file);
 			$content = $oTemplate->compileDirect($real_target_dir . '/', basename($real_target_file));
