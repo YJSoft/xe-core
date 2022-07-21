@@ -26,7 +26,7 @@ class pageView extends page
 
 		if ($this->module_info->page_type === 'WIDGET')
 		{
-			$this->interval = (int)($this->module_info->page_caching_interval ?? 0);
+			$this->interval = (int)(isset($this->module_info->page_caching_interval) ? $this->module_info->page_caching_interval : 0);
 			$this->cache_file = vsprintf('%sfiles/cache/page/%d.%s.%s.%s.cache.php', [
 				_XE_PATH_,
 				$this->module_info->module_srl,
@@ -38,8 +38,8 @@ class pageView extends page
 
 		if ($this->module_info->page_type === 'OUTSIDE')
 		{		
-			$this->interval = (int)($this->module_info->page_caching_interval ?? 0);
-			$this->path = $this->module_info->path ?? '';
+			$this->interval = (int)(isset($this->module_info->page_caching_interval) ? $this->module_info->page_caching_interval : 0);
+			$this->path = isset($this->module_info->path) ? $this->module_info->path : '';
 			$this->proc_php = (isset($this->module_info->opage_proc_php) && $this->module_info->opage_proc_php === 'N') ? false : true;
 			$this->proc_tpl = (isset($this->module_info->opage_proc_tpl) && $this->module_info->opage_proc_tpl === 'Y') ? true : false;
 			$this->cache_file = vsprintf('%sfiles/cache/opage/%d.%s.%s.%s.%s.cache.php', [
