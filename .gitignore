@@ -24,3 +24,5 @@ composer.lock
 .codeintel
 
 install.config.php
+
+/diff/
