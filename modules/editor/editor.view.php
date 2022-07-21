@@ -154,7 +154,7 @@ class editorView extends editor
 
 		$oModuleModel = getModel('module');
 		$skin_info = $oModuleModel->loadSkinInfo($this->module_path,$skin);
-		$colorset = $skin_info->colorset ?? null;
+		$colorset = isset($skin_info->colorset) ? $skin_info->colorset : null;
 		Context::set('colorset', $colorset);
 	}
 
