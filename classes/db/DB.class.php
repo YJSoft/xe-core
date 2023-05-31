@@ -139,7 +139,7 @@ class DB
 	 * @param string $db_type type of db
 	 * @return DB return DB object instance
 	 */
-	function getInstance($db_type = NULL)
+	public static function getInstance($db_type = NULL)
 	{
 		if(!$db_type)
 		{
@@ -176,7 +176,7 @@ class DB
 	 * returns instance of db
 	 * @return DB return DB object instance
 	 */
-	function create()
+	public static function create()
 	{
 		return new DB;
 	}
@@ -626,27 +626,30 @@ class DB
 		}
 
 		// execute appropriate query
-		switch($output->getAction())
+		if (is_object($output))
 		{
-			case 'insert' :
-			case 'insert-select' :
-				$this->resetCountCache($output->tables);
-				$output = $this->_executeInsertAct($output);
-				break;
-			case 'update' :
-				$this->resetCountCache($output->tables);
-				$output = $this->_executeUpdateAct($output);
-				break;
-			case 'delete' :
-				$this->resetCountCache($output->tables);
-				$output = $this->_executeDeleteAct($output);
-				break;
-			case 'select' :
-				$arg_columns = is_array($arg_columns) ? $arg_columns : array();
-				$output->setColumnList($arg_columns);
-				$connection = $this->_getConnection($type);
-				$output = $this->_executeSelectAct($output, $connection);
-				break;
+			switch($output->getAction())
+			{
+				case 'insert' :
+				case 'insert-select' :
+					$this->resetCountCache($output->tables);
+					$output = $this->_executeInsertAct($output);
+					break;
+				case 'update' :
+					$this->resetCountCache($output->tables);
+					$output = $this->_executeUpdateAct($output);
+					break;
+				case 'delete' :
+					$this->resetCountCache($output->tables);
+					$output = $this->_executeDeleteAct($output);
+					break;
+				case 'select' :
+					$arg_columns = is_array($arg_columns) ? $arg_columns : array();
+					$output->setColumnList($arg_columns);
+					$connection = $this->_getConnection($type);
+					$output = $this->_executeSelectAct($output, $connection);
+					break;
+			}
 		}
 
 		if($this->isError())
@@ -657,8 +660,11 @@ class DB
 		{
 			$output = new BaseObject();
 		}
-		$output->add('_query', $this->query);
-		$output->add('_elapsed_time', sprintf("%0.5f", $this->elapsed_time));
+		if (is_object($output))
+		{
+			$output->add('_query', $this->query);
+			$output->add('_elapsed_time', sprintf("%0.5f", $this->elapsed_time));
+		}
 
 		return $output;
 	}
@@ -1200,7 +1206,15 @@ class DB
 		$this->actStart($query);
 
 		// Run the query statement
-		$result = $this->__query($query, $connection);
+		try
+		{
+			$result = $this->__query($query, $connection);
+		}
+		catch(Exception $e)
+		{
+			ChromePhp::log($query, $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage());
+			$this->setError($e->getCode(), $e->getMessage());
+		}
 
 		// Notify to complete a query execution
 		$this->actFinish();
@@ -1342,13 +1356,13 @@ class DB
 	 * @param boolean $force force load DBParser instance
 	 * @return DBParser
 	 */
-	function getParser($force = FALSE)
+	public static function getParser($force = FALSE)
 	{
 		static $dbParser = NULL;
 		if(!$dbParser || $force)
 		{
 			$oDB = DB::getInstance();
-			$dbParser = $oDB->getParser();
+			$dbParser = $oDB->getDBParser();
 		}
 
 		return $dbParser;

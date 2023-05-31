@@ -385,7 +385,7 @@ class Query extends BaseObject
 				}
 			}
 		}
-		return trim(implode($select, ', '));
+		return trim(implode(', ', $select));
 	}
 
 	/**
@@ -404,7 +404,7 @@ class Query extends BaseObject
 		}
 
 		if(!$update) return;
-		return trim(implode($update, ', '));
+		return trim(implode(', ', $update));
 	}
 
 	/**
@@ -560,7 +560,7 @@ class Query extends BaseObject
 	{
 		if(!$this->_orderByString)
 		{
-			if(count($this->orderby) === 0)
+			if(!is_foreachable($this->orderby))
 			{
 				return '';
 			}
@@ -587,7 +587,7 @@ class Query extends BaseObject
 	function getLimitString()
 	{
 		$limit = '';
-		if(count($this->limit) > 0)
+		if(is_foreachable($this->limit))
 		{
 			$limit = '';
 			$limit .= $this->limit->toString();
@@ -611,7 +611,7 @@ class Query extends BaseObject
 			$this->arguments = array();
 
 			// Join table arguments
-			if(count($this->tables) > 0)
+			if(is_foreachable($this->tables))
 			{
 				foreach($this->tables as $table)
 				{
@@ -628,7 +628,7 @@ class Query extends BaseObject
 
 			// Column arguments
 			// The if is for delete statements, all others must have columns
-			if(count($this->columns) > 0)
+			if(is_foreachable($this->columns))
 			{
 				foreach($this->columns as $column)
 				{
@@ -644,7 +644,7 @@ class Query extends BaseObject
 			}
 
 			// Condition arguments
-			if(count($this->conditions) > 0)
+			if(is_foreachable($this->conditions))
 			{
 				foreach($this->conditions as $conditionGroup)
 				{
@@ -656,13 +656,12 @@ class Query extends BaseObject
 				}
 			}
 
-			// Navigation arguments
-			if(count($this->orderby) > 0)
+			if(is_foreachable($this->orderby))
 			{
 				foreach($this->orderby as $order)
 				{
 					$args = $order->getArguments();
-					if(count($args) > 0)
+					if(is_array($args))
 					{
 						$this->arguments = array_merge($this->arguments, $args);
 					}

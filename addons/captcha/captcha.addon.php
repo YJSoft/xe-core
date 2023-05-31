@@ -161,7 +161,7 @@ if(!class_exists('AddonCaptcha', false))
 			$arr = array();
 			for($i = 0, $c = strlen($string); $i < $c; $i++)
 			{
-				$arr[] = $string{$i};
+				$arr[] = $string[$i];
 			}
 
 			// Font site
@@ -274,19 +274,19 @@ if(!class_exists('AddonCaptcha', false))
 			$_audio = './addons/captcha/audio/F_%s.mp3';
 			for($i = 0, $c = strlen($string); $i < $c; $i++)
 			{
-				$_data = FileHandler::readFile(sprintf($_audio, $string{$i}));
+				$_data = FileHandler::readFile(sprintf($_audio, $string[$i]));
 
 				$start = rand(5, 68); // Random start in 4-byte header and 64 byte data
 				$datalen = strlen($_data) - $start - 256; // Last unchanged 256 bytes
 
 				for($j = $start; $j < $datalen; $j+=64)
 				{
-					$ch = ord($_data{$j});
+					$ch = ord($_data[$j]);
 					if($ch < 9 || $ch > 119)
 					{
 						continue;
 					}
-					$_data{$j} = chr($ch + rand(-8, 8));
+					$_data[$j] = chr($ch + rand(-8, 8));
 				}
 
 				$data .= $_data;

@@ -124,7 +124,7 @@ class Validator
 			return FALSE;
 		}
 
-		$parser = new XmlParser();
+		$parser = new XmlParserXe();
 		$xml = $parser->loadXmlFile($xml_path);
 		if(!isset($xml->ruleset) || !isset($xml->ruleset->fields) || !isset($xml->ruleset->fields->field))
 		{
@@ -279,7 +279,7 @@ class Validator
 		foreach($this->_filters as $key => $filter)
 		{
 			$names = array();
-			if($key{0} == '^')
+			if($key[0] == '^')
 			{
 				$names = preg_grep('/^' . preg_quote(substr($key, 1)) . '/', $field_names);
 			}
@@ -340,13 +340,26 @@ class Validator
 				{
 					continue;
 				}
-
-				$func_body = preg_replace('/\\$(\w+)/', '$c[\'$1\']', $cond['test']);
-				$func = create_function('$c', "return !!({$func_body});");
-
-				if($func($fields))
+				if (function_exists('create_function'))
 				{
-					$filter[$cond['attr']] = $cond['value'];
+					$func_body = preg_replace('/\\$(\w+)/', '$c[\'$1\']', $cond['test']);
+					$func = create_function('$c', "return !!({$func_body});");
+
+					if($func($fields))
+					{
+						$filter[$cond['attr']] = $cond['value'];
+					}
+				}
+				else
+				{
+					$func = function($c, $cond_test)
+					{ 
+						return !!(preg_replace('/\\$(\w+)/', '$c[\'$1\']', $cond_test));
+					};
+					if($func($fields, $cond['test']))
+					{
+						$filter[$cond['attr']] = $cond['value'];
+					}
 				}
 			}
 
@@ -623,9 +636,11 @@ class Validator
 			case 'expr':
 				if(!$rule['func_test'])
 				{
-					$rule['func_test'] = create_function('$a', 'return (' . preg_replace('/\$\$/', '$a', html_entity_decode($rule['test'])) . ');');
+					$rule['func_test'] = function_exists('create_function')  ? 
+						create_function('$a', 'return (' . preg_replace('/\$\$/', '$a', html_entity_decode($rule['test'])) . ');') :
+						function($a, $rule_test){ return (preg_replace('/\$\$/', '$a', html_entity_decode($rule_test)));};
 				}
-				return $rule['func_test']($value);
+				return $rule['func_test']($value, $rule['test']);
 		}
 
 		return TRUE;

@@ -17,7 +17,7 @@ class language_select extends WidgetHandler
 	function proc($args)
 	{
 		// Set a path of the template skin (values of skin, colorset settings)
-		$tpl_path = sprintf('%sskins/%s', $this->widget_path, $args->skin);
+		$tpl_path = sprintf('%sskins/%s', $this->widget_path, get_valid_filename($args->skin));
 		$tpl_file = 'language_select';
 
 		Context::set('colorset', $args->colorset);

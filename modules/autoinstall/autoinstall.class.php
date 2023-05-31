@@ -14,7 +14,7 @@ class XmlGenerater
 	 * @param array $params The data
 	 * @return string Returns xml string
 	 */
-	function generate(&$params)
+	public static function generate(&$params)
 	{
 		$xmlDoc = '<?xml version="1.0" encoding="utf-8" ?><methodCall><params>';
 		if(!is_array($params))
@@ -37,7 +37,7 @@ class XmlGenerater
 	 * @param array $params Request data
 	 * @return object
 	 */
-	function getXmlDoc(&$params)
+	public static function getXmlDoc(&$params)
 	{
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
@@ -46,7 +46,7 @@ class XmlGenerater
 			return;
 		}
 
-		$xml = new XmlParser();
+		$xml = new XmlParserXe();
 		$xmlDoc = $xml->parse($buff);
 		return $xmlDoc;
 	}

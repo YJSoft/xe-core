@@ -91,14 +91,6 @@ ul.oembedall-repo-stats li:last-child a:hover {
 	border-bottom-right-radius: 3px;
 	border-top-right-radius: 3px;
 }
-div.oembedall-githubrepos ul.oembedall-repo-stats li.oembedall-watchers a {
-	/*background-image: url("http://github.com/images/modules/pagehead/repostat_watchers.png");*/
-}
-
-div.oembedall-githubrepos ul.oembedall-repo-stats li.oembedall-forks a {
-	/*background-image: url("http://github.com/images/modules/pagehead/repostat_forks.png");*/
-}
-
 
 span.oembedall-closehide{
 	background-color: #EEE;

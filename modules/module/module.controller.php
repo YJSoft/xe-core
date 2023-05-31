@@ -586,7 +586,7 @@ class moduleController extends module
 			$menuArgs->url = $module_info->mid;
 			$menuArgs->site_srl = $module_info->site_srl;
 			$menuOutput = executeQueryArray('menu.getMenuItemByUrl', $menuArgs);
-			if($menuOutput->data && count($menuOutput->data))
+			if(is_foreachable($menuOutput->data))
 			{
 				$oMenuAdminController = getAdminController('menu');
 				foreach($menuOutput->data as $itemInfo)
@@ -977,7 +977,7 @@ class moduleController extends module
 		}
 
 		getDestroyXeVars($obj);
-		if(!$obj || !count($obj)) return new BaseObject();
+		if(!is_foreachable($obj)) return new BaseObject();
 
 		$args = new stdClass;
 		$args->module_srl = $module_srl;
@@ -1070,7 +1070,7 @@ class moduleController extends module
 	{
 		$this->deleteModuleExtraVars($module_srl);
 		getDestroyXeVars($obj);
-		if(!$obj || !count($obj)) return;
+		if(!is_foreachable($obj)) return;
 
 		foreach($obj as $key => $val)
 		{
@@ -1120,11 +1120,11 @@ class moduleController extends module
 	function insertModuleGrants($module_srl, $obj)
 	{
 		$this->deleteModuleGrants($module_srl);
-		if(!$obj || !count($obj)) return;
+		if(!is_foreachable($obj)) return;
 
 		foreach($obj as $name => $val)
 		{
-			if(!$val || !count($val)) continue;
+			if(!is_foreachable($val)) continue;
 
 			foreach($val as $group_srl)
 			{

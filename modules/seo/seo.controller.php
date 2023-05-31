@@ -121,7 +121,7 @@ class seoController extends seo
 				$piece->description = trim(str_replace('&nbsp;', ' ', $oDocument->getContentText(400)));
 				$piece->author = $oDocument->getNickName();
 				$tags = $oDocument->get('tag_list');
-				if (count($tags)) $piece->tags = $tags;
+				if ($tags) $piece->tags = $tags;
 
 				$document_images = false;
 				if($oCacheHandler->isSupport()) {

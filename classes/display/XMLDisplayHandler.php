@@ -31,7 +31,7 @@ class XMLDisplayHandler
 	 */
 	function _makeXmlDoc($obj)
 	{
-		if(!count($obj))
+		if(!is_foreachable($obj))
 		{
 			return;
 		}

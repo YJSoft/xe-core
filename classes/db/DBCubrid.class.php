@@ -59,7 +59,7 @@ class DBCubrid extends DB
 	 * Create an instance of this class
 	 * @return DBCubrid return DBCubrid object instance
 	 */
-	function create()
+	public static function create()
 	{
 		return new DBCubrid;
 	}
@@ -728,7 +728,7 @@ class DBCubrid extends DB
 	function _createTable($xml_doc)
 	{
 		// xml parsing
-		$oXml = new XmlParser();
+		$oXml = new XmlParserXe();
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;
@@ -1118,7 +1118,7 @@ class DBCubrid extends DB
 	 * @param boolean $force
 	 * @return DBParser
 	 */
-	function getParser($force = FALSE)
+	function getDBParser($force = FALSE)
 	{
 		return new DBParser('"', '"', $this->prefix);
 	}

@@ -46,7 +46,7 @@
  * @package /classes/xml
  * @version 0.2
  */
-class XmlJsFilter extends XmlParser
+class XmlJsFilter extends XmlParserXe
 {
 
 	/**
@@ -216,8 +216,7 @@ class XmlJsFilter extends XmlParser
 		}
 
 		// generates a field, which is a script of the checked item
-		$node_count = count($field_node);
-		if($node_count)
+		if(count_only_array($field_node))
 		{
 			foreach($field_node as $key => $node)
 			{
@@ -309,8 +308,7 @@ class XmlJsFilter extends XmlParser
 
 		// generates parameter script to create dbata
 		$rename_params = array();
-		$parameter_count = count($parameter_param);
-		if($parameter_count)
+		if(count_only_array($parameter_param))
 		{
 			// contains parameter of the default filter contents
 			foreach($parameter_param as $key => $param)
@@ -348,7 +346,7 @@ class XmlJsFilter extends XmlParser
 		}
 
 		// generates the response script
-		$response_count = count($response_tag);
+		$response_count = count_only_array($response_tag);
 		$responses = array();
 		for($i = 0; $i < $response_count; $i++)
 		{
@@ -358,7 +356,7 @@ class XmlJsFilter extends XmlParser
 		}
 
 		// writes lang values of the form field
-		$target_count = count($target_list);
+		$target_count = count_only_array($target_list);
 		for($i = 0; $i < $target_count; $i++)
 		{
 			$target = $target_list[$i];

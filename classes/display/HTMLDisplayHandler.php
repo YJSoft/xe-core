@@ -38,11 +38,11 @@ class HTMLDisplayHandler
 					$template_path = $oModule->getTemplatePath();
 					if(count($theme_skin) == 2)
 					{
-						$theme_path = sprintf('./themes/%s', $theme_skin[0]);
+						$theme_path = sprintf('./themes/%s', get_valid_filename($theme_skin[0]));
 						// FIXME $theme_path $theme_path $theme_path ??
 						if(substr($theme_path, 0, strlen($theme_path)) != $theme_path)
 						{
-							$template_path = sprintf('%s/modules/%s/', $theme_path, $theme_skin[1]);
+							$template_path = sprintf('%s/modules/%s/', $theme_path, get_valid_filename($theme_skin[1]));
 						}
 					}
 				}

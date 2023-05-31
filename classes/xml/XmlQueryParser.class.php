@@ -17,7 +17,7 @@ if(!defined('__XE_LOADED_XML_CLASS__'))
  * @package classes\xml
  * @version 0.1
  */
-class XmlQueryParser extends XmlParser
+class XmlQueryParser extends XmlParserXe
 {
 
 	/**

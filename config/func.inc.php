@@ -220,7 +220,7 @@ function executeQueryArray($query_id, $args = NULL, $arg_columns = NULL)
 {
 	$oDB = DB::getInstance();
 	$output = $oDB->executeQuery($query_id, $args, $arg_columns);
-	if(!is_array($output->data) && count($output->data) > 0)
+	if(is_object($output->data))
 	{
 		$output->data = array($output->data);
 	}
@@ -1893,6 +1893,52 @@ function explode_with_escape($delimiter, $str, $limit = 0, $escape_char = '\\')
 	return $result;
 }
 
+function is_foreachable($var)
+{
+	return (is_array($var) || is_object($var));
+}
+
+function count_only_array($var)
+{
+	if (is_array($var))
+	{
+		return count($var);
+	}
+	return 0;
+}
+
+function tpl_count($var)
+{
+	if (is_object($var))
+	{
+		return 1;
+	}
+	else if (is_array($var))
+	{
+		return count($var);
+	}
+	return 0;
+}
+
+function tpl_in_array($needle, $haystack)
+{
+	return (is_array($haystack) && in_array($needle, $haystack));
+}
+
+function tpl_array_flip($arr)
+{
+	return is_array($arr) ? array_flip($arr) : null;
+}
+
+function get_valid_filename($name)
+{
+	return preg_replace("[\\\/\:\*\?\"\<\>\|\{\}\@\$]", "", $name);
+}
+
+function get_valid_pathname($name)
+{
+	return preg_replace("[\*\?\"\<\>\|\{\}\@\$]", "", $name);
+}
 
 /* End of file func.inc.php */
 /* Location: ./config/func.inc.php */

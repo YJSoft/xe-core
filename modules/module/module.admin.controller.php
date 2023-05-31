@@ -201,7 +201,7 @@ class moduleAdminController extends module
 				$oDocumentAdminController = getAdminController('document');
 				$copyOutput = $oDocumentAdminController->copyDocumentModule(array($extra_vars->document_srl), $module_srl, $module_info->category_srl);
 				$document_srls = $copyOutput->get('copied_srls');
-				if($document_srls && count($document_srls) > 0)
+				if(count_only_array($document_srls))
 				{
 					$extra_vars->document_srl = array_pop($document_srls);
 				}
@@ -210,7 +210,7 @@ class moduleAdminController extends module
 				{
 					$copyOutput = $oDocumentAdminController->copyDocumentModule(array($extra_vars->mdocument_srl), $module_srl, $module_info->category_srl);
 					$copiedSrls = $copyOutput->get('copied_srls');
-					if($copiedSrls && count($copiedSrls) > 0)
+					if(count_only_array($copiedSrls))
 					{
 						$extra_vars->mdocument_srl = array_pop($copiedSrls);
 					}
@@ -218,7 +218,7 @@ class moduleAdminController extends module
 			}
 
 			// Grant module permissions
-			if(count($grant) > 0) $oModuleController->insertModuleGrants($module_srl, $grant);
+			if($grant) $oModuleController->insertModuleGrants($module_srl, $grant);
 			if($extra_vars) $oModuleController->insertModuleExtraVars($module_srl, $extra_vars);
 
 			if($moduleSkinVars) $oModuleController->insertModuleSkinVars($module_srl, $moduleSkinVars);
@@ -759,7 +759,7 @@ class moduleAdminController extends module
 		// Get a list of modules at the site
 		$output = executeQueryArray('module.getSiteModules', $args);
 		$mid_list = array();
-		if(count($output->data) > 0)
+		if(is_foreachable($output->data))
 		{
 			foreach($output->data as $val)
 			{
@@ -796,7 +796,7 @@ class moduleAdminController extends module
 		}
 
 		$selected_module = Context::get('selected_module');
-		if(count($mid_list) > 0)
+		if(is_foreachable($mid_list))
 		{
 			foreach($mid_list as $module => $val)
 			{
@@ -812,7 +812,7 @@ class moduleAdminController extends module
 				$mid_list[$module]->title = $xml_info->title;
 
 				// change module category srl to title
-				if(is_array($val->list))
+				if(is_foreachable($val->list))
 				{
 					foreach($val->list as $key=>$value)
 					{

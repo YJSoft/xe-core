@@ -274,7 +274,7 @@ class EmbedFilter
 	 * This method for singleton
 	 * @return EmbedFilter
 	 */
-	function getInstance()
+	public static function getInstance()
 	{
 		if(!isset($GLOBALS['__EMBEDFILTER_INSTANCE__']))
 		{
@@ -632,7 +632,7 @@ class EmbedFilter
 			{
 				$xmlBuff = FileHandler::readFile($this->whiteUrlXmlFile);
 
-				$xmlParser = new XmlParser();
+				$xmlParser = new XmlParserXe();
 				$domainListObj = $xmlParser->parse($xmlBuff);
 				$embedDomainList = $domainListObj->whiteurl->embed->domain;
 				$iframeDomainList = $domainListObj->whiteurl->iframe->domain;

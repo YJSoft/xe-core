@@ -216,9 +216,12 @@ class Mail extends PHPMailer
 	 * @param string $orgfilename Real path of file to attach
 	 * @return void
 	 */
-	function addAttachment($filename, $orgfilename)
+	public function addAttachment($filename, $orgfilename = '', $dummy = '', $dummy2 = '')
 	{
-		$this->attachments[$orgfilename] = $filename;
+		if ($orgfilename)
+		{
+			$this->attachments[$orgfilename] = $filename;
+		}
 	}
 
 	/**

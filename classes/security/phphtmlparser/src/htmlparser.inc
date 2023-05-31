@@ -222,7 +222,7 @@ class HtmlParser {
             $this->iCurrentChar = -1;
         }
         else {
-            $this->iCurrentChar = $this->iHtmlText{$index};
+            $this->iCurrentChar = $this->iHtmlText[$index];
         }
     }
 
@@ -362,4 +362,4 @@ function HtmlParser_ForURL ($url) {
     return new HtmlParser ($content);
 }
 
-php?>
+?>

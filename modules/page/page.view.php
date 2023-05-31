@@ -7,6 +7,7 @@
  */
 class pageView extends page
 {
+	//-> YJSoft 2022.03 security patch
 	public $module_srl = 0;
 	public $list_count = 20;
 	public $page_count = 10;
@@ -151,7 +152,7 @@ class pageView extends page
 
 		if ($this->module_info->skin)
 		{
-			$templatePath = (sprintf($this->module_path.'skins/%s', $this->module_info->skin));
+			$templatePath = (sprintf($this->module_path.'skins/%s', get_valid_filename($this->module_info->skin)));
 		}
 		else
 		{
@@ -287,7 +288,7 @@ class pageView extends page
 		// /=absolute path, #=hash in a page, {=Template syntax
 		if(strpos($val, '.') === FALSE || preg_match('@^((?:http|https|ftp|telnet|mms)://|(?:mailto|javascript):|[/#{])@i',$val))
 		{
-			return $matches[0];
+				return $matches[0];
 			// In case of  .. , get a path
 		}
 		else if(strncasecmp('..', $val, 2) === 0)
@@ -302,6 +303,8 @@ class pageView extends page
 
 		return $path;
 	}
+	//<-- YJSoft 2022.03 security patch
+	
 }
 /* End of file page.view.php */
 /* Location: ./modules/page/page.view.php */

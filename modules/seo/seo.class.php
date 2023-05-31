@@ -180,7 +180,7 @@ NASCRIPT;
 
 	public function makeObject($code = 0, $message = 'success')
 	{
-		return class_exists('BaseObject') ? new BaseObject($code, $message) : new Object($code, $message);
+		return new BaseObject($code, $message);
 	}
 }
 /* !End of file */

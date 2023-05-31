@@ -929,7 +929,7 @@ class ModuleHandler extends Handler
 		{
 			Context::set('XE_VALIDATOR_ID', $_SESSION['XE_VALIDATOR_ID']);
 		}
-		if(count($_SESSION['INPUT_ERROR']))
+		if($_SESSION['INPUT_ERROR'])
 		{
 			Context::set('INPUT_ERROR', $_SESSION['INPUT_ERROR']);
 		}
@@ -948,7 +948,7 @@ class ModuleHandler extends Handler
 		$_SESSION['XE_VALIDATOR_MESSAGE_TYPE'] = '';
 		$_SESSION['XE_VALIDATOR_RETURN_URL'] = '';
 		$_SESSION['XE_VALIDATOR_ID'] = '';
-		$_SESSION['INPUT_ERROR'] = '';
+		$_SESSION['INPUT_ERROR'] = Array();
 	}
 
 	/**
@@ -959,6 +959,7 @@ class ModuleHandler extends Handler
 	{
 		$requestVars = Context::getRequestVars();
 		unset($requestVars->act, $requestVars->mid, $requestVars->vid, $requestVars->success_return_url, $requestVars->error_return_url);
+		
 		foreach($requestVars AS $key => $value)
 		{
 			$_SESSION['INPUT_ERROR'][$key] = $value;
@@ -1158,7 +1159,7 @@ class ModuleHandler extends Handler
 	 * @param string $module module name
 	 * @return string path of the module
 	 * */
-	function getModulePath($module)
+	public static function getModulePath($module)
 	{
 		return sprintf('./modules/%s/', $module);
 	}
@@ -1171,7 +1172,7 @@ class ModuleHandler extends Handler
 	 * @return ModuleObject module instance (if failed it returns null)
 	 * @remarks if there exists a module instance created before, returns it.
 	 * */
-	function &getModuleInstance($module, $type = 'view', $kind = '')
+	public static function &getModuleInstance($module, $type = 'view', $kind = '')
 	{
 
 		if(__DEBUG__ == 3)
@@ -1258,7 +1259,7 @@ class ModuleHandler extends Handler
 		return $GLOBALS['_loaded_module'][$module][$type][$kind];
 	}
 
-	function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName)
+	public static function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName)
 	{
 		$classPath = ModuleHandler::getModulePath($module);
 
@@ -1297,7 +1298,7 @@ class ModuleHandler extends Handler
 	 * @param object $obj an object as a parameter to trigger
 	 * @return BaseObject
 	 * */
-	function triggerCall($trigger_name, $called_position, &$obj)
+	public static function triggerCall($trigger_name, $called_position, &$obj)
 	{
 		// skip if not installed
 		if(!Context::isInstalled())

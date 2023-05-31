@@ -216,7 +216,7 @@ class autoinstallAdminView extends autoinstall
 
 				if($v->type == "core")
 				{
-					continue;
+					$v->avail_remove = FALSE;
 				}
 				else if($v->type == "module")
 				{
@@ -249,7 +249,7 @@ class autoinstallAdminView extends autoinstall
 					continue;
 				}
 
-				$xml = new XmlParser();
+				$xml = new XmlParserXe();
 				$xmlDoc = $xml->loadXmlFile(FileHandler::getRealPath($path) . $config_file);
 				if(!$xmlDoc)
 				{
@@ -311,7 +311,7 @@ class autoinstallAdminView extends autoinstall
 		$params["package_srls"] = implode(",", array_keys($package_list));
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
-		$xml_lUpdate = new XmlParser();
+		$xml_lUpdate = new XmlParserXe();
 		$xmlDoc = $xml_lUpdate->parse($buff);
 		if($xmlDoc && $xmlDoc->response->packagelist->item)
 		{
@@ -402,7 +402,7 @@ class autoinstallAdminView extends autoinstall
 		$params["act"] = "getResourceapiLastupdate";
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
-		$xml_lUpdate = new XmlParser();
+		$xml_lUpdate = new XmlParserXe();
 		$lUpdateDoc = $xml_lUpdate->parse($buff);
 		$updateDate = $lUpdateDoc->response->updatedate->body;
 
@@ -549,7 +549,7 @@ class autoinstallAdminView extends autoinstall
 		$params["package_srls"] = $package_srl;
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
-		$xml_lUpdate = new XmlParser();
+		$xml_lUpdate = new XmlParserXe();
 		$xmlDoc = $xml_lUpdate->parse($buff);
 		if($xmlDoc && $xmlDoc->response->packagelist->item)
 		{

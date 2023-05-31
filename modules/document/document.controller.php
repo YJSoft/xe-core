@@ -491,11 +491,13 @@ class documentController extends document
 			}
 			$obj->content = nl2br($obj->content);
 		}
+		//--> YJSoft 2022.02 patch
 		// Remove iframe and script if not a top adminisrator in the session.
 		if($logged_info->is_admin != 'Y')
 		{
 			$obj->content = removeHackTag($obj->content);
 		}
+		//<-- YJSoft 2022.02 patch
 		// Change not extra vars but language code of the original document if document's lang_code is different from author's setting.
 		if($source_obj->get('lang_code') != Context::getLangType())
 		{

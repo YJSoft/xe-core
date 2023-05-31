@@ -92,7 +92,7 @@ class moduleAdminModel extends module
 		$grantList->access = new stdClass();
 		$grantList->access->title = Context::getLang('grant_access');
 		$grantList->access->default = 'guest';
-		if(count($grantList))
+		if(is_foreachable($grantList))
 		{
 			foreach($grantList as $key => $val)
 			{
@@ -154,7 +154,7 @@ class moduleAdminModel extends module
 		$grant_list->access = new stdClass();
 		$grant_list->access->title = Context::getLang('grant_access');
 		$grant_list->access->default = 'guest';
-		if(count($source_grant_list))
+		if(is_object($source_grant_list))
 		{
 			foreach($source_grant_list as $key => $val)
 			{
@@ -231,7 +231,7 @@ class moduleAdminModel extends module
 		$grantList->access = new stdClass();
 		$grantList->access->title = Context::getLang('grant_access');
 		$grantList->access->default = 'guest';
-		if(count($xmlInfo->grant))
+		if(is_foreachable($xmlInfo->grant))
 		{
 			foreach($xmlInfo->grant as $key => $val)
 			{
@@ -354,7 +354,7 @@ class moduleAdminModel extends module
 			$skin_vars = $oModuleModel->getModuleMobileSkinVars($module_srl);
 		}
 
-		if(count($skin_info->extra_vars)) 
+		if(is_foreachable($skin_info->extra_vars)) 
 		{
 			foreach($skin_info->extra_vars as $key => $val) 
 			{

@@ -20,6 +20,7 @@ if(!defined('__XE__'))
 {
 	exit();
 }
+//define('__DEBUG__', 0); 
 
 /**
  * @deprecated __ZBXE__ will be removed. Use __XE__ instead.
@@ -29,7 +30,7 @@ define('__ZBXE__', __XE__);
 /**
  * Display XE's full version.
  */
-define('__XE_VERSION__', '1.11.9');
+define('__XE_VERSION__', '1.11.6.p8.2');
 define('__XE_VERSION_ALPHA__', (stripos(__XE_VERSION__, 'alpha') !== false));
 define('__XE_VERSION_BETA__', (stripos(__XE_VERSION__, 'beta') !== false));
 define('__XE_VERSION_RC__', (stripos(__XE_VERSION__, 'rc') !== false));
@@ -51,6 +52,7 @@ define('_XE_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '
 
 // Set can use other method instead cookie to store session id(for file upload)
 ini_set('session.use_only_cookies', 0);
+ini_set('display_errors', true);
 
 if(file_exists(_XE_PATH_ . 'config/package.inc.php'))
 {
@@ -385,7 +387,7 @@ $GLOBALS['__xe_autoload_file_map'] = array_change_key_case(array(
 	'XmlGenerator' => 'classes/xml/XmlGenerator.class.php',
 	'XmlJsFilter' => 'classes/xml/XmlJsFilter.class.php',
 	'XmlLangParser' => 'classes/xml/XmlLangParser.class.php',
-	'XmlParser' => 'classes/xml/XmlParser.class.php',
+	'XmlParserXe' => 'classes/xml/XmlParserXe.class.php',
 	'XmlQueryParser' => 'classes/xml/XmlQueryParser.class.php',
 	'DBParser' => 'classes/xml/xmlquery/DBParser.class.php',
 	'QueryParser' => 'classes/xml/xmlquery/QueryParser.class.php',

@@ -128,9 +128,9 @@ class editorModel extends editor
 			return $xml_info;
 		}
 		// Return after parsing and caching if the cached file does not exist
-		$oParser = new XmlParser();
+		$oParser = new XmlParserXe();
 		$xml_doc = $oParser->loadXmlFile($xml_file);
-
+		$component_info = new stdClass();
 		$component_info->component_name = $drComponentName;
 		$component_info->title = $xml_doc->component->title->body;
 		$component_info->description = str_replace('\n', "\n", $xml_doc->component->description->body);
@@ -232,7 +232,7 @@ class editorModel extends editor
 			$editor_height = 150;
 		}
 		// Skin Setting
-		$skin = $option->skin;
+		$skin = get_valid_filename($option->skin);
 		if(!$skin) $skin = 'ckeditor';
 
 		$colorset = $option->colorset;
@@ -554,7 +554,7 @@ class editorModel extends editor
 	function getComponentObject($component, $editor_sequence = 0, $site_srl = 0)
 	{
 		if(!preg_match('/^[a-zA-Z0-9_-]+$/',$component) || !preg_match('/^[0-9]+$/', $editor_sequence . $site_srl)) return;
-
+		
 		if(!$this->loaded_component_list[$component][$editor_sequence])
 		{
 			// Create an object of the component and execute
@@ -639,7 +639,7 @@ class editorModel extends editor
 			$group_list = array();
 		}
 
-		if(count($component_list))
+		if(count_only_array($component_list))
 		{
 			foreach($component_list as $key => $val)
 			{
@@ -767,7 +767,7 @@ class editorModel extends editor
 			return $xml_info;
 		}
 
-		$oParser = new XmlParser();
+		$oParser = new XmlParserXe();
 		$xml_doc = $oParser->loadXmlFile($xml_file);
 
 		// Component information listed
@@ -878,7 +878,7 @@ class editorModel extends editor
 						$val->options = array($val->options);
 					}
 
-					for($i = 0, $c = count($val->options); $i < $c; $i++)
+					for($i = 0, $c = count_only_array($val->options); $i < $c; $i++)
 					{
 						$obj->options[$i] = new stdClass();
 						$obj->options[$i]->title = $val->options[$i]->title->body;

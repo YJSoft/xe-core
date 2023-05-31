@@ -7,7 +7,7 @@
  * primary concern and you are using an opcode cache. PLEASE DO NOT EDIT THIS
  * FILE, changes will be overwritten the next time the script is run.
  *
- * @version 4.4.0
+ * @version 4.15.0
  *
  * @warning
  *      You must *not* include any other HTML Purifier files before this file,
@@ -19,6 +19,7 @@
  */
 
 require 'HTMLPurifier.php';
+require 'HTMLPurifier/Arborize.php';
 require 'HTMLPurifier/AttrCollections.php';
 require 'HTMLPurifier/AttrDef.php';
 require 'HTMLPurifier/AttrTransform.php';
@@ -54,9 +55,11 @@ require 'HTMLPurifier/Language.php';
 require 'HTMLPurifier/LanguageFactory.php';
 require 'HTMLPurifier/Length.php';
 require 'HTMLPurifier/Lexer.php';
+require 'HTMLPurifier/Node.php';
 require 'HTMLPurifier/PercentEncoder.php';
 require 'HTMLPurifier/PropertyList.php';
 require 'HTMLPurifier/PropertyListIterator.php';
+require 'HTMLPurifier/Queue.php';
 require 'HTMLPurifier/Strategy.php';
 require 'HTMLPurifier/StringHash.php';
 require 'HTMLPurifier/StringHashParser.php';
@@ -72,6 +75,7 @@ require 'HTMLPurifier/URISchemeRegistry.php';
 require 'HTMLPurifier/UnitConverter.php';
 require 'HTMLPurifier/VarParser.php';
 require 'HTMLPurifier/VarParserException.php';
+require 'HTMLPurifier/Zipper.php';
 require 'HTMLPurifier/AttrDef/CSS.php';
 require 'HTMLPurifier/AttrDef/Clone.php';
 require 'HTMLPurifier/AttrDef/Enum.php';
@@ -103,6 +107,7 @@ require 'HTMLPurifier/AttrDef/HTML/Bool.php';
 require 'HTMLPurifier/AttrDef/HTML/Nmtokens.php';
 require 'HTMLPurifier/AttrDef/HTML/Class.php';
 require 'HTMLPurifier/AttrDef/HTML/Color.php';
+require 'HTMLPurifier/AttrDef/HTML/ContentEditable.php';
 require 'HTMLPurifier/AttrDef/HTML/FrameTarget.php';
 require 'HTMLPurifier/AttrDef/HTML/ID.php';
 require 'HTMLPurifier/AttrDef/HTML/Pixels.php';
@@ -133,6 +138,8 @@ require 'HTMLPurifier/AttrTransform/SafeObject.php';
 require 'HTMLPurifier/AttrTransform/SafeParam.php';
 require 'HTMLPurifier/AttrTransform/ScriptRequired.php';
 require 'HTMLPurifier/AttrTransform/TargetBlank.php';
+require 'HTMLPurifier/AttrTransform/TargetNoopener.php';
+require 'HTMLPurifier/AttrTransform/TargetNoreferrer.php';
 require 'HTMLPurifier/AttrTransform/Textarea.php';
 require 'HTMLPurifier/ChildDef/Chameleon.php';
 require 'HTMLPurifier/ChildDef/Custom.php';
@@ -165,11 +172,14 @@ require 'HTMLPurifier/HTMLModule/Proprietary.php';
 require 'HTMLPurifier/HTMLModule/Ruby.php';
 require 'HTMLPurifier/HTMLModule/SafeEmbed.php';
 require 'HTMLPurifier/HTMLModule/SafeObject.php';
+require 'HTMLPurifier/HTMLModule/SafeScripting.php';
 require 'HTMLPurifier/HTMLModule/Scripting.php';
 require 'HTMLPurifier/HTMLModule/StyleAttribute.php';
 require 'HTMLPurifier/HTMLModule/Tables.php';
 require 'HTMLPurifier/HTMLModule/Target.php';
 require 'HTMLPurifier/HTMLModule/TargetBlank.php';
+require 'HTMLPurifier/HTMLModule/TargetNoopener.php';
+require 'HTMLPurifier/HTMLModule/TargetNoreferrer.php';
 require 'HTMLPurifier/HTMLModule/Text.php';
 require 'HTMLPurifier/HTMLModule/Tidy.php';
 require 'HTMLPurifier/HTMLModule/XMLCommonAttributes.php';
@@ -188,6 +198,9 @@ require 'HTMLPurifier/Injector/RemoveSpansWithoutAttributes.php';
 require 'HTMLPurifier/Injector/SafeObject.php';
 require 'HTMLPurifier/Lexer/DOMLex.php';
 require 'HTMLPurifier/Lexer/DirectLex.php';
+require 'HTMLPurifier/Node/Comment.php';
+require 'HTMLPurifier/Node/Element.php';
+require 'HTMLPurifier/Node/Text.php';
 require 'HTMLPurifier/Strategy/Composite.php';
 require 'HTMLPurifier/Strategy/Core.php';
 require 'HTMLPurifier/Strategy/FixNesting.php';
@@ -217,5 +230,6 @@ require 'HTMLPurifier/URIScheme/https.php';
 require 'HTMLPurifier/URIScheme/mailto.php';
 require 'HTMLPurifier/URIScheme/news.php';
 require 'HTMLPurifier/URIScheme/nntp.php';
+require 'HTMLPurifier/URIScheme/tel.php';
 require 'HTMLPurifier/VarParser/Flexible.php';
 require 'HTMLPurifier/VarParser/Native.php';

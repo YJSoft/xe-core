@@ -46,7 +46,7 @@ class spamfilterModel extends spamfilter
 		$ipaddress = $_SERVER['REMOTE_ADDR'];
 
 		$ip_list = $this->getDeniedIPList();
-		if(!count($ip_list)) return new BaseObject();
+		if(!count_only_array($ip_list)) return new BaseObject();
 
 		$count = count($ip_list);
 		for($i=0;$i<$count;$i++)

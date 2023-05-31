@@ -25,7 +25,7 @@ class ConditionWithoutArgument extends Condition
 		{
 			if(is_array($argument))
 			{
-				$argument = implode($argument, ',');
+				$argument = implode(',', $argument);
 			}
 			$this->_value = '(' . $argument . ')';
 		}

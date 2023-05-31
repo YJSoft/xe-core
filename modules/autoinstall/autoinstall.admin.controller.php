@@ -72,7 +72,7 @@ class autoinstallAdminController extends autoinstall
 		$params["act"] = "getResourceapiUpdate";
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
-		$xml = new XmlParser();
+		$xml = new XmlParserXe();
 		$xmlDoc = $xml->parse($buff);
 		$this->updateCategory($xmlDoc);
 		$this->updatePackages($xmlDoc);
@@ -143,7 +143,7 @@ class autoinstallAdminController extends autoinstall
 					continue;
 				}
 
-				$xml = new XmlParser();
+				$xml = new XmlParserXe();
 				$xmlDoc = $xml->loadXmlFile($real_path . $config_file);
 
 				if(!$xmlDoc)
@@ -193,16 +193,10 @@ class autoinstallAdminController extends autoinstall
 			$ftp_password = $_SESSION['ftp_password'];
 		}
 
-		$isSftpSupported = function_exists(ssh2_sftp);
+		$isSftpSupported = function_exists('ssh2_sftp');
 		foreach($packages as $package_srl)
 		{
 			$package = $oModel->getPackage($package_srl);
-			$package->type = $oModel->getTypeFromPath($package->path);
-			if ($package->type === 'core')
-			{
-				continue;
-			}
-
 			if($oAdminModel->checkUseDirectModuleInstall($package)->toBool())
 			{
 				$oModuleInstaller = new DirectModuleInstaller($package);
@@ -211,7 +205,7 @@ class autoinstallAdminController extends autoinstall
 			{
 				$oModuleInstaller = new SFTPModuleInstaller($package);
 			}
-			else if(function_exists(ftp_connect))
+			else if(function_exists('ftp_connect'))
 			{
 				$oModuleInstaller = new PHPFTPModuleInstaller($package);
 			}
@@ -375,7 +369,7 @@ class autoinstallAdminController extends autoinstall
 		}
 		$ftp_info = Context::getFTPInfo();
 
-		$isSftpSupported = function_exists(ssh2_sftp);
+		$isSftpSupported = function_exists('ssh2_sftp');
 		if($oAdminModel->checkUseDirectModuleInstall($package)->toBool())
 		{
 			$oModuleInstaller = new DirectModuleInstaller($package);

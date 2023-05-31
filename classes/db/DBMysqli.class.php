@@ -30,7 +30,7 @@ class DBMysqli extends DBMysql
 	 * Create an instance of this class
 	 * @return DBMysqli return DBMysqli object instance
 	 */
-	function create()
+	public static function create()
 	{
 		return new DBMysqli;
 	}
@@ -140,27 +140,13 @@ class DBMysqli extends DBMysql
 
 				// 3. Execute query
 				$status = mysqli_stmt_execute($stmt);
-
-				if(!$status)
-				{
-					$this->setError(-1, "Prepared statement failed: $query" . mysqli_error($connection));
-				}
-
 				// Return stmt for other processing - like retrieving resultset (_fetch)
 				return $stmt;
 				// mysqli_stmt_close($stmt);
 			}
 		}
 		// Run the query statement
-		$result = mysqli_query($connection, $query);
-		// Error Check
-		$error = mysqli_error($connection);
-		if($error)
-		{
-			$this->setError(mysqli_errno($connection), $error);
-		}
-		// Return result
-		return $result;
+		return mysqli_query($connection, $query);
 	}
 
 	/**
@@ -270,7 +256,7 @@ class DBMysqli extends DBMysql
 			mysqli_stmt_store_result($stmt);
 		}
 
-		call_user_func_array('mysqli_stmt_bind_result', $resultArray);
+		call_user_func_array('mysqli_stmt_bind_result', array_values($resultArray));
 
 		$rows = array();
 		while(mysqli_stmt_fetch($stmt))

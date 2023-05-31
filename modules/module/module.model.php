@@ -480,7 +480,8 @@ class moduleModel extends module
 
 		foreach($target_module_info as $key => $val)
 		{
-			if(!$extra_vars[$val->module_srl] || !count($extra_vars[$val->module_srl])) continue;
+			if(!$extra_vars[$val->module_srl] || !is_object($extra_vars[$val->module_srl]) )
+				continue;
 			foreach($extra_vars[$val->module_srl] as $k => $v)
 			{
 				if($target_module_info[$key]->{$k}) continue;
@@ -501,7 +502,7 @@ class moduleModel extends module
 		$oCacheHandler = CacheHandler::getInstance('object', null, true);
 		if($oCacheHandler->isSupport())
 		{
-			if(count($args) === 1 && isset($args->site_srl))
+			if(is_object($args) && isset($args->site_srl))
 			{
 				$object_key = 'module:mid_list_' . $args->site_srl;
 				$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
@@ -511,7 +512,7 @@ class moduleModel extends module
 
 		if($list === false)
 		{
-			if($oCacheHandler->isSupport() && count($args) === 1 && isset($args->site_srl))
+			if($oCacheHandler->isSupport() && is_object($args) && isset($args->site_srl))
 			{
 				$columnList = array();
 			}
@@ -520,7 +521,7 @@ class moduleModel extends module
 			if(!$output->toBool()) return $output;
 			$list = $output->data;
 
-			if($oCacheHandler->isSupport() && count($args) === 1 && isset($args->site_srl))
+			if($oCacheHandler->isSupport() && is_object($args) && isset($args->site_srl))
 			{
 				$oCacheHandler->put($cache_key, $list);
 			}
@@ -747,7 +748,7 @@ class moduleModel extends module
 		$xml_file = sprintf("%s/conf/info.xml", $module_path);
 		if(!file_exists($xml_file)) return;
 
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XmlParserXe();
 		$tmp_xml_obj = $oXmlParser->loadXmlFile($xml_file);
 		$xml_obj = $tmp_xml_obj->module;
 
@@ -755,6 +756,7 @@ class moduleModel extends module
 
 		// Module Information
 		$module_info = new stdClass();
+		$date_obj = new stdClass();
 		if($xml_obj->version && $xml_obj->attrs->version == '0.2')
 		{
 			// module format 0.2
@@ -838,9 +840,9 @@ class moduleModel extends module
 			$buff['simple_setup_index_act'] = '$info->simple_setup_index_act=\'%s\';';
 			$buff['admin_index_act'] = '$info->admin_index_act = \'%s\';';
 
-			$xml_obj = XmlParser::loadXmlFile($xml_file); // /< Read xml file and convert it to xml object
+			$xml_obj = XmlParserXe::loadXmlFile($xml_file); // /< Read xml file and convert it to xml object
 
-			if(!count($xml_obj->module)) return; // /< Error occurs if module tag doesn't included in the xml
+			if(!is_object($xml_obj->module)) return; // /< Error occurs if module tag doesn't included in the xml
 
 			$grants = $xml_obj->module->grants->grant; // /< Permission information
 			$permissions = $xml_obj->module->permissions->permission; // /<  Acting permission
@@ -1148,7 +1150,7 @@ class moduleModel extends module
 		}
 		
 		// Create XmlParser object
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XmlParserXe();
 		$_xml_obj = $oXmlParser->loadXmlFile($skin_xml_file);
 		// Return if no skin information is
 		if(!$_xml_obj->skin) return;
@@ -1157,6 +1159,7 @@ class moduleModel extends module
 		$skin_info = new stdClass();
 		$skin_info->title = $xml_obj->title->body;
 		// Author information
+		$date_obj = new stdClass();
 		if($xml_obj->version && $xml_obj->attrs->version == '0.2')
 		{
 			// skin format v0.2
@@ -1660,7 +1663,7 @@ class moduleModel extends module
 	 * Because XE DBHandler doesn't support left outer join,
 	 * it should be as same as $Output->data[]->module_srl.
 	 */
-	function syncModuleToSite(&$data)
+	public static function syncModuleToSite(&$data)
 	{
 		if(!$data) return;
 
@@ -2120,7 +2123,7 @@ class moduleModel extends module
 						}
 						else
 						{
-							if($group_list && count($group_list) && in_array($val->group_srl, $group_list))
+							if(count($group_list) && in_array($val->group_srl, $group_list))
 							{
 								$grant->{$val->name} = true;
 								$granted[$val->name] = true;
@@ -2130,7 +2133,7 @@ class moduleModel extends module
 				}
 				// Separate processing for the virtual group access
 				if(!$grant_exists['access']) $grant->access = true;
-				if(count($grant_info))
+				if($grant_info)
 				{
 					foreach($grant_info as  $grant_name => $grant_item)
 					{
@@ -2162,7 +2165,7 @@ class moduleModel extends module
 			if($grant->manager)
 			{
 				$grant->access = true;
-				if(count($grant_info))
+				if($grant_info)
 				{
 					foreach($grant_info as $key => $val)
 					{

@@ -197,7 +197,7 @@ class content extends WidgetHandler
 
 		$content_items = array();
 
-		if(!count($output)) return;
+		if(!is_foreachable($output)) return;
 
 		foreach($output as $key => $oComment)
 		{
@@ -472,7 +472,7 @@ class content extends WidgetHandler
 
 		$buff = preg_replace("/<\?xml.*\?>/i", "", $buff);
 
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XmlParserXe();
 		$xml_doc = $oXmlParser->parse($buff);
 		if($xml_doc->rss)
 		{

@@ -24,7 +24,7 @@
 <!-- 페이지 네비게이션 -->
 <div class="pagination">
 	<a href="{getUrl('page','','module_srl','')}" class="direction">&lsaquo; {$lang->first_page}</a>
-	<!--@while($page_no = $page_navigation->getNextPage())-->
+	<!--@while($page_navigation && $page_no = $page_navigation->getNextPage())-->
 		<!--@if($page == $page_no)-->
 			<strong>{$page_no}</strong>
 		<!--@else-->

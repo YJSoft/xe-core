@@ -93,7 +93,7 @@ class module extends ModuleObject
 
 			$args->skin = '.';
 			$output = executeQueryArray('module.getModuleSkinDotList', $args);
-			if($output->data && count($output->data) > 0)
+			if(is_foreachable($output->data))
 			{
 				foreach($output->data as $item)
 				{
@@ -159,7 +159,7 @@ class module extends ModuleObject
 						case 'editor' :
 							$module_config = $config->module_config;
 							unset($config->module_config);
-							if(is_array($module_config) && count($module_config))
+							if(is_foreachable($module_config))
 							{
 								foreach($module_config as $key => $val)
 								{
@@ -169,7 +169,7 @@ class module extends ModuleObject
 							break;
 						case 'layout' :
 							$tmp = $config->header_script;
-							if(is_array($tmp) && count($tmp))
+							if(is_foreachable($tmp))
 							{
 								foreach($tmp as $k => $v)
 								{
@@ -183,7 +183,7 @@ class module extends ModuleObject
 
 					$oModuleController->insertModuleConfig($module, $config);
 
-					if(is_array($module_config) && count($module_config))
+					if(is_foreachable($module_config))
 					{
 						foreach($module_config as $module_srl => $module_part_config)
 						{
@@ -213,7 +213,7 @@ class module extends ModuleObject
 				$lang_code = Context::getLangType();
 				// Get module_info of all modules
 				$output = executeQueryArray('module.getModuleInfos');
-				if(count($output->data))
+				if(is_foreachable($output->data))
 				{
 					foreach($output->data as $module_info)
 					{
@@ -241,7 +241,7 @@ class module extends ModuleObject
 						// Save extra configurations for each module(column data which doesn't exist in the defaut modules)
 						$extra_vars = unserialize($module_info->extra_vars);
 						$document_extra_keys = null;
-						if($extra_vars->extra_vars && count($extra_vars->extra_vars))
+						if(is_foreachable($extra_vars->extra_vars))
 						{
 							$document_extra_keys = $extra_vars->extra_vars;
 							unset($extra_vars->extra_vars);
@@ -264,7 +264,7 @@ class module extends ModuleObject
 							$document_extra_keys[20] = $planet_extra_keys;
 						}
 						// Register keys for document extra vars
-						if(count($document_extra_keys))
+						if(is_foreachable($document_extra_keys))
 						{
 							foreach($document_extra_keys as $var_idx => $val)
 							{
@@ -289,7 +289,7 @@ class module extends ModuleObject
 								{
 									$output = executeQueryArray('document.getDocumentList', $doc_args);
 
-									if($output->toBool() && $output->data && count($output->data))
+									if($output->toBool() && is_foreachable($output->data))
 									{
 										foreach ($output->data as $document)
 										{
@@ -396,7 +396,7 @@ class module extends ModuleObject
 
 			$args->skin = '.';
 			$output = executeQueryArray('module.getModuleSkinDotList', $args);
-			if($output->data && count($output->data) > 0)
+			if(is_foreachable($output->data))
 			{
 				foreach($output->data as $item)
 				{

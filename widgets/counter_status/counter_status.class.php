@@ -30,7 +30,7 @@ class counter_status extends WidgetHandler
 			}
 		}
 		// Set a path of the template skin (values of skin, colorset settings)
-		$tpl_path = sprintf('%sskins/%s', $this->widget_path, $args->skin);
+		$tpl_path = sprintf('%sskins/%s', $this->widget_path, get_valid_filename($args->skin));
 		Context::set('colorset', $args->colorset);
 		// Specify a template file
 		$tpl_file = 'counter_status';

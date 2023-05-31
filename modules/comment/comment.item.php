@@ -67,7 +67,7 @@ class commentItem extends BaseObject
 	 */
 	function setAttribute($attribute)
 	{
-		if(!$attribute->comment_srl)
+		if(!is_object($attribute) || !$attribute->comment_srl)
 		{
 			$this->comment_srl = NULL;
 			return;
@@ -77,12 +77,9 @@ class commentItem extends BaseObject
 		$this->adds($attribute);
 
 		// define vars on the object for backward compatibility of skins
-		if(count($attribute))
+		foreach($attribute as $key => $val)
 		{
-			foreach($attribute as $key => $val)
-			{
-				$this->{$key} = $val;
-			}
+			$this->{$key} = $val;
 		}
 	}
 

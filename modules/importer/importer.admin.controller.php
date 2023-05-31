@@ -20,7 +20,7 @@ class importerAdminController extends importer
 	var $unit_count = 300;
 	/**
 	 * Xml parser
-	 * @var XmlParser
+	 * @var XmlParserXe
 	 */
 	var $oXmlParser = null;
 
@@ -345,8 +345,8 @@ class importerAdminController extends importer
 	function importMember($key, $cur, $index_file)
 	{
 		if(!$cur) $cur = 0;
-		// Create the xmlParser object
-		$oXmlParser = new XmlParser();
+		// Create the XmlParserXe object
+		$oXmlParser = new XmlParserXe();
 		// Create objects for importing member information
 		$this->oMemberController = getController('member');
 		$this->oMemberModel = getModel('member');
@@ -532,8 +532,8 @@ class importerAdminController extends importer
 	function importMessage($key, $cur, $index_file)
 	{
 		if(!$cur) $cur = 0;
-		// Create the xmlParser object
-		$oXmlParser = new XmlParser();
+		// Create the XmlParserXe object
+		$oXmlParser = new XmlParserXe();
 		// Open an index file
 		$f = fopen($index_file,"r");
 		// Pass if already read
@@ -631,7 +631,7 @@ class importerAdminController extends importer
 	function importModule($key, $cur, $index_file, $module_srl)
 	{
 		// Pre-create the objects needed
-		$this->oXmlParser = new XmlParser();
+		$this->oXmlParser = new XmlParserXe();
 		// Get category information of the target module
 		$oDocumentController = getController('document');
 		$oDocumentModel = getModel('document');
@@ -644,7 +644,7 @@ class importerAdminController extends importer
 		{
 			$buff = FileHandler::readFile($category_file);
 
-			// Create the xmlParser object
+			// Create the XmlParserXe object
 			$xmlDoc = $this->oXmlParser->loadXmlFile($category_file);
 
 			$categories = $xmlDoc->items->category;
@@ -1241,7 +1241,7 @@ class importerAdminController extends importer
 		if(!$buff) return array();
 
 		$buff = '<extra_vars>'.$buff;
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XmlParserXe();
 		$xmlDoc = $this->oXmlParser->parse($buff);
 		if(!count($xmlDoc->extra_vars->key)) return array();
 

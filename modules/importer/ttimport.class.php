@@ -15,7 +15,7 @@ class ttimport
 {
 	/**
 	 * Xml Parse
-	 * @var XmlParser
+	 * @var XmlParserXe
 	 */
 	var $oXmlParser = null;
 
@@ -34,7 +34,7 @@ class ttimport
 	function importModule($key, $cur, $index_file, $unit_count, $module_srl, $guestbook_module_srl, $user_id, $module_name=null)
 	{
 		// Pre-create the objects needed
-		$this->oXmlParser = new XmlParser();
+		$this->oXmlParser = new XmlParserXe();
 		// Get category information of the target module
 		$oDocumentController = getController('document');
 		$oDocumentModel = getModel('document');
@@ -45,7 +45,7 @@ class ttimport
 		$category_file = preg_replace('/index$/i', 'category.xml', $index_file);
 		if(file_exists($category_file))
 		{
-			// Create the xmlParser object
+			// Create the XmlParserXe object
 			$xmlDoc = $this->oXmlParser->loadXmlFile($category_file);
 			// List category information
 			if($xmlDoc->categories->category)
@@ -287,7 +287,7 @@ class ttimport
 		$guestbook_file = preg_replace('/index$/i', 'guestbook.xml', $index_file);
 		if(file_exists($guestbook_file))
 		{
-			// Create the xmlParser object
+			// Create the XmlParserXe object
 			$xmlDoc = $this->oXmlParser->loadXmlFile($guestbook_file);
 			// Handle guest book information
 			if($guestbook_module_srl && $xmlDoc->guestbook->comment)

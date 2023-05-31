@@ -3,6 +3,7 @@
 
 class pageMobile extends pageView
 {
+	//--> YJSoft 2022.03 security patch
 	function _getArticleContent()
 	{
 		$oTemplate = &TemplateHandler::getInstance();
@@ -26,7 +27,7 @@ class pageMobile extends pageView
 
 		if($this->module_info->mskin)
 		{
-			$templatePath = (sprintf($this->module_path.'m.skins/%s', $this->module_info->mskin));
+			$templatePath = (sprintf($this->module_path.'m.skins/%s', get_valid_filename($this->module_info->mskin)));
 		}
 		else
 		{
@@ -37,6 +38,7 @@ class pageMobile extends pageView
 
 		return $page_content;
 	}
+	//<- -YJSoft 2022.03 security patch
 }
 /* End of file page.mobile.php */
 /* Location: ./modules/page/page.mobile.php */

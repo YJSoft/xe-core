@@ -236,8 +236,14 @@ class ModuleInstaller
 			FileHandler::removeDir($this->temp_dir);
 			return $output;
 		}
-		$this->installModule();
-
+		try
+		{
+			$this->installModule();
+		}
+		catch (Error $e)
+		{
+			ChromePhp::log($e);
+		}
 		FileHandler::removeDir($this->temp_dir);
 		return new BaseObject();
 	}

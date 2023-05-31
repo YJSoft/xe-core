@@ -88,6 +88,7 @@ class pollModel extends poll
 		}
 
 		Context::set('poll',$poll);
+		$skin = get_valid_filename($skin);
 		Context::set('skin',$skin);
 		// The skin for the default configurations, and the colorset configurations
 		$tpl_path = sprintf("%sskins/%s/", $this->module_path, $skin);
@@ -138,7 +139,7 @@ class pollModel extends poll
 
 		Context::set('poll',$poll);
 		// The skin for the default configurations, and the colorset configurations
-		$tpl_path = sprintf("%sskins/%s/", $this->module_path, $skin);
+		$tpl_path = sprintf("%sskins/%s/", $this->module_path, get_valid_filename($skin));
 
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);

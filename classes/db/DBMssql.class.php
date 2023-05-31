@@ -52,7 +52,7 @@ class DBMssql extends DB
 	 * Create an instance of this class
 	 * @return DBMssql return DBMssql object instance
 	 */
-	function create()
+	public static function create()
 	{
 		return new DBMssql;
 	}
@@ -553,7 +553,7 @@ class DBMssql extends DB
 	function _createTable($xml_doc)
 	{
 		// xml parsing
-		$oXml = new XmlParser();
+		$oXml = new XmlParserXe();
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;
@@ -616,10 +616,10 @@ class DBMssql extends DB
 
 			if(count($primary_list))
 			{
-				$column_schema[] = sprintf("primary key (%s)", '"' . implode($primary_list, '","') . '"');
+				$column_schema[] = sprintf("primary key (%s)", '"' . implode('","', $primary_list) . '"');
 			}
 
-			$schema = sprintf('create table [%s] (%s%s)', $this->addQuotes($table_name), "\n", implode($column_schema, ",\n"));
+			$schema = sprintf('create table [%s] (%s%s)', $this->addQuotes($table_name), "\n", implode(",\n", $column_schema));
 			$output = $this->_query($schema);
 			if(!$output)
 			{
@@ -871,7 +871,7 @@ class DBMssql extends DB
 	 * @param boolean $force
 	 * @return DBParser
 	 */
-	function getParser($force = FALSE)
+	function getDBParser($force = FALSE)
 	{
 		return new DBParser("[", "]", $this->prefix);
 	}

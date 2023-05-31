@@ -53,7 +53,7 @@ class DBMysql extends DB
 	 * Create an instance of this class
 	 * @return DBMysql return DBMysql object instance
 	 */
-	function create()
+	public static function create()
 	{
 		return new DBMysql;
 	}
@@ -477,7 +477,7 @@ class DBMysql extends DB
 	function _createTable($xml_doc)
 	{
 		// xml parsing
-		$oXml = new XmlParser();
+		$oXml = new XmlParserXe();
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;
@@ -530,14 +530,14 @@ class DBMysql extends DB
 
 		if(count($primary_list))
 		{
-			$column_schema[] = sprintf("primary key (%s)", '`' . implode($primary_list, '`,`') . '`');
+			$column_schema[] = sprintf("primary key (%s)", '`' . implode('`,`', $primary_list) . '`');
 		}
 
 		if(count($unique_list))
 		{
 			foreach($unique_list as $key => $val)
 			{
-				$column_schema[] = sprintf("unique %s (%s)", $key, '`' . implode($val, '`,`') . '`');
+				$column_schema[] = sprintf("unique %s (%s)", $key, '`' . implode('`,`', $val) . '`');
 			}
 		}
 
@@ -545,11 +545,11 @@ class DBMysql extends DB
 		{
 			foreach($index_list as $key => $val)
 			{
-				$column_schema[] = sprintf("index %s (%s)", $key, '`' . implode($val, '`,`') . '`');
+				$column_schema[] = sprintf("index %s (%s)", $key, '`' . implode('`,`', $val) . '`');
 			}
 		}
 
-		$schema = sprintf('create table `%s` (%s%s) %s;', $this->addQuotes($table_name), "\n", implode($column_schema, ",\n"), "ENGINE = MYISAM  CHARACTER SET utf8 COLLATE utf8_general_ci");
+		$schema = sprintf('create table `%s` (%s%s) %s;', $this->addQuotes($table_name), "\n", implode(",\n", $column_schema), "ENGINE = MYISAM  CHARACTER SET utf8 COLLATE utf8_general_ci");
 
 		$output = $this->_query($schema);
 		if(!$output)
@@ -694,7 +694,7 @@ class DBMysql extends DB
 	 * @param boolean $force
 	 * @return DBParser
 	 */
-	function &getParser($force = FALSE)
+	function &getDBParser($force = FALSE)
 	{
 		$dbParser = new DBParser('`', '`', $this->prefix);
 		return $dbParser;

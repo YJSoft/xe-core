@@ -91,16 +91,17 @@ class TemplateHandler
 	protected function init($tpl_path, $tpl_filename, $tpl_file = '')
 	{
 		// verify arguments
-		$tpl_path = preg_replace('/[\{\}\(\)\[\]<>\$\'"]/', '', $tpl_path);
-		$tpl_path = trim(preg_replace('@^' . preg_quote(_XE_PATH_, '@') . '|\./@', '', str_replace('\\', '/', $tpl_path)), '/') . '/';
-		if($tpl_path === '/')
+		if(substr($tpl_path, -1) != '/')
 		{
-			$tpl_path = '';
+			$tpl_path .= '/';
 		}
+		$tpl_path = get_valid_pathname($tpl_path);
+		
 		if(!is_dir($tpl_path))
 		{
 			return;
 		}
+		$tpl_filename = get_valid_filename($tpl_filename);
 		if(!file_exists($tpl_path . $tpl_filename) && file_exists($tpl_path . $tpl_filename . '.html'))
 		{
 			$tpl_filename .= '.html';
@@ -419,28 +420,76 @@ class TemplateHandler
 				//load cache file from disk
 				$eval_str = FileHandler::readFile(substr($buff, 7));
 				$eval_str_buffed = "?>" . $eval_str;
-				@eval($eval_str_buffed);
-				$error_info = error_get_last();
-				//parse error
-				if ($error_info['type'] == 4)
+				try
 				{
-				    throw new Exception("Error Parsing Template - {$error_info['message']} in template file {$this->file}");
+					@eval($eval_str_buffed);
+				}
+				catch(Error $e)
+				{
+					$msg = Array("Parsing Template Error");
+					$msg[] = "Name : " . get_class($e);
+					$msg[] = "Source : " . _XE_PATH_ . self::$rootTpl;
+					$msg[] = "Message : <b>" . $e->getMessage() . "</b>" ;
+					$msg[] = "File : " . $e->getFile();
+					$msg[] = "Line : " . $e->getLine();
+					$msg[] = "Template file : " . $buff;
+					throw new Exception(implode("<br> " . PHP_EOL, $msg));
 				}
 			}
 			else
 			{
-				include(substr($buff, 7));
+				try
+				{
+					include(substr($buff, 7));
+				}
+				catch(Error $e)
+				{
+					$msg = Array("Including Template Error");
+					$msg[] = "Name : " . get_class($e);
+					$msg[] = "Source : " . _XE_PATH_ . self::$rootTpl;
+					$msg[] = "Message : <b>" . $e->getMessage() . "</b>" ;
+					$msg[] = "File : " . $e->getFile();
+					$msg[] = "Line : " . $e->getLine();
+					$msg[] = "Template file : " . $buff;
+					throw new Exception(implode("<br> " . PHP_EOL, $msg));
+				}
 			}
 		}
 		else
 		{
 			$eval_str = "?>" . $buff;
-			@eval($eval_str);
-			$error_info = error_get_last();
-			//parse error
-			if ($error_info['type'] == 4)
+			try
 			{
-			    throw new Exception("Error Parsing Template - {$error_info['message']} in template file {$this->file}");
+				@eval($eval_str);
+			}
+			catch(Error $e)
+			{
+				$compile_target = $this->compiled_path . md5(self::$rootTpl . __XE_VERSION__) . ".compiled.php";
+				if (file_exists($compile_target))
+				{
+					if (!defined("_SAVE_COMPILE_TARGET_"))
+					{
+						unlink($compile_target);
+					}
+				}
+				if (preg_match('/\"([^\"]+)\"/', $e->getMessage(), $msg_m))
+				{
+					$buff = str_replace($msg_m[1]
+						, "<font color=red><b>" . $msg_m[1] . "</b></font>"
+						, $buff);
+				}
+				$msg = Array("Parsing Template Buffer Error");
+				$msg[] = "Name : " . get_class($e);
+				$msg[] = "Source : " . _XE_PATH_ . self::$rootTpl;
+				$msg[] = "Target : " . $compile_target;
+				$msg[] = "Message : <b>" . $e->getMessage() . "</b>" ;
+				$msg[] = "File : " . $e->getFile();
+				$msg[] = "Line : " . $e->getLine();
+				$msg[] = "Buffer begin -----------------------------------";
+				$msg[] = "<font color=grey><pre>" . $buff . "</pre></font>";
+				$msg[] = "Buffer end -----------------------------------";
+				
+				throw new Exception(implode("<br> " . PHP_EOL, $msg));
 			}
 		}
 
@@ -542,6 +591,7 @@ class TemplateHandler
 					switch($stmt)
 					{
 						case 'cond':
+							$expr = $this->_correctSyntax($expr);
 							$nodes[$idx - 1] .= "<?php if({$expr}){ ?>";
 							break;
 						case 'loop':
@@ -557,7 +607,7 @@ class TemplateHandler
 								{
 									$expr_m[2] .= '=>' . trim($expr_m[3]);
 								}
-								$nodes[$idx - 1] .= "<?php if({$expr_m[1]}&&count({$expr_m[1]}))foreach({$expr_m[1]} as {$expr_m[2]}){ ?>";
+								$nodes[$idx - 1] .= "<?php if(is_foreachable({$expr_m[1]})) foreach({$expr_m[1]} as {$expr_m[2]}){ ?>";
 							}
 							elseif($expr_m[4])
 							{
@@ -575,7 +625,7 @@ class TemplateHandler
 				// find closing tag
 				$close_php = '<?php ' . str_repeat('}', $closing) . ' ?>';
 				//  self closing tag
-				if($node{1} == '!' || substr($node, -2, 1) == '/' || isset($self_closing[$tag]))
+				if($node[1] == '!' || substr($node, -2, 1) == '/' || isset($self_closing[$tag]))
 				{
 					$nodes[$idx + 1] = $close_php . $nodes[$idx + 1];
 				}
@@ -605,7 +655,11 @@ class TemplateHandler
 
 			if(strpos($node, '|cond="') !== false)
 			{
-				$node = preg_replace('@(\s[-\w:]+(?:="[^"]+?")?)\|cond="(.+?)"@s', '<?php if($2){ ?>$1<?php } ?>', $node);
+				if (preg_match('@(\s[-\w:]+(?:="[^"]+?")?)\|cond="(.+?)"@s', $node, $node_m))
+				{
+					$expr = $this->_correctSyntax($node_m[2]);
+					$node = preg_replace('@(\s[-\w:]+(?:="[^"]+?")?)\|cond="(.+?)"@s', '<?php if(' . $expr . '){ ?>$1<?php } ?>', $node);
+				}
 				$node = $this->_replaceVar($node);
 			}
 
@@ -648,9 +702,10 @@ class TemplateHandler
 				return $m[0];
 			}
 			
-			if($m[1]{0} == '@')
+			if($m[1][0] == '@')
 			{
 				$m[1] = $this->_replaceVar(substr($m[1], 1));
+				$m[1] = $this->_correctSyntax($m[1]);
 				return "<?php {$m[1]} ?>";
 			}
 			else
@@ -946,9 +1001,13 @@ class TemplateHandler
 			{
 				return '';
 			}
+			if ($m[8])
+			{
+				$m[8] = $this->_correctSyntax($m[8]);
+			}
 			if($mm[1])
 			{
-				if($mm[1]{0} == 'e')
+				if($mm[1][0] == 'e')
 				{
 					return '<?php } ?>' . $m[9];
 				}
@@ -961,7 +1020,7 @@ class TemplateHandler
 				elseif($mm[1] == 'foreach')
 				{
 					$var = preg_replace('/^\s*\(\s*(.+?) .*$/', '$1', $m[8]);
-					$precheck = "if({$var}&&count({$var}))";
+					$precheck = "if(is_foreachable({$var}))";
 				}
 				return '<?php ' . $this->_replaceVar($precheck . $m[7] . $m[8]) . '{ ?>' . $m[9];
 			}
@@ -987,7 +1046,8 @@ class TemplateHandler
  	 */
  	private function _applyEscapeOption($str, $escape_option = 'noescape')
  	{
- 		switch($escape_option)
+		$str = $this->_correctSyntax($str);
+		switch($escape_option)
  		{
  			case 'escape':
  				return "escape({$str}, true)";
@@ -1011,7 +1071,7 @@ class TemplateHandler
 		$_path = $path;
 
 		$fileDir = strtr(realpath($this->path), '\\', '/');
-		if($path{0} != '/')
+		if($path[0] != '/')
 		{
 			$path = strtr(realpath($fileDir . '/' . $path), '\\', '/');
 		}
@@ -1088,6 +1148,15 @@ class TemplateHandler
 	public function setAutoescape($val = true)
 	{
 		$this->autoescape = $val;
+	}
+	/**
+	 * Function for modifying syntax for a higher version of PHP 
+	 * than the one used to create the template.
+	*/
+	private function _correctSyntax($expr)
+	{
+		$expr = preg_replace("/(^|[^\w])(in_array|count|array_flip)\s*\(/", "$1tpl_$2(", $expr);
+		return $expr;
 	}
 }
 /* End of File: TemplateHandler.class.php */

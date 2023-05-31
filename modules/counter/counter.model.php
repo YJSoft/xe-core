@@ -147,7 +147,8 @@ class counterModel extends counter
 	{
 		$max = 0;
 		$sum = 0;
-
+		$status = new stdClass();
+		$status->list = Array();
 		switch($type)
 		{
 			case 'year' :

@@ -104,7 +104,7 @@ class adminAdminView extends admin
 		$params["act"] = "getResourceapiLastupdate";
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
-		$xml_lUpdate = new XmlParser();
+		$xml_lUpdate = new XmlParserXe();
 		$lUpdateDoc = $xml_lUpdate->parse($buff);
 		$updateDate = $lUpdateDoc->response->updatedate->body;
 
@@ -209,7 +209,7 @@ class adminAdminView extends admin
 
 		// Retrieve recent news and set them into context,
 		// move from index method, because use in admin footer
-		$newest_news_url = "https://yjsoft.github.io/xe-core/release.xml";
+		$newest_news_url = sprintf("http://news.xpressengine.com/%s/news.php?version=%s&package=%s", _XE_LOCATION_, __XE_VERSION__, _XE_PACKAGE_);
 		$cache_file = sprintf("%sfiles/cache/newest_news.%s.cache.php", _XE_PATH_, _XE_LOCATION_);
 		if(!file_exists($cache_file) || filemtime($cache_file) + 60 * 60 < $_SERVER['REQUEST_TIME'])
 		{
@@ -221,7 +221,7 @@ class adminAdminView extends admin
 
 		if(file_exists($cache_file))
 		{
-			$oXml = new XmlParser();
+			$oXml = new XmlParserXe();
 			$buff = $oXml->parse(FileHandler::readFile($cache_file));
 
 			$item = $buff->zbxe_news->item;
@@ -496,7 +496,7 @@ class adminAdminView extends admin
 
 		$ftp_info = Context::getFTPInfo();
 		Context::set('ftp_info', $ftp_info);
-		Context::set('sftp_support', function_exists(ssh2_sftp));
+		Context::set('sftp_support', function_exists("ssh2_sftp"));
 
 		$this->setTemplateFile('config_ftp');
 

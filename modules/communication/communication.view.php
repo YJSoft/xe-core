@@ -256,7 +256,7 @@ class communicationView extends communication
 
 		// get a group list
 		$tmp_group_list = $oCommunicationModel->getFriendGroups();
-		$group_count = count($tmp_group_list);
+		$group_count = count_only_array($tmp_group_list);
 
 		for($i = 0; $i < $group_count; $i++)
 		{

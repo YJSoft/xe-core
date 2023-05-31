@@ -3,7 +3,7 @@
 
 class IpFilter
 {
-	public function filter($ip_list, $ip = NULL)
+	public static function filter($ip_list, $ip = NULL)
 	{
 		if(!$ip) $ip = $_SERVER['REMOTE_ADDR'];
 		$long_ip = ip2long($ip);
@@ -52,7 +52,7 @@ class IpFilter
 	} */
 	
 	
-	public function validate($ip_list = array())
+	public static function validate($ip_list = array())
 	{
 		/* 사용가능한 표현
 			192.168.2.10 - 4자리의 정확한 ip주소

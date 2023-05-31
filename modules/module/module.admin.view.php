@@ -234,7 +234,7 @@ class moduleAdminView extends module
 		// Grant virtual permissions for access and manager
 		$grant_list->access->title = Context::getLang('grant_access');
 		$grant_list->access->default = 'guest';
-		if(count($source_grant_list))
+		if(is_foreachable($source_grant_list))
 		{
 			foreach($source_grant_list as $key => $val)
 			{

@@ -304,7 +304,7 @@ class documentModel extends document
 		if(!$output->toBool()||!count($output->data)) return $output;
 		$idx = 0;
 		$data = $output->data;
-		unset($output->data);
+		$output->data = Array();
 
 		if(!isset($virtual_number))
 		{
@@ -366,7 +366,8 @@ class documentModel extends document
 		$args->category_srl= $obj->category_srl;
 		$output = executeQueryArray('document.getNoticeList', $args, $columnList);
 		if(!$output->toBool()||!$output->data) return;
-
+		$result = new stdClass();
+		$result->data = Array();
 		foreach($output->data as $key => $val)
 		{
 			$document_srl = $val->document_srl;
@@ -775,7 +776,7 @@ class documentModel extends document
 	 */
 	function _arrangeCategory(&$document_category, $list, $depth)
 	{
-		if(!count($list)) return;
+		if(!$list) return;
 		$idx = 0;
 		$list_order = array();
 		foreach($list as $key => $val)
