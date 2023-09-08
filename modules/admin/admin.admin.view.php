@@ -339,7 +339,7 @@ class adminAdminView extends admin
 		{
 			foreach($needUpdateList AS $key => $value)
 			{
-				$helpUrl = './admin/help/index.html#';
+				$helpUrl = 'https://yjsoft.github.io/xe-core/help/index.html#';
 				switch($value->type)
 				{
 					case 'addon':
