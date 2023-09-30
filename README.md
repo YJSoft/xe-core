@@ -1,7 +1,6 @@
 XpressEngine
 ============
 
-[![Build Status](https://travis-ci.org/xpressengine/xe-core.svg?branch=master)](https://travis-ci.org/xpressengine/xe-core)
 [![License](http://img.shields.io/badge/license-GNU%20LGPL-brightgreen.svg)](http://www.gnu.org/licenses/gpl.html)
 [![Latest release](http://img.shields.io/github/release/YJSoft/xe-core.svg)](https://github.com/YJSoft/xe-core/releases)
 
