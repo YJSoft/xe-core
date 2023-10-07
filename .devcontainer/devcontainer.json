@@ -1,0 +1,14 @@
+{
+	"name": "XE Core with Apache(Unofficial patch applied)",
+	"image": "mcr.microsoft.com/devcontainers/base:focal",
+	"features": {
+		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+			"packages": "curl, apache2, mariadb-client, mariadb-server, php7.4, php7.4-curl, php7.4-gd, php7.4-mbstring, php7.4-json, php7.4-mysql, php7.4-xml, php7.4-opcache, php7.4-apcu, php7.4-intl, php7.4-zip",
+			"upgradePackages": false
+		}
+	},
+	"forwardPorts": [80],
+	"postCreateCommand": "bash $PWD/.devcontainer/init-xe.sh && bash $PWD/.devcontainer/init-web.sh",
+	"postStartCommand": "bash $PWD/.devcontainer/start.sh",
+	"waitFor": "postStartCommand"
+}
