@@ -396,6 +396,12 @@ class documentController extends document
 			unset($obj->user_id);
 		}
 
+		if($obj->member_srl < 0)
+		{
+			$obj->email_address = $obj->homepage = $obj->user_id = '';
+			$obj->user_name = $obj->nick_name = 'anonymous';
+		}
+
 		// Call a trigger (before)
 		$output = ModuleHandler::triggerCall('document.updateDocument', 'before', $obj);
 		if(!$output->toBool()) return $output;
@@ -476,7 +482,7 @@ class documentController extends document
 			$obj->password = getModel('member')->hashPassword($obj->password);
 		}
 
-		// If an author is identical to the modifier or history is used, use the logged-in user's information.
+		// If an author is identical to the modifier, use the logged-in user's information.
 		if(Context::get('is_logged') && !$manual_updated)
 		{
 			if($source_obj->get('member_srl')==$logged_info->member_srl)
@@ -490,7 +496,7 @@ class documentController extends document
 		}
 
 		// For the document written by logged-in user however no nick_name exists
-		if($source_obj->get('member_srl')&& !$obj->nick_name)
+		if($source_obj->get('member_srl')&&!$obj->nick_name)
 		{
 			$obj->member_srl = $source_obj->get('member_srl');
 			$obj->user_name = $source_obj->get('user_name');
@@ -2438,7 +2444,8 @@ class documentController extends document
 
 		$oDocumentModel = getModel('document');
 		$oDocumentController = getController('document');
-		// Check if already exist geulinji
+
+		// Check if already exists
 		$oDocument = $oDocumentModel->getDocument($obj->document_srl, $this->grant->manager);
 
 		// Update if already exists
