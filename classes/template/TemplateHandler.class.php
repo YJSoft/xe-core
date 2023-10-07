@@ -575,7 +575,7 @@ class TemplateHandler
 				// find closing tag
 				$close_php = '<?php ' . str_repeat('}', $closing) . ' ?>';
 				//  self closing tag
-				if($node{1} == '!' || substr($node, -2, 1) == '/' || isset($self_closing[$tag]))
+				if($node[1] == '!' || substr($node, -2, 1) == '/' || isset($self_closing[$tag]))
 				{
 					$nodes[$idx + 1] = $close_php . $nodes[$idx + 1];
 				}
@@ -1011,7 +1011,7 @@ class TemplateHandler
 		$_path = $path;
 
 		$fileDir = strtr(realpath($this->path), '\\', '/');
-		if($path{0} != '/')
+		if($path[0] != '/')
 		{
 			$path = strtr(realpath($fileDir . '/' . $path), '\\', '/');
 		}

@@ -2158,7 +2158,7 @@ class Context
 	 */
 	function normalizeFilePath($file)
 	{
-		if($file{0} != '/' && $file{0} != '.' && strpos($file, '://') === FALSE)
+		if($file[0] != '/' && $file[0] != '.' && strpos($file, '://') === FALSE)
 		{
 			$file = './' . $file;
 		}

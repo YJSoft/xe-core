@@ -61,7 +61,7 @@ class FileHandler
 		$oDir = dir($source_dir);
 		while($file = $oDir->read())
 		{
-			if($file{0} == '.')
+			if($file[0] == '.')
 			{
 				continue;
 			}
@@ -245,7 +245,7 @@ class FileHandler
 		$files = scandir($path);
 		foreach($files as $file)
 		{
-			if($file{0} == '.' || ($filter && !preg_match($filter, $file)))
+			if($file[0] == '.' || ($filter && !preg_match($filter, $file)))
 			{
 				continue;
 			}

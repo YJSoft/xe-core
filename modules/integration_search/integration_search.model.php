@@ -36,7 +36,7 @@ class integration_searchModel extends module
 		if($target == 'exclude')
 		{
 			$module_srls_list .= ',0'; // exclude 'trash'
-			if ($module_srls_list{0} == ',') $module_srls_list = substr($module_srls_list, 1);
+			if ($module_srls_list[0] == ',') $module_srls_list = substr($module_srls_list, 1);
 			$args->exclude_module_srl = $module_srls_list;
 		}
 		else
