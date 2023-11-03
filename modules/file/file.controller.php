@@ -31,17 +31,21 @@ class fileController extends file
 		// An error appears if not a normally uploaded file
 		if(!is_uploaded_file($file_info['tmp_name'])) exit();
 
-		// Exit a session if there is neither upload permission nor information
-		if(!$_SESSION['upload_info'][$editor_sequence]->enabled)
+		// Validate editor_sequence and module_srl
+		if(empty($_SESSION['upload_info'][$editor_sequence]->enabled))
 		{
-			return $this->stop('msg_invalid_request');
+			return $this->stop('msg_not_permitted');
+		}
+		if ($_SESSION['upload_info'][$editor_sequence]->module_srl && $_SESSION['upload_info'][$editor_sequence]->module_srl !== $module_srl)
+		{
+			return $this->stop('msg_not_permitted');
 		}
 
 		// Basic variables setting
 		$oFileModel = getModel('file');
 		$editor_sequence = Context::get('editor_sequence');
 
-		// check upload_target_srl
+		// Validate upload_target_srl
 		$upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
 		$submitted_upload_target_srl = intval(Context::get('uploadTargetSrl')) ?: intval(Context::get('upload_target_srl'));
 		if ($submitted_upload_target_srl && $submitted_upload_target_srl !== intval($upload_target_srl))
@@ -85,14 +89,18 @@ class fileController extends file
 	function procFileIframeUpload()
 	{
 		// Basic variables setting
-		$editor_sequence = Context::get('editor_sequence');
 		$callback = Context::get('callback');
-		$module_srl = $this->module_srl;
 
-		// Exit a session if there is neither upload permission nor information
-		if(!$_SESSION['upload_info'][$editor_sequence]->enabled)
+		// Validate editor_sequence and module_srl
+		$editor_sequence = Context::get('editor_sequence');
+		$module_srl = $this->module_srl;
+		if (empty($_SESSION['upload_info'][$editor_sequence]->enabled))
 		{
-			return $this->stop('msg_invalid_request');
+			return $this->stop('msg_not_permitted');
+		}
+		if ($_SESSION['upload_info'][$editor_sequence]->module_srl && $_SESSION['upload_info'][$editor_sequence]->module_srl !== $module_srl)
+		{
+			return $this->stop('msg_not_permitted');
 		}
 
 		// Get upload_target_srl
@@ -440,6 +448,7 @@ class fileController extends file
 		{
 			return $this->stop('msg_not_founded');
 		}
+		$module_srl = isset($_SESSION['upload_info'][$editor_sequence]->module_srl) ? $_SESSION['upload_info'][$editor_sequence]->module_srl : 0;
 
 		$logged_info = Context::get('logged_info');
 		$oFileModel = getModel('file');
@@ -459,6 +468,7 @@ class fileController extends file
 
 			$file_info = $output->data;
 			if(!$file_info || $file_info->upload_target_srl != $upload_target_srl) continue;
+			if($module_srl && !$file_info->module_srl != $module_srl) continue;
 
 			$file_grant = $oFileModel->getFileGrant($file_info, $logged_info);
 
@@ -634,16 +644,21 @@ class fileController extends file
 	 *
 	 * @param int $editor_sequence
 	 * @param int $upload_target_srl
+	 * @param int $module_srl
 	 * @return void
 	 */
-	function setUploadInfo($editor_sequence, $upload_target_srl=0)
+	function setUploadInfo($editor_sequence, $upload_target_srl = 0, $module_srl = 0)
 	{
 		if(!isset($_SESSION['upload_info'][$editor_sequence]))
 		{
 			$_SESSION['upload_info'][$editor_sequence] = new stdClass();
 		}
 		$_SESSION['upload_info'][$editor_sequence]->enabled = true;
-		$_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl;
+		$_SESSION['upload_info'][$editor_sequence]->upload_target_srl = (int)$upload_target_srl;
+		if (!$module_srl)
+		{
+			trigger_error('FileController::setUploadInfo() called without module_srl', E_USER_WARNING);
+		}
 	}
 
 	/**
@@ -1033,7 +1048,7 @@ class fileController extends file
 		}
 		if (!$_SESSION['upload_info'][$editor_sequence]->enabled)
 		{
-			return new BaseObject(-1, 'msg_not_permitted_act');
+			return new BaseObject(-1, 'msg_not_permitted');
 		}
 		$upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
 		if (!$upload_target_srl)

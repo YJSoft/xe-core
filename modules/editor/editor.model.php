@@ -286,7 +286,7 @@ class editorModel extends editor
 			Context::set('upload_status', $upload_status);
 			// Upload enabled (internally caching)
 			$oFileController = getController('file');
-			$oFileController->setUploadInfo($editor_sequence, $upload_target_srl);
+			$oFileController->setUploadInfo($editor_sequence, $upload_target_srl, isset($option->module_srl) ? $option->module_srl : 0);
 			// Check if the file already exists
 			if($upload_target_srl) $files_count = $oFileModel->getFilesCount($upload_target_srl);
 		}
@@ -365,6 +365,7 @@ class editorModel extends editor
 
 		$config = new stdClass();
 		$config->module_type = $type;
+		$option->module_srl = (int)$module_srl;
 
 		// Configurations listed according to a type
 		if($type == 'document')
