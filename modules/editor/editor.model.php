@@ -287,8 +287,22 @@ class editorModel extends editor
 			// Upload enabled (internally caching)
 			$oFileController = getController('file');
 			$oFileController->setUploadInfo($editor_sequence, $upload_target_srl, isset($option->module_srl) ? $option->module_srl : 0);
+
+			// Set editor mid
+			if (!empty($option->module_srl))
+			{
+				$option->mid = ModuleModel::getModuleInfoByModuleSrl($option->module_srl)->mid ?? null;
+			}
+			if (!empty($option->mid))
+			{
+				Context::addHtmlFooter('<script> var editor_mid = ' . json_encode($option->mid) . '; </script>');
+			}
+
 			// Check if the file already exists
-			if($upload_target_srl) $files_count = $oFileModel->getFilesCount($upload_target_srl);
+			if ($upload_target_srl)
+			{
+				$files_count = FileModel::getFilesCount($upload_target_srl);
+			}
 		}
 		Context::set('files_count', (int)$files_count);
 

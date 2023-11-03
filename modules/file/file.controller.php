@@ -34,11 +34,11 @@ class fileController extends file
 		// Validate editor_sequence and module_srl
 		if(empty($_SESSION['upload_info'][$editor_sequence]->enabled))
 		{
-			return $this->stop('msg_not_permitted');
+			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'editor_sequence'));
 		}
-		if ($_SESSION['upload_info'][$editor_sequence]->module_srl && $_SESSION['upload_info'][$editor_sequence]->module_srl !== $module_srl)
+		if ($_SESSION['upload_info'][$editor_sequence]->module_srl !== $module_srl)
 		{
-			return $this->stop('msg_not_permitted');
+			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'module_srl'));
 		}
 
 		// Basic variables setting
@@ -50,7 +50,7 @@ class fileController extends file
 		$submitted_upload_target_srl = intval(Context::get('uploadTargetSrl')) ?: intval(Context::get('upload_target_srl'));
 		if ($submitted_upload_target_srl && $submitted_upload_target_srl !== intval($upload_target_srl))
 		{
-			return $this->stop('msg_not_founded');
+			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'upload_target_srl'));
 		}
 
 		$module_srl = $this->module_srl;
@@ -96,11 +96,11 @@ class fileController extends file
 		$module_srl = $this->module_srl;
 		if (empty($_SESSION['upload_info'][$editor_sequence]->enabled))
 		{
-			return $this->stop('msg_not_permitted');
+			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'editor_sequence'));
 		}
 		if ($_SESSION['upload_info'][$editor_sequence]->module_srl && $_SESSION['upload_info'][$editor_sequence]->module_srl !== $module_srl)
 		{
-			return $this->stop('msg_not_permitted');
+			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'module_srl'));
 		}
 
 		// Get upload_target_srl
@@ -108,7 +108,7 @@ class fileController extends file
 		$submitted_upload_target_srl = intval(Context::get('uploadTargetSrl')) ?: intval(Context::get('upload_target_srl'));
 		if ($submitted_upload_target_srl && $submitted_upload_target_srl !== intval($upload_target_srl))
 		{
-			return $this->stop('msg_not_founded');
+			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'upload_target_srl'));
 		}
 		
 		// Create if upload_target_srl is not defined in the session information
@@ -468,7 +468,7 @@ class fileController extends file
 
 			$file_info = $output->data;
 			if(!$file_info || $file_info->upload_target_srl != $upload_target_srl) continue;
-			if($module_srl && !$file_info->module_srl != $module_srl) continue;
+			if($module_srl && $file_info->module_srl != $module_srl) continue;
 
 			$file_grant = $oFileModel->getFileGrant($file_info, $logged_info);
 
@@ -649,6 +649,15 @@ class fileController extends file
 	 */
 	function setUploadInfo($editor_sequence, $upload_target_srl = 0, $module_srl = 0)
 	{
+		if(!$module_srl)
+		{
+			$current_module_info = Context::get('current_module_info');
+			if (!empty($current_module_info->module_srl))
+			{
+				$module_srl = $current_module_info->module_srl;
+			}
+		}
+
 		if(!isset($_SESSION['upload_info'][$editor_sequence]))
 		{
 			$_SESSION['upload_info'][$editor_sequence] = new stdClass();
@@ -657,7 +666,7 @@ class fileController extends file
 		$_SESSION['upload_info'][$editor_sequence]->upload_target_srl = (int)$upload_target_srl;
 		if (!$module_srl)
 		{
-			trigger_error('FileController::setUploadInfo() called without module_srl', E_USER_WARNING);
+			trigger_error('No module_srl supplied to setUploadInfo(), and cannot determine automatically', E_USER_WARNING);
 		}
 	}
 
