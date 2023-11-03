@@ -31,16 +31,26 @@ class fileController extends file
 		// An error appears if not a normally uploaded file
 		if(!is_uploaded_file($file_info['tmp_name'])) exit();
 
+		// Exit a session if there is neither upload permission nor information
+		if(!$_SESSION['upload_info'][$editor_sequence]->enabled)
+		{
+			return $this->stop('msg_invalid_request');
+		}
+
 		// Basic variables setting
 		$oFileModel = getModel('file');
 		$editor_sequence = Context::get('editor_sequence');
-		$upload_target_srl = intval(Context::get('uploadTargetSrl'));
-		if(!$upload_target_srl) $upload_target_srl = intval(Context::get('upload_target_srl'));
+
+		// check upload_target_srl
+		$upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
+		$submitted_upload_target_srl = intval(Context::get('uploadTargetSrl')) ?: intval(Context::get('upload_target_srl'));
+		if ($submitted_upload_target_srl && $submitted_upload_target_srl !== intval($upload_target_srl))
+		{
+			return $this->stop('msg_not_founded');
+		}
+
 		$module_srl = $this->module_srl;
-		// Exit a session if there is neither upload permission nor information
-		if(!$_SESSION['upload_info'][$editor_sequence]->enabled) exit();
-		// Extract from session information if upload_target_srl is not specified
-		if(!$upload_target_srl) $upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
+		
 		// Create if upload_target_srl is not defined in the session information
 		if(!$upload_target_srl) $_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl = getNextSequence();
 
@@ -78,13 +88,21 @@ class fileController extends file
 		$editor_sequence = Context::get('editor_sequence');
 		$callback = Context::get('callback');
 		$module_srl = $this->module_srl;
-		$upload_target_srl = intval(Context::get('uploadTargetSrl'));
-		if(!$upload_target_srl) $upload_target_srl = intval(Context::get('upload_target_srl'));
 
 		// Exit a session if there is neither upload permission nor information
-		if(!$_SESSION['upload_info'][$editor_sequence]->enabled) exit();
-		// Extract from session information if upload_target_srl is not specified
-		if(!$upload_target_srl) $upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
+		if(!$_SESSION['upload_info'][$editor_sequence]->enabled)
+		{
+			return $this->stop('msg_invalid_request');
+		}
+
+		// Get upload_target_srl
+		$upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
+		$submitted_upload_target_srl = intval(Context::get('uploadTargetSrl')) ?: intval(Context::get('upload_target_srl'));
+		if ($submitted_upload_target_srl && $submitted_upload_target_srl !== intval($upload_target_srl))
+		{
+			return $this->stop('msg_not_founded');
+		}
+		
 		// Create if upload_target_srl is not defined in the session information
 		if(!$upload_target_srl) $_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl = getNextSequence();
 
@@ -96,7 +114,7 @@ class fileController extends file
 			$logged_info = Context::get('logged_info');
 			$file_info = $oFileModel->getFile($file_srl);
 			$file_grant = $oFileModel->getFileGrant($file_info, $logged_info);
-			if($file_info->file_srl == $file_srl && $file_grant->is_deletable)
+			if($file_info->file_srl == $file_srl && $file_info->upload_target_srl == $upload_target_srl && FileModel::isDeletable($file_info))
 			{
 				$this->deleteFile($file_srl);
 			}
@@ -410,10 +428,18 @@ class fileController extends file
 		$file_srl = Context::get('file_srl');
 		$file_srls = Context::get('file_srls');
 		if($file_srls) $file_srl = $file_srls;
+
 		// Exit a session if there is neither upload permission nor information
-		if(!$_SESSION['upload_info'][$editor_sequence]->enabled) exit();
+		if(!$_SESSION['upload_info'][$editor_sequence]->enabled)
+		{
+			return $this->stop('msg_invalid_request');
+		}
 
 		$upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
+		if (!$upload_target_srl)
+		{
+			return $this->stop('msg_not_founded');
+		}
 
 		$logged_info = Context::get('logged_info');
 		$oFileModel = getModel('file');
@@ -432,13 +458,13 @@ class fileController extends file
 			if(!$output->toBool()) continue;
 
 			$file_info = $output->data;
-			if(!$file_info) continue;
+			if(!$file_info || $file_info->upload_target_srl != $upload_target_srl) continue;
 
 			$file_grant = $oFileModel->getFileGrant($file_info, $logged_info);
 
 			if(!$file_grant->is_deletable) continue;
 
-			if($upload_target_srl && $file_srl) $output = $this->deleteFile($file_srl);
+			$output = $this->deleteFile($file_srl);
 		}
 	}
 
@@ -1000,16 +1026,33 @@ class fileController extends file
 		$vars = Context::getRequestVars();
 		$logged_info = Context::get('logged_info');
 
-		if(!$vars->editor_sequence) return new BaseObject(-1, 'msg_invalid_request');
-
-		$upload_target_srl = $_SESSION['upload_info'][$vars->editor_sequence]->upload_target_srl;
+		$editor_sequence = isset($vars->editor_sequence) ? $vars->editor_sequence : 0;
+		if (!$vars->editor_sequence)
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+		if (!$_SESSION['upload_info'][$editor_sequence]->enabled)
+		{
+			return new BaseObject(-1, 'msg_not_permitted_act');
+		}
+		$upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
+		if (!$upload_target_srl)
+		{
+			return new BaseObject(-1, 'msg_not_founded');
+		}
 
 		$oFileModel = getModel('file');
 		$file_info = $oFileModel->getFile($vars->file_srl);
 
-		if(!$file_info) return new BaseObject(-1, 'msg_not_founded');
+		if (!$file_info || $file_info->upload_target_srl != $upload_target_srl)
+		{
+			return new BaseObject(-1, 'msg_not_founded');
+		}
 
-		if(!$this->manager && !$file_info->member_srl === $logged_info->member_srl) return new BaseObject(-1, 'msg_not_permitted');
+		if(!$this->manager && $file_info->member_srl != $this->user->member_srl)
+		{
+			return new BaseObject(-1, 'msg_not_permitted');
+		}
 
 		$args =  new stdClass();
 		$args->file_srl = $vars->file_srl;
