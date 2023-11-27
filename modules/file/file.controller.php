@@ -25,6 +25,10 @@ class fileController extends file
 	 */
 	function procFileUpload()
 	{
+		// Basic variables setting
+		$oFileModel = getModel('file');
+		$editor_sequence = Context::get('editor_sequence');
+
 		Context::setRequestMethod('JSON');
 		$file_info = Context::get('Filedata');
 
@@ -40,10 +44,6 @@ class fileController extends file
 		{
 			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'module_srl'));
 		}
-
-		// Basic variables setting
-		$oFileModel = getModel('file');
-		$editor_sequence = Context::get('editor_sequence');
 
 		// Validate upload_target_srl
 		$upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
