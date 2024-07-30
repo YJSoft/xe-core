@@ -666,7 +666,6 @@ class layoutAdminController extends layout
 		header("Pragma: ");
 		header("Content-Type: application/x-compressed");
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-		//            header("Content-Length: " .strlen($stream)); ?? why??
 		header('Content-Disposition: attachment; filename="'. $filename .'"');
 		header("Content-Transfer-Encoding: binary\n");
 		echo $stream;

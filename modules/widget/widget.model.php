@@ -323,7 +323,7 @@ class widgetModel extends widget
 		if(!is_array($extra_var_groups)) $extra_var_groups = array($extra_var_groups);
 
 		$extra_var_count = 0;
-		$buff[] = '$widgetStyle_info->extra_var = $widgetStyle_info->extra_var ?? new stdClass();';
+		$buff[] = '$widgetStyle_info->extra_var = isset($widgetStyle_info->extra_var) ? $widgetStyle_info->extra_var : new stdClass();';
 		foreach($extra_var_groups as $group)
 		{
 			$extra_vars = (!is_array($group->var)) ? array($group->var) : $group->var;

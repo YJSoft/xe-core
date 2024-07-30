@@ -291,7 +291,7 @@ class editorModel extends editor
 			// Set editor mid
 			if (!empty($option->module_srl))
 			{
-				$option->mid = ModuleModel::getModuleInfoByModuleSrl($option->module_srl)->mid ?? null;
+				$option->mid = isset(ModuleModel::getModuleInfoByModuleSrl($option->module_srl)->mid) ? ModuleModel::getModuleInfoByModuleSrl($option->module_srl)->mid : null;
 			}
 			if (!empty($option->mid))
 			{
