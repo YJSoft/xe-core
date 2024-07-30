@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<zbxe_news released_version="1.11.15" download_link="https://github.com/YJSoft/xe-core/releases">
+<zbxe_news released_version="1.11.16" download_link="https://github.com/YJSoft/xe-core/releases">
+    <item url="https://github.com/YJSoft/xe-core/releases/tag/1.11.16" date="20240731013730">XE Core ver. 1.11.16</item>
     <item url="https://github.com/YJSoft/xe-core/releases/tag/1.11.15" date="20231007122505">XE Core ver. 1.11.15</item>
     <item url="https://github.com/YJSoft/xe-core/releases/tag/1.11.14" date="20230930171300">XE Core ver. 1.11.14</item>
     <item url="https://github.com/YJSoft/xe-core/releases/tag/1.11.13" date="20230914094400">XE Core ver. 1.11.13</item>
