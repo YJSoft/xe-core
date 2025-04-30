@@ -1,11 +1,14 @@
-XpressEngine
+### 적극적 유지보수 중단 안내.
+본 저장소는 더이상 적극적인 보안 패치가 이루어지지 않을 예정입니다. 취약점이 있거나 발생할 수 있으나 패치되지 않은 취약점은 이슈로 올려두겠습니다. 이 부분을 수정하여 기여하는 것은 받으나 그 이외 적극적으로 보안 취약점 패치를 진행할 예정은 없습니다.
+
+YJSoft XE Fork
 ============
 
 [![License](http://img.shields.io/badge/license-GNU%20LGPL-brightgreen.svg)](http://www.gnu.org/licenses/gpl.html)
 [![Latest release](http://img.shields.io/github/release/YJSoft/xe-core.svg)](https://github.com/YJSoft/xe-core/releases)
 
-XpressEngine(XE)은 누구나 쉽고 편하고 자유롭게 콘텐츠를 발행을 할 수 있도록 하기 위한 CMS(Content Management System)입니다.
-오픈소스 라이선스로 누구나 사용 또는 개작할 수 있으며, 개방형 프로젝트로서 누구나 개발에 참여할 수 있습니다.
+YJSoft XE Fork는 누구나 쉽고 편하고 자유롭게 콘텐츠를 발행을 할 수 있도록 하기 위한 CMS(Content Management System)인 XpressEngine의 비공식 보안 패치 버전입니다.
+오픈소스 라이선스로 누구나 사용 또는 개작할 수 있습니다.
 
 본 저장소는 사실상 유지보수가 전면 중단된 [XEHub측 저장소](https://github.com/xpressengine/xe-core)를 포크하여 운영하고 있었으나, 검색의 편의성 등 여러 이유로 원본 저장소에서 분리하여 운영하고 있습니다.
 
@@ -17,11 +20,8 @@ XE 코어는 모듈, 애드온, 에디터 컴포넌트, 위젯, 레이아웃의 
 
 레이아웃, 모듈 스킨 그리고 위젯의 스타일과 스킨을 활용하면 여러분만의 개성을 가진 웹 사이트를 만들 수 있습니다. XE와 함께 더 다채롭고 개성있는 웹사이트를 만들어보세요!
 
-### 오픈 소스 소프트웨어! 열린 프로젝트! (코드 공헌 가이드)
-많은 분들께서 개발, 디자인, 마크업 등의 전문 분야는 물론 다국어 번역, 문제점 보고 등 기능 개선 및 문제 해결을 위해 많은 노력을 해주시고 계십니다.
-
-참여를 원하시는 분들은 버그 신고/제안 혹은 Pull Request 전에 [CONTRIBUTING.md](./CONTRIBUTING.md) 문서를 먼저 읽어주시기 바랍니다.
-XpressEngine은 여러분들의 개발 참여를 기다립니다.
+### 코드 공헌 가이드
+보안 패치나 PHP 상위 버전에서 발생하는 오동작을 수정하는 것 이외 코드 공헌은 받지 않습니다.
 
 ## Server Requirements
 * PHP version 5.3.0 or greater (But recommend PHP >= 5.5.0)
@@ -33,10 +33,7 @@ XpressEngine은 여러분들의 개발 참여를 기다립니다.
 * session.auto_start = Off (php.ini)
 
 ## Contributors
-https://www.xpressengine.com/contributors
-
-## Support
-* Official site (Korean) : https://www.xpressengine.com
+https://github.com/YJSoft/xe-core/graphs/contributors
 
 ## License
 XpressEngine의 이름 및 로고는 (주)엑스이허브 소유입니다. [브랜드 가이드라인](https://xe1.xpressengine.com/brand)에 따라 XpressEngine의 이름 및 로고를 사용하고 있습니다.
