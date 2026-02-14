@@ -64,7 +64,7 @@
 		    </li>
 		    </ul>
 			<script>
-				var sTitle = '{str_ireplace(array('<script', '</script'), array("<scr'+'ipt", "</scr'+'ipt"), addslashes($oDocument->getTitleText()))}';
+				var sTitle = {json_encode($oDocument->getTitleText())};
 				jQuery(function($){
 					$('.twitter').snspost({
 						type : 'twitter',
