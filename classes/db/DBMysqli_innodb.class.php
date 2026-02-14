@@ -30,7 +30,7 @@ class DBMysqli_innodb extends DBMysql
 	 * Create an instance of this class
 	 * @return DBMysqli_innodb return DBMysqli_innodb object instance
 	 */
-	function create()
+	static function create()
 	{
 		return new DBMysqli_innodb;
 	}

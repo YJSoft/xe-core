@@ -274,7 +274,7 @@ class EmbedFilter
 	 * This method for singleton
 	 * @return EmbedFilter
 	 */
-	function getInstance()
+	static function getInstance()
 	{
 		if(!isset($GLOBALS['__EMBEDFILTER_INSTANCE__']))
 		{

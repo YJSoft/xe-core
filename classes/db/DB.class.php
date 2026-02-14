@@ -139,7 +139,7 @@ class DB
 	 * @param string $db_type type of db
 	 * @return DB return DB object instance
 	 */
-	function getInstance($db_type = NULL)
+	static function getInstance($db_type = NULL)
 	{
 		if(!$db_type)
 		{
@@ -176,9 +176,9 @@ class DB
 	 * returns instance of db
 	 * @return DB return DB object instance
 	 */
-	function create()
+	static function create()
 	{
-		return new DB;
+		return new static;
 	}
 
 	/**
@@ -197,7 +197,7 @@ class DB
 	 * check by instance can creatable
 	 * @return array return supported DBMS list
 	 */
-	function getSupportedList()
+	static function getSupportedList()
 	{
 		$oDB = new DB();
 		return $oDB->_getSupportedList();
@@ -1342,7 +1342,7 @@ class DB
 	 * @param boolean $force force load DBParser instance
 	 * @return DBParser
 	 */
-	function getParser($force = FALSE)
+	static function getParser($force = FALSE)
 	{
 		static $dbParser = NULL;
 		if(!$dbParser || $force)

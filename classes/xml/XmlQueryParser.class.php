@@ -34,7 +34,7 @@ class XmlQueryParser extends XmlParser
 	 *
 	 * @return XmlQueryParser object
 	 */
-	function &getInstance()
+	static function &getInstance()
 	{
 		static $theInstance = NULL;
 		if(!isset($theInstance))

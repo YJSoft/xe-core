@@ -53,7 +53,7 @@ class DBMysql extends DB
 	 * Create an instance of this class
 	 * @return DBMysql return DBMysql object instance
 	 */
-	function create()
+	static function create()
 	{
 		return new DBMysql;
 	}

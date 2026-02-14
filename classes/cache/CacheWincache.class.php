@@ -18,7 +18,7 @@ class CacheWincache extends CacheBase
 	 * @param void $opt Not used
 	 * @return CacheWincache instance of CacheWincache
 	 */
-	function getInstance($opt = null)
+	static function getInstance($opt = null)
 	{
 		if(!$GLOBALS['__CacheWincache__'])
 		{

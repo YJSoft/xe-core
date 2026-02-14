@@ -20,7 +20,7 @@ class Purifier
 		$this->_setConfig();
 	}
 
-	public function getInstance()
+	public static function getInstance()
 	{
 		if(!isset($GLOBALS['__PURIFIER_INSTANCE__']))
 		{

@@ -16,7 +16,7 @@ class CacheApc extends CacheBase
 	 * @param void $opt Not used
 	 * @return CacheApc instance of CacheApc
 	 */
-	function getInstance($opt = null)
+	static function getInstance($opt = null)
 	{
 		if(!$GLOBALS['__CacheApc__'])
 		{
