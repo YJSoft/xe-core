@@ -747,7 +747,7 @@ class moduleModel extends module
 		$xml_file = sprintf("%s/conf/info.xml", $module_path);
 		if(!file_exists($xml_file)) return;
 
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		$tmp_xml_obj = $oXmlParser->loadXmlFile($xml_file);
 		$xml_obj = $tmp_xml_obj->module;
 
@@ -838,7 +838,7 @@ class moduleModel extends module
 			$buff['simple_setup_index_act'] = '$info->simple_setup_index_act=\'%s\';';
 			$buff['admin_index_act'] = '$info->admin_index_act = \'%s\';';
 
-			$xml_obj = XmlParser::loadXmlFile($xml_file); // /< Read xml file and convert it to xml object
+			$xml_obj = XeXmlParser::loadXmlFile($xml_file); // /< Read xml file and convert it to xml object
 
 			if(!count($xml_obj->module)) return; // /< Error occurs if module tag doesn't included in the xml
 
@@ -1147,8 +1147,8 @@ class moduleModel extends module
 			return;
 		}
 		
-		// Create XmlParser object
-		$oXmlParser = new XmlParser();
+		// Create XeXmlParser object
+		$oXmlParser = new XeXmlParser();
 		$_xml_obj = $oXmlParser->loadXmlFile($skin_xml_file);
 		// Return if no skin information is
 		if(!$_xml_obj->skin) return;

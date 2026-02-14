@@ -278,7 +278,7 @@ class widgetController extends widget
 	{
 		$buff = trim($matches[0]);
 
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		$xml_doc = $oXmlParser->parse(trim($buff));
 
 		if($xml_doc->img) $vars = $xml_doc->img->attrs;
@@ -297,7 +297,7 @@ class widgetController extends widget
 	function transWidgetBox($matches)
 	{
 		$buff = preg_replace('/<div><div>(.*)$/i','</div>',$matches[0]);
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		$xml_doc = $oXmlParser->parse($buff);
 
 		$vars = $xml_doc->div->attrs;
@@ -320,7 +320,7 @@ class widgetController extends widget
 		// Bringing widget cache sequence
 		preg_match_all('!<img([^\>]*)widget=([^\>]*?)\>!is', $content, $matches);
 
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 
 		$cnt = count($matches[1]);
 		for($i=0;$i<$cnt;$i++)

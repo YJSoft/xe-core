@@ -648,7 +648,7 @@ class TemplateHandler
 				return $m[0];
 			}
 			
-			if($m[1]{0} == '@')
+			if($m[1][0] == '@')
 			{
 				$m[1] = $this->_replaceVar(substr($m[1], 1));
 				return "<?php {$m[1]} ?>";
@@ -948,7 +948,7 @@ class TemplateHandler
 			}
 			if($mm[1])
 			{
-				if($mm[1]{0} == 'e')
+				if($mm[1][0] == 'e')
 				{
 					return '<?php } ?>' . $m[9];
 				}

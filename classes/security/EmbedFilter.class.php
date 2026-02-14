@@ -632,7 +632,7 @@ class EmbedFilter
 			{
 				$xmlBuff = FileHandler::readFile($this->whiteUrlXmlFile);
 
-				$xmlParser = new XmlParser();
+				$xmlParser = new XeXmlParser();
 				$domainListObj = $xmlParser->parse($xmlBuff);
 				$embedDomainList = $domainListObj->whiteurl->embed->domain;
 				$iframeDomainList = $domainListObj->whiteurl->iframe->domain;

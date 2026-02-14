@@ -137,7 +137,7 @@ class widgetModel extends widget
 			return $widget_info;
 		}
 		// If no cache file exists, parse the xml and then return the variable.
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		$tmp_xml_obj = $oXmlParser->loadXmlFile($xml_file);
 		$xml_obj = $tmp_xml_obj->widget;
 		if(!$xml_obj) return;
@@ -277,7 +277,7 @@ class widgetModel extends widget
 			return $widgetStyle_info;
 		}
 		// If no cache file exists, parse the xml and then return the variable.
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		$tmp_xml_obj = $oXmlParser->loadXmlFile($xml_file);
 		$xml_obj = $tmp_xml_obj->widgetstyle;
 		if(!$xml_obj) return;

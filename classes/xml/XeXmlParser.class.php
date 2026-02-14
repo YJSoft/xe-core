@@ -23,7 +23,7 @@ class Xml_Node_
 }
 
 /**
- * XmlParser class
+ * XeXmlParser class
  * Class parsing a given xmlrpc request and creating a data object
  * @remarks <pre>{ 
  * This class may drops unsupported xml lanuage attributes when multiple language attributes are given.
@@ -35,7 +35,7 @@ class Xml_Node_
  * @package /classes/xml
  * @version 0.1
  */
-class XmlParser
+class XeXmlParser
 {
 
 	/**
@@ -75,7 +75,7 @@ class XmlParser
 		}
 		$buff = FileHandler::readFile($filename);
 
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		return $oXmlParser->parse($buff);
 	}
 
@@ -238,5 +238,5 @@ class XmlParser
 	}
 
 }
-/* End of file XmlParser.class.php */
-/* Location: ./classes/xml/XmlParser.class.php */
+/* End of file XeXmlParser.class.php */
+/* Location: ./classes/xml/XeXmlParser.class.php */

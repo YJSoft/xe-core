@@ -1321,7 +1321,7 @@ class Context
 			exit;
 		}
 
-		$oXml = new XmlParser();
+		$oXml = new XeXmlParser();
 		$xml_obj = $oXml->parse($xml);
 
 		$params = $xml_obj->methodcall->params;
