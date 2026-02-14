@@ -24,8 +24,8 @@ XE 코어는 모듈, 애드온, 에디터 컴포넌트, 위젯, 레이아웃의 
 보안 패치나 PHP 상위 버전에서 발생하는 오동작을 수정하는 것 이외 코드 공헌은 받지 않습니다.
 
 ## Server Requirements
-* PHP version 5.3.0 or greater (But recommend PHP >= 5.5.0)
-* MYSQL version 4.1 or greater (But recommend MYSQL >= 5.x) , MS-SQL, CUBRID
+* PHP version greater than 5.3.0 and less than 8.0.0 (But recommend PHP >= 5.5.0)
+* MYSQL version 4.1 or greater (But recommend MYSQL >= 5.x)
 * XML Library
 * GD Library
 * Fileinfo Extension
