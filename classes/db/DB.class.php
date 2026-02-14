@@ -178,7 +178,7 @@ class DB
 	 */
 	static function create()
 	{
-		return new static;
+		return new DB;
 	}
 
 	/**
