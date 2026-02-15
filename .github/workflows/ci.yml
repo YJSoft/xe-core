@@ -75,6 +75,7 @@ jobs:
       run: |
         composer require "codeception/codeception:^4.2" --dev --with-all-dependencies --no-interaction
         composer require codeception/module-db --dev --with-all-dependencies --no-interaction
+        composer require codeception/module-phpbrowser --dev  
 
     - name: Start PHP Server
       if: matrix.php != '5.3'
