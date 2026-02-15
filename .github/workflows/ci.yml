@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04 # 오래된 PHP 호환성을 위해 20.04 권장 (최신 버전도 setup-php로 가능하긴 함)
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
