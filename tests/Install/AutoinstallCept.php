@@ -68,5 +68,5 @@ $I->submitForm('.login-body form', [
 $I->seeInCurrentUrl('module=admin');
 $I->seeElement('#gnbNav');
 $I->seeElement('#content .x_page-header');
-$I->see('설치 환경 수집 동의', 'h2');
+$I->see('사용권 동의', 'h2');
 
