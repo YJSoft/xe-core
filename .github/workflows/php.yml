@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04 # 오래된 PHP 호환성을 위해 20.04 권장 (최신 버전도 setup-php로 가능하긴 함)
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['5.3', '5.4', '5.6', '7.0', '7.2']
+
+    # MySQL 서비스 컨테이너 설정 (Travis의 mysql 서비스 대체)
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: xe_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # PHP 설정 (shivammathur/setup-php 사용)
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        extensions: mysql, mysqli, pdo, pdo_mysql, mbstring, dom, gd
+        tools: composer
+
+    # Node.js 설정
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '10' # 프로젝트 시기에 맞춘 구버전 Node (필요 시 버전 조정)
+
+    # Grunt CLI 및 의존성 설치
+    - name: Install NPM dependencies
+      run: |
+        npm install -g grunt-cli
+        npm install
+
+    # Composer 설치 (PHP 5.3 제외)
+    - name: Install Composer dependencies
+      if: matrix.php-versions != '5.3'
+      run: composer install --prefer-dist --no-progress
+
+    # PHP 내장 서버 실행 (PHP 5.3 제외)
+    - name: Start PHP Server
+      if: matrix.php-versions != '5.3'
+      run: |
+        php -S 127.0.0.1:8000 &
+        sleep 3 # 서버가 뜰 때까지 대기
+
+    # Grunt 실행 (모든 버전 공통)
+    - name: Run Grunt tasks
+      run: |
+        grunt lint --force
+        grunt minify
+
+    # Codeception 빌드 및 테스트 (PHP 5.3 제외)
+    - name: Run Codeception
+      if: matrix.php-versions != '5.3'
+      run: |
+        ./vendor/bin/codecept build
+        ./vendor/bin/codecept run -d --fail-fast --env travis
