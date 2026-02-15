@@ -10,6 +10,9 @@ codeception.yml
 /tests/_support/*Tester.php
 /tests/_support/_generated/
 /tests/*.suite.yml
+/tests_php8/_output/
+/tests_php8/_support/_generated/
+/tests_php8/*.suite.yml
 /doxygen/dist
 
 /node_modules/
