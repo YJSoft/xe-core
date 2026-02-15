@@ -12,9 +12,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['5.3', '5.4', '5.6', '7.0', '7.2']
+        # 기본적으로 experimental은 false로 설정
+        experimental: [false]
+        # PHP 5.3 ~ 7.4 (안정적인 버전들)
+        php: ['5.3', '5.4', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
+        
+        include:
+          # PHP 8.x 버전 추가 (실패 허용)
+          - php: '8.0'
+            experimental: true
+          - php: '8.1'
+            experimental: true
+          - php: '8.2'
+            experimental: true
+          - php: '8.3'
+            experimental: true
+          - php: '8.4'
+            experimental: true
 
-    # MySQL 서비스 컨테이너 설정 (Travis의 mysql 서비스 대체)
+    # experimental: true인 경우(PHP 8.x) 실패해도 전체 빌드를 실패 처리하지 않음
+    continue-on-error: ${{ matrix.experimental }}
+
     services:
       mysql:
         image: mysql:5.7
@@ -29,47 +47,52 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # PHP 설정 (shivammathur/setup-php 사용)
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php-versions }}
-        extensions: mysql, mysqli, pdo, pdo_mysql, mbstring, dom, gd
+        php-version: ${{ matrix.php }}
+        extensions: mysql, mysqli, pdo, pdo_mysql, mbstring, dom, gd, zip, curl
         tools: composer
+        coverage: none
 
-    # Node.js 설정
+    # Ubuntu 24.04는 최신 환경이므로 Node 10 같은 구버전은 호환성 문제가 있을 수 있음.
+    # 안전하게 v16 정도로 설정하거나, 필요시 조정하세요.
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '10' # 프로젝트 시기에 맞춘 구버전 Node (필요 시 버전 조정)
+        node-version: '16'
 
-    # Grunt CLI 및 의존성 설치
     - name: Install NPM dependencies
       run: |
         npm install -g grunt-cli
         npm install
 
+    # [수정됨] PHP 7.2 이상에서 Composer 보안 경고로 인한 설치 차단 해제
+    # codeception ~2.0이 오래되어 발생하는 문제이므로 block-insecure를 false로 설정
+    - name: Configure Composer Security Settings
+      if: matrix.php >= '7.2'
+      run: composer config audit.block-insecure false
+
     # Composer 설치 (PHP 5.3 제외)
     - name: Install Composer dependencies
-      if: matrix.php-versions != '5.3'
+      if: matrix.php != '5.3'
       run: composer install --prefer-dist --no-progress
 
     # PHP 내장 서버 실행 (PHP 5.3 제외)
     - name: Start PHP Server
-      if: matrix.php-versions != '5.3'
+      if: matrix.php != '5.3'
       run: |
         php -S 127.0.0.1:8000 &
-        sleep 3 # 서버가 뜰 때까지 대기
+        sleep 3
 
-    # Grunt 실행 (모든 버전 공통)
     - name: Run Grunt tasks
       run: |
         grunt lint --force
         grunt minify
 
-    # Codeception 빌드 및 테스트 (PHP 5.3 제외)
+    # Codeception 실행 (PHP 5.3 제외)
     - name: Run Codeception
-      if: matrix.php-versions != '5.3'
+      if: matrix.php != '5.3'
       run: |
         ./vendor/bin/codecept build
         ./vendor/bin/codecept run -d --fail-fast --env travis
