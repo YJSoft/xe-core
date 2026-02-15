@@ -7,7 +7,7 @@
 
 /**
  * Parses an XML Object and returns a string used for generating the PHP cache file <br />
- * The XML Object structure must be the one defined in the XmlParser class
+ * The XML Object structure must be the one defined in the XeXmlParser class
  *
  * @author Corina Udrescu (corina.udrescu@arnia.ro)
  * @package classes\xml\xmlquery
@@ -91,7 +91,7 @@ class QueryParser
 		if(file_exists($table_file))
 		{
 			$table_xml = FileHandler::readFile($table_file);
-			$xml_parser = new XmlParser();
+			$xml_parser = new XeXmlParser();
 			$table_obj = $xml_parser->parse($table_xml);
 			if($table_obj->table)
 			{

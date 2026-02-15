@@ -15,7 +15,7 @@ class FileHandler
 	 * @param string $source path to change into absolute path
 	 * @return string Absolute path
 	 */
-	function getRealPath($source)
+	static function getRealPath($source)
 	{
 		if(strlen($source) >= 2 && substr_compare($source, './', 0, 2) === 0)
 		{
@@ -36,7 +36,7 @@ class FileHandler
 	 * @param string $type If set as 'force'. Even if the file exists in target, the file is copied.
 	 * @return void
 	 */
-	function copyDir($source_dir, $target_dir, $filter = null, $type = null)
+	static function copyDir($source_dir, $target_dir, $filter = null, $type = null)
 	{
 		$source_dir = self::getRealPath($source_dir);
 		$target_dir = self::getRealPath($target_dir);
@@ -101,7 +101,7 @@ class FileHandler
 	 * @param string $force Y: overwrite
 	 * @return void
 	 */
-	function copyFile($source, $target, $force = 'Y')
+	static function copyFile($source, $target, $force = 'Y')
 	{
 		setlocale(LC_CTYPE, 'en_US.UTF8', 'ko_KR.UTF8');
 		$source = self::getRealPath($source);
@@ -124,7 +124,7 @@ class FileHandler
 	 * @param string $filename Path of target file
 	 * @return string The content of the file. If target file does not exist, this function returns nothing.
 	 */
-	function readFile($filename)
+	static function readFile($filename)
 	{
 		if(($filename = self::exists($filename)) === FALSE || filesize($filename) < 1)
 		{
@@ -142,7 +142,7 @@ class FileHandler
 	 * @param string $mode a(append) / w(write)
 	 * @return void
 	 */
-	function writeFile($filename, $buff, $mode = "w")
+	static function writeFile($filename, $buff, $mode = "w")
 	{
 		$filename = self::getRealPath($filename);
 		$pathinfo = pathinfo($filename);
@@ -166,7 +166,7 @@ class FileHandler
 	 * @param string $filename path of target file
 	 * @return bool Returns TRUE on success or FALSE on failure.
 	 */
-	function removeFile($filename)
+	static function removeFile($filename)
 	{
 		return (($filename = self::exists($filename)) !== FALSE) && @unlink($filename);
 	}
@@ -180,7 +180,7 @@ class FileHandler
 	 * @param string $target Path of target file
 	 * @return bool Returns TRUE on success or FALSE on failure.
 	 */
-	function rename($source, $target)
+	static function rename($source, $target)
 	{
 		return @rename(self::getRealPath($source), self::getRealPath($target));
 	}
@@ -192,7 +192,7 @@ class FileHandler
 	 * @param string $target Path of target file
 	 * @return bool Returns TRUE on success or FALSE on failure.
 	 */
-	function moveFile($source, $target)
+	static function moveFile($source, $target)
 	{
 		if(($source = self::exists($source)) !== FALSE)
 		{
@@ -211,7 +211,7 @@ class FileHandler
 	 * @param string $target_dir Path of target directory
 	 * @return void
 	 */
-	function moveDir($source_dir, $target_dir)
+	static function moveDir($source_dir, $target_dir)
 	{
 		self::rename($source_dir, $target_dir);
 	}
@@ -227,7 +227,7 @@ class FileHandler
 	 * @param bool $concat_prefix If TRUE, return file name as absolute path
 	 * @return string[] Array of the filenames in the path
 	 */
-	function readDir($path, $filter = '', $to_lower = FALSE, $concat_prefix = FALSE)
+	static function readDir($path, $filter = '', $to_lower = FALSE, $concat_prefix = FALSE)
 	{
 		$path = self::getRealPath($path);
 		$output = array();
@@ -279,7 +279,7 @@ class FileHandler
 	 * @param string $path_string Path of target directory
 	 * @return bool TRUE if success. It might return nothing when ftp is used and connection to the ftp address failed.
 	 */
-	function makeDir($path_string)
+	static function makeDir($path_string)
 	{
 		$path_string = preg_replace("/[^a-z0-9-_\\\\\/\.]+/i", '', $path_string);
 		$path_string = self::getRealPath($path_string);
@@ -362,7 +362,7 @@ class FileHandler
 	 * @param string $path Path of the target directory
 	 * @return void
 	 */
-	function removeDir($path)
+	static function removeDir($path)
 	{
 		if(($path = self::isDir($path)) === FALSE)
 		{
@@ -403,7 +403,7 @@ class FileHandler
 	 * @param string $path Path of the target directory
 	 * @return void
 	 */
-	function removeBlankDir($path)
+	static function removeBlankDir($path)
 	{
 		if(($path = self::isDir($path)) === FALSE)
 		{
@@ -437,7 +437,7 @@ class FileHandler
 	 * @param string $path Path of the target directory
 	 * @return void
 	 */
-	function removeFilesInDir($path)
+	static function removeFilesInDir($path)
 	{
 		if(($path = self::getRealPath($path)) === FALSE)
 		{
@@ -479,7 +479,7 @@ class FileHandler
 	 * @param int $size Number of the size
 	 * @return string File size string
 	 */
-	function filesize($size)
+	static function filesize($size)
 	{
 		if(!$size)
 		{
@@ -519,7 +519,7 @@ class FileHandler
 	 * @param string $post_data Request arguments array for POST method
 	 * @return string If success, the content of the target file. Otherwise: none
 	 */
-	function getRemoteResource($url, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array(), $request_config = array())
+	static function getRemoteResource($url, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array(), $request_config = array())
 	{
 		require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
 		$IDN = new idna_convert(array('idn_version' => 2008));
@@ -675,7 +675,7 @@ class FileHandler
 	 * @param string[] $headers Headers key value array.
 	 * @return bool TRUE: success, FALSE: failed
 	 */
-	function getRemoteFile($url, $target_filename, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array(), $request_config = array())
+	static function getRemoteFile($url, $target_filename, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array(), $request_config = array())
 	{
 		$target_filename = self::getRealPath($target_filename);
 		self::writeFile($target_filename, '');
@@ -705,7 +705,7 @@ class FileHandler
 	 * @param $val Size in string (ex., 10, 10K, 10M, 10G )
 	 * @return int converted size
 	 */
-	function returnBytes($val)
+	static function returnBytes($val)
 	{
 		$unit = strtoupper(substr($val, -1));
 		$val = (float)$val;
@@ -726,7 +726,7 @@ class FileHandler
 	 * @param array $imageInfo Image info retrieved by getimagesize function
 	 * @return bool TRUE: it's ok, FALSE: otherwise
 	 */
-	function checkMemoryLoadImage(&$imageInfo)
+	static function checkMemoryLoadImage(&$imageInfo)
 	{
 		$memoryLimit = self::returnBytes(ini_get('memory_limit'));
 		if($memoryLimit == -1)
@@ -764,7 +764,7 @@ class FileHandler
 	 * @param bool $thumbnail_transparent If $target_type is png, set background set transparent color
 	 * @return bool TRUE: success, FALSE: failed
 	 */
-	function createImageFile($source_file, $target_file, $resize_width = 0, $resize_height = 0, $target_type = '', $thumbnail_type = 'crop', $thumbnail_transparent = FALSE)
+	static function createImageFile($source_file, $target_file, $resize_width = 0, $resize_height = 0, $target_type = '', $thumbnail_type = 'crop', $thumbnail_transparent = FALSE)
 	{
 		// check params
 		if (($source_file = self::exists($source_file)) === FALSE)
@@ -984,7 +984,7 @@ class FileHandler
 	 * @param string $filename Path of the ini file
 	 * @return array ini array (if the target file does not exist, it returns FALSE)
 	 */
-	function readIniFile($filename)
+	static function readIniFile($filename)
 	{
 		if(($filename = self::exists($filename)) === FALSE)
 		{
@@ -1015,7 +1015,7 @@ class FileHandler
 	 * @param array $arr Array
 	 * @return bool if array contains nothing it returns FALSE, otherwise TRUE
 	 */
-	function writeIniFile($filename, $arr)
+	static function writeIniFile($filename, $arr)
 	{
 		if(!is_array($arr) || count($arr) == 0)
 		{
@@ -1031,7 +1031,7 @@ class FileHandler
 	 * @param array $arr Array
 	 * @return string
 	 */
-	function _makeIniBuff($arr)
+	static function _makeIniBuff($arr)
 	{
 		$return = array();
 		foreach($arr as $key => $val)
@@ -1068,7 +1068,7 @@ class FileHandler
 	 * @param string $mode File mode for fopen
 	 * @return FileObject File object
 	 */
-	function openFile($filename, $mode)
+	static function openFile($filename, $mode)
 	{
 		$pathinfo = pathinfo($filename);
 		self::makeDir($pathinfo['dirname']);
@@ -1083,7 +1083,7 @@ class FileHandler
 	 * @param string $filename Target file name
 	 * @return bool Returns TRUE if the file exists and contains something.
 	 */
-	function hasContent($filename)
+	static function hasContent($filename)
 	{
 		return (is_readable($filename) && (filesize($filename) > 0));
 	}
@@ -1094,7 +1094,7 @@ class FileHandler
 	 * @param string $filename Target file name
 	 * @return bool Returns FALSE if the file does not exists, or Returns full path file(string).
 	 */
-	function exists($filename)
+	static function exists($filename)
 	{
 		$filename = self::getRealPath($filename);
 		return file_exists($filename) ? $filename : FALSE;
@@ -1106,7 +1106,7 @@ class FileHandler
 	 * @param string $dir Target dir path
 	 * @return bool Returns FALSE if the dir is not dir, or Returns full path of dir(string).
 	 */
-	function isDir($path)
+	static function isDir($path)
 	{
 		$path = self::getRealPath($path);
 		return is_dir($path) ? $path : FALSE;
@@ -1118,7 +1118,7 @@ class FileHandler
 	 * @param string $path Target dir path
 	 * @return bool
 	 */
-	function isWritableDir($path)
+	static function isWritableDir($path)
 	{
 		$path = self::getRealPath($path);
 		if(is_dir($path)==FALSE)

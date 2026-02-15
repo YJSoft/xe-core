@@ -30,7 +30,7 @@ class DBMysqli_innodb extends DBMysql
 	 * Create an instance of this class
 	 * @return DBMysqli_innodb return DBMysqli_innodb object instance
 	 */
-	function create()
+	static function create()
 	{
 		return new DBMysqli_innodb;
 	}
@@ -499,7 +499,7 @@ class DBMysqli_innodb extends DBMysql
 	function _createTable($xml_doc)
 	{
 		// xml parsing
-		$oXml = new XmlParser();
+		$oXml = new XeXmlParser();
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;

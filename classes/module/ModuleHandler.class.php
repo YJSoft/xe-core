@@ -1171,7 +1171,7 @@ class ModuleHandler extends Handler
 	 * @return ModuleObject module instance (if failed it returns null)
 	 * @remarks if there exists a module instance created before, returns it.
 	 * */
-	function &getModuleInstance($module, $type = 'view', $kind = '')
+	static function &getModuleInstance($module, $type = 'view', $kind = '')
 	{
 
 		if(__DEBUG__ == 3)
@@ -1297,7 +1297,7 @@ class ModuleHandler extends Handler
 	 * @param object $obj an object as a parameter to trigger
 	 * @return BaseObject
 	 * */
-	function triggerCall($trigger_name, $called_position, &$obj)
+	static function triggerCall($trigger_name, $called_position, &$obj)
 	{
 		// skip if not installed
 		if(!Context::isInstalled())

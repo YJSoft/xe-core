@@ -75,7 +75,9 @@ jobs:
       run: |
         composer require "codeception/codeception:^4.2" --dev --with-all-dependencies --no-interaction
         composer require codeception/module-db --dev --with-all-dependencies --no-interaction
-        composer require codeception/module-phpbrowser --dev  
+        composer require codeception/module-phpbrowser --dev --no-interaction
+        composer require codeception/module-asserts --dev --no-interaction
+        composer require codeception/module-filesystem --dev --no-interaction
 
     - name: Start PHP Server
       if: matrix.php != '5.3'
@@ -89,7 +91,13 @@ jobs:
         grunt minify
 
     - name: Run Codeception
-      if: matrix.php != '5.3'
+      if: matrix.php != '5.3' && matrix.php < '8.0'
       run: |
         ./vendor/bin/codecept build
         ./vendor/bin/codecept run -d --fail-fast --env travis
+
+    - name: Run Codeception (PHP 8+)
+      if: matrix.php >= '8.0'
+      run: |
+        ./vendor/bin/codecept build -c codeception_php8.dist.yml
+        ./vendor/bin/codecept run -d --fail-fast --env travis -c codeception_php8.dist.yml

@@ -1022,7 +1022,7 @@ class idna_convert {
      * @return idna_convert
      * @access public
      */
-    public function getInstance($params = array())
+    public static function getInstance($params = array())
     {
         return new idna_convert($params);
     }

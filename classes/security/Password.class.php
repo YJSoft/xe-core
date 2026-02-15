@@ -226,7 +226,7 @@ class Password
 	 * @param string $format hex or alnum
 	 * @return string
 	 */
-	public function createSecureSalt($length, $format = 'hex')
+	public static function createSecureSalt($length, $format = 'hex')
 	{
 		// Find out how many bytes of entropy we really need
 		switch($format)

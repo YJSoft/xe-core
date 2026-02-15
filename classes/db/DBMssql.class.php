@@ -52,7 +52,7 @@ class DBMssql extends DB
 	 * Create an instance of this class
 	 * @return DBMssql return DBMssql object instance
 	 */
-	function create()
+	static function create()
 	{
 		return new DBMssql;
 	}
@@ -553,7 +553,7 @@ class DBMssql extends DB
 	function _createTable($xml_doc)
 	{
 		// xml parsing
-		$oXml = new XmlParser();
+		$oXml = new XeXmlParser();
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;

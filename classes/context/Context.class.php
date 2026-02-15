@@ -159,7 +159,7 @@ class Context
 	 *
 	 * @return object Instance
 	 */
-	function &getInstance()
+	static function &getInstance()
 	{
 		static $theInstance = null;
 		if(!$theInstance)
@@ -434,7 +434,7 @@ class Context
 	 *
 	 * @return void
 	 */
-	function close()
+	static function close()
 	{
 		session_write_close();
 	}
@@ -535,7 +535,7 @@ class Context
 	 *
 	 * @return string DB's db_type
 	 */
-	function getDBType()
+	static function getDBType()
 	{
 		$self = self::getInstance();
 		return $self->db_info->master_db["db_type"];
@@ -547,7 +547,7 @@ class Context
 	 * @param object $db_info DB information
 	 * @return void
 	 */
-	function setDBInfo($db_info)
+	static function setDBInfo($db_info)
 	{
 		$self = self::getInstance();
 		$self->db_info = $db_info;
@@ -558,7 +558,7 @@ class Context
 	 *
 	 * @return object DB information
 	 */
-	function getDBInfo()
+	static function getDBInfo()
 	{
 		$self = self::getInstance();
 		return $self->db_info;
@@ -569,7 +569,7 @@ class Context
 	 *
 	 * @return object SSL status (Optional - none|always|optional)
 	 */
-	function getSslStatus()
+	static function getSslStatus()
 	{
 		$dbInfo = self::getDBInfo();
 		return $dbInfo->use_ssl;
@@ -580,7 +580,7 @@ class Context
 	 *
 	 * @return string Default URL
 	 */
-	function getDefaultUrl()
+	static function getDefaultUrl()
 	{
 		$db_info = self::getDBInfo();
 		return $db_info->default_url;
@@ -591,7 +591,7 @@ class Context
 	 *
 	 * @return array Supported languages
 	 */
-	function loadLangSupported()
+	static function loadLangSupported()
 	{
 		static $lang_supported = null;
 		if(!$lang_supported)
@@ -612,7 +612,7 @@ class Context
 	 *
 	 * @return array Selected languages
 	 */
-	function loadLangSelected()
+	static function loadLangSelected()
 	{
 		static $lang_selected = null;
 		if(!$lang_selected)
@@ -745,7 +745,7 @@ class Context
 	 *
 	 * @return bool True: FTP information is registered, False: otherwise
 	 */
-	function isFTPRegisted()
+	static function isFTPRegisted()
 	{
 		return file_exists(self::getFTPConfigFile());
 	}
@@ -755,7 +755,7 @@ class Context
 	 *
 	 * @return object FTP information
 	 */
-	function getFTPInfo()
+	static function getFTPInfo()
 	{
 		$self = self::getInstance();
 
@@ -775,7 +775,7 @@ class Context
 	 * @param string $site_title Browser title to be added
 	 * @return void
 	 */
-	function addBrowserTitle($site_title)
+	static function addBrowserTitle($site_title)
 	{
 		if(!$site_title)
 		{
@@ -799,7 +799,7 @@ class Context
 	 * @param string $site_title Browser title  to be set
 	 * @return void
 	 */
-	function setBrowserTitle($site_title)
+	static function setBrowserTitle($site_title)
 	{
 		if(!$site_title)
 		{
@@ -814,7 +814,7 @@ class Context
 	 *
 	 * @return string Browser title(htmlspecialchars applied)
 	 */
-	function getBrowserTitle()
+	static function getBrowserTitle()
 	{
 		$self = self::getInstance();
 
@@ -828,7 +828,7 @@ class Context
 	 * Return layout's title
 	 * @return string layout's title
 	 */
-	public function getSiteTitle()
+	public static function getSiteTitle()
 	{
 		$oModuleModel = getModel('module');
 		$moduleConfig = $oModuleModel->getModuleConfig('module');
@@ -855,7 +855,7 @@ class Context
 	 * @param string $path Path of the language file
 	 * @return void
 	 */
-	function loadLang($path)
+	static function loadLang($path)
 	{
 		global $lang;
 
@@ -978,7 +978,7 @@ class Context
 	 * @param string $lang_type Language type.
 	 * @return void
 	 */
-	function setLangType($lang_type = 'ko')
+	static function setLangType($lang_type = 'ko')
 	{
 		$self = self::getInstance();
 
@@ -993,7 +993,7 @@ class Context
 	 *
 	 * @return string Language type
 	 */
-	function getLangType()
+	static function getLangType()
 	{
 		$self = self::getInstance();
 		return $self->lang_type;
@@ -1005,7 +1005,7 @@ class Context
 	 * @param string $code Language variable name
 	 * @return string If string for the code exists returns it, otherwise returns original code
 	 */
-	function getLang($code)
+	static function getLang($code)
 	{
 		if(!$code)
 		{
@@ -1025,7 +1025,7 @@ class Context
 	 * @param string $val `$code`s value
 	 * @return void
 	 */
-	function setLang($code, $val)
+	static function setLang($code, $val)
 	{
 		if(!isset($GLOBALS['lang']))
 		{
@@ -1040,7 +1040,7 @@ class Context
 	 * @param object $source_obj Conatins strings to convert
 	 * @return object converted object
 	 */
-	function convertEncoding($source_obj)
+	static function convertEncoding($source_obj)
 	{
 		$charset_list = array(
 			'UTF-8', 'EUC-KR', 'CP949', 'ISO8859-1', 'EUC-JP', 'SHIFT_JIS',
@@ -1078,7 +1078,7 @@ class Context
 	 * @see arrayConvWalkCallback will replaced array_walk_recursive in >=PHP5
 	 * @return void
 	 */
-	function checkConvertFlag(&$val, $key = null, $charset = null)
+	static function checkConvertFlag(&$val, $key = null, $charset = null)
 	{
 		static $flag = TRUE;
 		if($charset)
@@ -1105,7 +1105,7 @@ class Context
 	 * @see arrayConvWalkCallback will replaced array_walk_recursive in >=PHP5
 	 * @return object converted object
 	 */
-	function doConvertEncoding(&$val, $key = null, $charset)
+	static function doConvertEncoding(&$val, $key = null, $charset)
 	{
 		if (is_array($val))
 		{
@@ -1120,7 +1120,7 @@ class Context
 	 * @param string $str String to convert
 	 * @return string converted string
 	 */
-	function convertEncodingStr($str)
+	static function convertEncodingStr($str)
 	{
         if(!$str) return null;
 		$obj = new stdClass();
@@ -1129,7 +1129,7 @@ class Context
 		return $obj->str;
 	}
 
-	function decodeIdna($domain)
+	static function decodeIdna($domain)
 	{
 		if(strpos($domain, 'xn--') !== FALSE)
 		{
@@ -1147,7 +1147,7 @@ class Context
 	 * @param string $method Response method. [HTML|XMLRPC|JSON]
 	 * @return void
 	 */
-	function setResponseMethod($method = 'HTML')
+	static function setResponseMethod($method = 'HTML')
 	{
 		$self = self::getInstance();
 
@@ -1160,7 +1160,7 @@ class Context
 	 *
 	 * @return string Response method. If it's not set, returns request method.
 	 */
-	function getResponseMethod()
+	static function getResponseMethod()
 	{
 		$self = self::getInstance();
 
@@ -1181,7 +1181,7 @@ class Context
 	 * @param string $type Request method. (Optional - GET|POST|XMLRPC|JSON)
 	 * @return void
 	 */
-	function setRequestMethod($type = '')
+	static function setRequestMethod($type = '')
 	{
 		$self = self::getInstance();
 
@@ -1321,7 +1321,7 @@ class Context
 			exit;
 		}
 
-		$oXml = new XmlParser();
+		$oXml = new XeXmlParser();
 		$xml_obj = $oXml->parse($xml);
 
 		$params = $xml_obj->methodcall->params;
@@ -1398,7 +1398,7 @@ class Context
 	 * @param string $do_stripslashes Whether to strip slashes
 	 * @return mixed filtered value. Type are string or array
 	 */
-	function _filterRequestVar($key, $val, $do_stripslashes = true, $remove_hack = false)
+	static function _filterRequestVar($key, $val, $do_stripslashes = true, $remove_hack = false)
 	{
 		if(!($isArray = is_array($val)))
 		{
@@ -1492,7 +1492,7 @@ class Context
 	 *
 	 * @return bool True: exists, False: otherwise
 	 */
-	function isUploaded()
+	static function isUploaded()
 	{
 		$self = self::getInstance();
 		return $self->is_uploaded;
@@ -1556,7 +1556,7 @@ class Context
 	 * Return request method
 	 * @return string Request method type. (Optional - GET|POST|XMLRPC|JSON)
 	 */
-	function getRequestMethod()
+	static function getRequestMethod()
 	{
 		$self = self::getInstance();
 		return $self->request_method;
@@ -1566,7 +1566,7 @@ class Context
 	 * Return request URL
 	 * @return string request URL
 	 */
-	function getRequestUrl()
+	static function getRequestUrl()
 	{
 		static $url = null;
 		if(is_null($url))
@@ -1588,7 +1588,7 @@ class Context
 	 * Return js callback func.
 	 * @return string callback func.
 	 */
-	function getJSCallbackFunc()
+	static function getJSCallbackFunc()
 	{
 		$self = self::getInstance();
 		$js_callback_func = isset($_GET['xe_js_callback']) ? $_GET['xe_js_callback'] : $_POST['xe_js_callback'];
@@ -1613,7 +1613,7 @@ class Context
 	 * @param bool $autoEncode If TRUE, url encode automatically, detailed. Use this option, $encode value should be TRUE
 	 * @return string URL
 	 */
-	function getUrl($num_args = 0, $args_list = array(), $domain = null, $encode = TRUE, $autoEncode = FALSE)
+	static function getUrl($num_args = 0, $args_list = array(), $domain = null, $encode = TRUE, $autoEncode = FALSE)
 	{
 		static $site_module_info = null;
 		static $current_info = null;
@@ -1868,7 +1868,7 @@ class Context
 	 * @param string $domain Domain
 	 * @retrun string converted URL
 	 */
-	function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null)
+	static function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null)
 	{
 		static $url = array();
 
@@ -1967,7 +1967,7 @@ class Context
 	 * @param mixed $set_to_get_vars If not FALSE, Set to get vars.
 	 * @return void
 	 */
-	function set($key, $val, $set_to_get_vars = 0)
+	static function set($key, $val, $set_to_get_vars = 0)
 	{
 		$self = self::getInstance();
 		$self->context->{$key} = $val;
@@ -1992,7 +1992,7 @@ class Context
 	 * @param string $key Key
 	 * @return string Key
 	 */
-	function get($key)
+	static function get($key)
 	{
 		$self = self::getInstance();
 
@@ -2008,7 +2008,7 @@ class Context
 	 *
 	 * @return object
 	 */
-	function gets()
+	static function gets()
 	{
 		$num_args = func_num_args();
 		if($num_args < 1)
@@ -2031,7 +2031,7 @@ class Context
 	 *
 	 * @return object All data
 	 */
-	function getAll()
+	static function getAll()
 	{
 		$self = self::getInstance();
 		return $self->context;
@@ -2042,7 +2042,7 @@ class Context
 	 *
 	 * @return BaseObject Request variables.
 	 */
-	function getRequestVars()
+	static function getRequestVars()
 	{
 		$self = self::getInstance();
 		if($self->get_vars)
@@ -2058,7 +2058,7 @@ class Context
 	 * @param string $action act name
 	 * @return void
 	 */
-	function addSSLAction($action)
+	static function addSSLAction($action)
 	{
 		$self = self::getInstance();
 
@@ -2082,7 +2082,7 @@ class Context
 	 * @param string $action act name
 	 * @return void
 	 */
-	function addSSLActions($action_array)
+	static function addSSLActions($action_array)
 	{
 		$self = self::getInstance();
 
@@ -2110,7 +2110,7 @@ class Context
 	 * @param string $action act name
 	 * @return void
 	 */
-	function subtractSSLAction($action)
+	static function subtractSSLAction($action)
 	{
 		$self = self::getInstance();
 
@@ -2128,7 +2128,7 @@ class Context
 	 *
 	 * @return string acts in array
 	 */
-	function getSSLActions()
+	static function getSSLActions()
 	{
 		$self = self::getInstance();
 		if($self->getSslStatus() == 'optional')
@@ -2143,7 +2143,7 @@ class Context
 	 * @param string $action act name
 	 * @return bool If SSL exists, return TRUE.
 	 */
-	function isExistsSSLAction($action)
+	static function isExistsSSLAction($action)
 	{
 		$self = self::getInstance();
 		return isset($self->ssl_actions[$action]);
@@ -2156,7 +2156,7 @@ class Context
 	 * @param string $file file path
 	 * @return string normalized file path
 	 */
-	function normalizeFilePath($file)
+	static function normalizeFilePath($file)
 	{
 		if($file[0] != '/' && $file[0] != '.' && strpos($file, '://') === FALSE)
 		{
@@ -2178,7 +2178,7 @@ class Context
 	 * @param string $file file path
 	 * @return string Converted file path
 	 */
-	function getAbsFileUrl($file)
+	static function getAbsFileUrl($file)
 	{
 		$file = self::normalizeFilePath($file);
 		$script_path = getScriptPath();
@@ -2210,7 +2210,7 @@ class Context
 	 * 		$args[3]: index
 	 *
 	 */
-	function loadFile($args)
+	static function loadFile($args)
 	{
 		$self = self::getInstance();
 
@@ -2225,7 +2225,7 @@ class Context
 	 * @param string $media Media query
 	 * @return void
 	 */
-	function unloadFile($file, $targetIe = '', $media = 'all')
+	static function unloadFile($file, $targetIe = '', $media = 'all')
 	{
 		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadFile($file, $targetIe, $media);
@@ -2237,7 +2237,7 @@ class Context
 	 * @param string $type Unload target (optional - all|css|js)
 	 * @return void
 	 */
-	function unloadAllFiles($type = 'all')
+	static function unloadAllFiles($type = 'all')
 	{
 		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadAllFiles($type);
@@ -2256,7 +2256,7 @@ class Context
 	 * @param string $autoPath If path not readed, set the path automatically.
 	 * @return void
 	 */
-	function addJsFile($file, $optimized = FALSE, $targetie = '', $index = 0, $type = 'head', $isRuleset = FALSE, $autoPath = null)
+	static function addJsFile($file, $optimized = FALSE, $targetie = '', $index = 0, $type = 'head', $isRuleset = FALSE, $autoPath = null)
 	{
 		if($isRuleset)
 		{
@@ -2286,7 +2286,7 @@ class Context
 	 * @param string $targetie target IE
 	 * @return void
 	 */
-	function unloadJsFile($file, $optimized = FALSE, $targetie = '')
+	static function unloadJsFile($file, $optimized = FALSE, $targetie = '')
 	{
 		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadFile($file, $targetie);
@@ -2297,7 +2297,7 @@ class Context
 	 *
 	 * @return void
 	 */
-	function unloadAllJsFiles()
+	static function unloadAllJsFiles()
 	{
 		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadAllFiles('js');
@@ -2310,7 +2310,7 @@ class Context
 	 * @param string $filename File name
 	 * @return void
 	 */
-	function addJsFilter($path, $filename)
+	static function addJsFilter($path, $filename)
 	{
 		$oXmlFilter = new XmlJSFilter($path, $filename);
 		$oXmlFilter->compile();
@@ -2323,7 +2323,7 @@ class Context
 	 * @param array $files File list
 	 * @return array File list
 	 */
-	function _getUniqueFileList($files)
+	static function _getUniqueFileList($files)
 	{
 		ksort($files);
 		$files = array_values($files);
@@ -2346,7 +2346,7 @@ class Context
 	 * @param string $type Added position. (head:<head>..</head>, body:<body>..</body>)
 	 * @return array Returns javascript file list. Array contains file, targetie.
 	 */
-	function getJsFile($type = 'head')
+	static function getJsFile($type = 'head')
 	{
 		$self = self::getInstance();
 		return $self->oFrontEndFileHandler->getJsFileList($type);
@@ -2364,7 +2364,7 @@ class Context
 	 * @return void
 	 *
 	 */
-	function addCSSFile($file, $optimized = FALSE, $media = 'all', $targetie = '', $index = 0)
+	static function addCSSFile($file, $optimized = FALSE, $media = 'all', $targetie = '', $index = 0)
 	{
 		$self = self::getInstance();
 		$self->oFrontEndFileHandler->loadFile(array($file, $media, $targetie, $index));
@@ -2380,7 +2380,7 @@ class Context
 	 * @param string $targetie target IE
 	 * @return void
 	 */
-	function unloadCSSFile($file, $optimized = FALSE, $media = 'all', $targetie = '')
+	static function unloadCSSFile($file, $optimized = FALSE, $media = 'all', $targetie = '')
 	{
 		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadFile($file, $targetie, $media);
@@ -2391,7 +2391,7 @@ class Context
 	 *
 	 * @return void
 	 */
-	function unloadAllCSSFiles()
+	static function unloadAllCSSFiles()
 	{
 		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadAllFiles('css');
@@ -2402,7 +2402,7 @@ class Context
 	 *
 	 * @return array Returns css file list. Array contains file, media, targetie.
 	 */
-	function getCSSFile()
+	static function getCSSFile()
 	{
 		$self = self::getInstance();
 		return $self->oFrontEndFileHandler->getCssFileList();
@@ -2413,7 +2413,7 @@ class Context
 	 * @param string $pluginName
 	 * @return stdClass
 	 */
-	function getJavascriptPluginInfo($pluginName)
+	static function getJavascriptPluginInfo($pluginName)
 	{
 		if($plugin_name == 'ui.datepicker')
 		{
@@ -2468,7 +2468,7 @@ class Context
 	 * @param string $plugin_name plugin name
 	 * @return void
 	 */
-	function loadJavascriptPlugin($plugin_name)
+	static function loadJavascriptPlugin($plugin_name)
 	{
 		static $loaded_plugins = array();
 
@@ -2526,13 +2526,13 @@ class Context
 	 * @param string $header add html code before </head>.
 	 * @return void
 	 */
-	function addHtmlHeader($header)
+	static function addHtmlHeader($header)
 	{
 		$self = self::getInstance();
 		$self->html_header .= "\n" . $header;
 	}
 
-	function clearHtmlHeader()
+	static function clearHtmlHeader()
 	{
 		$self = self::getInstance();
 		$self->html_header = '';
@@ -2543,7 +2543,7 @@ class Context
 	 *
 	 * @return string Added html code before </head>
 	 */
-	function getHtmlHeader()
+	static function getHtmlHeader()
 	{
 		$self = self::getInstance();
 		return $self->html_header;
@@ -2554,7 +2554,7 @@ class Context
 	 *
 	 * @param string $class_name class name
 	 */
-	function addBodyClass($class_name)
+	static function addBodyClass($class_name)
 	{
 		$self = self::getInstance();
 		$self->body_class[] = $class_name;
@@ -2565,7 +2565,7 @@ class Context
 	 *
 	 * @return string Return class to html body
 	 */
-	function getBodyClass()
+	static function getBodyClass()
 	{
 		$self = self::getInstance();
 		$self->body_class = array_unique($self->body_class);
@@ -2578,7 +2578,7 @@ class Context
 	 *
 	 * @param string $header Add html code after <body>
 	 */
-	function addBodyHeader($header)
+	static function addBodyHeader($header)
 	{
 		$self = self::getInstance();
 		$self->body_header .= "\n" . $header;
@@ -2589,7 +2589,7 @@ class Context
 	 *
 	 * @return string Added html code after <body>
 	 */
-	function getBodyHeader()
+	static function getBodyHeader()
 	{
 		$self = self::getInstance();
 		return $self->body_header;
@@ -2600,7 +2600,7 @@ class Context
 	 *
 	 * @param string $footer Add html code before </body>
 	 */
-	function addHtmlFooter($footer)
+	static function addHtmlFooter($footer)
 	{
 		$self = self::getInstance();
 		$self->html_footer .= ($self->Htmlfooter ? "\n" : '') . $footer;
@@ -2611,7 +2611,7 @@ class Context
 	 *
 	 * @return string Added html code before </body>
 	 */
-	function getHtmlFooter()
+	static function getHtmlFooter()
 	{
 		$self = self::getInstance();
 		return $self->html_footer;
@@ -2622,7 +2622,7 @@ class Context
 	 *
 	 * @retrun string The path of the config file that contains database settings
 	 */
-	function getConfigFile()
+	static function getConfigFile()
 	{
 		return _XE_PATH_ . 'files/config/db.config.php';
 	}
@@ -2632,7 +2632,7 @@ class Context
 	 *
 	 * @return string The path of the config file that contains FTP settings
 	 */
-	function getFTPConfigFile()
+	static function getFTPConfigFile()
 	{
 		return _XE_PATH_ . 'files/config/ftp.config.php';
 	}
@@ -2642,7 +2642,7 @@ class Context
 	 *
 	 * @return bool True if the config file exists, otherwise FALSE.
 	 */
-	function isInstalled()
+	static function isInstalled()
 	{
 		return FileHandler::hasContent(self::getConfigFile());
 	}
@@ -2653,7 +2653,7 @@ class Context
 	 * @param string Transforms codes
 	 * @return string Transforms codes
 	 */
-	function transContent($content)
+	static function transContent($content)
 	{
 		return $content;
 	}
@@ -2663,7 +2663,7 @@ class Context
 	 *
 	 * @return bool True if it is allowed to use rewrite mod, otherwise FALSE
 	 */
-	function isAllowRewrite()
+	static function isAllowRewrite()
 	{
 		$oContext = self::getInstance();
 		return $oContext->allow_rewrite;
@@ -2675,7 +2675,7 @@ class Context
 	 * @param string $path URL path
 	 * @return string Converted path
 	 */
-	function pathToUrl($path)
+	static function pathToUrl($path)
 	{
 		$xe = _XE_PATH_;
 		$path = strtr($path, "\\", "/");
@@ -2730,7 +2730,7 @@ class Context
 	 * Get meta tag
 	 * @return array The list of meta tags
 	 */
-	function getMetaTag()
+	static function getMetaTag()
 	{
 		$self = self::getInstance();
 
@@ -2757,7 +2757,7 @@ class Context
 	 * @param mixed $is_http_equiv value of http_equiv
 	 * @return void
 	 */
-	function addMetaTag($name, $content, $is_http_equiv = FALSE)
+	static function addMetaTag($name, $content, $is_http_equiv = FALSE)
 	{
 		$self = self::getInstance();
 		$self->meta_tags[$name . "\t" . ($is_http_equiv ? '1' : '0')] = $content;

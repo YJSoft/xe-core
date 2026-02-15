@@ -21,7 +21,7 @@ class CacheMemcache extends CacheBase
 	 * @param string $url url of memcache
 	 * @return CacheMemcache instance of CacheMemcache
 	 */
-	function getInstance($url)
+	static function getInstance($url)
 	{
 		if(!$GLOBALS['__CacheMemcache__'])
 		{

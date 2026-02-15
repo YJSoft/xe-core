@@ -21,7 +21,7 @@ class CacheFile extends CacheBase
 	 *
 	 * @return CacheFile instance of CacheFile
 	 */
-	function getInstance()
+	static function getInstance()
 	{
 		if(!$GLOBALS['__CacheFile__'])
 		{

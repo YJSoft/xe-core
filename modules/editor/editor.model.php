@@ -128,7 +128,7 @@ class editorModel extends editor
 			return $xml_info;
 		}
 		// Return after parsing and caching if the cached file does not exist
-		$oParser = new XmlParser();
+		$oParser = new XeXmlParser();
 		$xml_doc = $oParser->loadXmlFile($xml_file);
 
 		$component_info->component_name = $drComponentName;
@@ -782,7 +782,7 @@ class editorModel extends editor
 			return $xml_info;
 		}
 
-		$oParser = new XmlParser();
+		$oParser = new XeXmlParser();
 		$xml_doc = $oParser->loadXmlFile($xml_file);
 
 		// Component information listed
