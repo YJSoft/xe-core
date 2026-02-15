@@ -15,18 +15,6 @@ jobs:
       matrix:
         experimental: [false]
         php: ['5.3', '5.4', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
-        
-        include:
-          - php: '8.0'
-            experimental: true
-          - php: '8.1'
-            experimental: true
-          - php: '8.2'
-            experimental: true
-          - php: '8.3'
-            experimental: true
-          - php: '8.4'
-            experimental: true
 
     continue-on-error: ${{ matrix.experimental }}
 
@@ -69,13 +57,6 @@ jobs:
     - name: Install Composer dependencies
       if: matrix.php != '5.3'
       run: composer install --prefer-dist --no-progress
-
-    - name: Upgrade Codeception for PHP 8+
-      if: matrix.php >= '8.0'
-      run: |
-        composer require "codeception/codeception:^4.2" --dev --with-all-dependencies --no-interaction
-        composer require codeception/module-db --dev --with-all-dependencies --no-interaction
-        composer require codeception/module-phpbrowser --dev  
 
     - name: Start PHP Server
       if: matrix.php != '5.3'
