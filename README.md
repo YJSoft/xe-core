@@ -6,6 +6,7 @@ YJSoft XE Fork
 
 [![License](http://img.shields.io/badge/license-GNU%20LGPL-brightgreen.svg)](http://www.gnu.org/licenses/gpl.html)
 [![Latest release](http://img.shields.io/github/release/YJSoft/xe-core.svg)](https://github.com/YJSoft/xe-core/releases)
+[![CI](https://github.com/YJSoft/xe-core/actions/workflows/ci.yml/badge.svg)](https://github.com/YJSoft/xe-core/actions/workflows/ci.yml)
 
 YJSoft XE Fork는 누구나 쉽고 편하고 자유롭게 콘텐츠를 발행을 할 수 있도록 하기 위한 CMS(Content Management System)인 XpressEngine의 비공식 보안 패치 버전입니다.
 오픈소스 라이선스로 누구나 사용 또는 개작할 수 있습니다.
