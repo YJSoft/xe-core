@@ -72,7 +72,9 @@ jobs:
 
     - name: Upgrade Codeception for PHP 8+
       if: matrix.php >= '8.0'
-      run: composer require "codeception/codeception:^4.2" --dev --with-all-dependencies --no-interaction
+      run: |
+        composer require "codeception/codeception:^4.2" --dev --with-all-dependencies --no-interaction
+        composer require codeception/module-db --dev --with-all-dependencies --no-interaction
 
     - name: Start PHP Server
       if: matrix.php != '5.3'
