@@ -8,17 +8,15 @@ on:
 
 jobs:
   build:
+    name: PHP ${{ matrix.php }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        # 기본적으로 experimental은 false로 설정
         experimental: [false]
-        # PHP 5.3 ~ 7.4 (안정적인 버전들)
         php: ['5.3', '5.4', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
         
         include:
-          # PHP 8.x 버전 추가 (실패 허용)
           - php: '8.0'
             experimental: true
           - php: '8.1'
@@ -30,7 +28,6 @@ jobs:
           - php: '8.4'
             experimental: true
 
-    # experimental: true인 경우(PHP 8.x) 실패해도 전체 빌드를 실패 처리하지 않음
     continue-on-error: ${{ matrix.experimental }}
 
     services:
@@ -55,8 +52,6 @@ jobs:
         tools: composer
         coverage: none
 
-    # Ubuntu 24.04는 최신 환경이므로 Node 10 같은 구버전은 호환성 문제가 있을 수 있음.
-    # 안전하게 v16 정도로 설정하거나, 필요시 조정하세요.
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -67,18 +62,18 @@ jobs:
         npm install -g grunt-cli
         npm install
 
-    # [수정됨] PHP 7.2 이상에서 Composer 보안 경고로 인한 설치 차단 해제
-    # codeception ~2.0이 오래되어 발생하는 문제이므로 block-insecure를 false로 설정
     - name: Configure Composer Security Settings
       if: matrix.php >= '7.2'
       run: composer config audit.block-insecure false
 
-    # Composer 설치 (PHP 5.3 제외)
     - name: Install Composer dependencies
       if: matrix.php != '5.3'
-      run: composer install --prefer-dist --no-progress
+      run: composer install --prefer-dist --no-progress --ignore-platform-reqs
 
-    # PHP 내장 서버 실행 (PHP 5.3 제외)
+    - name: Upgrade Codeception for PHP 8+
+      if: matrix.php >= '8.0'
+      run: composer require "codeception/codeception:^4.2" --dev --with-all-dependencies --ignore-platform-reqs --no-interaction
+
     - name: Start PHP Server
       if: matrix.php != '5.3'
       run: |
@@ -90,7 +85,6 @@ jobs:
         grunt lint --force
         grunt minify
 
-    # Codeception 실행 (PHP 5.3 제외)
     - name: Run Codeception
       if: matrix.php != '5.3'
       run: |
