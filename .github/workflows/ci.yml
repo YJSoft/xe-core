@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        experimental: [false]
+        php: ['5.3', '5.4', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
+        
+        include:
+          - php: '8.0'
+            experimental: true
+          - php: '8.1'
+            experimental: true
+          - php: '8.2'
+            experimental: true
+          - php: '8.3'
+            experimental: true
+          - php: '8.4'
+            experimental: true
+
+    continue-on-error: ${{ matrix.experimental }}
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: xe_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: mysql, mysqli, pdo, pdo_mysql, mbstring, dom, gd, zip, curl
+        tools: composer
+        coverage: none
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '16'
+
+    - name: Install NPM dependencies
+      run: |
+        npm install -g grunt-cli
+        npm install
+
+    - name: Configure Composer Security Settings
+      if: matrix.php >= '7.2'
+      run: composer config audit.block-insecure false
+
+    - name: Install Composer dependencies
+      if: matrix.php != '5.3'
+      run: composer install --prefer-dist --no-progress
+
+    - name: Upgrade Codeception for PHP 8+
+      if: matrix.php >= '8.0'
+      run: |
+        composer require "codeception/codeception:^4.2" --dev --with-all-dependencies --no-interaction
+        composer require codeception/module-db --dev --with-all-dependencies --no-interaction
+        composer require codeception/module-phpbrowser --dev  
+
+    - name: Start PHP Server
+      if: matrix.php != '5.3'
+      run: |
+        php -S 127.0.0.1:8000 &
+        sleep 3
+
+    - name: Run Grunt tasks
+      run: |
+        grunt lint --force
+        grunt minify
+
+    - name: Run Codeception
+      if: matrix.php != '5.3'
+      run: |
+        ./vendor/bin/codecept build
+        ./vendor/bin/codecept run -d --fail-fast --env travis
