@@ -16,7 +16,7 @@ class rssModel extends rss
 	 * @param bool $absolute_url
 	 * @return string
 	 */
-	function getModuleFeedUrl($vid, $mid, $format = 'rss', $absolute_url = false)
+	public function getModuleFeedUrl($vid, $mid, $format = 'rss', $absolute_url = false)
 	{
 		if($absolute_url)
 		{
@@ -34,7 +34,7 @@ class rssModel extends rss
 	 * @param integer $module_srl Module_srl
 	 * @return BaseObject
 	 */
-	function getRssModuleConfig($module_srl)
+	public function getRssModuleConfig($module_srl)
 	{
 		// Get the configurations of the rss module
 		$oModuleModel = getModel('module');

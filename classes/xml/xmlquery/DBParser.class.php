@@ -28,7 +28,7 @@ class DBParser
 	 *
 	 * @var string
 	 */
-	var $escape_char_left;
+	public $escape_char_left;
 
 	/**
 	 * Character for escape target value on the right
@@ -40,7 +40,7 @@ class DBParser
 	 *
 	 * @var string
 	 */
-	var $escape_char_right;
+	public $escape_char_right;
 
 	/**
 	 * Table prefix string
@@ -49,7 +49,7 @@ class DBParser
 	 *
 	 * @var string
 	 */
-	var $table_prefix;
+	public $table_prefix;
 
 	/**
 	 * Constructor
@@ -60,7 +60,7 @@ class DBParser
 	 *
 	 * @return void
 	 */
-	function __construct($escape_char_left, $escape_char_right = "", $table_prefix = "xe_")
+	public function __construct($escape_char_left, $escape_char_right = "", $table_prefix = "xe_")
 	{
 		$this->escape_char_left = $escape_char_left;
 		if($escape_char_right !== "")
@@ -80,7 +80,7 @@ class DBParser
 	 * @param string $leftOrRight left or right
 	 * @return string
 	 */
-	function getEscapeChar($leftOrRight)
+	public function getEscapeChar($leftOrRight)
 	{
 		if($leftOrRight === 'left')
 		{
@@ -98,7 +98,7 @@ class DBParser
 	 * @param mixed $name
 	 * @return string
 	 */
-	function escape($name)
+	public function escape($name)
 	{
 		return $this->escape_char_left . $name . $this->escape_char_right;
 	}
@@ -109,7 +109,7 @@ class DBParser
 	 * @param string $name
 	 * @return string
 	 */
-	function escapeString($name)
+	public function escapeString($name)
 	{
 		return "'" . $this->escapeStringValue($name) . "'";
 	}
@@ -120,7 +120,7 @@ class DBParser
 	 * @param string $value
 	 * @return string
 	 */
-	function escapeStringValue($value)
+	public function escapeStringValue($value)
 	{
 		if($value == "*")
 		{
@@ -140,7 +140,7 @@ class DBParser
 	 *
 	 * @return string table full name with table prefix
 	 */
-	function parseTableName($name)
+	public function parseTableName($name)
 	{
 		return $this->table_prefix . $name;
 	}
@@ -152,7 +152,7 @@ class DBParser
 	 *
 	 * @return string column name after escape
 	 */
-	function parseColumnName($name)
+	public function parseColumnName($name)
 	{
 		return $this->escapeColumn($name);
 	}
@@ -163,7 +163,7 @@ class DBParser
 	 * @param string $column_name
 	 * @return string column name with db name
 	 */
-	function escapeColumn($column_name)
+	public function escapeColumn($column_name)
 	{
 		if($this->isUnqualifiedColumnName($column_name))
 		{
@@ -187,7 +187,7 @@ class DBParser
 	 * @param string $column_name
 	 * @return bool
 	 */
-	function isUnqualifiedColumnName($column_name)
+	public function isUnqualifiedColumnName($column_name)
 	{
 		if(strpos($column_name, '.') === FALSE && strpos($column_name, '(') === FALSE)
 		{
@@ -205,7 +205,7 @@ class DBParser
 	 * @param string $column_name
 	 * @return bool
 	 */
-	function isQualifiedColumnName($column_name)
+	public function isQualifiedColumnName($column_name)
 	{
 		if(strpos($column_name, '.') !== FALSE && strpos($column_name, '(') === FALSE)
 		{
@@ -232,7 +232,7 @@ class DBParser
 	 * @param $column_name
 	 * @return string
 	 */
-	function parseExpression($column_name)
+	public function parseExpression($column_name)
 	{
 		$functions = preg_split('/([\+\-\*\/\ ])/', $column_name, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		foreach($functions as $k => $v)
@@ -281,7 +281,7 @@ class DBParser
 	 * @param string $column_name
 	 * @return bool
 	 */
-	function isStar($column_name)
+	public function isStar($column_name)
 	{
 		if(substr($column_name, -1) == '*')
 		{
@@ -297,7 +297,7 @@ class DBParser
 	 * @param string $column_name
 	 * @return bool
 	 */
-	function isStarFunction($column_name)
+	public function isStarFunction($column_name)
 	{
 		if(strpos($column_name, "(*)") !== FALSE)
 		{
@@ -311,7 +311,7 @@ class DBParser
 	 * @param string $column_name
 	 * @return string
 	 */
-	function escapeColumnExpression($column_name)
+	public function escapeColumnExpression($column_name)
 	{
 		if($this->isStar($column_name))
 		{

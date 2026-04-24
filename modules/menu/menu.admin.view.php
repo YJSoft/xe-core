@@ -10,13 +10,13 @@
  */
 class menuAdminView extends menu
 {
-	var $tmpMenu = null;
+	public $tmpMenu = null;
 
 	/**
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		$this->setTemplatePath($this->module_path.'tpl');
 	}
@@ -26,7 +26,7 @@ class menuAdminView extends menu
 	 * Site map admin menu index page
 	 * @return void
 	 */
-	function dispMenuAdminSiteMap()
+	public function dispMenuAdminSiteMap()
 	{
 		Context::loadLang(_XE_PATH_.'modules/document/lang/');
 		Context::loadLang(_XE_PATH_.'modules/layout/lang/');
@@ -142,7 +142,7 @@ class menuAdminView extends menu
 	 * @param array $menu
 	 * @return void
 	 */
-	function _menuInfoSetting(&$menu)
+	public function _menuInfoSetting(&$menu)
 	{
 		$oModuleModel = getModel('module');
 		if($menu['url'] && strncasecmp('http', $menu['url'], 4) !== 0)
@@ -173,7 +173,7 @@ class menuAdminView extends menu
 	 * @param array $menuItems
 	 * @return array
 	 */
-	function _arrangeMenuItem($menuItems)
+	public function _arrangeMenuItem($menuItems)
 	{
 		if(is_array($menuItems))
 		{

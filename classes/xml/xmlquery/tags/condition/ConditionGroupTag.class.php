@@ -15,13 +15,13 @@ class ConditionGroupTag
 	 * condition list
 	 * @var string|array value is ConditionTag object
 	 */
-	var $conditions;
+	public $conditions;
 
 	/**
 	 * pipe
 	 * @var string
 	 */
-	var $pipe;
+	public $pipe;
 
 	/**
 	 * constructor
@@ -29,7 +29,7 @@ class ConditionGroupTag
 	 * @param string $pipe
 	 * @return void
 	 */
-	function __construct($conditions, $pipe = "")
+	public function __construct($conditions, $pipe = "")
 	{
 		$this->pipe = $pipe;
 
@@ -45,7 +45,7 @@ class ConditionGroupTag
 		}
 	}
 
-	function getConditions()
+	public function getConditions()
 	{
 		return $this->conditions;
 	}
@@ -54,7 +54,7 @@ class ConditionGroupTag
 	 * ConditionTag object to string
 	 * @return string
 	 */
-	function getConditionGroupString()
+	public function getConditionGroupString()
 	{
 		$conditions_string = 'array(' . PHP_EOL;
 		foreach($this->conditions as $condition)
@@ -67,7 +67,7 @@ class ConditionGroupTag
 		return sprintf("new ConditionGroup(%s%s)", $conditions_string, $this->pipe ? ',\'' . $this->pipe . '\'' : '');
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		foreach($this->conditions as $condition)

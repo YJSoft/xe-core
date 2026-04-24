@@ -10,7 +10,7 @@ class pageAPI extends page
 	/**
 	 * @brief Page information
 	 */
-	function dispPageIndex(&$oModule)
+	public function dispPageIndex(&$oModule)
 	{
 		$page_content = Context::get('page_content');
 		$oWidgetController = getController('widget');

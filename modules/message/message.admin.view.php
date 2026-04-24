@@ -10,14 +10,14 @@ class messageAdminView extends message
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Configuration
 	 */
-	function dispMessageAdminConfig()
+	public function dispMessageAdminConfig()
 	{
 		// Get a list of skins(themes)
 		$oModuleModel = getModel('module');

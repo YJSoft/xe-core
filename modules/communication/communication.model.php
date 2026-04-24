@@ -13,7 +13,7 @@ class communicationModel extends communication
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -22,7 +22,7 @@ class communicationModel extends communication
 	 * get the configuration
 	 * @return object config of communication module
 	 */
-	function getConfig()
+	public function getConfig()
 	{
 		$oModuleModel = getModel('module');
 		$communication_config = $oModuleModel->getModuleConfig('communication');
@@ -66,7 +66,7 @@ class communicationModel extends communication
 	  * @param array $group
 	  * @return array
 	  */
-	function getGrantArray($default, $group)
+	public function getGrantArray($default, $group)
 	{
 		$grant = array();
 		if($default!="")
@@ -105,7 +105,7 @@ class communicationModel extends communication
 	  * @param array $arrGrant
 	  * @return boolean
 	  */
-	function checkGrant($arrGrant)
+	public function checkGrant($arrGrant)
 	{
 		if(!$arrGrant)
 			return false;
@@ -153,7 +153,7 @@ class communicationModel extends communication
 	 * @param array $columnList
 	 * @return object message information
 	 */
-	function getSelectedMessage($message_srl, $columnList = array())
+	public function getSelectedMessage($message_srl, $columnList = array())
 	{
 		$logged_info = Context::get('logged_info');
 
@@ -209,7 +209,7 @@ class communicationModel extends communication
 	 * @param array $columnList
 	 * @return object message information
 	 */
-	function getNewMessage($columnList = array())
+	public function getNewMessage($columnList = array())
 	{
 		$logged_info = Context::get('logged_info');
 
@@ -237,7 +237,7 @@ class communicationModel extends communication
 	 * @param array $columnList
 	 * @return BaseObject
 	 */
-	function getMessages($message_type = "R", $columnList = array())
+	public function getMessages($message_type = "R", $columnList = array())
 	{
 		$logged_info = Context::get('logged_info');
 		$args = new stdClass();
@@ -278,7 +278,7 @@ class communicationModel extends communication
 	 * @param array $columnList
 	 * @return BaseObject
 	 */
-	function getFriends($friend_group_srl = 0, $columnList = array())
+	public function getFriends($friend_group_srl = 0, $columnList = array())
 	{
 		$logged_info = Context::get('logged_info');
 
@@ -302,7 +302,7 @@ class communicationModel extends communication
 	 * @param int $member_srl
 	 * @return int
 	 */
-	function isAddedFriend($member_srl)
+	public function isAddedFriend($member_srl)
 	{
 		$logged_info = Context::get('logged_info');
 
@@ -320,7 +320,7 @@ class communicationModel extends communication
 	 * @param int $friend_group_srl
 	 * @return object
 	 */
-	function getFriendGroupInfo($friend_group_srl)
+	public function getFriendGroupInfo($friend_group_srl)
 	{
 		$logged_info = Context::get('logged_info');
 
@@ -337,7 +337,7 @@ class communicationModel extends communication
 	 * Get a list of groups
 	 * @return array
 	 */
-	function getFriendGroups()
+	public function getFriendGroups()
 	{
 		$logged_info = Context::get('logged_info');
 
@@ -360,7 +360,7 @@ class communicationModel extends communication
 	 * @param int $target_srl 
 	 * @return boolean (true : friend, false : not friend) 
 	 */
-	function isFriend($target_srl)
+	public function isFriend($target_srl)
 	{
 		$logged_info = Context::get('logged_info');
 

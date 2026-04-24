@@ -17,7 +17,7 @@ class ConditionSubquery extends Condition
 	 * @param string $pipe
 	 * @return void
 	 */
-	function __construct($column_name, $argument, $operation, $pipe = "")
+	public function __construct($column_name, $argument, $operation, $pipe = "")
 	{
 		parent::__construct($column_name, $argument, $operation, $pipe);
 		$this->_value = $this->argument->toString();

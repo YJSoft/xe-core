@@ -10,7 +10,7 @@ class fileAdminController extends file
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -20,7 +20,7 @@ class fileAdminController extends file
 	 * @param int $module_srl Sequence of module to delete files
 	 * @return BaseObject
 	 */
-	function deleteModuleFiles($module_srl)
+	public function deleteModuleFiles($module_srl)
 	{
 		// Get a full list of attachments
 		$args = new stdClass();
@@ -58,7 +58,7 @@ class fileAdminController extends file
 	 *
 	 * @return BaseObject
 	 */
-	function procFileAdminDeleteChecked()
+	public function procFileAdminDeleteChecked()
 	{
 		// An error appears if no document is selected
 		$cart = Context::get('cart');
@@ -89,7 +89,7 @@ class fileAdminController extends file
 	 *
 	 * @return BaseObject
 	 */
-	function procFileAdminInsertConfig()
+	public function procFileAdminInsertConfig()
 	{
 		// Get configurations (using module model object)
 		$config = new stdClass();
@@ -112,7 +112,7 @@ class fileAdminController extends file
 	 *
 	 * @return void
 	 */
-	function procFileAdminInsertModuleConfig()
+	public function procFileAdminInsertModuleConfig()
 	{
 		// Get variables
 		$module_srl = Context::get('target_module_srl');
@@ -163,7 +163,7 @@ class fileAdminController extends file
 	 *
 	 * @return BaseObject
 	 */
-	function procFileAdminAddCart()
+	public function procFileAdminAddCart()
 	{
 		$file_srl = (int)Context::get('file_srl');
 		//$fileSrlList = array(500, 502);

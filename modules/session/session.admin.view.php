@@ -10,14 +10,14 @@ class sessionAdminView extends session
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Configure
 	 */
-	function dispSessionAdminIndex()
+	public function dispSessionAdminIndex()
 	{
 		// Set the template file
 		$this->setTemplatePath($this->module_path.'tpl');

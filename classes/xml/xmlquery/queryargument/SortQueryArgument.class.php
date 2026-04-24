@@ -14,7 +14,7 @@ class SortQueryArgument extends QueryArgument
 	 * Change SortQueryArgument object to string
 	 * @return string
 	 */
-	function toString()
+	public function toString()
 	{
 		$arg = sprintf("\n" . '${\'%s_argument\'} = new SortArgument(\'%s\', %s);' . "\n"
 				, $this->argument_name

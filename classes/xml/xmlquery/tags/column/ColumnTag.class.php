@@ -18,14 +18,14 @@ class ColumnTag
 	 * Column name
 	 * @var string
 	 */
-	var $name;
+	public $name;
 
 	/**
 	 * Constructor
 	 * @param string $name
 	 * @return void
 	 */
-	function __construct($name)
+	public function __construct($name)
 	{
 		$this->name = $name;
 	}

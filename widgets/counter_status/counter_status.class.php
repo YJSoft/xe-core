@@ -13,7 +13,7 @@ class counter_status extends WidgetHandler
 	 * Get extra_vars declared in ./widgets/widget/conf/info.xml as arguments
 	 * After generating the result, do not print but return it.
 	 */
-	function proc($args)
+	public function proc($args)
 	{
 		// Get status of the accumulated, yesterday's, today's counts
 		$oCounterModel = getModel('counter');
@@ -35,7 +35,7 @@ class counter_status extends WidgetHandler
 		// Specify a template file
 		$tpl_file = 'counter_status';
 		// Compile a template
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 class seoController extends seo
 {
-	function getBrowserTitle($document_title = null)
+	public function getBrowserTitle($document_title = null)
 	{
 		$site_module_info = Context::get('site_module_info');
 		if ($site_module_info->site_srl != 0) return Context::getBrowserTitle();
@@ -39,7 +39,7 @@ class seoController extends seo
 		return $title;
 	}
 
-	function triggerBeforeDisplay(&$output_content)
+	public function triggerBeforeDisplay(&$output_content)
 	{
 		if (Context::getResponseMethod() != 'HTML') return;
 		if (Context::get('module') == 'admin') return;
@@ -223,7 +223,7 @@ class seoController extends seo
 		if ($config->use_optimize_title == 'Y') Context::setBrowserTitle($piece->title);
 	}
 
-	function triggerAfterFileDeleteFile($data)
+	public function triggerAfterFileDeleteFile($data)
 	{
 		$document_srl = $data->upload_target_srl;
 		if(!$document_srl) return $this->makeObject();
@@ -231,13 +231,13 @@ class seoController extends seo
 		$this->deleteCacheDocumentImages($document_srl);
 	}
 
-	function triggerAfterDocumentUpdateDocument($data)
+	public function triggerAfterDocumentUpdateDocument($data)
 	{
 		$document_srl = $data->document_srl;
 		$this->deleteCacheDocumentImages($document_srl);
 	}
 
-	function triggerAfterDocumentDeleteDocument($data)
+	public function triggerAfterDocumentDeleteDocument($data)
 	{
 		$document_srl = $data->document_srl;
 		$this->deleteCacheDocumentImages($document_srl);

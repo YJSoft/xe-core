@@ -17,7 +17,7 @@ class InsertColumnTagWithoutArgument extends ColumnTag
 	 * @param object $column
 	 * @return void
 	 */
-	function __construct($column)
+	public function __construct($column)
 	{
 		parent::__construct($column->attrs->name);
 		$dbParser = DB::getParser();
@@ -29,7 +29,7 @@ class InsertColumnTagWithoutArgument extends ColumnTag
 	 *
 	 * @return string
 	 */
-	function getExpressionString()
+	public function getExpressionString()
 	{
 		return sprintf('new Expression(\'%s\')', $this->name);
 	}
@@ -39,7 +39,7 @@ class InsertColumnTagWithoutArgument extends ColumnTag
 	 *
 	 * @return null
 	 */
-	function getArgument()
+	public function getArgument()
 	{
 		return NULL;
 	}

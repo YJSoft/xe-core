@@ -15,7 +15,7 @@ class adminAdminController extends admin
 	 * initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		// forbit access if the user is not an administrator
 		$oMemberModel = getModel('member');
@@ -30,7 +30,7 @@ class adminAdminController extends admin
 	 * Admin menu reset
 	 * @return void
 	 */
-	function procAdminMenuReset()
+	public function procAdminMenuReset()
 	{
 		$menuSrl = Context::get('menu_srl');
 		if(!$menuSrl)
@@ -60,7 +60,7 @@ class adminAdminController extends admin
 	 * Regenerate all cache files
 	 * @return void
 	 */
-	function procAdminRecompileCacheFile()
+	public function procAdminRecompileCacheFile()
 	{
 		// rename cache dir
 		$temp_cache_dir = './files/cache_' . $_SERVER['REQUEST_TIME'];
@@ -144,7 +144,7 @@ class adminAdminController extends admin
 	 * Logout
 	 * @return void
 	 */
-	function procAdminLogout()
+	public function procAdminLogout()
 	{
 		$oMemberController = getController('member');
 		$oMemberController->procMemberLogout();
@@ -216,7 +216,7 @@ class adminAdminController extends admin
 		return new BaseObject();
 	}
 
-	function makeDefaultDesignFile($designInfo, $site_srl = 0)
+	public function makeDefaultDesignFile($designInfo, $site_srl = 0)
 	{
 		$buff = array();
 		$buff[] = '<?php if(!defined("__XE__")) exit();';
@@ -251,7 +251,7 @@ class adminAdminController extends admin
 	 * Toggle favorite
 	 * @return void
 	 */
-	function procAdminToggleFavorite()
+	public function procAdminToggleFavorite()
 	{
 		$siteSrl = Context::get('site_srl');
 		$moduleName = Context::get('module_name');
@@ -292,7 +292,7 @@ class adminAdminController extends admin
 	 * Cleanning favorite
 	 * @return BaseObject
 	 */
-	function cleanFavorite()
+	public function cleanFavorite()
 	{
 		$oModel = getAdminModel('admin');
 		$output = $oModel->getFavoriteList();
@@ -340,7 +340,7 @@ class adminAdminController extends admin
 	 * Enviroment gathering agreement
 	 * @return void
 	 */
-	function procAdminEnviromentGatheringAgreement()
+	public function procAdminEnviromentGatheringAgreement()
 	{
 		$isAgree = Context::get('is_agree');
 		if($isAgree == 'true')
@@ -360,7 +360,7 @@ class adminAdminController extends admin
 	 * Admin config update
 	 * @return void
 	 */
-	function procAdminUpdateConfig()
+	public function procAdminUpdateConfig()
 	{
 		$adminTitle = Context::get('adminTitle');
 		$file = Context::get('adminLogo');
@@ -423,7 +423,7 @@ class adminAdminController extends admin
 	 * Admin logo delete
 	 * @return void
 	 */
-	function procAdminDeleteLogo()
+	public function procAdminDeleteLogo()
 	{
 		$oModuleModel = getModel('module');
 		$oAdminConfig = $oModuleModel->getModuleConfig('admin');
@@ -444,7 +444,7 @@ class adminAdminController extends admin
 	 * Insert favorite
 	 * @return object query result
 	 */
-	function _insertFavorite($siteSrl, $module, $type = 'module')
+	public function _insertFavorite($siteSrl, $module, $type = 'module')
 	{
 		$args = new stdClass();
 		$args->adminFavoriteSrl = getNextSequence();
@@ -459,7 +459,7 @@ class adminAdminController extends admin
 	 * Delete favorite
 	 * @return object query result
 	 */
-	function _deleteFavorite($favoriteSrl)
+	public function _deleteFavorite($favoriteSrl)
 	{
 		$args = new stdClass();
 		$args->admin_favorite_srl = $favoriteSrl;
@@ -471,7 +471,7 @@ class adminAdminController extends admin
 	 * Delete all favorite
 	 * @return object query result
 	 */
-	function _deleteAllFavorite()
+	public function _deleteAllFavorite()
 	{
 		$args = new stdClass;
 		$output = executeQuery('admin.deleteAllFavorite', $args);
@@ -482,7 +482,7 @@ class adminAdminController extends admin
 	 * Remove admin icon
 	 * @return object|void
 	 */
-	function procAdminRemoveIcons()
+	public function procAdminRemoveIcons()
 	{
 
 		$site_info = Context::get('site_module_info');
@@ -505,7 +505,7 @@ class adminAdminController extends admin
 		$this->setMessage('success_deleted');
 	}
 
-	function procAdminUpdateSitelock()
+	public function procAdminUpdateSitelock()
 	{
 		$vars = Context::getRequestVars();
 		$oInstallController = getController('install');
@@ -548,7 +548,7 @@ class adminAdminController extends admin
 		}
 	}
 
-	function procAdminUpdateEmbedWhitelist()
+	public function procAdminUpdateEmbedWhitelist()
 	{
 		$vars = Context::getRequestVars();
 

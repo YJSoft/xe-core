@@ -16,13 +16,13 @@ class commentItem extends BaseObject
 	 * comment number
 	 * @var int
 	 */
-	var $comment_srl = 0;
+	public $comment_srl = 0;
 
 	/**
 	 * Get the column list int the table
 	 * @var array
 	 */
-	var $columnList = array();
+	public $columnList = array();
 
 	/**
 	 * Constructor
@@ -30,14 +30,14 @@ class commentItem extends BaseObject
 	 * @param array $columnList
 	 * @return void
 	 */
-	function __construct($comment_srl = 0, $columnList = array())
+	public function __construct($comment_srl = 0, $columnList = array())
 	{
 		$this->comment_srl = $comment_srl;
 		$this->columnList = $columnList;
 		$this->_loadFromDB();
 	}
 
-	function setComment($comment_srl)
+	public function setComment($comment_srl)
 	{
 		$this->comment_srl = $comment_srl;
 		$this->_loadFromDB();
@@ -47,7 +47,7 @@ class commentItem extends BaseObject
 	 * Load comment data from DB and set to commentItem object
 	 * @return void
 	 */
-	function _loadFromDB()
+	public function _loadFromDB()
 	{
 		if(!$this->comment_srl)
 		{
@@ -65,7 +65,7 @@ class commentItem extends BaseObject
 	 * Comment attribute set to BaseObject object
 	 * @return void
 	 */
-	function setAttribute($attribute)
+	public function setAttribute($attribute)
 	{
 		if(!$attribute->comment_srl)
 		{
@@ -86,12 +86,12 @@ class commentItem extends BaseObject
 		}
 	}
 
-	function isExists()
+	public function isExists()
 	{
 		return $this->comment_srl ? TRUE : FALSE;
 	}
 
-	function isGranted()
+	public function isGranted()
 	{
 		if($_SESSION['own_comment'][$this->comment_srl])
 		{
@@ -123,18 +123,18 @@ class commentItem extends BaseObject
 		return FALSE;
 	}
 
-	function setGrant()
+	public function setGrant()
 	{
 		$_SESSION['own_comment'][$this->comment_srl] = TRUE;
 		$this->is_granted = TRUE;
 	}
 
-	function setAccessible()
+	public function setAccessible()
 	{
 		$_SESSION['accessibled_comment'][$this->comment_srl] = TRUE;
 	}
 
-	function isEditable()
+	public function isEditable()
 	{
 		if($this->isGranted() || !$this->get('member_srl'))
 		{
@@ -143,12 +143,12 @@ class commentItem extends BaseObject
 		return FALSE;
 	}
 
-	function isSecret()
+	public function isSecret()
 	{
 		return $this->get('is_secret') == 'Y' ? TRUE : FALSE;
 	}
 
-	function isAccessible()
+	public function isAccessible()
 	{
 		if($_SESSION['accessibled_comment'][$this->comment_srl])
 		{
@@ -172,7 +172,7 @@ class commentItem extends BaseObject
 		return FALSE;
 	}
 
-	function useNotify()
+	public function useNotify()
 	{
 		return $this->get('notify_message') == 'Y' ? TRUE : FALSE;
 	}
@@ -181,7 +181,7 @@ class commentItem extends BaseObject
 	 * Notify to comment owner
 	 * @return void
 	 */
-	function notify($type, $content)
+	public function notify($type, $content)
 	{
 		// return if not useNotify
 		if(!$this->useNotify())
@@ -222,7 +222,7 @@ class commentItem extends BaseObject
 		$oCommunicationController->sendMessage($sender_member_srl, $receiver_srl, $title, $content, FALSE);
 	}
 
-	function getIpAddress()
+	public function getIpAddress()
 	{
 		if($this->isGranted())
 		{
@@ -232,7 +232,7 @@ class commentItem extends BaseObject
 		return '*' . strstr($this->get('ipaddress'), '.');
 	}
 
-	function isExistsHomepage()
+	public function isExistsHomepage()
 	{
 		if(trim($this->get('homepage')))
 		{
@@ -242,7 +242,7 @@ class commentItem extends BaseObject
 		return FALSE;
 	}
 
-	function getHomepageUrl()
+	public function getHomepageUrl()
 	{
 		$url = trim($this->get('homepage'));
 		if(!$url)
@@ -258,22 +258,22 @@ class commentItem extends BaseObject
 		return escape($url, false);
 	}
 
-	function getMemberSrl()
+	public function getMemberSrl()
 	{
 		return $this->get('member_srl');
 	}
 
-	function getUserID()
+	public function getUserID()
 	{
 		return escape($this->get('user_id'), false);
 	}
 
-	function getUserName()
+	public function getUserName()
 	{
 		return escape($this->get('user_name'), false);
 	}
 
-	function getNickName()
+	public function getNickName()
 	{
 		return escape($this->get('nick_name'), false);
 	}
@@ -282,7 +282,7 @@ class commentItem extends BaseObject
 	 * Return content with htmlspecialchars
 	 * @return string
 	 */
-	function getContentText($strlen = 0)
+	public function getContentText($strlen = 0)
 	{
 		if($this->isSecret() && !$this->isAccessible())
 		{
@@ -303,7 +303,7 @@ class commentItem extends BaseObject
 	 * Return content after filter
 	 * @return string
 	 */
-	function getContent($add_popup_menu = TRUE, $add_content_info = TRUE, $add_xe_content_class = TRUE)
+	public function getContent($add_popup_menu = TRUE, $add_content_info = TRUE, $add_xe_content_class = TRUE)
 	{
 		if($this->isSecret() && !$this->isAccessible())
 		{
@@ -349,7 +349,7 @@ class commentItem extends BaseObject
 	 * Return summary content
 	 * @return string
 	 */
-	function getSummary($str_size = 50, $tail = '...')
+	public function getSummary($str_size = 50, $tail = '...')
 	{
 		$content = $this->getContent(FALSE, FALSE);
 
@@ -377,12 +377,12 @@ class commentItem extends BaseObject
 		return $content;
 	}
 
-	function getRegdate($format = 'Y.m.d H:i:s')
+	public function getRegdate($format = 'Y.m.d H:i:s')
 	{
 		return zdate($this->get('regdate'), $format);
 	}
 
-	function getRegdateTime()
+	public function getRegdateTime()
 	{
 		$regdate = $this->get('regdate');
 		$year = substr($regdate, 0, 4);
@@ -394,22 +394,22 @@ class commentItem extends BaseObject
 		return mktime($hour, $min, $sec, $month, $day, $year);
 	}
 
-	function getRegdateGM()
+	public function getRegdateGM()
 	{
 		return $this->getRegdate('D, d M Y H:i:s') . ' ' . $GLOBALS['_time_zone'];
 	}
 
-	function getUpdate($format = 'Y.m.d H:i:s')
+	public function getUpdate($format = 'Y.m.d H:i:s')
 	{
 		return zdate($this->get('last_update'), $format);
 	}
 
-	function getPermanentUrl()
+	public function getPermanentUrl()
 	{
 		return getFullUrl('', 'mid', $this->getCommentMid(), 'document_srl', $this->get('document_srl')) . '#comment_' . $this->get('comment_srl');
 	}
 
-	function getUpdateTime()
+	public function getUpdateTime()
 	{
 		$year = substr($this->get('last_update'), 0, 4);
 		$month = substr($this->get('last_update'), 4, 2);
@@ -420,12 +420,12 @@ class commentItem extends BaseObject
 		return mktime($hour, $min, $sec, $month, $day, $year);
 	}
 
-	function getUpdateGM()
+	public function getUpdateGM()
 	{
 		return gmdate("D, d M Y H:i:s", $this->getUpdateTime());
 	}
 
-	function hasUploadedFiles()
+	public function hasUploadedFiles()
 	{
 		if(($this->isSecret() && !$this->isAccessible()) && !$this->isGranted())
 		{
@@ -434,7 +434,7 @@ class commentItem extends BaseObject
 		return $this->get('uploaded_count') ? TRUE : FALSE;
 	}
 
-	function getUploadedFiles()
+	public function getUploadedFiles()
 	{
 		if(($this->isSecret() && !$this->isAccessible()) && !$this->isGranted())
 		{
@@ -455,7 +455,7 @@ class commentItem extends BaseObject
 	 * Return the editor html
 	 * @return string
 	 */
-	function getEditor()
+	public function getEditor()
 	{
 		$module_srl = $this->get('module_srl');
 		if(!$module_srl)
@@ -470,7 +470,7 @@ class commentItem extends BaseObject
 	 * Return author's profile image
 	 * @return object
 	 */
-	function getProfileImage()
+	public function getProfileImage()
 	{
 		if(!$this->isExists() || !$this->get('member_srl'))
 		{
@@ -490,7 +490,7 @@ class commentItem extends BaseObject
 	 * Return author's signiture
 	 * @return string
 	 */
-	function getSignature()
+	public function getSignature()
 	{
 		// pass if the posting not exists.
 		if(!$this->isExists() || !$this->get('member_srl'))
@@ -520,7 +520,7 @@ class commentItem extends BaseObject
 		return $signature;
 	}
 
-	function thumbnailExists($width = 80, $height = 0, $type = '')
+	public function thumbnailExists($width = 80, $height = 0, $type = '')
 	{
 		if(!$this->comment_srl)
 		{
@@ -535,7 +535,7 @@ class commentItem extends BaseObject
 		return TRUE;
 	}
 
-	function getThumbnail($width = 80, $height = 0, $thumbnail_type = '')
+	public function getThumbnail($width = 80, $height = 0, $thumbnail_type = '')
 	{
 		// return false if no doc exists
 		if(!$this->comment_srl)
@@ -694,7 +694,7 @@ class commentItem extends BaseObject
 		return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
 	}
 
-	function isCarted()
+	public function isCarted()
 	{
 		return $_SESSION['comment_management'][$this->comment_srl];
 	}
@@ -703,7 +703,7 @@ class commentItem extends BaseObject
 	 * Returns the comment's mid in order to construct SEO friendly URLs
 	 * @return string
 	 */
-	function getCommentMid()
+	public function getCommentMid()
 	{
 		$model = getModel('module');
 		$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));

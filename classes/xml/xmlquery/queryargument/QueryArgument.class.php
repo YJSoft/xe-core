@@ -14,43 +14,43 @@ class QueryArgument
 	 * Argument name
 	 * @var string
 	 */
-	var $argument_name;
+	public $argument_name;
 
 	/**
 	 * Variable name
 	 * @var string
 	 */
-	var $variable_name;
+	public $variable_name;
 
 	/**
 	 * Argument validator
 	 * @var QueryArgumentValidator
 	 */
-	var $argument_validator;
+	public $argument_validator;
 
 	/**
 	 * Column name
 	 * @var string
 	 */
-	var $column_name;
+	public $column_name;
 
 	/**
 	 * Table name
 	 * @var string
 	 */
-	var $table_name;
+	public $table_name;
 
 	/**
 	 * Operation
 	 * @var string
 	 */
-	var $operation;
+	public $operation;
 
 	/**
 	 * Ignore value
 	 * @var bool
 	 */
-	var $ignore_value;
+	public $ignore_value;
 
 	/**
 	 * constructor
@@ -58,7 +58,7 @@ class QueryArgument
 	 * @param bool $ignore_value
 	 * @return void
 	 */
-	function __construct($tag, $ignore_value = FALSE)
+	public function __construct($tag, $ignore_value = FALSE)
 	{
 		static $number_of_arguments = 0;
 
@@ -102,27 +102,27 @@ class QueryArgument
 		$this->ignore_value = $ignore_value;
 	}
 
-	function getArgumentName()
+	public function getArgumentName()
 	{
 		return $this->argument_name;
 	}
 
-	function getColumnName()
+	public function getColumnName()
 	{
 		return $this->column_name;
 	}
 
-	function getTableName()
+	public function getTableName()
 	{
 		return $this->table_name;
 	}
 
-	function getValidatorString()
+	public function getValidatorString()
 	{
 		return $this->argument_validator->toString();
 	}
 
-	function isConditionArgument()
+	public function isConditionArgument()
 	{
 		if($this->operation)
 		{
@@ -135,7 +135,7 @@ class QueryArgument
 	 * Change QueryArgument object to string
 	 * @return string
 	 */
-	function toString()
+	public function toString()
 	{
 		if($this->isConditionArgument())
 		{

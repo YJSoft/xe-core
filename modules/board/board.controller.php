@@ -13,14 +13,14 @@ class boardController extends board
 	/**
 	 * @brief initialization
 	 **/
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief insert document
 	 **/
-	function procBoardInsertDocument()
+	public function procBoardInsertDocument()
 	{
 		// check grant
 		if($this->module_info->module != "board")
@@ -197,7 +197,7 @@ class boardController extends board
 	/**
 	 * @brief delete the document
 	 **/
-	function procBoardDeleteDocument()
+	public function procBoardDeleteDocument()
 	{
 		// get the document_srl
 		$document_srl = Context::get('document_srl');
@@ -208,7 +208,7 @@ class boardController extends board
 			return $this->doError('msg_invalid_document');
 		}
 
-		$oDocumentModel = &getModel('document');
+		$oDocumentModel = getModel('document');
 		$oDocument = $oDocumentModel->getDocument($document_srl);
 		// check protect content
 		if($this->module_info->protect_content=="Y" && $oDocument->get('comment_count')>0 && $this->grant->manager==false)
@@ -239,7 +239,7 @@ class boardController extends board
 	/**
 	 * @brief vote
 	 **/
-	function procBoardVoteDocument()
+	public function procBoardVoteDocument()
 	{
 		// generate document module controller object
 		$oDocumentController = getController('document');
@@ -251,7 +251,7 @@ class boardController extends board
 	/**
 	 * @brief insert comments
 	 **/
-	function procBoardInsertComment()
+	public function procBoardInsertComment()
 	{
 		// check grant
 		if(!$this->grant->write_comment)
@@ -380,7 +380,7 @@ class boardController extends board
 	/**
 	 * @brief delete the comment
 	 **/
-	function procBoardDeleteComment()
+	public function procBoardDeleteComment()
 	{
 		// get the comment_srl
 		$comment_srl = Context::get('comment_srl');
@@ -410,7 +410,7 @@ class boardController extends board
 	/**
 	 * @brief delete the tracjback
 	 **/
-	function procBoardDeleteTrackback()
+	public function procBoardDeleteTrackback()
 	{
 		$trackback_srl = Context::get('trackback_srl');
 
@@ -437,7 +437,7 @@ class boardController extends board
 	/**
 	 * @brief check the password for document and comment
 	 **/
-	function procBoardVerificationPassword()
+	public function procBoardVerificationPassword()
 	{
 		// get the id number of the document and the comment
 		$password = Context::get('password');
@@ -486,7 +486,7 @@ class boardController extends board
 	/**
 	 * @brief the trigger for displaying 'view document' link when click the user ID
 	 **/
-	function triggerMemberMenu(&$obj)
+	public function triggerMemberMenu(&$obj)
 	{
 		$member_srl = Context::get('target_srl');
 		$mid = Context::get('cur_mid');

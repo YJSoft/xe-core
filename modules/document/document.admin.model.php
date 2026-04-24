@@ -15,7 +15,7 @@ class documentAdminModel extends document
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -24,7 +24,7 @@ class documentAdminModel extends document
 	 * @param object $obj
 	 * @return object
 	 */
-	function getDocumentTrashList($obj)
+	public function getDocumentTrashList($obj)
 	{
 		// check a list and its order
 		if(!in_array($obj->sort_index, array('list_order','delete_date','title'))) $obj->sort_index = 'list_order';
@@ -79,7 +79,7 @@ class documentAdminModel extends document
 	 * @param int $trash_srl
 	 * @return object
 	 */
-	function getDocumentTrash($trash_srl)
+	public function getDocumentTrash($trash_srl)
 	{
 		$args->trash_srl = $trash_srl;
 		$output = executeQuery('document.getTrash', $args);
@@ -97,7 +97,7 @@ class documentAdminModel extends document
 	 * @param array $statusList
 	 * @return int
 	 */
-	function getDocumentCountByDate($date = '', $moduleSrlList = array(), $statusList = array())
+	public function getDocumentCountByDate($date = '', $moduleSrlList = array(), $statusList = array())
 	{
 		$args = new stdClass();
 		if($date) $args->regDate = date('Ymd', strtotime($date));

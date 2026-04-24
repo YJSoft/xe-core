@@ -10,14 +10,14 @@ class spamfilterController extends spamfilter
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Call this function in case you need to stop the spam filter's usage during the batch work
 	 */
-	function setAvoidLog()
+	public function setAvoidLog()
 	{
 		$_SESSION['avoid_log'] = true;
 	}
@@ -25,7 +25,7 @@ class spamfilterController extends spamfilter
 	/**
 	 * @brief The routine process to check the time it takes to store a document, when writing it, and to ban IP/word
 	 */
-	function triggerInsertDocument(&$obj)
+	public function triggerInsertDocument(&$obj)
 	{
 		if($_SESSION['avoid_log']) return new BaseObject();
 		// Check the login status, login information, and permission
@@ -70,7 +70,7 @@ class spamfilterController extends spamfilter
 	/**
 	 * @brief The routine process to check the time it takes to store a comment, and to ban IP/word
 	 */
-	function triggerInsertComment(&$obj)
+	public function triggerInsertComment(&$obj)
 	{
 		if($_SESSION['avoid_log']) return new BaseObject();
 		// Check the login status, login information, and permission
@@ -116,7 +116,7 @@ class spamfilterController extends spamfilter
 	/**
 	 * @brief Inspect the trackback creation time and IP
 	 */
-	function triggerInsertTrackback(&$obj)
+	public function triggerInsertTrackback(&$obj)
 	{
 		if($_SESSION['avoid_log']) return new BaseObject();
 
@@ -162,7 +162,7 @@ class spamfilterController extends spamfilter
 	 * @brief IP registration
 	 * The registered IP address is considered as a spammer
 	 */
-	function insertIP($ipaddress_list, $description = null)
+	public function insertIP($ipaddress_list, $description = null)
 	{
 		$regExr = "/^((\d{1,3}(?:.(\d{1,3}|\*)){3})\s*(\/\/(.*)\s*)?)*\s*$/";
 		if(!preg_match($regExr,$ipaddress_list)) return new BaseObject(-1, 'msg_invalid');
@@ -189,7 +189,7 @@ class spamfilterController extends spamfilter
 	/**
 	 * @brief The routine process to check the time it takes to store a message, when writing it, and to ban IP/word
 	 */
-	function triggerSendMessage(&$obj)
+	public function triggerSendMessage(&$obj)
 	{
 		if($_SESSION['avoid_log']) return new BaseObject();
 
@@ -218,7 +218,7 @@ class spamfilterController extends spamfilter
 	 * Register the newly accessed IP address in the log. In case the log interval is withing a certain time,
 	 * register it as a spammer
 	 */
-	function insertLog()
+	public function insertLog()
 	{
 		$output = executeQuery('spamfilter.insertLog');
 		return $output;

@@ -16,7 +16,7 @@ class documentModel extends document
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -25,7 +25,7 @@ class documentModel extends document
 	 * @param int $document_srl
 	 * @return void
 	 */
-	function isGranted($document_srl)
+	public function isGranted($document_srl)
 	{
 		return $_SESSION['own_document'][$document_srl];
 	}
@@ -35,7 +35,7 @@ class documentModel extends document
 	 * @param array $documentSrls
 	 * @return object
 	 */
-	function getDocumentExtraVarsFromDB($documentSrls)
+	public function getDocumentExtraVarsFromDB($documentSrls)
 	{
 		if(!is_array($documentSrls) || count($documentSrls) == 0)
 		{
@@ -52,7 +52,7 @@ class documentModel extends document
 	 * Extra variables for each article will not be processed bulk select and apply the macro city
 	 * @return void
 	 */
-	function setToAllDocumentExtraVars()
+	public function setToAllDocumentExtraVars()
 	{
 		static $checked_documents = array();
 		$_document_list = &$GLOBALS['XE_DOCUMENT_LIST'];
@@ -137,7 +137,7 @@ class documentModel extends document
 	 * @param array $columnList
 	 * @return documentItem
 	 */
-	function getDocument($document_srl=0, $is_admin = false, $load_extra_vars=true, $columnList = array())
+	public function getDocument($document_srl=0, $is_admin = false, $load_extra_vars=true, $columnList = array())
 	{
 		if(!$document_srl) return new documentItem();
 
@@ -164,7 +164,7 @@ class documentModel extends document
 	 * @param array $columnList
 	 * @return array value type is documentItem
 	 */
-	function getDocuments($document_srls, $is_admin = false, $load_extra_vars=true, $columnList = array())
+	public function getDocuments($document_srls, $is_admin = false, $load_extra_vars=true, $columnList = array())
 	{
 		if(is_array($document_srls))
 		{
@@ -225,7 +225,7 @@ class documentModel extends document
 	 * @param array $columnList
 	 * @return BaseObject
 	 */
-	function getDocumentList($obj, $except_notice = false, $load_extra_vars=true, $columnList = array())
+	public function getDocumentList($obj, $except_notice = false, $load_extra_vars=true, $columnList = array())
 	{
 		$sort_check = $this->_setSortIndex($obj, $load_extra_vars);
 		$obj->sort_index = $sort_check->sort_index;
@@ -359,7 +359,7 @@ class documentModel extends document
 	 * @param array $columnList
 	 * @return object|void
 	 */
-	function getNoticeList($obj, $columnList = array())
+	public function getNoticeList($obj, $columnList = array())
 	{
 		$args = new stdClass();
 		$args->module_srl = $obj->module_srl;
@@ -397,7 +397,7 @@ class documentModel extends document
 	 * @param int $module_srl
 	 * @return array
 	 */
-	function getExtraKeys($module_srl)
+	public function getExtraKeys($module_srl)
 	{
 		if(!isset($GLOBALS['XE_EXTRA_KEYS'][$module_srl]))
 		{
@@ -487,7 +487,7 @@ class documentModel extends document
 	 * @param int $document_srl
 	 * @return array
 	 */
-	function getExtraVars($module_srl, $document_srl)
+	public function getExtraVars($module_srl, $document_srl)
 	{
 		if(!isset($GLOBALS['XE_EXTRA_VARS'][$document_srl]))
 		{
@@ -505,7 +505,7 @@ class documentModel extends document
 	 * Printing, scrap, recommendations and negative, reported the Add Features
 	 * @return void
 	 */
-	function getDocumentMenu()
+	public function getDocumentMenu()
 	{
 		// Post number and the current login information requested Wanted
 		$document_srl = Context::get('target_srl');
@@ -597,7 +597,7 @@ class documentModel extends document
 	 * @param object $search_obj
 	 * @return int
 	 */
-	function getDocumentCount($module_srl, $search_obj = NULL)
+	public function getDocumentCount($module_srl, $search_obj = NULL)
 	{
 		if(is_null($search_obj)) $search_obj = new stdClass();
 		$search_obj->module_srl = $module_srl;
@@ -613,7 +613,7 @@ class documentModel extends document
 	 * @param object $search_obj
 	 * @return array
 	 */
-	function getDocumentCountByGroupStatus($search_obj = NULL)
+	public function getDocumentCountByGroupStatus($search_obj = NULL)
 	{
 		$output = executeQuery('document.getDocumentCountByGroupStatus', $search_obj);
 		if(!$output->toBool()) return array();
@@ -621,7 +621,7 @@ class documentModel extends document
 		return $output->data;
 	}
 
-	function getDocumentExtraVarsCount($module_srl, $search_obj = NULL)
+	public function getDocumentExtraVarsCount($module_srl, $search_obj = NULL)
 	{
 		// Additional search options
 		$args->module_srl = $module_srl;
@@ -644,7 +644,7 @@ class documentModel extends document
 	 * @param object $opt
 	 * @return int
 	 */
-	function getDocumentPage($oDocument, $opt)
+	public function getDocumentPage($oDocument, $opt)
 	{
 		$sort_check = $this->_setSortIndex($opt, TRUE);
 		$opt->sort_index = $sort_check->sort_index;
@@ -701,7 +701,7 @@ class documentModel extends document
 	 * @param array $columnList
 	 * @return object
 	 */
-	function getCategory($category_srl, $columnList = array())
+	public function getCategory($category_srl, $columnList = array())
 	{
 		$args =new stdClass();
 		$args->category_srl = $category_srl;
@@ -729,7 +729,7 @@ class documentModel extends document
 	 * @param int $category_srl
 	 * @return bool
 	 */
-	function getCategoryChlidCount($category_srl)
+	public function getCategoryChlidCount($category_srl)
 	{
 		$args = new stdClass();
 		$args->category_srl = $category_srl;
@@ -745,7 +745,7 @@ class documentModel extends document
 	 * @param array $columnList
 	 * @return array
 	 */
-	function getCategoryList($module_srl, $columnList = array())
+	public function getCategoryList($module_srl, $columnList = array())
 	{
 		$module_srl = (int)$module_srl;
 
@@ -773,7 +773,7 @@ class documentModel extends document
 	 * @param int $depth
 	 * @return void
 	 */
-	function _arrangeCategory(&$document_category, $list, $depth)
+	public function _arrangeCategory(&$document_category, $list, $depth)
 	{
 		if(!count($list)) return;
 		$idx = 0;
@@ -834,7 +834,7 @@ class documentModel extends document
 	 * @param int $category_srl
 	 * @return int
 	 */
-	function getCategoryDocumentCount($module_srl, $category_srl)
+	public function getCategoryDocumentCount($module_srl, $category_srl)
 	{
 		$args = new stdClass;
 		$args->module_srl = $module_srl;
@@ -848,7 +848,7 @@ class documentModel extends document
 	 * @param int $module_srl
 	 * @return string
 	 */
-	function getCategoryXmlFile($module_srl)
+	public function getCategoryXmlFile($module_srl)
 	{
 		$xml_file = sprintf('files/cache/document_category/%s.xml.php',$module_srl);
 		if(!file_exists($xml_file))
@@ -864,7 +864,7 @@ class documentModel extends document
 	 * @param int $module_srl
 	 * @return string
 	 */
-	function getCategoryPhpFile($module_srl)
+	public function getCategoryPhpFile($module_srl)
 	{
 		$php_file = sprintf('files/cache/document_category/%s.php',$module_srl);
 		if(!file_exists($php_file))
@@ -880,7 +880,7 @@ class documentModel extends document
 	 * @param object $obj
 	 * @return object
 	 */
-	function getMonthlyArchivedList($obj)
+	public function getMonthlyArchivedList($obj)
 	{
 		if($obj->mid)
 		{
@@ -906,7 +906,7 @@ class documentModel extends document
 	 * @param object $obj
 	 * @return object
 	 */
-	function getDailyArchivedList($obj)
+	public function getDailyArchivedList($obj)
 	{
 		if($obj->mid)
 		{
@@ -932,7 +932,7 @@ class documentModel extends document
 	 * Get a list for a particular module
 	 * @return void|BaseObject
 	 */
-	function getDocumentCategories()
+	public function getDocumentCategories()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
 		$module_srl = Context::get('module_srl');
@@ -954,7 +954,7 @@ class documentModel extends document
 	 * Wanted to set document information
 	 * @return object
 	 */
-	function getDocumentConfig()
+	public function getDocumentConfig()
 	{
 		if($this->documentConfig === NULL)
 		{
@@ -976,7 +976,7 @@ class documentModel extends document
 	 * @param int $module_srl
 	 * @return string
 	 */
-	function getExtraVarsHTML($module_srl)
+	public function getExtraVarsHTML($module_srl)
 	{
 		// Bringing existing extra_keys
 		$extra_keys = $this->getExtraKeys($module_srl);
@@ -985,7 +985,7 @@ class documentModel extends document
 		$security->encodeHTML('extra_keys..', 'selected_var_idx');
 
 		// Get information of module_grants
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path.'tpl', 'extra_keys');
 	}
 
@@ -994,7 +994,7 @@ class documentModel extends document
 	 * @param int $module_srl
 	 * @return string
 	 */
-	function getCategoryHTML($module_srl)
+	public function getCategoryHTML($module_srl)
 	{
 		$category_xml_file = $this->getCategoryXmlFile($module_srl);
 
@@ -1011,7 +1011,7 @@ class documentModel extends document
 		$security->encodeHTML('group_list..title');
 
 		// Get information of module_grants
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path.'tpl', 'category_list');
 	}
 
@@ -1020,7 +1020,7 @@ class documentModel extends document
 	 * Manager on the page to add information about a particular menu from the server after compiling tpl compiled a direct return html
 	 * @return void|BaseObject
 	 */
-	function getDocumentCategoryTplInfo()
+	public function getDocumentCategoryTplInfo()
 	{
 		$oModuleModel = getModel('module');
 		$oMemberModel = getModel('member');
@@ -1047,7 +1047,7 @@ class documentModel extends document
 	 * @param string $alias
 	 * @return int|void
 	 */
-	function getDocumentSrlByAlias($mid, $alias)
+	public function getDocumentSrlByAlias($mid, $alias)
 	{
 		if(!$mid || !$alias) return null;
 		$site_module_info = Context::get('site_module_info');
@@ -1066,7 +1066,7 @@ class documentModel extends document
 	 * @param string $title
 	 * @return int|void
 	 */
-	function getDocumentSrlByTitle($module_srl, $title)
+	public function getDocumentSrlByTitle($module_srl, $title)
 	{
 		if(!$module_srl || !$title) return null;
 		$args = new stdClass;
@@ -1086,7 +1086,7 @@ class documentModel extends document
 	 * @param int $document_srl
 	 * @return string|void
 	 */
-	function getAlias($document_srl)
+	public function getAlias($document_srl)
 	{
 		if(!$document_srl) return null;
 		$args = new stdClass;
@@ -1104,7 +1104,7 @@ class documentModel extends document
 	 * @param int $page
 	 * @return object
 	 */
-	function getHistories($document_srl, $list_count, $page)
+	public function getHistories($document_srl, $list_count, $page)
 	{
 		$args = new stdClass;
 		$args->list_count = $list_count;
@@ -1119,7 +1119,7 @@ class documentModel extends document
 	 * @param int $history_srl
 	 * @return object
 	 */
-	function getHistory($history_srl)
+	public function getHistory($history_srl)
 	{
 		$args = new stdClass;
 		$args->history_srl = $history_srl;
@@ -1132,7 +1132,7 @@ class documentModel extends document
 	 * @param object $obj
 	 * @return object
 	 */
-	function getTrashList($obj)
+	public function getTrashList($obj)
 	{
 		// Variable check
 		$args = new stdClass;
@@ -1213,7 +1213,7 @@ class documentModel extends document
 	 * vote up, vote down member list in Document View page
 	 * @return void|BaseObject
 	 */
-	function getDocumentVotedMemberList()
+	public function getDocumentVotedMemberList()
 	{
 		$args = new stdClass;
 		$document_srl = Context::get('document_srl');
@@ -1263,7 +1263,7 @@ class documentModel extends document
 	 * Return status name list
 	 * @return array
 	 */
-	function getStatusNameList()
+	public function getStatusNameList()
 	{
 		global $lang;
 		if(!isset($lang->status_name_list))
@@ -1277,7 +1277,7 @@ class documentModel extends document
 	 * @param bool $load_extra_vars
 	 * @return object
 	 */
-	function _setSortIndex($obj, $load_extra_vars)
+	public function _setSortIndex($obj, $load_extra_vars)
 	{
 		$sortIndex = $obj->sort_index;
 		$isExtraVars = false;
@@ -1324,7 +1324,7 @@ class documentModel extends document
 	 * @param bool $use_division
 	 * @return void
 	 */
-	function _setSearchOption($searchOpt, &$args, &$query_id, &$use_division)
+	public function _setSearchOption($searchOpt, &$args, &$query_id, &$use_division)
 	{
 		// Variable check
 		$args = new stdClass();
@@ -1585,7 +1585,7 @@ class documentModel extends document
 	 * @param int $member_srl
 	 * @return int
 	 */
-	function getDocumentCountByMemberSrl($member_srl)
+	public function getDocumentCountByMemberSrl($member_srl)
 	{
 		$args = new stdClass();
 		$args->member_srl = $member_srl;
@@ -1602,7 +1602,7 @@ class documentModel extends document
 	 * @param int $count
 	 * @return object
 	 */
-	function getDocumentListByMemberSrl($member_srl, $columnList = array(), $page = 0, $is_admin = FALSE, $count = 0 )
+	public function getDocumentListByMemberSrl($member_srl, $columnList = array(), $page = 0, $is_admin = FALSE, $count = 0 )
 	{
 		$args = new stdClass();
 		$args->member_srl = $member_srl;
@@ -1620,7 +1620,7 @@ class documentModel extends document
 	 * get to the document extra image path.
 	 * @return string
 	 */
-	function getDocumentExtraImagePath()
+	public function getDocumentExtraImagePath()
 	{
 		$documentConfig = getModel('document')->getDocumentConfig();
 		if(Mobile::isFromMobilePhone())

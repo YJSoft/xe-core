@@ -10,14 +10,14 @@ class messageAdminController extends message
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Configuration
 	 */
-	function procMessageAdminInsertConfig()
+	public function procMessageAdminInsertConfig()
 	{
 		// Get information
 		$args = Context::gets('skin', 'mskin', 'colorset', 'mcolorset');

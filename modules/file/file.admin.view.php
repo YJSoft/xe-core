@@ -10,7 +10,7 @@ class fileAdminView extends file
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -19,7 +19,7 @@ class fileAdminView extends file
 	 *
 	 * @return BaseObject
 	 */
-	function dispFileAdminList()
+	public function dispFileAdminList()
 	{
 		// Options to get a list
 		$args = new stdClass();
@@ -213,7 +213,7 @@ class fileAdminView extends file
 	 *
 	 * @return BaseObject
 	 */
-	function dispFileAdminConfig()
+	public function dispFileAdminConfig()
 	{
 		$oFileModel = getModel('file');
 		$config = $oFileModel->getFileConfig();

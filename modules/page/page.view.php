@@ -19,7 +19,7 @@ class pageView extends page
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		// Get a template path (page in the administrative template tpl putting together)
 		$this->setTemplatePath($this->module_path.'tpl');
@@ -56,7 +56,7 @@ class pageView extends page
 	/**
 	 * @brief General request output
 	 */
-	function dispPageIndex()
+	public function dispPageIndex()
 	{
 		// Variables used in the template Context:: set()
 		if ($this->module_srl)
@@ -89,7 +89,7 @@ class pageView extends page
 		$this->setTemplateFile($this instanceof pageMobile ? 'mobile' : 'content');
 	}
 
-	function _getWidgetContent()
+	public function _getWidgetContent()
 	{
 		if ($this instanceof pageMobile)
 		{
@@ -134,9 +134,9 @@ class pageView extends page
 		return $page_content;
 	}
 
-	function _getArticleContent()
+	public function _getArticleContent()
 	{
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 
 		$oDocumentModel = getModel('document');
 		$oDocument = $oDocumentModel->getDocument(0, true);
@@ -163,7 +163,7 @@ class pageView extends page
 		return $page_content;
 	}
 
-	function _getOutsideContent()
+	public function _getOutsideContent()
 	{
 		// check if it is http or internal file
 		if($this->path)
@@ -178,7 +178,7 @@ class pageView extends page
 	/**
 	 * @brief Save the file and return if a file is requested by http
 	 */
-	function getHtmlPage($path, $caching_interval, $cache_file)
+	public function getHtmlPage($path, $caching_interval, $cache_file)
 	{
 		// Verify cache
 		if($caching_interval > 0 && file_exists($cache_file) && filemtime($cache_file) + $caching_interval*60 > $_SERVER['REQUEST_TIME'])
@@ -216,7 +216,7 @@ class pageView extends page
 	/**
 	 * @brief Create a cache file in order to include if it is an internal file
 	 */
-	function executeFile($target_file, $caching_interval, $cache_file)
+	public function executeFile($target_file, $caching_interval, $cache_file)
 	{
 		$real_target_file = FileHandler::getRealPath($target_file);
 		if (!file_exists($real_target_file)){
@@ -231,7 +231,7 @@ class pageView extends page
 		// Parse as template if enabled.
 		if ($this->proc_tpl){
 			// Store compiled template in a temporary file.
-			$oTemplate = &TemplateHandler::getInstance();
+			$oTemplate = TemplateHandler::getInstance();
 			$real_target_dir = dirname($real_target_file);
 			$tmp_cache_file = preg_replace('/\.cache\.php$/', '.compiled.php', $cache_file);
 			$content = $oTemplate->compileDirect($real_target_dir . '/', basename($real_target_file));
@@ -280,7 +280,7 @@ class pageView extends page
 		return $content;
 	}
 
-	function _replacePath($matches)
+	public function _replacePath($matches)
 	{
 		$val = trim($matches[3]);
 		// Pass if the path is external or starts with /, #, { characters

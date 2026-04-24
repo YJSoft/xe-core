@@ -15,7 +15,7 @@ class content extends WidgetHandler
 	 * After generating the result, do not print but return it.
 	 */
 
-	function proc($args)
+	public function proc($args)
 	{
 		// Targets to sort
 		if(!in_array($args->order_target, array('regdate','update_order'))) $args->order_target = 'regdate';
@@ -184,7 +184,7 @@ class content extends WidgetHandler
 	/**
 	 * @brief Get a list of comments and return contentItem
 	 */
-	function _getCommentItems($args)
+	public function _getCommentItems($args)
 	{
 		// List variables to use CommentModel::getCommentList()
 		$obj = new stdClass();
@@ -222,7 +222,7 @@ class content extends WidgetHandler
 		return $content_items;
 	}
 
-	function _getDocumentItems($args)
+	public function _getDocumentItems($args)
 	{
 		// Get model object from the document module
 		$oDocumentModel = getModel('document');
@@ -299,7 +299,7 @@ class content extends WidgetHandler
 		return $content_items;
 	}
 
-	function _getImageItems($args)
+	public function _getImageItems($args)
 	{
 		$oDocumentModel = getModel('document');
 
@@ -355,7 +355,7 @@ class content extends WidgetHandler
 		return $content_items;
 	}
 
-	function getRssItems($args)
+	public function getRssItems($args)
 	{
 		$content_items = array();
 		$args->mid_lists = array();
@@ -411,7 +411,7 @@ class content extends WidgetHandler
 		return $content_items;
 	}
 
-	function _getRssBody($value)
+	public function _getRssBody($value)
 	{
 		if(!$value || is_string($value)) return $value;
 		if(is_object($value)) $value = get_object_vars($value);
@@ -430,7 +430,7 @@ class content extends WidgetHandler
 		return $body;
 	}
 
-	function _getSummary($content, $str_size = 50)
+	public function _getSummary($content, $str_size = 50)
 	{
 		$content = preg_replace('!(<br[\s]*/{0,1}>[\s]*)+!is', ' ', $content);
 		// Replace tags such as </p> , </div> , </li> and others to a whitespace
@@ -454,13 +454,13 @@ class content extends WidgetHandler
 	 * @brief function to receive contents from rss url
 	 * For Tistory blog in Korea, the original RSS url has location header without contents. Fixed to work as same as rss_reader widget.
 	 */
-	function requestFeedContents($rss_url)
+	public function requestFeedContents($rss_url)
 	{
 		$rss_url = str_replace('&amp;','&',Context::convertEncodingStr($rss_url));
 		return FileHandler::getRemoteResource($rss_url, null, 3, 'GET', 'application/xml');
 	}
 
-	function _getRssItems($args)
+	public function _getRssItems($args)
 	{
 		// Date Format
 		$DATE_FORMAT = $args->date_format ? $args->date_format : "Y-m-d H:i:s";
@@ -633,7 +633,7 @@ class content extends WidgetHandler
 		return $content_items;
 	}
 
-	function _getRssThumbnail($content)
+	public function _getRssThumbnail($content)
 	{
 		@preg_match('@<img[^>]+src\s*=\s*(?:"(.+)"|\'(.+)\'|([^\s>(?:/>)]+))@', $content, $matches);
 
@@ -655,7 +655,7 @@ class content extends WidgetHandler
 		}
 	}
 
-	function _getTrackbackItems($args)
+	public function _getTrackbackItems($args)
 	{
 		$oTrackbackModel = getModel('trackback');
 		if(!$oTrackbackModel)
@@ -706,9 +706,9 @@ class content extends WidgetHandler
 		return $content_items;
 	}
 
-	function _compile($args,$content_items)
+	public function _compile($args,$content_items)
 	{
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		// Set variables for widget
 		$widget_info = new stdClass();
 		$widget_info->modules_info = $args->modules_info;
@@ -773,21 +773,21 @@ class content extends WidgetHandler
 
 class contentItem extends BaseObject
 {
-	var $browser_title = null;
-	var $has_first_thumbnail_idx = false;
-	var $first_thumbnail_idx = null;
-	var $contents_link = null;
-	var $domain = null;
+	public $browser_title = null;
+	public $has_first_thumbnail_idx = false;
+	public $first_thumbnail_idx = null;
+	public $contents_link = null;
+	public $domain = null;
 
-	function __construct($browser_title='')
+	public function __construct($browser_title='')
 	{
 		$this->browser_title = $browser_title;
 	}
-	function setContentsLink($link)
+	public function setContentsLink($link)
 	{
 		$this->contents_link = $link;
 	}
-	function setFirstThumbnailIdx($first_thumbnail_idx)
+	public function setFirstThumbnailIdx($first_thumbnail_idx)
 	{
 		if(is_null($this->first_thumbnail) && $first_thumbnail_idx>-1)
 		{
@@ -795,11 +795,11 @@ class contentItem extends BaseObject
 			$this->first_thumbnail_idx= $first_thumbnail_idx;
 		}
 	}
-	function setExtraImages($extra_images)
+	public function setExtraImages($extra_images)
 	{
 		$this->add('extra_images',$extra_images);
 	}
-	function setDomain($domain)
+	public function setDomain($domain)
 	{
 		static $default_domain = null;
 		if(!$domain)
@@ -809,66 +809,66 @@ class contentItem extends BaseObject
 		}
 		$this->domain = $domain;
 	}
-	function setLink($url)
+	public function setLink($url)
 	{
 		$this->add('url', strip_tags($url));
 	}
-	function setTitle($title)
+	public function setTitle($title)
 	{
 		$this->add('title', strip_tags($title));
 	}
-	function setThumbnail($thumbnail)
+	public function setThumbnail($thumbnail)
 	{
 		$this->add('thumbnail', $thumbnail);
 	}
-	function setContent($content)
+	public function setContent($content)
 	{
 		$this->add('content', removeHackTag($content));
 	}
-	function setRegdate($regdate)
+	public function setRegdate($regdate)
 	{
 		$this->add('regdate', strip_tags($regdate));
 	}
-	function setNickName($nick_name)
+	public function setNickName($nick_name)
 	{
 		$this->add('nick_name', strip_tags($nick_name));
 	}
 	// Save author's homepage url. By misol
-	function setAuthorSite($site_url)
+	public function setAuthorSite($site_url)
 	{
 		$this->add('author_site', strip_tags($site_url));
 	}
-	function setCategory($category)
+	public function setCategory($category)
 	{
 		$this->add('category', strip_tags($category));
 	}
-	function getBrowserTitle()
+	public function getBrowserTitle()
 	{
 		return $this->browser_title;
 	}
-	function getDomain()
+	public function getDomain()
 	{
 		return $this->domain;
 	}
-	function getContentsLink()
+	public function getContentsLink()
 	{
 		return $this->contents_link;
 	}
 
-	function getFirstThumbnailIdx()
+	public function getFirstThumbnailIdx()
 	{
 		return $this->first_thumbnail_idx;
 	}
 
-	function getLink()
+	public function getLink()
 	{
 		return $this->get('url');
 	}
-	function getModuleSrl()
+	public function getModuleSrl()
 	{
 		return $this->get('module_srl');
 	}
-	function getTitle($cut_size = 0, $tail='...')
+	public function getTitle($cut_size = 0, $tail='...')
 	{
 		$title = htmlspecialchars($this->get('title'), ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 
@@ -882,52 +882,52 @@ class contentItem extends BaseObject
 
 		return $title;
 	}
-	function getContent()
+	public function getContent()
 	{
 		return $this->get('content');
 	}
-	function getCategory()
+	public function getCategory()
 	{
 		return $this->get('category');
 	}
-	function getNickName($cut_size = 0, $tail='...')
+	public function getNickName($cut_size = 0, $tail='...')
 	{
 		if($cut_size) $nick_name = cut_str($this->get('nick_name'), $cut_size, $tail);
 		else $nick_name = $this->get('nick_name');
 
 		return $nick_name;
 	}
-	function getAuthorSite()
+	public function getAuthorSite()
 	{
 		return $this->get('author_site');
 	}
-	function getCommentCount()
+	public function getCommentCount()
 	{
 		$comment_count = $this->get('comment_count');
 		return $comment_count>0 ? $comment_count : '';
 	}
-	function getTrackbackCount()
+	public function getTrackbackCount()
 	{
 		$trackback_count = $this->get('trackback_count');
 		return $trackback_count>0 ? $trackback_count : '';
 	}
-	function getRegdate($format = 'Y.m.d H:i:s')
+	public function getRegdate($format = 'Y.m.d H:i:s')
 	{
 		return zdate($this->get('regdate'), $format);
 	}
-	function printExtraImages()
+	public function printExtraImages()
 	{
 		return $this->get('extra_images');
 	}
-	function haveFirstThumbnail()
+	public function haveFirstThumbnail()
 	{
 		return $this->has_first_thumbnail_idx;
 	}
-	function getThumbnail()
+	public function getThumbnail()
 	{
 		return $this->get('thumbnail');
 	}
-	function getMemberSrl() 
+	public function getMemberSrl() 
 	{
 		return $this->get('member_srl');
 	}

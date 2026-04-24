@@ -6,14 +6,14 @@ class messageMobile extends messageView
 	/**
 	 * @brief Initialization
 	 **/
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Message output
 	 **/
-	function dispMessage()
+	public function dispMessage()
 	{
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');

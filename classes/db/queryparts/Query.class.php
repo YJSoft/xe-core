@@ -13,73 +13,73 @@ class Query extends BaseObject
 	 * Query id, defined in query xml file
 	 * @var string
 	 */
-	var $queryID;
+	public $queryID;
 
 	/**
 	 * DML type, ex) INSERT, DELETE, UPDATE, SELECT
 	 * @var string
 	 */
-	var $action;
+	public $action;
 
 	/**
 	 * priority level ex)LOW_PRIORITY, HIGHT_PRIORITY
 	 * @var string
 	 */
-	var $priority;
+	public $priority;
 
 	/**
 	 * column list
 	 * @var string|array
 	 */
-	var $columns;
+	public $columns;
 
 	/**
 	 * table list
 	 * @var string|array
 	 */
-	var $tables;
+	public $tables;
 
 	/**
 	 * condition list
 	 * @var string|array
 	 */
-	var $conditions;
+	public $conditions;
 
 	/**
 	 * group list
 	 * @var string|array
 	 */
-	var $groups;
+	public $groups;
 
 	/**
 	 * order list
 	 * @var array
 	 */
-	var $orderby;
+	public $orderby;
 
 	/**
 	 * limit count
 	 * @var int
 	 */
-	var $limit;
+	public $limit;
 
 	/**
 	 * argument list
 	 * @var array
 	 */
-	var $arguments = NULL;
+	public $arguments = NULL;
 
 	/**
 	 * column list
 	 * @var array
 	 */
-	var $columnList = NULL;
+	public $columnList = NULL;
 
 	/**
 	 * order by text
 	 * @var string
 	 */
-	var $_orderByString;
+	public $_orderByString;
 
 	/**
 	 * constructor
@@ -94,7 +94,7 @@ class Query extends BaseObject
 	 * @param string $priority
 	 * @return void
 	 */
-	function __construct($queryID = NULL
+	public function __construct($queryID = NULL
 	, $action = NULL
 	, $columns = NULL
 	, $tables = NULL
@@ -121,27 +121,27 @@ class Query extends BaseObject
 		$this->limit = $this->setLimit($limit);
 	}
 
-	function show()
+	public function show()
 	{
 		return TRUE;
 	}
 
-	function setQueryId($queryID)
+	public function setQueryId($queryID)
 	{
 		$this->queryID = $queryID;
 	}
 
-	function setAction($action)
+	public function setAction($action)
 	{
 		$this->action = $action;
 	}
 
-	function setPriority($priority)
+	public function setPriority($priority)
 	{
 		$this->priority = $priority;
 	}
 
-	function setColumnList($columnList)
+	public function setColumnList($columnList)
 	{
 		$this->columnList = $columnList;
 		if(count($this->columnList) > 0)
@@ -159,7 +159,7 @@ class Query extends BaseObject
 		}
 	}
 
-	function setColumns($columns)
+	public function setColumns($columns)
 	{
 		if(!isset($columns) || count($columns) === 0)
 		{
@@ -175,7 +175,7 @@ class Query extends BaseObject
 		$this->columns = $columns;
 	}
 
-	function setTables($tables)
+	public function setTables($tables)
 	{
 		if(!isset($tables) || count($tables) === 0)
 		{
@@ -192,12 +192,12 @@ class Query extends BaseObject
 		$this->tables = $tables;
 	}
 
-	function setSubquery($subquery)
+	public function setSubquery($subquery)
 	{
 		$this->subquery = $subquery;
 	}
 
-	function setConditions($conditions)
+	public function setConditions($conditions)
 	{
 		$this->conditions = array();
 		if(!isset($conditions) || count($conditions) === 0)
@@ -218,7 +218,7 @@ class Query extends BaseObject
 		}
 	}
 
-	function setGroups($groups)
+	public function setGroups($groups)
 	{
 		if(!isset($groups) || count($groups) === 0)
 		{
@@ -232,7 +232,7 @@ class Query extends BaseObject
 		$this->groups = $groups;
 	}
 
-	function setOrder($order)
+	public function setOrder($order)
 	{
 		if(!isset($order) || count($order) === 0)
 		{
@@ -246,12 +246,12 @@ class Query extends BaseObject
 		$this->orderby = $order;
 	}
 
-	function getOrder()
+	public function getOrder()
 	{
 		return $this->orderby;
 	}
 
-	function setLimit($limit = NULL)
+	public function setLimit($limit = NULL)
 	{
 		if(!isset($limit))
 		{
@@ -266,7 +266,7 @@ class Query extends BaseObject
 	 * @param string|array $columns
 	 * @return Query return Query instance
 	 */
-	function select($columns = NULL)
+	public function select($columns = NULL)
 	{
 		$this->action = 'select';
 		$this->setColumns($columns);
@@ -278,7 +278,7 @@ class Query extends BaseObject
 	 * @param string|array $tables
 	 * @return Query return Query instance
 	 */
-	function from($tables)
+	public function from($tables)
 	{
 		$this->setTables($tables);
 		return $this;
@@ -289,7 +289,7 @@ class Query extends BaseObject
 	 * @param string|array $conditions
 	 * @return Query return Query instance
 	 */
-	function where($conditions)
+	public function where($conditions)
 	{
 		$this->setConditions($conditions);
 		return $this;
@@ -300,7 +300,7 @@ class Query extends BaseObject
 	 * @param string|array $groups
 	 * @return Query return Query instance
 	 */
-	function groupBy($groups)
+	public function groupBy($groups)
 	{
 		$this->setGroups($groups);
 		return $this;
@@ -311,7 +311,7 @@ class Query extends BaseObject
 	 * @param string|array $order
 	 * @return Query return Query instance
 	 */
-	function orderBy($order)
+	public function orderBy($order)
 	{
 		$this->setOrder($order);
 		return $this;
@@ -322,7 +322,7 @@ class Query extends BaseObject
 	 * @param int $limit
 	 * @return Query return Query instance
 	 */
-	function limit($limit)
+	public function limit($limit)
 	{
 		$this->setLimit($limit);
 		return $this;
@@ -330,12 +330,12 @@ class Query extends BaseObject
 
 	// END Fluent interface
 
-	function getAction()
+	public function getAction()
 	{
 		return $this->action;
 	}
 
-	function getPriority()
+	public function getPriority()
 	{
 		return $this->priority ? 'LOW_PRIORITY' : '';
 	}
@@ -346,12 +346,12 @@ class Query extends BaseObject
 	 * For the other databases, using this attribute causes a query
 	 * to produce both a select and an update
 	 */
-	function usesClickCount()
+	public function usesClickCount()
 	{
 		return count($this->getClickCountColumns()) > 0;
 	}
 
-	function getClickCountColumns()
+	public function getClickCountColumns()
 	{
 		$click_count_columns = array();
 		foreach($this->columns as $column)
@@ -369,7 +369,7 @@ class Query extends BaseObject
 	 * @param boolean $with_values
 	 * @return string
 	 */
-	function getSelectString($with_values = TRUE)
+	public function getSelectString($with_values = TRUE)
 	{
 		foreach($this->columns as $column)
 		{
@@ -393,7 +393,7 @@ class Query extends BaseObject
 	 * @param boolean $with_values
 	 * @return string
 	 */
-	function getUpdateString($with_values = TRUE)
+	public function getUpdateString($with_values = TRUE)
 	{
 		foreach($this->columns as $column)
 		{
@@ -412,7 +412,7 @@ class Query extends BaseObject
 	 * @param boolean $with_values
 	 * @return string
 	 */
-	function getInsertString($with_values = TRUE)
+	public function getInsertString($with_values = TRUE)
 	{
 		$columnsList = '';
 		// means we have insert-select
@@ -443,7 +443,7 @@ class Query extends BaseObject
 		return "($columnsList) \n VALUES ($valuesList)";
 	}
 
-	function getTables()
+	public function getTables()
 	{
 		return $this->tables;
 	}
@@ -456,7 +456,7 @@ class Query extends BaseObject
 	 * @param boolean $with_values
 	 * @return string
 	 */
-	function getFromString($with_values = TRUE)
+	public function getFromString($with_values = TRUE)
 	{
 		$from = '';
 		$simple_table_count = 0;
@@ -491,7 +491,7 @@ class Query extends BaseObject
 	 * @param boolean $with_optimization
 	 * @return string
 	 */
-	function getWhereString($with_values = TRUE, $with_optimization = TRUE)
+	public function getWhereString($with_values = TRUE, $with_optimization = TRUE)
 	{
 		$where = '';
 		$condition_count = 0;
@@ -539,7 +539,7 @@ class Query extends BaseObject
 	 * Return groupby sql
 	 * @return string
 	 */
-	function getGroupByString()
+	public function getGroupByString()
 	{
 		$groupBy = '';
 		if($this->groups)
@@ -556,7 +556,7 @@ class Query extends BaseObject
 	 * Return orderby sql
 	 * @return string
 	 */
-	function getOrderByString()
+	public function getOrderByString()
 	{
 		if(!$this->_orderByString)
 		{
@@ -575,7 +575,7 @@ class Query extends BaseObject
 		return $this->_orderByString;
 	}
 
-	function getLimit()
+	public function getLimit()
 	{
 		return $this->limit;
 	}
@@ -584,7 +584,7 @@ class Query extends BaseObject
 	 * Return limit sql
 	 * @return string
 	 */
-	function getLimitString()
+	public function getLimitString()
 	{
 		$limit = '';
 		if(count($this->limit) > 0)
@@ -595,7 +595,7 @@ class Query extends BaseObject
 		return $limit;
 	}
 
-	function getFirstTableName()
+	public function getFirstTableName()
 	{
 		return $this->tables[0]->getName();
 	}
@@ -604,7 +604,7 @@ class Query extends BaseObject
 	 * Return argument list
 	 * @return array
 	 */
-	function getArguments()
+	public function getArguments()
 	{
 		if(!isset($this->arguments))
 		{

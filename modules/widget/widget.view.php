@@ -10,7 +10,7 @@ class widgetView extends widget
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		$this->setTemplatePath($this->module_path.'tpl');
 	}
@@ -18,7 +18,7 @@ class widgetView extends widget
 	/**
 	 * @brief Details of the widget (conf/info.xml) a pop-out
 	 */
-	function dispWidgetInfo()
+	public function dispWidgetInfo()
 	{
 		// If people have skin widget widget output as a function of the skin More Details
 		if(Context::get('skin')) return $this->dispWidgetSkinInfo();
@@ -35,7 +35,7 @@ class widgetView extends widget
 	/**
 	 * @brief Widget details of the skin (skin.xml) a pop-out
 	 */
-	function dispWidgetSkinInfo()
+	public function dispWidgetSkinInfo()
 	{
 		$widget = Context::get('selected_widget');
 		$skin = urlencode(preg_replace("/[^a-z0-9-_]+/i", '', Context::get('skin')));
@@ -55,7 +55,7 @@ class widgetView extends widget
 	/**
 	 * @brief Widget's code generator
 	 */
-	function dispWidgetGenerateCode()
+	public function dispWidgetGenerateCode()
 	{
 		// Wanted widget is selected information
 		$oWidgetModel = getModel('widget');
@@ -112,7 +112,7 @@ class widgetView extends widget
 	/**
 	 * @brief Managing pop-up pages used in the generated code
 	 */
-	function dispWidgetGenerateCodeInPage()
+	public function dispWidgetGenerateCodeInPage()
 	{
 		$oWidgetModel = getModel('widget');
 		$widget_list = $oWidgetModel->getDownloadedWidgetList();
@@ -128,7 +128,7 @@ class widgetView extends widget
 	/**
 	 * @brief Create widget style code page used in the pop-up management
 	 */
-	function dispWidgetStyleGenerateCodeInPage()
+	public function dispWidgetStyleGenerateCodeInPage()
 	{
 		// Widget-style list
 		$oWidgetModel = getModel('widget');

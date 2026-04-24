@@ -12,14 +12,14 @@ class memberController extends member
 	 *
 	 * @var object
 	 */
-	var $memberInfo;
+	public $memberInfo;
 
 	/**
 	 * Initialization
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -32,7 +32,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberLogin($user_id = null, $password = null, $keep_signed = null)
+	public function procMemberLogin($user_id = null, $password = null, $keep_signed = null)
 	{
 		if(!$user_id && !$password && Context::getRequestMethod() == 'GET')
 		{
@@ -93,7 +93,7 @@ class memberController extends member
 	 *
 	 * @return BaseObject
 	 */
-	function procMemberLogout()
+	public function procMemberLogout()
 	{
 		// Call a trigger before log-out (before)
 		$logged_info = Context::get('logged_info');
@@ -122,9 +122,9 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberScrapDocument()
+	public function procMemberScrapDocument()
 	{
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 
 		// Check login information
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
@@ -195,7 +195,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberDeleteScrap()
+	public function procMemberDeleteScrap()
 	{
 		// Check login information
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
@@ -215,7 +215,7 @@ class memberController extends member
 	 * @deprecated - instead Document Controller - procDocumentTempSave method use
 	 * @return BaseObject
 	 */
-	function procMemberSaveDocument()
+	public function procMemberSaveDocument()
 	{
 		return new BaseObject(0, 'Deprecated method');
 	}
@@ -225,7 +225,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberDeleteSavedDocument()
+	public function procMemberDeleteSavedDocument()
 	{
 		// Check login information
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
@@ -256,7 +256,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberCheckValue()
+	public function procMemberCheckValue()
 	{
 		$name = Context::get('name');
 		$value = Context::get('value');
@@ -300,10 +300,10 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberInsert()
+	public function procMemberInsert()
 	{
 		if (Context::getRequestMethod () == "GET") return new BaseObject(-1, "msg_invalid_request");
-		$oMemberModel = &getModel ('member');
+		$oMemberModel = getModel ('member');
 		$config = $oMemberModel->getMemberConfig();
 
 		// call a trigger (before)
@@ -471,7 +471,7 @@ class memberController extends member
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function procMemberModifyInfoBefore()
+	public function procMemberModifyInfoBefore()
 	{
 		if($_SESSION['rechecked_password_step'] != 'INPUT_PASSWORD')
 		{
@@ -526,7 +526,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberModifyInfo()
+	public function procMemberModifyInfo()
 	{
 		if(!Context::get('is_logged'))
 		{
@@ -652,7 +652,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberModifyPassword()
+	public function procMemberModifyPassword()
 	{
 		if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
 		// Extract the necessary information in advance
@@ -692,7 +692,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberLeave()
+	public function procMemberLeave()
 	{
 		if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
 		// Extract the necessary information in advance
@@ -728,7 +728,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberInsertProfileImage()
+	public function procMemberInsertProfileImage()
 	{
 		// Check if the file is successfully uploaded
 		$file = Context::get('profile_image');
@@ -759,7 +759,7 @@ class memberController extends member
 	 *
 	 * @return void
 	 */
-	function insertProfileImage($member_srl, $target_file)
+	public function insertProfileImage($member_srl, $target_file)
 	{
 		$oMemberModel = getModel('member');
 		$config = $oMemberModel->getMemberConfig();
@@ -837,7 +837,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberInsertImageName()
+	public function procMemberInsertImageName()
 	{
 		// Check if the file is successfully uploaded
 		$file = Context::get('image_name');
@@ -871,7 +871,7 @@ class memberController extends member
 	 *
 	 * @return void
 	 */
-	function insertImageName($member_srl, $target_file)
+	public function insertImageName($member_srl, $target_file)
 	{
 		$oMemberModel = getModel('member');
 		$config = $oMemberModel->getMemberConfig();
@@ -935,7 +935,7 @@ class memberController extends member
 	 *
 	 * @return BaseObject
 	 */
-	function procMemberDeleteProfileImage($_memberSrl = 0)
+	public function procMemberDeleteProfileImage($_memberSrl = 0)
 	{
 		$member_srl = ($_memberSrl) ? $_memberSrl : Context::get('member_srl');
 		if(!$member_srl)
@@ -959,7 +959,7 @@ class memberController extends member
 	 *
 	 * @return void
 	 */
-	function procMemberDeleteImageName($_memberSrl = 0)
+	public function procMemberDeleteImageName($_memberSrl = 0)
 	{
 		$member_srl = ($_memberSrl) ? $_memberSrl : Context::get('member_srl');
 		if(!$member_srl)
@@ -983,7 +983,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberInsertImageMark()
+	public function procMemberInsertImageMark()
 	{
 		// Check if the file is successfully uploaded
 		$file = Context::get('image_mark');
@@ -1014,7 +1014,7 @@ class memberController extends member
 	 *
 	 * @return void
 	 */
-	function insertImageMark($member_srl, $target_file)
+	public function insertImageMark($member_srl, $target_file)
 	{
 		$oMemberModel = getModel('member');
 		$config = $oMemberModel->getMemberConfig();
@@ -1077,7 +1077,7 @@ class memberController extends member
 	 *
 	 * @return BaseObject
 	 */
-	function procMemberDeleteImageMark($_memberSrl = 0)
+	public function procMemberDeleteImageMark($_memberSrl = 0)
 	{
 		$member_srl = ($_memberSrl) ? $_memberSrl : Context::get('member_srl');
 		if(!$member_srl)
@@ -1101,7 +1101,7 @@ class memberController extends member
 	 *
 	 * @return BaseObject
 	 */
-	function procMemberFindAccount()
+	public function procMemberFindAccount()
 	{
 		$email_address = Context::get('email_address');
 		if(!$email_address) return new BaseObject(-1, 'msg_invalid_request');
@@ -1174,7 +1174,7 @@ class memberController extends member
 		$find_url = getFullUrl ('', 'module', 'member', 'act', 'procMemberAuthAccount', 'member_srl', $member_info->member_srl, 'auth_key', $args->auth_key);
 		Context::set('find_url', $find_url);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$content = $oTemplate->compile($tpl_path, 'find_member_account_mail');
 		// Get information of the Webmaster
 		$oModuleModel = getModel('module');
@@ -1201,7 +1201,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberFindAccountByQuestion()
+	public function procMemberFindAccountByQuestion()
 	{
 		$oMemberModel = getModel('member');
 		$oPassword =  new Password();
@@ -1283,7 +1283,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAuthAccount()
+	public function procMemberAuthAccount()
 	{
 		$oMemberModel = getModel('member');
 
@@ -1375,7 +1375,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberResendAuthMail()
+	public function procMemberResendAuthMail()
 	{
 		// Get an email_address
 		$email_address = Context::get('email_address');
@@ -1445,7 +1445,7 @@ class memberController extends member
 		$auth_url = getFullUrl('','module','member','act','procMemberAuthAccount','member_srl',$member_info->member_srl, 'auth_key',$auth_info->auth_key);
 		Context::set('auth_url', $auth_url);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$content = $oTemplate->compile($tpl_path, 'confirm_member_account_mail');
 		// Send a mail
 		$oMail = new Mail();
@@ -1462,7 +1462,7 @@ class memberController extends member
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function procMemberResetAuthMail()
+	public function procMemberResetAuthMail()
 	{
 		$memberInfo = $_SESSION['auth_member_info'];
 		unset($_SESSION['auth_member_info']);
@@ -1532,7 +1532,7 @@ class memberController extends member
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function _sendAuthMail($auth_args, $member_info)
+	public function _sendAuthMail($auth_args, $member_info)
 	{
 		$oMemberModel = getModel('member');
 		$member_config = $oMemberModel->getMemberConfig();
@@ -1573,7 +1573,7 @@ class memberController extends member
 		$auth_url = getFullUrl('','module','member','act','procMemberAuthAccount','member_srl',$member_info->member_srl, 'auth_key',$auth_args->auth_key);
 		Context::set('auth_url', $auth_url);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$content = $oTemplate->compile($tpl_path, 'confirm_member_account_mail');
 		// Send a mail
 		$oMail = new Mail();
@@ -1589,7 +1589,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberSiteSignUp()
+	public function procMemberSiteSignUp()
 	{
 		$site_module_info = Context::get('site_module_info');
 		$logged_info = Context::get('logged_info');
@@ -1608,7 +1608,7 @@ class memberController extends member
 	 *
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberSiteLeave()
+	public function procMemberSiteLeave()
 	{
 		$site_module_info = Context::get('site_module_info');
 		$logged_info = Context::get('logged_info');
@@ -1630,7 +1630,7 @@ class memberController extends member
 	 *
 	 * @return void
 	 */
-	function setMemberConfig($args)
+	public function setMemberConfig($args)
 	{
 		if(!$args->skin) $args->skin = "default";
 		if(!$args->colorset) $args->colorset = "white";
@@ -1666,7 +1666,7 @@ class memberController extends member
 	 *
 	 * @return void
 	 */
-	function putSignature($member_srl, $signature)
+	public function putSignature($member_srl, $signature)
 	{
 		$signature = trim(removeHackTag($signature));
 		$signature = preg_replace('/<(\/?)(embed|object|param)/is', '&lt;$1$2', $signature);
@@ -1689,7 +1689,7 @@ class memberController extends member
 	 *
 	 * @return void
 	 */
-	function delSignature($member_srl)
+	public function delSignature($member_srl)
 	{
 		$filename = sprintf('files/member_extra_info/signature/%s%d.gif', getNumberingPath($member_srl), $member_srl);
 		FileHandler::removeFile($filename);
@@ -1704,7 +1704,7 @@ class memberController extends member
 	 *
 	 * @return BaseObject
 	 */
-	function addMemberToGroup($member_srl, $group_srl, $site_srl=0)
+	public function addMemberToGroup($member_srl, $group_srl, $site_srl=0)
 	{
 		$args = new stdClass();
 		$args->member_srl = $member_srl;
@@ -1728,7 +1728,7 @@ class memberController extends member
 	 *
 	 * @return BaseObject
 	 */
-	function replaceMemberGroup($args)
+	public function replaceMemberGroup($args)
 	{
 		$obj = new stdClass;
 		$obj->site_srl = $args->site_srl;
@@ -1767,7 +1767,7 @@ class memberController extends member
 	 *
 	 * @return void
 	 */
-	function doAutologin()
+	public function doAutologin()
 	{
 		// Get a key value of auto log-in
 		$args = new stdClass;
@@ -1852,7 +1852,7 @@ class memberController extends member
 	 *
 	 * @return BaseObject
 	 */
-	function doLogin($user_id, $password = '', $keep_signed = false)
+	public function doLogin($user_id, $password = '', $keep_signed = false)
 	{
 		$user_id = strtolower($user_id);
 		if(!$user_id) return new BaseObject(-1, 'null_user_id');
@@ -1939,7 +1939,7 @@ class memberController extends member
 		$this->_clearMemberCache($args->member_srl, $site_module_info->site_srl);
 
 		// Check if there is recoding table.
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		if($oDB->isTableExists('member_count_history') && $config->enable_login_fail_report != 'N')
 		{
 			// check if there is login fail records.
@@ -2012,7 +2012,7 @@ class memberController extends member
 	/**
 	 * Update or create session information
 	 */
-	function setSessionInfo()
+	public function setSessionInfo()
 	{
 		$oMemberModel = getModel('member');
 		// If your information came through the current session information to extract information from the users
@@ -2067,7 +2067,7 @@ class memberController extends member
 	 * Logged method for providing a personalized menu
 	 * Login information is used in the output widget, or personalized page
 	 */
-	function addMemberMenu($act, $str)
+	public function addMemberMenu($act, $str)
 	{
 		$logged_info = Context::get('logged_info');
 
@@ -2079,7 +2079,7 @@ class memberController extends member
 	/**
 	 * Nickname and click Log In to add a pop-up menu that appears when the method
 	 */
-	function addMemberPopupMenu($url, $str, $icon = '', $target = 'self')
+	public function addMemberPopupMenu($url, $str, $icon = '', $target = 'self')
 	{
 		$member_popup_menu_list = Context::get('member_popup_menu_list');
 		if(!is_array($member_popup_menu_list)) $member_popup_menu_list = array();
@@ -2097,7 +2097,7 @@ class memberController extends member
 	/**
 	 * Add users to the member table
 	 */
-	function insertMember(&$args, $password_is_hashed = false)
+	public function insertMember(&$args, $password_is_hashed = false)
 	{
 		// Call a trigger (before)
 		$output = ModuleHandler::triggerCall('member.insertMember', 'before', $args);
@@ -2211,7 +2211,7 @@ class memberController extends member
 		if(!$args->user_id) $args->user_id = 't'.$args->member_srl;
 		if(!$args->user_name) $args->user_name = $args->member_srl;
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$output = executeQuery('member.insertMember', $args);
@@ -2297,7 +2297,7 @@ class memberController extends member
 	 *
 	 * @param bool $is_admin , modified 2013-11-22
 	 */
-	function updateMember($args, $is_admin = FALSE)
+	public function updateMember($args, $is_admin = FALSE)
 	{
 		// Call a trigger (before)
 		$output = ModuleHandler::triggerCall('member.updateMember', 'before', $args);
@@ -2398,7 +2398,7 @@ class memberController extends member
 
 		list($args->email_id, $args->email_host) = explode('@', $args->email_address);
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		// Check password strength
@@ -2501,7 +2501,7 @@ class memberController extends member
 	/**
 	 * Modify member password
 	 */
-	function updateMemberPassword($args)
+	public function updateMemberPassword($args)
 	{
 		if($args->password)
 		{
@@ -2534,7 +2534,7 @@ class memberController extends member
 		return $output;
 	}
 
-	function updateFindAccountAnswer($member_srl, $answer)
+	public function updateFindAccountAnswer($member_srl, $answer)
 	{
 		$oPassword =  new Password();
 
@@ -2547,7 +2547,7 @@ class memberController extends member
 	/**
 	 * Delete User
 	 */
-	function deleteMember($member_srl)
+	public function deleteMember($member_srl)
 	{
 		// Call a trigger (before)
 		$trigger_obj = new stdClass();
@@ -2566,7 +2566,7 @@ class memberController extends member
 		// If managers can not be deleted
 		if($this->memberInfo->is_admin == 'Y') return new BaseObject(-1, 'msg_cannot_delete_admin');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$args = new stdClass();
@@ -2626,7 +2626,7 @@ class memberController extends member
 	/**
 	 * Destroy all session information
 	 */
-	function destroySessionInfo()
+	public function destroySessionInfo()
 	{
 		if(!$_SESSION || !is_array($_SESSION)) return;
 
@@ -2653,7 +2653,7 @@ class memberController extends member
 		}
 	}
 
-	function _updatePointByGroup($memberSrl, $groupSrlList)
+	public function _updatePointByGroup($memberSrl, $groupSrlList)
 	{
 		$oModuleModel = getModel('module');
 		$pointModuleConfig = $oModuleModel->getModuleConfig('point');
@@ -2683,7 +2683,7 @@ class memberController extends member
 		}
 	}
 
-	function procMemberModifyEmailAddress()
+	public function procMemberModifyEmailAddress()
 	{
 		if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
 
@@ -2709,7 +2709,7 @@ class memberController extends member
 		$auth_args->auth_key = $oPassword->createSecureSalt(40);
 		$auth_args->new_password = 'XE_change_emaill_address';
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 		$output = executeQuery('member.insertAuthMail', $auth_args);
 		if(!$output->toBool())
@@ -2737,7 +2737,7 @@ class memberController extends member
 		$auth_url = getFullUrl('','module','member','act','procMemberAuthEmailAddress','member_srl',$member_info->member_srl, 'auth_key',$auth_args->auth_key);
 		Context::set('auth_url', $auth_url);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$content = $oTemplate->compile($tpl_path, 'confirm_member_new_email');
 
 		$oMail = new Mail();
@@ -2754,7 +2754,7 @@ class memberController extends member
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function procMemberAuthEmailAddress()
+	public function procMemberAuthEmailAddress()
 	{
 		$member_srl = Context::get('member_srl');
 		$auth_key = Context::get('auth_key');
@@ -2795,7 +2795,7 @@ class memberController extends member
 	 *
 	 * @return object
 	**/
-	function triggerGetDocumentMenu(&$menu_list)
+	public function triggerGetDocumentMenu(&$menu_list)
 	{
 		if(!Context::get('is_logged')) return new BaseObject();
 
@@ -2825,7 +2825,7 @@ class memberController extends member
 	 *
 	 * @return object
 	**/
-	function triggerGetCommentMenu(&$menu_list)
+	public function triggerGetCommentMenu(&$menu_list)
 	{
 		if(!Context::get('is_logged')) return new BaseObject();
 
@@ -2853,7 +2853,7 @@ class memberController extends member
 	 *
 	 * @return object
 	**/
-	function procMemberSpammerManage()
+	public function procMemberSpammerManage()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
 
@@ -2995,7 +2995,7 @@ class memberController extends member
 		return array();
 	}
 
-	function _clearMemberCache($member_srl, $site_srl = 0)
+	public function _clearMemberCache($member_srl, $site_srl = 0)
 	{
 		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
 		if($oCacheHandler->isSupport())

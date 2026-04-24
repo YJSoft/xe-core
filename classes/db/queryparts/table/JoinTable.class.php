@@ -16,13 +16,13 @@ class JoinTable extends Table
 	 * join type
 	 * @var string
 	 */
-	var $join_type;
+	public $join_type;
 
 	/**
 	 * condition list
 	 * @var array
 	 */
-	var $conditions;
+	public $conditions;
 
 	/**
 	 * constructor
@@ -32,14 +32,14 @@ class JoinTable extends Table
 	 * @param array $conditions
 	 * @return void
 	 */
-	function __construct($name, $alias, $join_type, $conditions)
+	public function __construct($name, $alias, $join_type, $conditions)
 	{
 		parent::__construct($name, $alias);
 		$this->join_type = $join_type;
 		$this->conditions = $conditions;
 	}
 
-	function toString($with_value = true)
+	public function toString($with_value = true)
 	{
 		$part = $this->join_type . ' ' . $this->name;
 		$part .= $this->alias ? ' as ' . $this->alias : '';
@@ -51,12 +51,12 @@ class JoinTable extends Table
 		return $part;
 	}
 
-	function isJoinTable()
+	public function isJoinTable()
 	{
 		return true;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		$args = array();
 		foreach($this->conditions as $conditionGroup)

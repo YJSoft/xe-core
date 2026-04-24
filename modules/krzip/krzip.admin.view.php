@@ -8,13 +8,13 @@
 
 class krzipAdminView extends krzip
 {
-	function init()
+	public function init()
 	{
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile(lcfirst(str_replace('dispKrzipAdmin', '', $this->act)));
 	}
 
-	function dispKrzipAdminConfig()
+	public function dispKrzipAdminConfig()
 	{
 		$oKrzipModel = getModel('krzip');
 		$module_config = $oKrzipModel->getConfig();

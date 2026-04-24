@@ -14,7 +14,7 @@ class importer extends ModuleObject
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		return new BaseObject();
 	}
@@ -23,7 +23,7 @@ class importer extends ModuleObject
 	 * A method to check if successfully installed
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		return false;
 	}
@@ -32,7 +32,7 @@ class importer extends ModuleObject
 	 * Execute update
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		return new BaseObject();
 	}
@@ -41,7 +41,7 @@ class importer extends ModuleObject
 	 * Re-generate the cache file
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 }

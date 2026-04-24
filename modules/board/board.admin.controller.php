@@ -12,13 +12,13 @@ class boardAdminController extends board {
 	/**
 	 * @brief initialization
 	 **/
-	function init() {
+	public function init() {
 	}
 
 	/**
 	 * @brief insert borad module
 	 **/
-	function procBoardAdminInsertBoard($args = null) {
+	public function procBoardAdminInsertBoard($args = null) {
 		// generate module model/controller object
 		$oModuleController = getController('module');
 		$oModuleModel = getModel('module');
@@ -140,7 +140,7 @@ class boardAdminController extends board {
 	/**
 	 * @brief delete the board module
 	 **/
-	function procBoardAdminDeleteBoard() {
+	public function procBoardAdminDeleteBoard() {
 		$module_srl = Context::get('module_srl');
 
 		// get the current module
@@ -153,7 +153,7 @@ class boardAdminController extends board {
 		$this->setMessage('success_deleted');
 	}
 
-	function procBoardAdminSaveCategorySettings()
+	public function procBoardAdminSaveCategorySettings()
 	{
 		$module_srl = Context::get('module_srl');
 		$mid = Context::get('mid');

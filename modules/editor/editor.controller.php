@@ -10,14 +10,14 @@ class editorController extends editor
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief AutoSave
 	 */
-	function procEditorSaveDoc()
+	public function procEditorSaveDoc()
 	{
 
 		$this->deleteSavedDoc(false);
@@ -34,7 +34,7 @@ class editorController extends editor
 	/**
 	 * @brief Delete autosaved documents
 	 */
-	function procEditorRemoveSavedDoc()
+	public function procEditorRemoveSavedDoc()
 	{
 		$oEditorController = getController('editor');
 		$oEditorController->deleteSavedDoc(true);
@@ -43,7 +43,7 @@ class editorController extends editor
 	/**
 	 * @brief Execute a method of the component when the component requests ajax
 	 */
-	function procEditorCall()
+	public function procEditorCall()
 	{
 		$component = Context::get('component');
 		$method = Context::get('method');
@@ -78,7 +78,7 @@ class editorController extends editor
 	/**
 	 * @brief Save Editor's additional form for each module
 	 */
-	function procEditorInsertModuleConfig()
+	public function procEditorInsertModuleConfig()
 	{
 		$target_module_srl = Context::get('target_module_srl');
 		$target_module_srl = array_map('trim', explode(',', $target_module_srl));
@@ -167,7 +167,7 @@ class editorController extends editor
 	/**
 	 * @brief convert editor component codes to be returned and specify content style.
 	 */
-	function triggerEditorComponentCompile(&$content)
+	public function triggerEditorComponentCompile(&$content)
 	{
 		if(Context::getResponseMethod()!='HTML') return new BaseObject();
 
@@ -220,7 +220,7 @@ class editorController extends editor
 	/**
 	 * @brief Convert editor component codes to be returned
 	 */
-	function transComponent($content)
+	public function transComponent($content)
 	{
 		$content = preg_replace_callback('!<(?:(div)|img)([^>]*)editor_component=([^>]*)>(?(1)(.*?)</div>)!is', array($this,'transEditorComponent'), $content);
 		return $content;
@@ -229,7 +229,7 @@ class editorController extends editor
 	/**
 	 * @brief Convert editor component code of the contents
 	 */
-	function transEditorComponent($match)
+	public function transEditorComponent($match)
 	{
 		$script = " {$match[2]} editor_component={$match[3]}";
 		$script = preg_replace('/([\w:-]+)\s*=(?:\s*(["\']))?((?(2).*?|[^ ]+))\2/i', '\1="\3"', $script);
@@ -257,7 +257,7 @@ class editorController extends editor
 	/**
 	 * @brief AutoSave
 	 */
-	function doSaveDoc($args)
+	public function doSaveDoc($args)
 	{
 		if(!$args->document_srl) $args->document_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
 
@@ -287,7 +287,7 @@ class editorController extends editor
 	/**
 	 * @brief Load the srl of autosaved document - for those who uses XE older versions.
 	 */
-	function procEditorLoadSavedDocument()
+	public function procEditorLoadSavedDocument()
 	{
 		$editor_sequence = Context::get('editor_sequence');
 		$primary_key = Context::get('primary_key');
@@ -308,7 +308,7 @@ class editorController extends editor
 	/**
 	 * @brief A trigger to remove auto-saved document when inserting/updating the document
 	 */
-	function triggerDeleteSavedDoc(&$obj)
+	public function triggerDeleteSavedDoc(&$obj)
 	{
 		$this->deleteSavedDoc(false);
 		return new BaseObject();
@@ -318,7 +318,7 @@ class editorController extends editor
 	 * @brief Delete the auto-saved document
 	 * Based on the current logged-in user
 	 */
-	function deleteSavedDoc($mode = false)
+	public function deleteSavedDoc($mode = false)
 	{
 		$args = new stdClass();
 		$args->module_srl = Context::get('module_srl');
@@ -367,7 +367,7 @@ class editorController extends editor
 	/**
 	 * @brief ERemove editor component information used on the virtual site
 	 */
-	function removeEditorConfig($site_srl)
+	public function removeEditorConfig($site_srl)
 	{
 		$args->site_srl = $site_srl;
 		executeQuery('editor.deleteSiteComponent', $args);
@@ -377,7 +377,7 @@ class editorController extends editor
 	 * @brief Caching a list of editor component (editorModel::getComponentList)
 	 * For the editor component list, use a caching file because of DB query and Xml parsing
 	 */
-	function makeCache($filter_enabled = true, $site_srl)
+	public function makeCache($filter_enabled = true, $site_srl)
 	{
 		$oEditorModel = getModel('editor');
 		$args = new stdClass;
@@ -508,7 +508,7 @@ class editorController extends editor
 	/**
 	 * @brief Delete cache files
 	 */
-	function removeCache($site_srl = 0)
+	public function removeCache($site_srl = 0)
 	{
 		$oEditorModel = getModel('editor');
 		FileHandler::removeFile($oEditorModel->getCacheFile(true, $site_srl));
@@ -523,7 +523,7 @@ class editorController extends editor
 		}
 	}
 
-	function triggerCopyModule(&$obj)
+	public function triggerCopyModule(&$obj)
 	{
 		$oModuleModel = getModel('module');
 		$editorConfig = $oModuleModel->getModulePartConfig('editor', $obj->originModuleSrl);

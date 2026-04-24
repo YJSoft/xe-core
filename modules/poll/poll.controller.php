@@ -10,14 +10,14 @@ class pollController extends poll
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief after a qeustion is created in the popup window, register the question during the save time
 	 */
-	function procPollInsert()
+	public function procPollInsert()
 	{
 		$stop_date = Context::get('stop_date');
 		if($stop_date < date('Ymd'))
@@ -104,7 +104,7 @@ class pollController extends poll
 		$poll_srl = getNextSequence();
 		$member_srl = $logged_info->member_srl?$logged_info->member_srl:0;
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		// Register the poll
@@ -167,7 +167,7 @@ class pollController extends poll
 	/**
 	 * @brief Accept the poll
 	 */
-	function procPoll()
+	public function procPoll()
 	{
 		$poll_srl = Context::get('poll_srl');
 		$poll_srl_indexes = Context::get('poll_srl_indexes');
@@ -185,7 +185,7 @@ class pollController extends poll
 		$oPollModel = getModel('poll');
 		if($oPollModel->isPolled($poll_srl)) return new BaseObject(-1, 'msg_already_poll');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$args = new stdClass;
@@ -248,7 +248,7 @@ class pollController extends poll
 	/**
 	 * @brief Preview the results
 	 */
-	function procPollViewResult()
+	public function procPollViewResult()
 	{
 		$poll_srl = Context::get('poll_srl');
 
@@ -272,7 +272,7 @@ class pollController extends poll
 	/**
 	 * @brief poll list
 	 */
-	function procPollGetList()
+	public function procPollGetList()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
 		$pollSrls = Context::get('poll_srls');
@@ -308,7 +308,7 @@ class pollController extends poll
 	/**
 	 * @brief A poll synchronization trigger when a new post is registered
 	 */
-	function triggerInsertDocumentPoll(&$obj)
+	public function triggerInsertDocumentPoll(&$obj)
 	{
 		$this->syncPoll($obj->document_srl, $obj->content);
 		return new BaseObject();
@@ -317,7 +317,7 @@ class pollController extends poll
 	/**
 	 * @brief A poll synchronization trigger when a new comment is registered
 	 */
-	function triggerInsertCommentPoll(&$obj)
+	public function triggerInsertCommentPoll(&$obj)
 	{
 		$this->syncPoll($obj->comment_srl, $obj->content);
 		return new BaseObject();
@@ -326,7 +326,7 @@ class pollController extends poll
 	/**
 	 * @brief A poll synchronization trigger when a post is updated
 	 */
-	function triggerUpdateDocumentPoll(&$obj)
+	public function triggerUpdateDocumentPoll(&$obj)
 	{
 		$this->syncPoll($obj->document_srl, $obj->content);
 		return new BaseObject();
@@ -335,7 +335,7 @@ class pollController extends poll
 	/**
 	 * @brief A poll synchronization trigger when a comment is updated
 	 */
-	function triggerUpdateCommentPoll(&$obj)
+	public function triggerUpdateCommentPoll(&$obj)
 	{
 		$this->syncPoll($obj->comment_srl, $obj->content);
 		return new BaseObject();
@@ -344,7 +344,7 @@ class pollController extends poll
 	/**
 	 * @brief A poll deletion trigger when a post is removed
 	 */
-	function triggerDeleteDocumentPoll(&$obj)
+	public function triggerDeleteDocumentPoll(&$obj)
 	{
 		$document_srl = $obj->document_srl;
 		if(!$document_srl) return new BaseObject();
@@ -377,7 +377,7 @@ class pollController extends poll
 	/**
 	 * @brief A poll deletion trigger when a comment is removed
 	 */
-	function triggerDeleteCommentPoll(&$obj)
+	public function triggerDeleteCommentPoll(&$obj)
 	{
 		$comment_srl = $obj->comment_srl;
 		if(!$comment_srl) return new BaseObject();
@@ -410,7 +410,7 @@ class pollController extends poll
 	/**
 	 * @brief As post content's poll is obtained, synchronize the poll using the document number
 	 */
-	function syncPoll($upload_target_srl, $content)
+	public function syncPoll($upload_target_srl, $content)
 	{
 		$match_cnt = preg_match_all('!<img([^\>]*)poll_srl=(["\']?)([0-9]*)(["\']?)([^\>]*?)\>!is',$content, $matches);
 		for($i=0;$i<$match_cnt;$i++)

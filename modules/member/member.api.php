@@ -14,7 +14,7 @@ class memberAPI extends member
 	 *
 	 * @return void
 	 */
-	function dispSavedDocumentList(&$oModule)
+	public function dispSavedDocumentList(&$oModule)
 	{
 		$document_list = $this->arrangeContentList(Context::get('document_list'));
 		$oModule->add('document_list',$document_list);
@@ -28,7 +28,7 @@ class memberAPI extends member
 	 *
 	 * @return array
 	 */
-	function arrangeContentList($content_list)
+	public function arrangeContentList($content_list)
 	{
 		$output = array();
 		if(count($content_list))
@@ -45,7 +45,7 @@ class memberAPI extends member
 	 *
 	 * @return array
 	 */
-	function arrangeContent($content)
+	public function arrangeContent($content)
 	{
 		$output = null;
 		if($content)

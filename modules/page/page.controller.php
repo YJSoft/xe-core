@@ -7,17 +7,17 @@
  */
 class pageController extends page
 {
-	var $target_path = '';
+	public $target_path = '';
 
 	/**
 	 * @brief Initialization
 	 */
-	function init() { }
+	public function init() { }
 
 	/**
 	 * @brief Extract a title
 	 */
-	function getTitle($content)
+	public function getTitle($content)
 	{
 		preg_match('!<title([^>]*)>(.*?)<\/title>!is', $content, $buff);
 		return trim($buff[2]);
@@ -26,7 +26,7 @@ class pageController extends page
 	/**
 	 * @brief Extract header script
 	 */
-	function getHeadScript($content)
+	public function getHeadScript($content)
 	{
 		// remove the title tag
 		$content = preg_replace('!<title([^>]*)>(.*?)<\/title>!is','', $content);
@@ -55,7 +55,7 @@ class pageController extends page
 	/**
 	 * @brief Extract the contents of the body
 	 */
-	function getBodyScript($content)
+	public function getBodyScript($content)
 	{
 		// Extract content
 		preg_match('!<body([^>]*)>(.*?)<\/body>!is', $content, $body_buff);
@@ -69,7 +69,7 @@ class pageController extends page
 	/**
 	 * @brief Change the value of src, href in the content 
 	 */
-	function replaceSrc($content, $path)
+	public function replaceSrc($content, $path)
 	{
 		$url_info = parse_url($path);
 		$host = sprintf("%s://%s%s",$url_info['scheme'],$url_info['host'],$url_info['port']?':'.$url_info['port']:'');
@@ -92,7 +92,7 @@ class pageController extends page
 		return $content;
 	}
 
-	function _replacePath($matches)
+	public function _replacePath($matches)
 	{
 		$val = trim($matches[3]);
 		if(preg_match('/^(http|https|ftp|telnet|mms|mailto)/i',$val)) return $matches[0];

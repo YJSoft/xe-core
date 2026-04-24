@@ -10,7 +10,7 @@ class editorAdminView extends editor
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -18,7 +18,7 @@ class editorAdminView extends editor
 	 * @brief Administrator Setting page
 	 * Settings to enable/disable editor component and other features
 	 */
-	function dispEditorAdminIndex()
+	public function dispEditorAdminIndex()
 	{
 		$component_count = 0;
 		$site_module_info = Context::get('site_module_info');
@@ -135,7 +135,7 @@ class editorAdminView extends editor
 	/**
 	 * @brief Component setup
 	 */
-	function dispEditorAdminSetupComponent()
+	public function dispEditorAdminSetupComponent()
 	{
 		$site_module_info = Context::get('site_module_info');
 		$site_srl = (int)$site_module_info->site_srl;

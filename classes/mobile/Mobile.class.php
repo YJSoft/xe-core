@@ -13,14 +13,14 @@ class Mobile
 	 * Whether mobile or not mobile mode
 	 * @var bool
 	 */
-	var $ismobile = NULL;
+	public $ismobile = NULL;
 
 	/**
 	 * Get instance of Mobile class(for singleton)
 	 *
 	 * @return Mobile
 	 */
-	function &getInstance()
+	public static function getInstance()
 	{
 		static $theInstance;
 		if(!isset($theInstance))
@@ -35,9 +35,9 @@ class Mobile
 	 *
 	 * @return bool If mobile mode returns true or false
 	 */
-	function isFromMobilePhone()
+	public static function isFromMobilePhone()
 	{
-		$oMobile = & Mobile::getInstance();
+		$oMobile = Mobile::getInstance();
 		return $oMobile->_isFromMobilePhone();
 	}
 
@@ -46,7 +46,7 @@ class Mobile
 	 *
 	 * @return bool
 	 */
-	function _isFromMobilePhone()
+	public function _isFromMobilePhone()
 	{
 		if($this->ismobile !== NULL)
 		{
@@ -143,7 +143,7 @@ class Mobile
 	 *
 	 * @return bool Returns true on mobile device or false.
 	 */
-	function isMobileCheckByAgent()
+	public static function isMobileCheckByAgent()
 	{
 		static $UACheck;
 		if(isset($UACheck))
@@ -177,7 +177,7 @@ class Mobile
 	 *
 	 * @return bool TRUE for tablet, and FALSE for else.
 	 */
-	function isMobilePadCheckByAgent()
+	public static function isMobilePadCheckByAgent()
 	{
 		static $UACheck;
 		if(isset($UACheck))
@@ -226,13 +226,13 @@ class Mobile
 	 * @param bool $ismobile
 	 * @return void
 	 */
-	function setMobile($ismobile)
+	public static function setMobile($ismobile)
 	{
 		$oMobile = Mobile::getInstance();
 		$oMobile->ismobile = $ismobile;
 	}
 
-	function isMobileEnabled()
+	public static function isMobileEnabled()
 	{
 		$db_info = Context::getDBInfo();
 		return ($db_info->use_mobile_view === 'Y');

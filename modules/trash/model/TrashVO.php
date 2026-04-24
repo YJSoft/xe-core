@@ -2,107 +2,107 @@
 
 class TrashVO
 {
-	var $trashSrl;
-	var $title;
-	var $originModule;
-	var $serializedObject;
-	var $unserializedObject;
-	var $description;
-	var $ipaddress;
-	var $removerSrl;
-	var $userId;
-	var $nickName;
-	var $regdate;
+	public $trashSrl;
+	public $title;
+	public $originModule;
+	public $serializedObject;
+	public $unserializedObject;
+	public $description;
+	public $ipaddress;
+	public $removerSrl;
+	public $userId;
+	public $nickName;
+	public $regdate;
 
-	function getTrashSrl()
+	public function getTrashSrl()
 	{
 		return $this->trashSrl;
 	}
-	function setTrashSrl($trashSrl)
+	public function setTrashSrl($trashSrl)
 	{
 		$this->trashSrl = $trashSrl;
 	}
-	function getTitle()
+	public function getTitle()
 	{
 		if(empty($this->title)) return $lang->untitle;
 		return htmlspecialchars($this->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 	}
-	function setTitle($title)
+	public function setTitle($title)
 	{
 		$this->title = $title;
 	}
-	function getOriginModule()
+	public function getOriginModule()
 	{
 		if(empty($this->originModule)) return 'document';
 		return $this->originModule;
 	}
-	function setOriginModule($originModule)
+	public function setOriginModule($originModule)
 	{
 		$this->originModule = $originModule;
 	}
-	function getSerializedObject()
+	public function getSerializedObject()
 	{
 		return $this->serializedObject;
 	}
-	function setSerializedObject($serializedObject)
+	public function setSerializedObject($serializedObject)
 	{
 		$this->serializedObject = $serializedObject;
 	}
-	function getUnserializedObject()
+	public function getUnserializedObject()
 	{
 		return $this->unserializedObject;
 	}
-	function setUnserializedObject($serializedObject)
+	public function setUnserializedObject($serializedObject)
 	{
 		$this->unserializedObject = unserialize($serializedObject);
 	}
-	function getDescription()
+	public function getDescription()
 	{
 		return htmlspecialchars($this->description, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 	}
-	function setDescription($description)
+	public function setDescription($description)
 	{
 		$this->description = $description;
 	}
-	function getIpaddress()
+	public function getIpaddress()
 	{
 		return $this->ipaddress;
 	}
-	function setIpaddress($ipaddress)
+	public function setIpaddress($ipaddress)
 	{
 		$this->ipaddress = $ipaddress;
 	}
-	function getRemoverSrl()
+	public function getRemoverSrl()
 	{
 		return $this->removerSrl;
 	}
-	function setRemoverSrl($removerSrl)
+	public function setRemoverSrl($removerSrl)
 	{
 		$this->removerSrl = $removerSrl;
 	}
-	function getUserId()
+	public function getUserId()
 	{
 		return $this->userId;
 	}
-	function setUserId($userId)
+	public function setUserId($userId)
 	{
 		$this->userId = $userId;
 	}
-	function getNickName()
+	public function getNickName()
 	{
 		return htmlspecialchars($this->nickName, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 	}
-	function setNickName($nickName)
+	public function setNickName($nickName)
 	{
 		$this->nickName = $nickName;
 	}
-	function getRegdate()
+	public function getRegdate()
 	{
 		if(empty($this->regdate)) return date('YmdHis');
 
 		return $this->regdate;
 	}
-	function setRegdate($regdate)
+	public function setRegdate($regdate)
 	{
 		$this->regdate = $regdate;
 	}

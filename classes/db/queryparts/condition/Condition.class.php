@@ -13,8 +13,8 @@ class Condition
 	 * column name
 	 * @var string
 	 */
-	var $column_name;
-	var $argument;
+	public $column_name;
+	public $argument;
 
 	/**
 	 * operation can use 'equal', 'more', 'excess', 'less', 'below', 'like_tail', 'like_prefix', 'like', 'notlike_tail',
@@ -22,16 +22,16 @@ class Condition
 	 * 'null', 'notnull'
 	 * @var string
 	 */
-	var $operation;
+	public $operation;
 
 	/**
 	 * pipe can use 'and', 'or'...
 	 * @var string
 	 */
-	var $pipe;
-	var $_value;
-	var $_show;
-	var $_value_to_string;
+	public $pipe;
+	public $_value;
+	public $_show;
+	public $_value_to_string;
 
 	/**
 	 * constructor
@@ -41,7 +41,7 @@ class Condition
 	 * @param string $pipe
 	 * @return void
 	 */
-	function __construct($column_name, $argument, $operation, $pipe)
+	public function __construct($column_name, $argument, $operation, $pipe)
 	{
 		$this->column_name = $column_name;
 		$this->argument = $argument;
@@ -49,7 +49,7 @@ class Condition
 		$this->pipe = $pipe;
 	}
 
-	function getArgument()
+	public function getArgument()
 	{
 		return null;
 	}
@@ -59,7 +59,7 @@ class Condition
 	 * @param boolean $withValue
 	 * @return string
 	 */
-	function toString($withValue = true)
+	public function toString($withValue = true)
 	{
 		if(!isset($this->_value_to_string))
 		{
@@ -83,7 +83,7 @@ class Condition
 	 * change string without value
 	 * @return string
 	 */
-	function toStringWithoutValue()
+	public function toStringWithoutValue()
 	{
 		return $this->pipe . ' ' . $this->getConditionPart($this->_value);
 	}
@@ -92,12 +92,12 @@ class Condition
 	 * change string with value
 	 * @return string
 	 */
-	function toStringWithValue()
+	public function toStringWithValue()
 	{
 		return $this->pipe . ' ' . $this->getConditionPart($this->_value);
 	}
 
-	function setPipe($pipe)
+	public function setPipe($pipe)
 	{
 		$this->pipe = $pipe;
 	}
@@ -105,7 +105,7 @@ class Condition
 	/**
 	 * @return boolean
 	 */
-	function show()
+	public function show()
 	{
 		if(!isset($this->_show))
 		{
@@ -183,7 +183,7 @@ class Condition
 	 * @param int|string|array $value
 	 * @return string
 	 */
-	function getConditionPart($value)
+	public function getConditionPart($value)
 	{
 		$name = $this->column_name;
 		$operation = $this->operation;

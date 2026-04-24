@@ -10,14 +10,14 @@ class pollAdminController extends poll
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Save the configurations
 	 */
-	function procPollAdminInsertConfig()
+	public function procPollAdminInsertConfig()
 	{
 		$config = new stdClass;
 		$config->skin = Context::get('skin');
@@ -35,7 +35,7 @@ class pollAdminController extends poll
 	/**
 	 * @brief Delete the polls selected in the administrator's page
 	 */
-	function procPollAdminDeleteChecked()
+	public function procPollAdminDeleteChecked()
 	{
 		// Display an error no post is selected
 		$cart = Context::get('cart');
@@ -61,7 +61,7 @@ class pollAdminController extends poll
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function procPollAdminAddCart()
+	public function procPollAdminAddCart()
 	{
 		$poll_index_srl = (int)Context::get('poll_index_srl');
 
@@ -86,14 +86,14 @@ class pollAdminController extends poll
 	/**
 	 * @brief Delete the poll (when several questions are registered in one poll, delete this question)
 	 */
-	function deletePollTitle($poll_index_srl) 
+	public function deletePollTitle($poll_index_srl) 
 	{
 		$args = new stdClass;
 		$dargs = new stdClass;
 
 		$args->poll_index_srl = $poll_index_srl;
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$output = executeQueryArray('poll.getPollByDeletePollTitle', $args);
@@ -140,12 +140,12 @@ class pollAdminController extends poll
 	/**
 	 * @brief Delete the poll (delete the entire poll)
 	 */
-	function deletePoll($poll_srl)
+	public function deletePoll($poll_srl)
 	{
 		$args = new stdClass;
 		$args->poll_srl = $poll_srl;
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$output = $oDB->executeQuery('poll.deletePoll', $args);

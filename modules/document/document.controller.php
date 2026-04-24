@@ -14,7 +14,7 @@ class documentController extends document
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -22,7 +22,7 @@ class documentController extends document
 	 * Action to handle vote-up of the post (Up)
 	 * @return BaseObject
 	 */
-	function procDocumentVoteUp()
+	public function procDocumentVoteUp()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_invalid_request');
 
@@ -51,7 +51,7 @@ class documentController extends document
 	 * @param string $alias_title
 	 * @return object
 	 */
-	function insertAlias($module_srl, $document_srl, $alias_title)
+	public function insertAlias($module_srl, $document_srl, $alias_title)
 	{
 		$args = new stdClass;
 		$args->alias_srl = getNextSequence();
@@ -67,7 +67,7 @@ class documentController extends document
 	 * Action to handle vote-up of the post (Down)
 	 * @return BaseObject
 	 */
-	function procDocumentVoteDown()
+	public function procDocumentVoteDown()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_invalid_request');
 
@@ -93,7 +93,7 @@ class documentController extends document
 	 * Action called when the post is reported by other member
 	 * @return void|BaseObject
 	 */
-	function procDocumentDeclare()
+	public function procDocumentDeclare()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_invalid_request');
 
@@ -108,7 +108,7 @@ class documentController extends document
 	 * @param int $module_srl
 	 * @return void
 	 */
-	function deleteDocumentAliasByModule($module_srl)
+	public function deleteDocumentAliasByModule($module_srl)
 	{
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -120,7 +120,7 @@ class documentController extends document
 	 * @param int $document_srl
 	 * @return void
 	 */
-	function deleteDocumentAliasByDocument($document_srl)
+	public function deleteDocumentAliasByDocument($document_srl)
 	{
 		$args = new stdClass();
 		$args->document_srl = $document_srl;
@@ -134,7 +134,7 @@ class documentController extends document
 	 * @param int $module_srl
 	 * @return void
 	 */
-	function deleteDocumentHistory($history_srl, $document_srl, $module_srl)
+	public function deleteDocumentHistory($history_srl, $document_srl, $module_srl)
 	{
 		$args = new stdClass();
 		$args->history_srl = $history_srl;
@@ -149,7 +149,7 @@ class documentController extends document
 	 * @param object $obj
 	 * @return BaseObject
 	 */
-	function triggerDeleteModuleDocuments(&$obj)
+	public function triggerDeleteModuleDocuments(&$obj)
 	{
 		$module_srl = $obj->module_srl;
 		if(!$module_srl) return new BaseObject();
@@ -179,7 +179,7 @@ class documentController extends document
 	 * @param int $document_srl
 	 * @return void
 	 */
-	function addGrant($document_srl)
+	public function addGrant($document_srl)
 	{
 		$_SESSION['own_document'][$document_srl] = true;
 	}
@@ -191,7 +191,7 @@ class documentController extends document
 	 * @param bool $isRestore
 	 * @return object
 	 */
-	function insertDocument($obj, $manual_inserted = false, $isRestore = false, $isLatest = true)
+	public function insertDocument($obj, $manual_inserted = false, $isRestore = false, $isLatest = true)
 	{
 		if(!$manual_inserted && !checkCSRF())
 		{
@@ -199,7 +199,7 @@ class documentController extends document
 		}
 
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 		// List variables
 		if($obj->comment_status) $obj->commentStatus = $obj->comment_status;
@@ -366,7 +366,7 @@ class documentController extends document
 	 * @param bool $manual_updated
 	 * @return object
 	 */
-	function updateDocument($source_obj, $obj, $manual_updated = FALSE)
+	public function updateDocument($source_obj, $obj, $manual_updated = FALSE)
 	{
 		$logged_info = Context::get('logged_info');
 
@@ -407,7 +407,7 @@ class documentController extends document
 		if(!$output->toBool()) return $output;
 
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$oModuleModel = getModel('module');
@@ -629,7 +629,7 @@ class documentController extends document
 	 * @param documentItem $oDocument
 	 * @return object
 	 */
-	function deleteDocument($document_srl, $is_admin = false, $isEmptyTrash = false, $oDocument = null)
+	public function deleteDocument($document_srl, $is_admin = false, $isEmptyTrash = false, $oDocument = null)
 	{
 		// Call a trigger (before)
 		$trigger_obj = new stdClass();
@@ -638,7 +638,7 @@ class documentController extends document
 		if(!$output->toBool()) return $output;
 
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		if(!$isEmptyTrash)
@@ -717,7 +717,7 @@ class documentController extends document
 	 * @param string $documentSrls (ex: 1, 2,56, 88)
 	 * @return void
 	 */
-	function _deleteDeclaredDocuments($documentSrls)
+	public function _deleteDeclaredDocuments($documentSrls)
 	{
 		executeQuery('document.deleteDeclaredDocuments', $documentSrls);
 		executeQuery('document.deleteDocumentDeclaredLog', $documentSrls);
@@ -728,7 +728,7 @@ class documentController extends document
 	 * @param string $documentSrls (ex: 1, 2,56, 88)
 	 * @return void
 	 */
-	function _deleteDocumentReadedLog($documentSrls)
+	public function _deleteDocumentReadedLog($documentSrls)
 	{
 		executeQuery('document.deleteDocumentReadedLog', $documentSrls);
 	}
@@ -738,7 +738,7 @@ class documentController extends document
 	 * @param string $documentSrls (ex: 1, 2,56, 88)
 	 * @return void
 	 */
-	function _deleteDocumentVotedLog($documentSrls)
+	public function _deleteDocumentVotedLog($documentSrls)
 	{
 		executeQuery('document.deleteDocumentVotedLog', $documentSrls);
 	}
@@ -748,7 +748,7 @@ class documentController extends document
 	 * @param object $obj
 	 * @return object
 	 */
-	function moveDocumentToTrash($obj)
+	public function moveDocumentToTrash($obj)
 	{
 		$trash_args = new stdClass();
 		// Get trash_srl if a given trash_srl doesn't exist
@@ -782,7 +782,7 @@ class documentController extends document
 		$document_args->document_srl = $obj->document_srl;
 
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		/*$output = executeQuery('document.insertTrash', $trash_args);
@@ -864,7 +864,7 @@ class documentController extends document
 	 * @param documentItem $oDocument
 	 * @return bool|void
 	 */
-	function updateReadedCount(&$oDocument)
+	public function updateReadedCount(&$oDocument)
 	{
 		// Pass if Crawler access
 		if(isCrawler()) return false;
@@ -941,7 +941,7 @@ class documentController extends document
 	 * @param int $eid
 	 * @return object
 	 */
-	function insertDocumentExtraKey($module_srl, $var_idx, $var_name, $var_type, $var_is_required = 'N', $var_search = 'N', $var_default = '', $var_desc = '', $eid)
+	public function insertDocumentExtraKey($module_srl, $var_idx, $var_name, $var_type, $var_is_required = 'N', $var_search = 'N', $var_default = '', $var_desc = '', $eid)
 	{
 		if(!$module_srl || !$var_idx || !$var_name || !$var_type || !$eid) return new BaseObject(-1,'msg_invalid_request');
 
@@ -985,7 +985,7 @@ class documentController extends document
 	 * @param int $var_idx
 	 * @return BaseObject
 	 */
-	function deleteDocumentExtraKeys($module_srl, $var_idx = null)
+	public function deleteDocumentExtraKeys($module_srl, $var_idx = null)
 	{
 		if(!$module_srl) return new BaseObject(-1,'msg_invalid_request');
 		$obj = new stdClass();
@@ -1052,7 +1052,7 @@ class documentController extends document
 	 * @param string $lang_code
 	 * @return BaseObject|void
 	 */
-	function insertDocumentExtraVar($module_srl, $document_srl, $var_idx, $value, $eid = null, $lang_code = '')
+	public function insertDocumentExtraVar($module_srl, $document_srl, $var_idx, $value, $eid = null, $lang_code = '')
 	{
 		if(!$module_srl || !$document_srl || !$var_idx || !isset($value)) return new BaseObject(-1,'msg_invalid_request');
 		if(!$lang_code) $lang_code = Context::getLangType();
@@ -1077,7 +1077,7 @@ class documentController extends document
 	 * @param int $eid
 	 * @return $output
 	 */
-	function deleteDocumentExtraVars($module_srl, $document_srl = null, $var_idx = null, $lang_code = null, $eid = null)
+	public function deleteDocumentExtraVars($module_srl, $document_srl = null, $var_idx = null, $lang_code = null, $eid = null)
 	{
 		$obj = new stdClass();
 		$obj->module_srl = $module_srl;
@@ -1096,7 +1096,7 @@ class documentController extends document
 	 * @param int $point
 	 * @return BaseObject
 	 */
-	function updateVotedCount($document_srl, $point = 1)
+	public function updateVotedCount($document_srl, $point = 1)
 	{
 		if($point > 0) $failed_voted = 'failed_voted';
 		else $failed_voted = 'failed_blamed';
@@ -1228,7 +1228,7 @@ class documentController extends document
 	 * @param int $document_srl
 	 * @return void|BaseObject
 	 */
-	function declaredDocument($document_srl)
+	public function declaredDocument($document_srl)
 	{
 		// Fail if session information already has a reported document
 		if($_SESSION['declared_document'][$document_srl]) return new BaseObject(-1, 'failed_declared');
@@ -1298,7 +1298,7 @@ class documentController extends document
 		}
 
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		// Add the declared document
@@ -1342,7 +1342,7 @@ class documentController extends document
 	 * @param bool $comment_inserted
 	 * @return object
 	 */
-	function updateCommentCount($document_srl, $comment_count, $last_updater, $comment_inserted = false)
+	public function updateCommentCount($document_srl, $comment_count, $last_updater, $comment_inserted = false)
 	{
 		$args = new stdClass();
 		$args->document_srl = $document_srl;
@@ -1371,7 +1371,7 @@ class documentController extends document
 	 * @param int $trackback_count
 	 * @return object
 	 */
-	function updateTrackbackCount($document_srl, $trackback_count)
+	public function updateTrackbackCount($document_srl, $trackback_count)
 	{
 		$args = new stdClass;
 		$args->document_srl = $document_srl;
@@ -1393,7 +1393,7 @@ class documentController extends document
 	 * @param object $obj
 	 * @return object
 	 */
-	function insertCategory($obj)
+	public function insertCategory($obj)
 	{
 		// Sort the order to display if a child category is added
 		if($obj->parent_srl)
@@ -1426,7 +1426,7 @@ class documentController extends document
 	 * @param int $list_order
 	 * @return object
 	 */
-	function updateCategoryListOrder($module_srl, $list_order)
+	public function updateCategoryListOrder($module_srl, $list_order)
 	{
 		$args = new stdClass;
 		$args->module_srl = $module_srl;
@@ -1441,7 +1441,7 @@ class documentController extends document
 	 * @param int $document_count
 	 * @return object
 	 */
-	function updateCategoryCount($module_srl, $category_srl, $document_count = 0)
+	public function updateCategoryCount($module_srl, $category_srl, $document_count = 0)
 	{
 		// Create a document model object
 		$oDocumentModel = getModel('document');
@@ -1461,7 +1461,7 @@ class documentController extends document
 	 * @param object $obj
 	 * @return object
 	 */
-	function updateCategory($obj)
+	public function updateCategory($obj)
 	{
 		$output = executeQuery('document.updateCategory', $obj);
 		if($output->toBool()) $this->makeCategoryFile($obj->module_srl);
@@ -1473,7 +1473,7 @@ class documentController extends document
 	 * @param int $category_srl
 	 * @return object
 	 */
-	function deleteCategory($category_srl)
+	public function deleteCategory($category_srl)
 	{
 		$args = new stdClass();
 		$args->category_srl = $category_srl;
@@ -1526,7 +1526,7 @@ class documentController extends document
 	 * @param int $module_srl
 	 * @return object
 	 */
-	function deleteModuleCategory($module_srl)
+	public function deleteModuleCategory($module_srl)
 	{
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -1539,7 +1539,7 @@ class documentController extends document
 	 * @param int $category_srl
 	 * @return BaseObject
 	 */
-	function moveCategoryUp($category_srl)
+	public function moveCategoryUp($category_srl)
 	{
 		$oDocumentModel = getModel('document');
 		// Get information of the selected category
@@ -1586,7 +1586,7 @@ class documentController extends document
 	 * @param int $category_srl
 	 * @return BaseObject
 	 */
-	function moveCategoryDown($category_srl)
+	public function moveCategoryDown($category_srl)
 	{
 		$oDocumentModel = getModel('document');
 		// Get information of the selected category
@@ -1631,7 +1631,7 @@ class documentController extends document
 	 * @param int $module_srl
 	 * @return void
 	 */
-	function addXmlJsFilter($module_srl)
+	public function addXmlJsFilter($module_srl)
 	{
 		$oDocumentModel = getModel('document');
 		$extra_keys = $oDocumentModel->getExtraKeys($module_srl);
@@ -1669,7 +1669,7 @@ class documentController extends document
 	 * @param object $args
 	 * @return void
 	 */
-	function procDocumentInsertCategory($args = null)
+	public function procDocumentInsertCategory($args = null)
 	{
 		// List variables
 		if(!$args) $args = Context::gets('module_srl','category_srl','parent_srl','category_title','category_description','expand','group_srls','category_color','mid');
@@ -1697,7 +1697,7 @@ class documentController extends document
 
 		$oDocumentModel = getModel('document');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 		// Check if already exists
 		if($args->category_srl)
@@ -1743,7 +1743,7 @@ class documentController extends document
 	 * Move a category
 	 * @return void
 	 */
-	function procDocumentMoveCategory()
+	public function procDocumentMoveCategory()
 	{
 		$source_category_srl = Context::get('source_srl');
 		// If parent_srl exists, be the first child
@@ -1807,12 +1807,12 @@ class documentController extends document
 	 * Delete a category
 	 * @return void
 	 */
-	function procDocumentDeleteCategory()
+	public function procDocumentDeleteCategory()
 	{
 		// List variables
 		$args = Context::gets('module_srl','category_srl');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 		// Check permissions
 		$oModuleModel = getModel('module');
@@ -1851,7 +1851,7 @@ class documentController extends document
 	 * Although the issue is not currently reproduced, it is unnecessay to remove.
 	 * @return void
 	 */
-	function procDocumentMakeXmlFile()
+	public function procDocumentMakeXmlFile()
 	{
 		// Check input values
 		$module_srl = Context::get('module_srl');
@@ -1872,7 +1872,7 @@ class documentController extends document
 	 * @param int $module_srl
 	 * @return string
 	 */
-	function makeCategoryFile($module_srl)
+	public function makeCategoryFile($module_srl)
 	{
 		// Return if there is no information you need for creating a cache file
 		if(!$module_srl) return false;
@@ -1944,7 +1944,7 @@ class documentController extends document
 			'<?php '.
 			'define(\'__XE__\', true); '.
 			'require_once(\''.FileHandler::getRealPath('./config/config.inc.php').'\'); '.
-			'$oContext = &Context::getInstance(); '.
+			'$oContext = Context::getInstance(); '.
 			'$oContext->init(); '.
 			'header("Content-Type: text/xml; charset=UTF-8"); '.
 			'header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); '.
@@ -1992,7 +1992,7 @@ class documentController extends document
 	 * @param string $xml_header_buff
 	 * @return string
 	 */
-	function getXmlTree($source_node, $tree, $site_srl, &$xml_header_buff)
+	public function getXmlTree($source_node, $tree, $site_srl, &$xml_header_buff)
 	{
 		if(!$source_node) return;
 
@@ -2068,7 +2068,7 @@ class documentController extends document
 	 * @param string $php_header_buff
 	 * @return array
 	 */
-	function getPhpCacheCode($source_node, $tree, $site_srl, &$php_header_buff)
+	public function getPhpCacheCode($source_node, $tree, $site_srl, &$php_header_buff)
 	{
 		$output = array("buff"=>"", "category_srl_list"=>array());
 		if(!$source_node) return $output;
@@ -2167,7 +2167,7 @@ class documentController extends document
 	 * @param string $target
 	 * @return void
 	 */
-	function addDocumentPopupMenu($url, $str, $icon = '', $target = 'self')
+	public function addDocumentPopupMenu($url, $str, $icon = '', $target = 'self')
 	{
 		$document_popup_menu_list = Context::get('document_popup_menu_list');
 		if(!is_array($document_popup_menu_list)) $document_popup_menu_list = array();
@@ -2186,7 +2186,7 @@ class documentController extends document
 	 * Saved in the session when an administrator selects a post
 	 * @return void|BaseObject
 	 */
-	function procDocumentAddCart()
+	public function procDocumentAddCart()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_permitted');
 
@@ -2259,7 +2259,7 @@ class documentController extends document
 	 * Move/ Delete the document in the seession
 	 * @return void|BaseObject
 	 */
-	function procDocumentManageCheckedDocument()
+	public function procDocumentManageCheckedDocument()
 	{
 		@set_time_limit(0);
 		if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
@@ -2341,7 +2341,7 @@ class documentController extends document
 		}
 		else if($type =='delete')
 		{
-			$oDB = &DB::getInstance();
+			$oDB = DB::getInstance();
 			$oDB->begin();
 			for($i=0;$i<$document_srl_count;$i++)
 			{
@@ -2357,7 +2357,7 @@ class documentController extends document
 			$args = new stdClass();
 			$args->description = $message_content;
 
-			$oDB = &DB::getInstance();
+			$oDB = DB::getInstance();
 			$oDB->begin();
 			for($i=0;$i<$document_srl_count;$i++) {
 				$args->document_srl = $document_srl_list[$i];
@@ -2386,7 +2386,7 @@ class documentController extends document
 	 * Insert document module config
 	 * @return void
 	 */
-	function procDocumentInsertModuleConfig()
+	public function procDocumentInsertModuleConfig()
 	{
 		$module_srl = Context::get('target_module_srl');
 		if(preg_match('/^([0-9,]+)$/',$module_srl)) $module_srl = explode(',',$module_srl);
@@ -2422,7 +2422,7 @@ class documentController extends document
 	 * Document temporary save
 	 * @return void|BaseObject
 	 */
-	function procDocumentTempSave()
+	public function procDocumentTempSave()
 	{
 		// Check login information
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
@@ -2489,7 +2489,7 @@ class documentController extends document
 	 * Return Document List for exec_xml
 	 * @return void|BaseObject
 	 */
-	function procDocumentGetList()
+	public function procDocumentGetList()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
 		$documentSrls = Context::get('document_srls');
@@ -2517,7 +2517,7 @@ class documentController extends document
 	 * @param object $obj
 	 * @return void
 	 */
-	function _checkCommentStatusForOldVersion(&$obj)
+	public function _checkCommentStatusForOldVersion(&$obj)
 	{
 		if(!isset($obj->allow_comment)) $obj->allow_comment = 'N';
 		if(!isset($obj->lock_comment)) $obj->lock_comment = 'N';
@@ -2531,7 +2531,7 @@ class documentController extends document
 	 * @param object $obj
 	 * @return void
 	 */
-	function _checkDocumentStatusForOldVersion(&$obj)
+	public function _checkDocumentStatusForOldVersion(&$obj)
 	{
 		if(!$obj->status && $obj->is_secret == 'Y') $obj->status = $this->getConfigStatus('secret');
 		if(!$obj->status && $obj->is_secret != 'Y') $obj->status = $this->getConfigStatus('public');
@@ -2561,7 +2561,7 @@ class documentController extends document
 	 * @param object $obj
 	 * @return void
 	 */
-	function triggerCopyModuleExtraKeys(&$obj)
+	public function triggerCopyModuleExtraKeys(&$obj)
 	{
 		$oDocumentModel = getModel('document');
 		$documentExtraKeys = $oDocumentModel->getExtraKeys($obj->originModuleSrl);
@@ -2579,7 +2579,7 @@ class documentController extends document
 		}
 	}
 
-	function triggerCopyModule(&$obj)
+	public function triggerCopyModule(&$obj)
 	{
 		$oModuleModel = getModel('module');
 		$documentConfig = $oModuleModel->getModulePartConfig('document', $obj->originModuleSrl);

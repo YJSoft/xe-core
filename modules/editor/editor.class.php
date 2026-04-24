@@ -10,7 +10,7 @@ class editor extends ModuleObject
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Register action forward (to use in administrator mode)
 		$oModuleController = getController('module');
@@ -42,9 +42,9 @@ class editor extends ModuleObject
 	/**
 	 * @brief a method to check if successfully installed
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -79,9 +79,9 @@ class editor extends ModuleObject
 	/**
 	 * @brief Execute update
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -134,7 +134,7 @@ class editor extends ModuleObject
 	/**
 	 * @brief Re-generate the cache file
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 }

@@ -11,7 +11,7 @@ class layoutAdminController extends layout
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -21,7 +21,7 @@ class layoutAdminController extends layout
 	 * @deprecated 
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procLayoutAdminInsert()
+	public function procLayoutAdminInsert()
 	{
 		if(Context::get('layout') == 'faceoff') return $this->stop('not supported');
 
@@ -54,7 +54,7 @@ class layoutAdminController extends layout
 	 * @param object $args layout information
 	 * @return BaseObject
 	 */
-	function insertLayout($args)
+	public function insertLayout($args)
 	{
 		$output = executeQuery("layout.insertLayout", $args);
 		return $output;
@@ -66,7 +66,7 @@ class layoutAdminController extends layout
 	 * @param string $layout_name
 	 * @return void 
 	 */
-	function initLayout($layout_srl, $layout_name)
+	public function initLayout($layout_srl, $layout_name)
 	{
 		$oLayoutModel = getModel('layout');
 		// Import a sample layout if it is faceoff
@@ -86,7 +86,7 @@ class layoutAdminController extends layout
 	 * Apply a title of the new layout and extra vars
 	 * @return BaseObject
 	 */
-	function procLayoutAdminUpdate()
+	public function procLayoutAdminUpdate()
 	{
 		// Consider the rest of items as extra vars, except module, act, layout_srl, layout, and title  .. Some gurida ..
 		$extra_vars = Context::getRequestVars();
@@ -256,7 +256,7 @@ class layoutAdminController extends layout
 	 * @param object $args
 	 * @return BaseObject
 	 */
-	function updateLayout($args) {
+	public function updateLayout($args) {
 		$output = executeQuery('layout.updateLayout', $args);
 		if($output->toBool())
 		{
@@ -273,7 +273,7 @@ class layoutAdminController extends layout
 	 * Delete xml cache file too when deleting a layout
 	 * @return BaseObject
 	 */
-	function procLayoutAdminDelete()
+	public function procLayoutAdminDelete()
 	{
 		$layout_srl = Context::get('layout_srl');
 		$this->setRedirectUrl(Context::get('error_return_url'));
@@ -285,7 +285,7 @@ class layoutAdminController extends layout
 	 * @param int $layout_srl
 	 * @return BaseObject
 	 */
-	function deleteLayout($layout_srl, $force = FALSE)
+	public function deleteLayout($layout_srl, $force = FALSE)
 	{
 		$oLayoutModel = getModel('layout');
 
@@ -340,7 +340,7 @@ class layoutAdminController extends layout
 	 * Adding Layout Code
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procLayoutAdminCodeUpdate()
+	public function procLayoutAdminCodeUpdate()
 	{
 		$mode = Context::get('mode');
 		if ($mode == 'reset')
@@ -373,7 +373,7 @@ class layoutAdminController extends layout
 	 * Reset layout code
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procLayoutAdminCodeReset()
+	public function procLayoutAdminCodeReset()
 	{
 		$layout_srl = Context::get('layout_srl');
 		if(!$layout_srl) return new BaseObject(-1, 'msg_invalid_request');
@@ -402,7 +402,7 @@ class layoutAdminController extends layout
 	 * Layout setting page -> Upload an image
 	 * @return void
 	 */
-	function procLayoutAdminUserImageUpload()
+	public function procLayoutAdminUserImageUpload()
 	{
 		if(!Context::isUploaded()) exit();
 
@@ -423,7 +423,7 @@ class layoutAdminController extends layout
 	 * @param object $source file data
 	 * @return boolean (true : success, false : fail)
 	 */
-	function insertUserLayoutImage($layout_srl,$source)
+	public function insertUserLayoutImage($layout_srl,$source)
 	{
 		$oLayoutModel = getModel('layout');
 		$path = $oLayoutModel->getUserLayoutImagePath($layout_srl);
@@ -448,7 +448,7 @@ class layoutAdminController extends layout
 	 * Layout setting page -> Delete an image
 	 * @return void
 	 */
-	function procLayoutAdminUserImageDelete()
+	public function procLayoutAdminUserImageDelete()
 	{
 		$layout_srl = Context::get('layout_srl');
 		if (!$layout_srl)
@@ -473,7 +473,7 @@ class layoutAdminController extends layout
 	 * @param string $filename
 	 * @return void
 	 */
-	function removeUserLayoutImage($layout_srl,$filename)
+	public function removeUserLayoutImage($layout_srl,$filename)
 	{
 		$oLayoutModel = getModel('layout');
 		$path = $oLayoutModel->getUserLayoutImagePath($layout_srl);
@@ -487,7 +487,7 @@ class layoutAdminController extends layout
 	 * @deprecated
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procLayoutAdminUserValueInsert()
+	public function procLayoutAdminUserValueInsert()
 	{
 		$oModuleModel = getModel('module');
 
@@ -544,7 +544,7 @@ class layoutAdminController extends layout
 	 * @param object $arr layout ini
 	 * @return void
 	 */
-	function insertUserLayoutValue($layout_srl,$arr)
+	public function insertUserLayoutValue($layout_srl,$arr)
 	{
 		$oLayoutModel = getModel('layout');
 		$file = $oLayoutModel->getUserLayoutIni($layout_srl);
@@ -558,7 +558,7 @@ class layoutAdminController extends layout
 	 * @param string $content
 	 * @return string
 	 */
-	function addExtension($layout_srl,$arg,$content)
+	public function addExtension($layout_srl,$arg,$content)
 	{
 		$oLayoutModel = getModel('layout');
 		$reg = '/(<\!\-\- start\-e1 \-\->)(.*)(<\!\-\- end\-e1 \-\->)/i';
@@ -584,7 +584,7 @@ class layoutAdminController extends layout
 	 * @param int $layout_srl
 	 * @return void
 	 */
-	function deleteUserLayoutTempFile($layout_srl)
+	public function deleteUserLayoutTempFile($layout_srl)
 	{
 		$oLayoutModel = getModel('layout');
 		$file_list = $oLayoutModel->getUserLayoutTempFileList($layout_srl);
@@ -598,7 +598,7 @@ class layoutAdminController extends layout
 	 * export user layout
 	 * @return void
 	 */
-	function procLayoutAdminUserLayoutExport()
+	public function procLayoutAdminUserLayoutExport()
 	{
 		$layout_srl = Context::get('layout_srl');
 		if(!$layout_srl) return new BaseObject('-1','msg_invalid_request');
@@ -693,7 +693,7 @@ class layoutAdminController extends layout
 	 * @deprecated
 	 * @return void
 	 */
-	function procLayoutAdminUserLayoutImport()
+	public function procLayoutAdminUserLayoutImport()
 	{
 		return $this->stop('not supported');
 
@@ -720,7 +720,7 @@ class layoutAdminController extends layout
 	 * layout copy
 	 * @return void
 	 */
-	function procLayoutAdminCopyLayout()
+	public function procLayoutAdminCopyLayout()
 	{
 		$sourceArgs = Context::getRequestVars();
 		if($sourceArgs->layout == 'faceoff')
@@ -772,7 +772,7 @@ class layoutAdminController extends layout
 		$args->layout_type = $layout->layout_type;
 		if(!$args->layout_type) $args->layout_type = "P";
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		if(is_array($sourceArgs->title))
@@ -855,7 +855,7 @@ class layoutAdminController extends layout
 	 * @param $targetLayoutSrl origin layout number
 	 * @return void
 	 */
-	function _copyLayoutFile($sourceLayoutSrl, $targetLayoutSrl)
+	public function _copyLayoutFile($sourceLayoutSrl, $targetLayoutSrl)
 	{
 		$oLayoutModel = getModel('layout');
 		$sourceLayoutPath = FileHandler::getRealPath($oLayoutModel->getUserLayoutPath($sourceLayoutSrl));
@@ -884,7 +884,7 @@ class layoutAdminController extends layout
 	 * @param string $file
 	 * @return void
 	 */
-	function _changeFilepathInSource($file, $source, $target)
+	public function _changeFilepathInSource($file, $source, $target)
 	{
 		$content = FileHandler::readFile($file);
 		$content = str_replace($source, $target, $content);
@@ -897,7 +897,7 @@ class layoutAdminController extends layout
 	 * @param string $source_file path of imported file
 	 * @return void
 	 */
-	function importLayout($layout_srl, $source_file)
+	public function importLayout($layout_srl, $source_file)
 	{
 		$oLayoutModel = getModel('layout');
 		$user_layout_path = FileHandler::getRealPath($oLayoutModel->getUserLayoutPath($layout_srl));
@@ -927,7 +927,7 @@ class layoutAdminController extends layout
 	/**
 	 * Upload config image
 	 */
-	function procLayoutAdminConfigImageUpload()
+	public function procLayoutAdminConfigImageUpload()
 	{
 		$layoutSrl = Context::get('layout_srl');
 		$name = Context::get('name');
@@ -975,7 +975,7 @@ class layoutAdminController extends layout
 	/**
 	 * Delete config image
 	 */
-	function procLayoutAdminConfigImageDelete()
+	public function procLayoutAdminConfigImageDelete()
 	{
 		$layoutSrl = Context::get('layout_srl');
 		$name = Context::get('name');

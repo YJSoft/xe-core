@@ -11,19 +11,19 @@ class integration_searchView extends integration_search
 	 * Target mid
 	 * @var array target mid
 	 */
-	var $target_mid = array();
+	public $target_mid = array();
 	/**
 	 * Skin
 	 * @var string skin name
 	 */
-	var $skin = 'default';
+	public $skin = 'default';
 
 	/**
 	 * Initialization
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -32,7 +32,7 @@ class integration_searchView extends integration_search
 	 *
 	 * @return BaseObject
 	 */
-	function IS()
+	public function IS()
 	{
 		$oFile = getClass('file');
 		$oModuleModel = getModel('module');

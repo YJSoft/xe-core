@@ -15,38 +15,38 @@ class IndexTag
 	 * argument name
 	 * @var string
 	 */
-	var $argument_name;
+	public $argument_name;
 
 	/**
 	 * QueryArgument object
 	 * @var QueryArgument
 	 */
-	var $argument;
+	public $argument;
 
 	/**
 	 * Default value
 	 * @var string
 	 */
-	var $default;
+	public $default;
 
 	/**
 	 * Sort order
 	 * @var string
 	 */
-	var $sort_order;
+	public $sort_order;
 
 	/**
 	 * Sort order argument
 	 * @var SortQueryArgument object
 	 */
-	var $sort_order_argument;
+	public $sort_order_argument;
 
 	/**
 	 * constructor
 	 * @param object $index
 	 * @return void
 	 */
-	function __construct($index)
+	public function __construct($index)
 	{
 		$this->argument_name = $index->attrs->var;
 
@@ -74,12 +74,12 @@ class IndexTag
 		}
 	}
 
-	function toString()
+	public function toString()
 	{
 		return sprintf('new OrderByColumn(${\'%s_argument\'}, %s)', $this->argument->getArgumentName(), $this->sort_order);
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		$arguments[] = $this->argument;

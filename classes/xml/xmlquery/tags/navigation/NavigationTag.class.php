@@ -15,38 +15,38 @@ class NavigationTag
 	 * Order
 	 * @var array
 	 */
-	var $order;
+	public $order;
 
 	/**
 	 * List count
 	 * @var int
 	 */
-	var $list_count;
+	public $list_count;
 
 	/**
 	 * Page count
 	 * @var int
 	 */
-	var $page_count;
+	public $page_count;
 
 	/**
 	 * Page
 	 * @var int
 	 */
-	var $page;
+	public $page;
 
 	/**
 	 * Limit
 	 * @var LimitTag object
 	 */
-	var $limit;
+	public $limit;
 
 	/**
 	 * constructor
 	 * @param object $xml_navigation
 	 * @return void
 	 */
-	function __construct($xml_navigation)
+	public function __construct($xml_navigation)
 	{
 		$this->order = array();
 		if($xml_navigation)
@@ -90,7 +90,7 @@ class NavigationTag
 	 * NavigationTag object to string
 	 * @return string
 	 */
-	function getOrderByString()
+	public function getOrderByString()
 	{
 		$output = 'array(' . PHP_EOL;
 		foreach($this->order as $order)
@@ -106,7 +106,7 @@ class NavigationTag
 	 * LimitTag object to string
 	 * @return string
 	 */
-	function getLimitString()
+	public function getLimitString()
 	{
 		if($this->limit)
 		{
@@ -118,7 +118,7 @@ class NavigationTag
 		}
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		foreach($this->order as $order)

@@ -10,16 +10,16 @@ class sessionModel extends session
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
-	function getLifeTime()
+	public function getLifeTime()
 	{
 		return $this->lifetime;
 	}
 
-	function read($session_key)
+	public function read($session_key)
 	{
 		if(!$session_key || !$this->session_started) return;
 
@@ -44,7 +44,7 @@ class sessionModel extends session
 	 * period_time: "n" specifies the time range in minutes since the last update
 	 * mid: a user who belong to a specified mid
 	 */
-	function getLoggedMembers($args)
+	public function getLoggedMembers($args)
 	{
 		if(!$args->site_srl)
 		{

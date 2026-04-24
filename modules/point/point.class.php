@@ -10,7 +10,7 @@ class point extends ModuleObject
 	/**
 	 * @brief Additional tasks required to accomplish during the installation
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Registration in action forward (for using in the administrator mode)
 		$oModuleController = getController('module');
@@ -77,7 +77,7 @@ class point extends ModuleObject
 	/**
 	 * @brief A method to check if the installation has been successful
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		// Get the information of the point module
 		$oModuleModel = getModel('module');
@@ -115,7 +115,7 @@ class point extends ModuleObject
 	/**
 	 * @brief Execute update
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		// Get the information of the point module
 		$oModuleModel = getModel('module');
@@ -165,7 +165,7 @@ class point extends ModuleObject
 	/**
 	 * @brief Re-create the cache file
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		// redefine point action file
 		$oPointAdminController = getAdminController('point');

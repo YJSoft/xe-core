@@ -12,7 +12,7 @@ class krzipModel extends krzip
 	 * @brief 한국 우편번호 모듈 설정 반환
 	 * @return object
 	 */
-	function getConfig()
+	public function getConfig()
 	{
 		if(!isset($this->module_config))
 		{
@@ -44,7 +44,7 @@ class krzipModel extends krzip
 	 * @param mixed $values
 	 * @return array
 	 */
-	function getMigratedPostcode($values)
+	public function getMigratedPostcode($values)
 	{
 		if(is_array($values))
 		{
@@ -97,7 +97,7 @@ class krzipModel extends krzip
 	 * @param string $query
 	 * @return mixed
 	 */
-	function getKrzipCodeList($query)
+	public function getKrzipCodeList($query)
 	{
 		$module_config = $this->getConfig();
 		if($module_config->api_handler != 1)
@@ -129,7 +129,7 @@ class krzipModel extends krzip
 	 * @param string $query
 	 * @return object
 	 */
-	function getEpostapiSearch($query = '')
+	public function getEpostapiSearch($query = '')
 	{
 		/**
 		 * @brief 문자열 인코딩 변환
@@ -251,7 +251,7 @@ class krzipModel extends krzip
 	 * @return string
 	 */
 	//06232 서울특별시 강남구 강남대로 382 서울특별시 강남구 역삼동 825-2
-	function getKrzipCodeSearchHtml($column_name, $values)
+	public function getKrzipCodeSearchHtml($column_name, $values)
 	{
 		$template_config = $this->getConfig();
 		$template_config->sequence_id = ++self::$sequence_id;

@@ -16,7 +16,7 @@ class commentAdminController extends comment
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -25,7 +25,7 @@ class commentAdminController extends comment
 	 * Modify comment(s) status to publish/unpublish if calling module is using Comment Approval System
 	 * @return void
 	 */
-	function procCommentAdminChangePublishedStatusChecked()
+	public function procCommentAdminChangePublishedStatusChecked()
 	{
 		// Error display if none is selected
 		$cart = Context::get('cart');
@@ -48,7 +48,7 @@ class commentAdminController extends comment
 	 * Change comment status
 	 * @return void|object
 	 */
-	function procCommentAdminChangeStatus()
+	public function procCommentAdminChangeStatus()
 	{
 		$will_publish = Context::get('will_publish');
 
@@ -189,7 +189,7 @@ class commentAdminController extends comment
 	 * Delete the selected comment from the administrator page
 	 * @return void
 	 */
-	function procCommentAdminDeleteChecked()
+	public function procCommentAdminDeleteChecked()
 	{
 		$isTrash = Context::get('is_trash');
 
@@ -310,7 +310,7 @@ class commentAdminController extends comment
 	 * comment move to trash
 	 * @return void|object
 	 */
-	function _moveCommentToTrash($commentSrlList, &$oCommentController, &$oDB, $message_content = NULL)
+	public function _moveCommentToTrash($commentSrlList, &$oCommentController, &$oDB, $message_content = NULL)
 	{
 		require_once(_XE_PATH_ . 'modules/trash/model/TrashVO.php');
 
@@ -345,7 +345,7 @@ class commentAdminController extends comment
 	  * @brief move a comment to trash
 	  * @see commentModel::getCommentMenu
 	  */
-	function procCommentAdminMoveToTrash()
+	public function procCommentAdminMoveToTrash()
 	{
 		$oDB = DB::getInstance();
 		$oDB->begin();
@@ -373,7 +373,7 @@ class commentAdminController extends comment
 	 * Cancel the blacklist of abused comments reported by other users
 	 * @return void|object
 	 */
-	function procCommentAdminCancelDeclare()
+	public function procCommentAdminCancelDeclare()
 	{
 		$comment_srl = trim(Context::get('comment_srl'));
 
@@ -393,7 +393,7 @@ class commentAdminController extends comment
 	 * Comment add to _SESSION
 	 * @return void
 	 */
-	function procCommentAdminAddCart()
+	public function procCommentAdminAddCart()
 	{
 		$comment_srl = (int) Context::get('comment_srl');
 
@@ -423,7 +423,7 @@ class commentAdminController extends comment
 	 * Delete all comments of the specific module
 	 * @return object
 	 */
-	function deleteModuleComments($module_srl)
+	public function deleteModuleComments($module_srl)
 	{
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -450,7 +450,7 @@ class commentAdminController extends comment
 	 * this method is passived
 	 * @return object
 	 */
-	function restoreTrash($originObject)
+	public function restoreTrash($originObject)
 	{
 		if(is_array($originObject))
 		{
@@ -482,7 +482,7 @@ class commentAdminController extends comment
 	 * this method is passived
 	 * @return object
 	 */
-	function emptyTrash($originObject)
+	public function emptyTrash($originObject)
 	{
 		$originObject = unserialize($originObject);
 		if(is_array($originObject))

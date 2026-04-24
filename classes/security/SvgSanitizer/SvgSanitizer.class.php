@@ -47,12 +47,12 @@ class SvgSanitizer {
 		'use' => array('class' => true, 'clip-path' => true, 'clip-rule' => true, 'fill' => true, 'fill-opacity' => true, 'fill-rule' => true, 'filter' => true, 'height' => true, 'id' => true, 'mask' => true, 'stroke' => true, 'stroke-dasharray' => true, 'stroke-dashoffset' => true, 'stroke-linecap' => true, 'stroke-linejoin' => true, 'stroke-miterlimit' => true, 'stroke-opacity' => true, 'stroke-width' => true, 'style' => true, 'transform' => true, 'width' => true, 'x' => true, 'y' => true, 'href' => true, 'xlink:href' => true),
 	);
 
-	function __construct() {
+	public function __construct() {
 		$this->xmlDoc = new DOMDocument();
 		$this->xmlDoc->preserveWhiteSpace = false; // Prevents the parser from creating unnecessary text nodes for whitespace
 	}
 
-	function load($file) {
+	public function load($file) {
 		// Suppress standard libxml errors to prevent information disclosure or script halting on malformed XML
 		libxml_use_internal_errors(true);
 		
@@ -69,7 +69,7 @@ class SvgSanitizer {
 		$this->xmlDoc->load($file, LIBXML_NONET | LIBXML_NOXMLDECL);
 	}
 	
-	function sanitize() {
+	public function sanitize() {
 		// Retrieve all elements within the SVG document.
 		// Note: getElementsByTagName returns a "live" DOMNodeList. Modifying the DOM 
 		// during iteration causes indexes to shift, leading to skipped elements.
@@ -142,13 +142,13 @@ class SvgSanitizer {
 	}
 
 	// Returns the sanitized SVG as an XML string.
-	function saveSVG() {
+	public function saveSVG() {
 		$this->xmlDoc->formatOutput = true;
 		return $this->xmlDoc->saveXML();
 	}
 
 	// Saves the sanitized SVG back to a file.
-	function save($file) {
+	public function save($file) {
 		$this->xmlDoc->formatOutput = true;
 		return $this->xmlDoc->save($file);
 	}

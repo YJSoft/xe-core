@@ -16,50 +16,50 @@ class ConditionTag
 	 * operation for example 'in', 'between', 'not in'...
 	 * @var string
 	 */
-	var $operation;
+	public $operation;
 
 	/**
 	 * Column name
 	 * @var string
 	 */
-	var $column_name;
+	public $column_name;
 
 	/**
 	 * Pipe
 	 * @var string
 	 */
-	var $pipe;
+	public $pipe;
 
 	/**
 	 * Argument name
 	 * @var string
 	 */
-	var $argument_name;
+	public $argument_name;
 
 	/**
 	 * QueryArgument object
 	 * @var QueryArgument
 	 */
-	var $argument;
+	public $argument;
 
 	/**
 	 * Default column
 	 * @var string
 	 */
-	var $default_column;
+	public $default_column;
 
 	/**
 	 * QueryTag object
 	 * @var QueryTag
 	 */
-	var $query;
+	public $query;
 
 	/**
 	 * constructor
 	 * @param object $condition
 	 * @return void
 	 */
-	function __construct($condition)
+	public function __construct($condition)
 	{
 		$this->operation = $condition->attrs->operation;
 		$this->pipe = $condition->attrs->pipe;
@@ -132,12 +132,12 @@ class ConditionTag
 		}
 	}
 
-	function setPipe($pipe)
+	public function setPipe($pipe)
 	{
 		$this->pipe = $pipe;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		if($this->query)
@@ -151,7 +151,7 @@ class ConditionTag
 		return $arguments;
 	}
 
-	function getConditionString()
+	public function getConditionString()
 	{
 		if($this->query)
 		{

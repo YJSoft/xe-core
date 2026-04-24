@@ -10,7 +10,7 @@ class moduleView extends module
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		// Set the template path
 		$this->setTemplatePath($this->module_path.'tpl');
@@ -19,7 +19,7 @@ class moduleView extends module
 	/**
 	 * @brief Display skin information
 	 */
-	function dispModuleSkinInfo()
+	public function dispModuleSkinInfo()
 	{
 		$selected_module = Context::get('selected_module');
 		$skin = urlencode(preg_replace("/[^a-z0-9-_]+/i", '', Context::get('skin')));
@@ -41,7 +41,7 @@ class moduleView extends module
 	/**
 	 * @brief Select a module
 	 */
-	function dispModuleSelectList()
+	public function dispModuleSelectList()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_permitted');
 
@@ -114,7 +114,7 @@ class moduleView extends module
 	}
 
 	// See the file box
-	function dispModuleFileBox()
+	public function dispModuleFileBox()
 	{
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin !='Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
@@ -145,7 +145,7 @@ class moduleView extends module
 	}
 
 	// Screen to add a file box
-	function dispModuleFileBoxAdd()
+	public function dispModuleFileBoxAdd()
 	{
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin !='Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');

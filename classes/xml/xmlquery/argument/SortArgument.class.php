@@ -10,12 +10,12 @@
 class SortArgument extends Argument
 {
 
-	function getValue()
+	public function getValue()
 	{
 		return $this->getUnescapedValue();
 	}
 
-	function ensureValidColumnName($default_value = NULL)
+	public function ensureValidColumnName($default_value = NULL)
 	{
 		if(!isset($this->value) || $this->value === '')
 		{
@@ -42,7 +42,7 @@ class SortArgument extends Argument
 		$this->errorMessage = new BaseObject(-1, sprintf($lang->filter->invalid, $lang->{$key} ? $lang->{$key} : $key));
 	}
 
-	function isValidColumnName($column_name)
+	public function isValidColumnName($column_name)
 	{
 		if(!is_string($column_name))
 		{

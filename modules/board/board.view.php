@@ -8,14 +8,14 @@
  **/
 class boardView extends board
 {
-	var $listConfig;
-	var $columnList;
+	public $listConfig;
+	public $columnList;
 
 	/**
 	 * @brief initialization
 	 * board module can be used in either normal mode or admin mode.\n
 	 **/
-	function init()
+	public function init()
 	{
 		$oSecurity = new Security();
 		$oSecurity->encodeHTML('document_srl', 'comment_srl', 'vid', 'mid', 'page', 'category', 'search_target', 'search_keyword', 'sort_index', 'order_type', 'trackback_srl');
@@ -140,7 +140,7 @@ class boardView extends board
 	/**
 	 * @brief display board contents
 	 **/
-	function dispBoardContent()
+	public function dispBoardContent()
 	{
 		/**
 		 * check the access grant (all the grant has been set by the module object)
@@ -218,7 +218,7 @@ class boardView extends board
 	/**
 	 * @brief display the category list
 	 **/
-	function dispBoardCategoryList(){
+	public function dispBoardCategoryList(){
 		// check if the use_category option is enabled
 		if($this->module_info->use_category=='Y')
 		{
@@ -240,7 +240,7 @@ class boardView extends board
 	/**
 	 * @brief display the board conent view
 	 **/
-	function dispBoardContentView(){
+	public function dispBoardContentView(){
 		// get the variable value
 		$document_srl = Context::get('document_srl');
 		$page = Context::get('page');
@@ -351,7 +351,7 @@ class boardView extends board
 	/**
 	 * @brief  display the document file list (can be used by API)
 	 **/
-	function dispBoardContentFileList(){
+	public function dispBoardContentFileList(){
 		/**
 		 * check the access grant (all the grant has been set by the module object)
 		 **/
@@ -381,13 +381,13 @@ class boardView extends board
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin != 'Y')
 			{
-				$oModuleModel =& getModel('module');
+				$oModuleModel =getModel('module');
 				$columnList = array('module_srl', 'site_srl');
 				$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl, $columnList);
 
 				if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl))
 				{
-					$oMemberModel =& getModel('member');
+					$oMemberModel =getModel('member');
 					$member_groups = $oMemberModel->getMemberGroups($logged_info->member_srl, $module_info->site_srl);
 
 					$is_permitted = false;
@@ -418,7 +418,7 @@ class boardView extends board
 	/**
 	 * @brief display the document comment list (can be used by API)
 	 **/
-	function dispBoardContentCommentList(){
+	public function dispBoardContentCommentList(){
 		// check document view grant
 		$this->dispBoardContentView();
 
@@ -445,7 +445,7 @@ class boardView extends board
 	/**
 	 * @brief display notice list (can be used by API)
 	 **/
-	function dispBoardNoticeList(){
+	public function dispBoardNoticeList(){
 		// check the grant
 		if(!$this->grant->list)
 		{
@@ -463,7 +463,7 @@ class boardView extends board
 	/**
 	 * @brief display board content list
 	 **/
-	function dispBoardContentList(){
+	public function dispBoardContentList(){
 		// check the grant
 		if(!$this->grant->list)
 		{
@@ -561,7 +561,7 @@ class boardView extends board
 		Context::set('page_navigation', $output->page_navigation);
 	}
 
-	function _makeListColumnList()
+	public function _makeListColumnList()
 	{
 		$configColumList = array_keys($this->listConfig);
 		$tableColumnList = array('document_srl', 'module_srl', 'category_srl', 'lang_code', 'is_notice',
@@ -604,7 +604,7 @@ class boardView extends board
 	/**
 	 * @brief display tag list
 	 **/
-	function dispBoardTagList()
+	public function dispBoardTagList()
 	{
 		// check if there is not grant fot view list, then alert an warning message
 		if(!$this->grant->list)
@@ -646,7 +646,7 @@ class boardView extends board
 	/**
 	 * @brief display document write form
 	 **/
-	function dispBoardWrite()
+	public function dispBoardWrite()
 	{
 		// check grant
 		if(!$this->grant->write_document)
@@ -759,7 +759,7 @@ class boardView extends board
 		$this->setTemplateFile('write_form');
 	}
 
-	function _getStatusNameList(&$oDocumentModel)
+	public function _getStatusNameList(&$oDocumentModel)
 	{
 		$resultList = array();
 		if(!empty($this->module_info->use_status))
@@ -781,7 +781,7 @@ class boardView extends board
 	/**
 	 * @brief display board module deletion form
 	 **/
-	function dispBoardDelete()
+	public function dispBoardDelete()
 	{
 		// check grant
 		if(!$this->grant->write_document)
@@ -829,7 +829,7 @@ class boardView extends board
 	/**
 	 * @brief display comment wirte form
 	 **/
-	function dispBoardWriteComment()
+	public function dispBoardWriteComment()
 	{
 		$document_srl = Context::get('document_srl');
 
@@ -875,7 +875,7 @@ class boardView extends board
 	/**
 	 * @brief display comment replies page
 	 **/
-	function dispBoardReplyComment()
+	public function dispBoardReplyComment()
 	{
 		// check grant
 		if(!$this->grant->write_comment)
@@ -935,7 +935,7 @@ class boardView extends board
 	/**
 	 * @brief display the comment modification from
 	 **/
-	function dispBoardModifyComment()
+	public function dispBoardModifyComment()
 	{
 		// check grant
 		if(!$this->grant->write_comment)
@@ -984,7 +984,7 @@ class boardView extends board
 	/**
 	 * @brief display the delete comment  form
 	 **/
-	function dispBoardDeleteComment()
+	public function dispBoardDeleteComment()
 	{
 		// check grant
 		if(!$this->grant->write_comment)
@@ -1027,7 +1027,7 @@ class boardView extends board
 	/**
 	 * @brief display the delete trackback form
 	 **/
-	function dispBoardDeleteTrackback()
+	public function dispBoardDeleteTrackback()
 	{
 		$oTrackbackModel = getModel('trackback');
 
@@ -1063,7 +1063,7 @@ class boardView extends board
 	/**
 	 * @brief display board message
 	 **/
-	function dispBoardMessage($msg_code)
+	public function dispBoardMessage($msg_code)
 	{
 		$msg = Context::getLang($msg_code);
 		if(!$msg) $msg = $msg_code;
@@ -1075,7 +1075,7 @@ class boardView extends board
 	 * @brief the method for displaying the warning messages
 	 * display an error message if it has not  a special design
 	 **/
-	function alertMessage($message)
+	public function alertMessage($message)
 	{
 		$script =  sprintf('<script> jQuery(function(){ alert("%s"); } );</script>', Context::getLang($message));
 		Context::addHtmlFooter( $script );

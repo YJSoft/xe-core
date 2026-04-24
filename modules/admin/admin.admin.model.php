@@ -15,18 +15,18 @@ class adminAdminModel extends admin
 	 * Ftp root path
 	 * @var string
 	 */
-	var $pwd;
+	public $pwd;
 
 	/**
 	 * Buffer for Admin GNB menu
 	 * @var string
 	 */
-	var $gnbLangBuffer;
+	public $gnbLangBuffer;
 
 	/**
 	 * Find XE installed path on sftp
 	 */
-	function getSFTPPath()
+	public function getSFTPPath()
 	{
 		$ftp_info = Context::getRequestVars();
 
@@ -95,7 +95,7 @@ class adminAdminModel extends admin
 		}
 	}
 
-	function getFTPPath()
+	public function getFTPPath()
 	{
 		$ftp_info = Context::getRequestVars();
 
@@ -173,7 +173,7 @@ class adminAdminModel extends admin
 	/**
 	 * Find XE installed path on ftp
 	 */
-	function getAdminFTPPath()
+	public function getAdminFTPPath()
 	{
 		Context::loadLang(_XE_PATH_ . 'modules/autoinstall/lang');
 		@set_time_limit(5);
@@ -277,7 +277,7 @@ class adminAdminModel extends admin
 	 * Add file list to BaseObject after sftp connect
 	 * @return void|BaseObject
 	 */
-	function getSFTPList()
+	public function getSFTPList()
 	{
 		$ftp_info = Context::getRequestVars();
 		if(!$ftp_info->ftp_host)
@@ -318,7 +318,7 @@ class adminAdminModel extends admin
 	 * Add file list to BaseObject after ftp connect
 	 * @return void|BaseObject
 	 */
-	function getAdminFTPList()
+	public function getAdminFTPList()
 	{
 		Context::loadLang(_XE_PATH_ . 'modules/autoinstall/lang');
 		@set_time_limit(5);
@@ -393,7 +393,7 @@ class adminAdminModel extends admin
 	 * @param string $type 'WORKING', 'INSTALL'
 	 * @return string
 	 */
-	function getEnv($type = 'WORKING')
+	public function getEnv($type = 'WORKING')
 	{
 		$skip = array(
 			'ext' => array('pcre', 'json', 'hash', 'dom', 'session', 'spl', 'standard', 'date', 'ctype', 'tokenizer', 'apache2handler', 'filter', 'posix', 'reflection', 'pdo')
@@ -513,7 +513,7 @@ class adminAdminModel extends admin
 	 * Return theme info list by theme directory list
 	 * @return array
 	 */
-	function getThemeList()
+	public function getThemeList()
 	{
 		$path = _XE_PATH_ . 'themes';
 		$list = FileHandler::readDir($path);
@@ -536,7 +536,7 @@ class adminAdminModel extends admin
 	 * @param array $layout_list
 	 * @return object
 	 */
-	function getThemeInfo($theme_name, $layout_list = NULL)
+	public function getThemeInfo($theme_name, $layout_list = NULL)
 	{
 		if($GLOBALS['__ThemeInfo__'][$theme_name])
 		{
@@ -703,7 +703,7 @@ class adminAdminModel extends admin
 	 * Return theme module skin list
 	 * @return array
 	 */
-	function getModulesSkinList()
+	public function getModulesSkinList()
 	{
 		if($GLOBALS['__ThemeModuleSkin__']['__IS_PARSE__'])
 		{
@@ -746,7 +746,7 @@ class adminAdminModel extends admin
 	 * Return admin menu language
 	 * @return array
 	 */
-	function getAdminMenuLang()
+	public function getAdminMenuLang()
 	{
 		static $lang = false;
 
@@ -787,7 +787,7 @@ class adminAdminModel extends admin
 	 * @param bool $isGetModuleInfo
 	 * @return object
 	 */
-	function getFavoriteList($siteSrl = 0, $isGetModuleInfo = FALSE)
+	public function getFavoriteList($siteSrl = 0, $isGetModuleInfo = FALSE)
 	{
 		$args = new stdClass();
 		$args->site_srl = $siteSrl;
@@ -823,7 +823,7 @@ class adminAdminModel extends admin
 	 * @param string $module
 	 * @return object
 	 */
-	function isExistsFavorite($siteSrl, $module)
+	public function isExistsFavorite($siteSrl, $module)
 	{
 		$args = new stdClass();
 		$args->site_srl = $siteSrl;
@@ -852,7 +852,7 @@ class adminAdminModel extends admin
 	 * Return site list
 	 * @return void
 	 */
-	function getSiteAllList()
+	public function getSiteAllList()
 	{
 		if(Context::get('domain'))
 		{
@@ -868,7 +868,7 @@ class adminAdminModel extends admin
 	 *
 	 * @return array
 	 */
-	function getAllSitesThatHaveModules($domain = NULL)
+	public function getAllSitesThatHaveModules($domain = NULL)
 	{
 		$args = new stdClass();
 		if($domain)
@@ -916,7 +916,7 @@ class adminAdminModel extends admin
 	 * @param string $date
 	 * @return int
 	 */
-	function getSiteCountByDate($date = '')
+	public function getSiteCountByDate($date = '')
 	{
 		$args = new stdClass();
 
@@ -934,17 +934,17 @@ class adminAdminModel extends admin
 		return $output->data->count;
 	}
 
-	function getFaviconUrl($default = true)
+	public function getFaviconUrl($default = true)
 	{
 		return $this->iconUrlCheck('favicon.ico', 'faviconSample.png', $default);
 	}
 
-	function getMobileIconUrl($default = true)
+	public function getMobileIconUrl($default = true)
 	{
 		return $this->iconUrlCheck('mobicon.png', 'mobiconSample.png', $default);
 	}
 
-	function iconUrlCheck($iconname, $default_icon_name, $default)
+	public function iconUrlCheck($iconname, $default_icon_name, $default)
 	{
 		$site_info = Context::get('site_module_info');
 		$virtual_site = '';

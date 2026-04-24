@@ -13,13 +13,13 @@
 class PageHandler extends Handler
 {
 
-	var $total_count = 0; ///< number of total items
-	var $total_page = 0; ///< number of total pages
-	var $cur_page = 0; ///< current page number
-	var $page_count = 10; ///< number of page links displayed at one time
-	var $first_page = 1; ///< first page number
-	var $last_page = 1; ///< last page number
-	var $point = 0; ///< increments per getNextPage() 
+	public $total_count = 0; ///< number of total items
+	public $total_page = 0; ///< number of total pages
+	public $cur_page = 0; ///< current page number
+	public $page_count = 10; ///< number of page links displayed at one time
+	public $first_page = 1; ///< first page number
+	public $last_page = 1; ///< last page number
+	public $point = 0; ///< increments per getNextPage() 
 
 	/**
 	 * constructor
@@ -30,7 +30,7 @@ class PageHandler extends Handler
 	 * @return void
 	 */
 
-	function __construct($total_count, $total_page, $cur_page, $page_count = 10)
+	public function __construct($total_count, $total_page, $cur_page, $page_count = 10)
 	{
 		$this->total_count = $total_count;
 		$this->total_page = $total_page;
@@ -68,7 +68,7 @@ class PageHandler extends Handler
 	 * request next page
 	 * @return int next page number
 	 */
-	function getNextPage()
+	public function getNextPage()
 	{
 		$page = $this->first_page + $this->point++;
 		if($this->point > $this->page_count || $page > $this->last_page)
@@ -83,7 +83,7 @@ class PageHandler extends Handler
 	 * @param int $offset
 	 * @return int
 	 */
-	function getPage($offset)
+	public function getPage($offset)
 	{
 		return max(min($this->cur_page + $offset, $this->total_page), '');
 	}

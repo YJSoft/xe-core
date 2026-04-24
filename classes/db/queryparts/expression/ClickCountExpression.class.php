@@ -14,7 +14,7 @@ class ClickCountExpression extends SelectExpression
 	 * click count
 	 * @var bool
 	 */
-	var $click_count;
+	public $click_count;
 
 	/**
 	 * constructor
@@ -23,7 +23,7 @@ class ClickCountExpression extends SelectExpression
 	 * @param bool $click_count
 	 * @return void
 	 */
-	function __construct($column_name, $alias = NULL, $click_count = false)
+	public function __construct($column_name, $alias = NULL, $click_count = false)
 	{
 		parent::__construct($column_name, $alias);
 
@@ -35,7 +35,7 @@ class ClickCountExpression extends SelectExpression
 		$this->click_count = $click_count;
 	}
 
-	function show()
+	public function show()
 	{
 		return $this->click_count;
 	}
@@ -44,7 +44,7 @@ class ClickCountExpression extends SelectExpression
 	 * Return column expression, ex) column = column + 1
 	 * @return string
 	 */
-	function getExpression()
+	public function getExpression()
 	{
 		$db_type = Context::getDBType();
 		if($db_type == 'cubrid')

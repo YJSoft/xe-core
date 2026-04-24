@@ -10,14 +10,14 @@ class sessionAdminController extends session
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief The action to clean up the Derby session
 	 */
-	function procSessionAdminClear()
+	public function procSessionAdminClear()
 	{
 		$oSessionController = getController('session');
 		$oSessionController->gc(0);

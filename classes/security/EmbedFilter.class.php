@@ -10,19 +10,19 @@ class EmbedFilter
 	 * allow script access list
 	 * @var array
 	 */
-	var $allowscriptaccessList = array();
+	public $allowscriptaccessList = array();
 
 	/**
 	 * allow script access key
 	 * @var int
 	 */
-	var $allowscriptaccessKey = 0;
-	var $whiteUrlXmlFile = './classes/security/conf/embedWhiteUrl.xml';
-	var $whiteUrlCacheFile = './files/cache/embedfilter/embedWhiteUrl.php';
-	var $whiteUrlList = array();
-	var $whiteIframeUrlList = array();
-	var $parser = NULL;
-	var $mimeTypeList = array('application/andrew-inset' => 1, 'application/applixware' => 1, 'application/atom+xml' => 1, 'application/atomcat+xml' => 1, 'application/atomsvc+xml' => 1,
+	public $allowscriptaccessKey = 0;
+	public $whiteUrlXmlFile = './classes/security/conf/embedWhiteUrl.xml';
+	public $whiteUrlCacheFile = './files/cache/embedfilter/embedWhiteUrl.php';
+	public $whiteUrlList = array();
+	public $whiteIframeUrlList = array();
+	public $parser = NULL;
+	public $mimeTypeList = array('application/andrew-inset' => 1, 'application/applixware' => 1, 'application/atom+xml' => 1, 'application/atomcat+xml' => 1, 'application/atomsvc+xml' => 1,
 		'application/ccxml+xml' => 1, 'application/cdmi-capability' => 1, 'application/cdmi-container' => 1, 'application/cdmi-domain' => 1, 'application/cdmi-object' => 1,
 		'application/cdmi-queue' => 1, 'application/cu-seeme' => 1, 'application/davmount+xml' => 1, 'application/docbook+xml' => 1, 'application/dssc+der' => 1, 'application/dssc+xml' => 1,
 		'application/ecmascript' => 1, 'application/emma+xml' => 1, 'application/epub+zip' => 1, 'application/exi' => 1, 'application/font-tdpfr' => 1, 'application/gml+xml' => 1,
@@ -200,7 +200,7 @@ class EmbedFilter
 		'video/x-ms-asf' => 1, 'video/x-ms-vob' => 1, 'video/x-ms-wm' => 1, 'video/x-ms-wmv' => 1, 'video/x-ms-wmx' => 1, 'video/x-ms-wvx' => 1, 'video/x-msvideo' => 1, 'video/x-sgi-movie' => 1,
 		'video/x-smv' => 1, 'x-conference/x-cooltalk' => 1
 	);
-	var $extList = array('ez' => 1, 'aw' => 1, 'atom' => 1, 'atomcat' => 1, 'atomsvc' => 1, 'ccxml' => 1, 'cdmia' => 1, 'cdmic' => 1, 'cdmid' => 1, 'cdmio' => 1, 'cdmiq' => 1, 'cu' => 1, 'davmount' => 1,
+	public $extList = array('ez' => 1, 'aw' => 1, 'atom' => 1, 'atomcat' => 1, 'atomsvc' => 1, 'ccxml' => 1, 'cdmia' => 1, 'cdmic' => 1, 'cdmid' => 1, 'cdmio' => 1, 'cdmiq' => 1, 'cu' => 1, 'davmount' => 1,
 		'dbk' => 1, 'dssc' => 1, 'xdssc' => 1, 'ecma' => 1, 'emma' => 1, 'epub' => 1, 'exi' => 1, 'pfr' => 1, 'gml' => 1, 'gpx' => 1, 'gxf' => 1, 'stk' => 1, 'ink' => 1, 'inkml' => 1, 'ipfix' => 1, 'jar' => 1,
 		'ser' => 1, 'class' => 1, 'js' => 1, 'json' => 1, 'jsonml' => 1, 'lostxml' => 1, 'hqx' => 1, 'cpt' => 1, 'mads' => 1, 'mrc' => 1, 'mrcx' => 1, 'ma' => 1, 'nb' => 1, 'mb' => 1, 'mathml' => 1, 'mbox' => 1,
 		'mscml' => 1, 'metalink' => 1, 'meta4' => 1, 'mets' => 1, 'mods' => 1, 'm21 mp21' => 1, 'mp4s' => 1, 'doc dot' => 1, 'mxf' => 1, 'bin' => 1, 'dms' => 1, 'lrf' => 1, 'mar' => 1, 'so' => 1, 'dist' => 1,
@@ -260,7 +260,7 @@ class EmbedFilter
 	 * @constructor
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 		$this->_makeWhiteDomainList();
 
@@ -274,7 +274,7 @@ class EmbedFilter
 	 * This method for singleton
 	 * @return EmbedFilter
 	 */
-	function getInstance()
+	public function getInstance()
 	{
 		if(!isset($GLOBALS['__EMBEDFILTER_INSTANCE__']))
 		{
@@ -297,7 +297,7 @@ class EmbedFilter
 	 * Check the content.
 	 * @return void
 	 */
-	function check(&$content)
+	public function check(&$content)
 	{
 		$content = preg_replace_callback('/<(object|param|embed)[^>]*/is', array($this, '_checkAllowScriptAccess'), $content);
 		$content = preg_replace_callback('/<object[^>]*>/is', array($this, '_addAllowScriptAccess'), $content);
@@ -312,7 +312,7 @@ class EmbedFilter
 	 * Check object tag in the content.
 	 * @return void
 	 */
-	function checkObjectTag(&$content)
+	public function checkObjectTag(&$content)
 	{
 		preg_match_all('/<\s*object\s*[^>]+(?:\/?>?)/is', $content, $m);
 		$objectTagList = $m[0];
@@ -360,7 +360,7 @@ class EmbedFilter
 	 * Check embed tag in the content.
 	 * @return void
 	 */
-	function checkEmbedTag(&$content)
+	public function checkEmbedTag(&$content)
 	{
 		preg_match_all('/<\s*embed\s*[^>]+(?:\/?>?)/is', $content, $m);
 		$embedTagList = $m[0];
@@ -408,7 +408,7 @@ class EmbedFilter
 	 * Check iframe tag in the content.
 	 * @return void
 	 */
-	function checkIframeTag(&$content)
+	public function checkIframeTag(&$content)
 	{
 		// check in Purifier class
 		return;
@@ -451,7 +451,7 @@ class EmbedFilter
 	 * Check param tag in the content.
 	 * @return void
 	 */
-	function checkParamTag(&$content)
+	public function checkParamTag(&$content)
 	{
 		preg_match_all('/<\s*param\s*[^>]+(?:\/?>?)/is', $content, $m);
 		$paramTagList = $m[0];
@@ -489,7 +489,7 @@ class EmbedFilter
 	 * Check white domain in object data attribute or embed src attribute.
 	 * @return string
 	 */
-	function isWhiteDomain($urlAttribute)
+	public function isWhiteDomain($urlAttribute)
 	{
 		if(is_array($this->whiteUrlList))
 		{
@@ -508,7 +508,7 @@ class EmbedFilter
 	 * Check white domain in iframe src attribute.
 	 * @return string
 	 */
-	function isWhiteIframeDomain($urlAttribute)
+	public function isWhiteIframeDomain($urlAttribute)
 	{
 		if(is_array($this->whiteIframeUrlList))
 		{
@@ -527,7 +527,7 @@ class EmbedFilter
 	 * Check white mime type in object type attribute or embed type attribute.
 	 * @return string
 	 */
-	function isWhiteMimetype($mimeType)
+	public function isWhiteMimetype($mimeType)
 	{
 		if(isset($this->mimeTypeList[$mimeType]))
 		{
@@ -536,7 +536,7 @@ class EmbedFilter
 		return FALSE;
 	}
 
-	function isWhiteExt($ext)
+	public function isWhiteExt($ext)
 	{
 		if(isset($this->extList[$ext]))
 		{
@@ -545,7 +545,7 @@ class EmbedFilter
 		return FALSE;
 	}
 
-	function _checkAllowScriptAccess($m)
+	public function _checkAllowScriptAccess($m)
 	{
 		if($m[1] == 'object')
 		{
@@ -578,7 +578,7 @@ class EmbedFilter
 		return $m[0];
 	}
 
-	function _addAllowScriptAccess($m)
+	public function _addAllowScriptAccess($m)
 	{
 		if($this->allowscriptaccessList[$this->allowscriptaccessKey] == 1)
 		{
@@ -593,7 +593,7 @@ class EmbedFilter
 	 * @param $whitelist array
 	 * @return void
 	 */
-	function _makeWhiteDomainList($whitelist = NULL)
+	public function _makeWhiteDomainList($whitelist = NULL)
 	{
 		$whiteUrlXmlFile = FileHandler::getRealPath($this->whiteUrlXmlFile);
 		$whiteUrlCacheFile = FileHandler::getRealPath($this->whiteUrlCacheFile);

@@ -15,103 +15,103 @@ class QueryTag
 	 * Action for example, 'select', 'insert', 'delete'...
 	 * @var string
 	 */
-	var $action;
+	public $action;
 
 	/**
 	 * Query id
 	 * @var string
 	 */
-	var $query_id;
+	public $query_id;
 
 	/**
 	 * Priority
 	 * @var string
 	 */
-	var $priority;
+	public $priority;
 
 	/**
 	 * column type list
 	 * @var array
 	 */
-	var $column_type;
+	public $column_type;
 
 	/**
 	 * Query stdClass object
 	 * @var object
 	 */
-	var $query;
+	public $query;
 
 	/**
 	 * Columns in xml tags
 	 * @var object
 	 */
-	var $columns;
+	public $columns;
 
 	/**
 	 * Tables in xml tags
 	 * @var object
 	 */
-	var $tables;
+	public $tables;
 
 	/**
 	 * Subquery in xml tags
 	 * @var object
 	 */
-	var $subquery;
+	public $subquery;
 
 	/**
 	 * Conditions in xml tags
 	 * @var object
 	 */
-	var $conditions;
+	public $conditions;
 
 	/**
 	 * Groups in xml tags
 	 * @var object
 	 */
-	var $groups;
+	public $groups;
 
 	/**
 	 * Navigation in xml tags
 	 * @var object
 	 */
-	var $navigation;
+	public $navigation;
 
 	/**
 	 * Arguments in xml tags
 	 * @var object
 	 */
-	var $arguments;
+	public $arguments;
 
 	/**
 	 * PreBuff
 	 * @var string
 	 */
-	var $preBuff;
+	public $preBuff;
 
 	/**
 	 * Buff
 	 * @var string
 	 */
-	var $buff;
+	public $buff;
 
 	/**
 	 * Subquery status
 	 * @var bool
 	 */
-	var $isSubQuery;
+	public $isSubQuery;
 
 	/**
 	 * Join type
 	 * @var string
 	 */
-	var $join_type;
+	public $join_type;
 
 	/**
 	 * alias
 	 * @var string
 	 */
-	var $alias;
+	public $alias;
 
 	/**
 	 * constructor
@@ -119,7 +119,7 @@ class QueryTag
 	 * @param bool $isSubQuery
 	 * @return void
 	 */
-	function __construct($query, $isSubQuery = FALSE)
+	public function __construct($query, $isSubQuery = FALSE)
 	{
 		$this->action = $query->attrs->action;
 		$this->query_id = $query->attrs->id;
@@ -149,27 +149,27 @@ class QueryTag
 		$this->getBuff();
 	}
 
-	function show()
+	public function show()
 	{
 		return TRUE;
 	}
 
-	function getQueryId()
+	public function getQueryId()
 	{
 		return $this->query->attrs->query_id ? $this->query->attrs->query_id : $this->query->attrs->id;
 	}
 
-	function getPriority()
+	public function getPriority()
 	{
 		return $this->query->attrs->priority;
 	}
 
-	function getAction()
+	public function getAction()
 	{
 		return $this->query->attrs->action;
 	}
 
-	function setTableColumnTypes($tables)
+	public function setTableColumnTypes($tables)
 	{
 		$query_id = $this->getQueryId();
 		if(!isset($this->column_type[$query_id]))
@@ -190,7 +190,7 @@ class QueryTag
 		}
 	}
 
-	function getColumns()
+	public function getColumns()
 	{
 		if($this->action == 'select')
 		{
@@ -210,7 +210,7 @@ class QueryTag
 		}
 	}
 
-	function getPrebuff()
+	public function getPrebuff()
 	{
 		if($this->isSubQuery)
 		{
@@ -266,7 +266,7 @@ class QueryTag
 		return $this->preBuff = $prebuff;
 	}
 
-	function getBuff()
+	public function getBuff()
 	{
 		$buff = '';
 		if($this->isSubQuery)
@@ -311,7 +311,7 @@ class QueryTag
 		return $this->buff;
 	}
 
-	function getTables()
+	public function getTables()
 	{
 		if($this->query->index_hint && ($this->query->index_hint->attrs->for == 'ALL' || Context::getDBType() == strtolower($this->query->index_hint->attrs->for)))
 		{
@@ -323,7 +323,7 @@ class QueryTag
 		}
 	}
 
-	function getSubquery()
+	public function getSubquery()
 	{
 		if($this->query->query)
 		{
@@ -331,12 +331,12 @@ class QueryTag
 		}
 	}
 
-	function getConditions()
+	public function getConditions()
 	{
 		return $this->conditions = new ConditionsTag($this->query->conditions);
 	}
 
-	function getGroups()
+	public function getGroups()
 	{
 		if($this->query->groups)
 		{
@@ -348,32 +348,32 @@ class QueryTag
 		}
 	}
 
-	function getNavigation()
+	public function getNavigation()
 	{
 		return $this->navigation = new NavigationTag($this->query->navigation);
 	}
 
-	function toString()
+	public function toString()
 	{
 		return $this->buff;
 	}
 
-	function getTableString()
+	public function getTableString()
 	{
 		return $this->buff;
 	}
 
-	function getConditionString()
+	public function getConditionString()
 	{
 		return $this->buff;
 	}
 
-	function getExpressionString()
+	public function getExpressionString()
 	{
 		return $this->buff;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		if($this->columns)

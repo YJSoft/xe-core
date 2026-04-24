@@ -12,7 +12,7 @@ class boardWAP extends board
 	/**
 	 * @brief wap procedure method
 	 **/
-	function procWAP(&$oMobile)
+	public function procWAP(&$oMobile)
 	{
 		// check grant
 		if(!$this->grant->list || $this->module_info->consultation == 'Y')

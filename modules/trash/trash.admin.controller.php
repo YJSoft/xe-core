@@ -15,7 +15,7 @@ class trashAdminController extends trash
 	 * @param TrashVO $obj
 	 * @return BaseObject
 	 */
-	function insertTrash($obj)
+	public function insertTrash($obj)
 	{
 		if(!Context::get('is_logged'))
 		{
@@ -41,7 +41,7 @@ class trashAdminController extends trash
 	 * @param array trashSrls
 	 * @return BaseObject
 	 */
-	function procTrashAdminEmptyTrash()
+	public function procTrashAdminEmptyTrash()
 	{
 		global $lang;
 		$isAll = Context::get('is_all');
@@ -73,7 +73,7 @@ class trashAdminController extends trash
 	 * @param array trashSrls
 	 * @return BaseObject
 	 */
-	function _relationDataDelete($isAll, &$trashSrls)
+	public function _relationDataDelete($isAll, &$trashSrls)
 	{
 		$oTrashModel = getModel('trash');
 		if($isAll == 'true')
@@ -129,7 +129,7 @@ class trashAdminController extends trash
 	 * Restore content object
 	 * @return void|BaseObject
 	 */
-	function procTrashAdminRestore()
+	public function procTrashAdminRestore()
 	{
 		global $lang;
 		$trashSrlList = Context::get('cart');
@@ -137,7 +137,7 @@ class trashAdminController extends trash
 		if(is_array($trashSrlList))
 		{
 			// begin transaction
-			$oDB = &DB::getInstance();
+			$oDB = DB::getInstance();
 			$oDB->begin();
 			// eache restore method call in each classfile
 			foreach($trashSrlList as $value)
@@ -185,7 +185,7 @@ class trashAdminController extends trash
 	 * Set trash list to Context
 	 * @return void|BaseObject
 	 */
-	function procTrashAdminGetList()
+	public function procTrashAdminGetList()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
 		$trashSrls = Context::get('trash_srls');
@@ -216,7 +216,7 @@ class trashAdminController extends trash
 	 * @param array trashSrls
 	 * @return bool
 	 */
-	function _emptyTrash($trashSrls)
+	public function _emptyTrash($trashSrls)
 	{
 		if(!is_array($trashSrls)) return false;
 		$args = new stdClass();

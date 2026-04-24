@@ -13,13 +13,13 @@ class OrderByColumn
 	 * column name
 	 * @var string
 	 */
-	var $column_name;
+	public $column_name;
 
 	/**
 	 * sort order
 	 * @var string
 	 */
-	var $sort_order;
+	public $sort_order;
 
 	/**
 	 * constructor
@@ -27,13 +27,13 @@ class OrderByColumn
 	 * @param string $sort_order
 	 * @return void
 	 */
-	function __construct($column_name, $sort_order)
+	public function __construct($column_name, $sort_order)
 	{
 		$this->column_name = $column_name;
 		$this->sort_order = $sort_order;
 	}
 
-	function toString()
+	public function toString()
 	{
 		$result = $this->getColumnName();
 		$result .= ' ';
@@ -41,22 +41,22 @@ class OrderByColumn
 		return $result;
 	}
 
-	function getColumnName()
+	public function getColumnName()
 	{
 		return is_a($this->column_name, 'Argument') ? $this->column_name->getValue() : $this->column_name;
 	}
 
-	function getPureColumnName()
+	public function getPureColumnName()
 	{
 		return is_a($this->column_name, 'Argument') ? $this->column_name->getPureValue() : $this->column_name;
 	}
 
-	function getPureSortOrder()
+	public function getPureSortOrder()
 	{
 		return is_a($this->sort_order, 'Argument') ? $this->sort_order->getPureValue() : $this->sort_order;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		$args = array();
 		if(is_a($this->column_name, 'Argument'))

@@ -14,7 +14,7 @@ class autoinstallAdminController extends autoinstall
 	/**
 	 * Initialization
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -26,7 +26,7 @@ class autoinstallAdminController extends autoinstall
 	 * @param string $checksum Recieved checksum from server
 	 * @return bool Returns true on equal local checksum and recieved checksum, otherwise false.
 	 */
-	function checkFileCheckSum($file, $checksum)
+	public function checkFileCheckSum($file, $checksum)
 	{
 		$local_checksum = md5_file(FileHandler::getRealPath($file));
 		return ($local_checksum === $checksum);
@@ -38,7 +38,7 @@ class autoinstallAdminController extends autoinstall
 	 * @param object $obj
 	 * @return void
 	 */
-	function _cleanDownloaded($obj)
+	public function _cleanDownloaded($obj)
 	{
 		FileHandler::removeDir($obj->download_path);
 	}
@@ -48,7 +48,7 @@ class autoinstallAdminController extends autoinstall
 	 *
 	 * @return BaseObject
 	 */
-	function procAutoinstallAdminUpdateinfo()
+	public function procAutoinstallAdminUpdateinfo()
 	{
 		$this->_updateinfo();
 		$this->setMessage("success_updated", 'update');
@@ -60,7 +60,7 @@ class autoinstallAdminController extends autoinstall
 	 *
 	 * @return void
 	 */
-	function _updateinfo()
+	public function _updateinfo()
 	{
 		$oModel = getModel('autoinstall');
 		$item = $oModel->getLatestPackage();
@@ -87,7 +87,7 @@ class autoinstallAdminController extends autoinstall
 	 *
 	 * @return void
 	 */
-	function checkInstalled()
+	public function checkInstalled()
 	{
 		executeQuery("autoinstall.deleteInstalledPackage");
 		$oModel = getModel('autoinstall');
@@ -176,7 +176,7 @@ class autoinstallAdminController extends autoinstall
 	 *
 	 * @return BaseObject
 	 */
-	function procAutoinstallAdminPackageinstall()
+	public function procAutoinstallAdminPackageinstall()
 	{
 		@set_time_limit(0);
 		$package_srls = Context::get('package_srl');
@@ -249,7 +249,7 @@ class autoinstallAdminController extends autoinstall
 	 * @param object $xmlDoc Recieved data
 	 * @return void
 	 */
-	function updatePackages(&$xmlDoc)
+	public function updatePackages(&$xmlDoc)
 	{
 		$oModel = getModel('autoinstall');
 		if(!$xmlDoc->response->packages->item)
@@ -290,7 +290,7 @@ class autoinstallAdminController extends autoinstall
 	 * @param object $xmlDoc Recived data
 	 * @return void
 	 */
-	function updateCategory(&$xmlDoc)
+	public function updateCategory(&$xmlDoc)
 	{
 		executeQuery("autoinstall.deleteCategory");
 		$oModel = getModel('autoinstall');
@@ -315,7 +315,7 @@ class autoinstallAdminController extends autoinstall
 	 *
 	 * @return BaseObject
 	 */
-	function procAutoinstallAdminUninstallPackage()
+	public function procAutoinstallAdminUninstallPackage()
 	{
 		$package_srl = Context::get('package_srl');
 
@@ -340,7 +340,7 @@ class autoinstallAdminController extends autoinstall
 	 *
 	 * @return BaseObject
 	 */
-	function uninstallPackageByPackageSrl($package_srl)
+	public function uninstallPackageByPackageSrl($package_srl)
 	{
 		$oModel = getModel('autoinstall');
 		$package = $oModel->getPackage($package_srl);
@@ -353,7 +353,7 @@ class autoinstallAdminController extends autoinstall
 	 *
 	 * @return BaseObject
 	 */
-	function uninstallPackageByPath($path)
+	public function uninstallPackageByPath($path)
 	{
 		$package->path = $path;
 		return $this->_uninstallPackage($package);

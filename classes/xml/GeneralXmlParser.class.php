@@ -15,14 +15,14 @@ class GeneralXmlParser
 	 * result of parse
 	 * @var array
 	 */
-	var $output = array();
+	public $output = array();
 
 	/**
 	 * Parse a given input to product a object containing parse values.
 	 * @param string $input data to be parsed
 	 * @return array|NULL Returns an object containing parsed values or NULL in case of failure
 	 */
-	function parse($input = '')
+	public function parse($input = '')
 	{
 		$oParser = xml_parser_create('UTF-8');
 		xml_set_object($oParser, $this);
@@ -48,7 +48,7 @@ class GeneralXmlParser
 	 * @param array $attrs attributes to be set
 	 * @return void
 	 */
-	function _tagOpen($parser, $node_name, $attrs)
+	public function _tagOpen($parser, $node_name, $attrs)
 	{
 		$obj = new stdClass();
 		$obj->node_name = strtolower($node_name);
@@ -65,7 +65,7 @@ class GeneralXmlParser
 	 * @param string $body a data to be added
 	 * @return void
 	 */
-	function _tagBody($parser, $body)
+	public function _tagBody($parser, $body)
 	{
 		//if(!trim($body)) return;
 		$this->output[count($this->output) - 1]->body .= $body;
@@ -77,7 +77,7 @@ class GeneralXmlParser
 	 * @param string $node_name name of xml node
 	 * @return void
 	 */
-	function _tagClosed($parser, $node_name)
+	public function _tagClosed($parser, $node_name)
 	{
 		$node_name = strtolower($node_name);
 		$cur_obj = array_pop($this->output);

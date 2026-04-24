@@ -10,10 +10,10 @@ class tag extends ModuleObject
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		$oModuleController = getController('module');
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 
 		$oDB->addIndex("tags","idx_tag", array("document_srl","tag"));
 		// 2007. 10. 17 document.insertDocument, updateDocument, deleteDocument trigger property for
@@ -31,9 +31,9 @@ class tag extends ModuleObject
 	/**
 	 * @brief a method to check if successfully installed
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -59,9 +59,9 @@ class tag extends ModuleObject
 	/**
 	 * @brief Execute update
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -98,7 +98,7 @@ class tag extends ModuleObject
 	/**
 	 * @brief Re-generate the cache file
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 }

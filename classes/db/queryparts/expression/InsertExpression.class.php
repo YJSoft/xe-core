@@ -15,7 +15,7 @@ class InsertExpression extends Expression
 	 * argument
 	 * @var object
 	 */
-	var $argument;
+	public $argument;
 
 	/**
 	 * constructor
@@ -23,13 +23,13 @@ class InsertExpression extends Expression
 	 * @param object $argument
 	 * @return void
 	 */
-	function __construct($column_name, $argument)
+	public function __construct($column_name, $argument)
 	{
 		parent::__construct($column_name);
 		$this->argument = $argument;
 	}
 
-	function getValue($with_values = true)
+	public function getValue($with_values = true)
 	{
 		if($with_values)
 		{
@@ -38,7 +38,7 @@ class InsertExpression extends Expression
 		return '?';
 	}
 
-	function show()
+	public function show()
 	{
 		if(!$this->argument)
 		{
@@ -52,12 +52,12 @@ class InsertExpression extends Expression
 		return true;
 	}
 
-	function getArgument()
+	public function getArgument()
 	{
 		return $this->argument;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		if($this->argument)
 		{

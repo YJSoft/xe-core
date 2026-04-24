@@ -13,19 +13,19 @@ class CubridTableWithHint extends Table
 	 * table name
 	 * @var string
 	 */
-	var $name;
+	public $name;
 
 	/**
 	 * table alias
 	 * @var string
 	 */
-	var $alias;
+	public $alias;
 
 	/**
 	 * index hint list
 	 * @var array
 	 */
-	var $index_hints_list;
+	public $index_hints_list;
 
 	/**
 	 * constructor
@@ -34,7 +34,7 @@ class CubridTableWithHint extends Table
 	 * @param array $index_hints_list
 	 * @return void
 	 */
-	function __construct($name, $alias = NULL, $index_hints_list)
+	public function __construct($name, $alias = NULL, $index_hints_list)
 	{
 		parent::__construct($name, $alias);
 		$this->index_hints_list = $index_hints_list;
@@ -44,7 +44,7 @@ class CubridTableWithHint extends Table
 	 * Return index hint string
 	 * @return string
 	 */
-	function getIndexHintString()
+	public function getIndexHintString()
 	{
 		$result = '';
 

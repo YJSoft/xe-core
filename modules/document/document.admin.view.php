@@ -14,7 +14,7 @@ class documentAdminView extends document
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		// check current location in admin menu
 		$oModuleModel = getModel('module');
@@ -33,7 +33,7 @@ class documentAdminView extends document
 	 * Display a list(administrative)
 	 * @return void
 	 */
-	function dispDocumentAdminList()
+	public function dispDocumentAdminList()
 	{
 		// option to get a list
 		$args = new stdClass();
@@ -108,7 +108,7 @@ class documentAdminView extends document
 	 * Set a document module
 	 * @return void
 	 */
-	function dispDocumentAdminConfig()
+	public function dispDocumentAdminConfig()
 	{
 		$oDocumentModel = getModel('document');
 		$config = $oDocumentModel->getDocumentConfig();
@@ -130,7 +130,7 @@ class documentAdminView extends document
 	 * Display a report list on the admin page
 	 * @return void
 	 */
-	function dispDocumentAdminDeclared()
+	public function dispDocumentAdminDeclared()
 	{
 		// option for a list
 		$args =new stdClass();
@@ -175,7 +175,7 @@ class documentAdminView extends document
 	 * Display a alias list on the admin page
 	 * @return void
 	 */
-	function dispDocumentAdminAlias()
+	public function dispDocumentAdminAlias()
 	{
 		$args->document_srl = Context::get('document_srl');
 		if(!$args->document_srl) return $this->dispDocumentAdminList();
@@ -205,7 +205,7 @@ class documentAdminView extends document
 	 * Display a trash list on the admin page
 	 * @return void
 	 */
-	function dispDocumentAdminTrashList()
+	public function dispDocumentAdminTrashList()
 	{
 		// options for a list
 		$args->page = Context::get('page'); // /< Page

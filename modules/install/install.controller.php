@@ -7,14 +7,14 @@
  */
 class installController extends install
 {
-	var $db_tmp_config_file = '';
-	var $etc_tmp_config_file = '';
-	var $flagLicenseAgreement = './files/env/license_agreement';
+	public $db_tmp_config_file = '';
+	public $etc_tmp_config_file = '';
+	public $flagLicenseAgreement = './files/env/license_agreement';
 
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		// Error occurs if already installed
 		if($this->act !== 'procInstallLicenseAggrement' && Context::isInstalled())
@@ -30,7 +30,7 @@ class installController extends install
 	 * @brief cubrid db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 */
-	function procCubridDBSetting()
+	public function procCubridDBSetting()
 	{
 		return $this->_procDBSetting();
 	}
@@ -39,7 +39,7 @@ class installController extends install
 	 * @brief firebird db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 */
-	function procFirebirdDBSetting()
+	public function procFirebirdDBSetting()
 	{
 		return $this->_procDBSetting();
 	}
@@ -48,7 +48,7 @@ class installController extends install
 	 * @brief mssql db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 */
-	function procMssqlDBSetting()
+	public function procMssqlDBSetting()
 	{
 		return $this->_procDBSetting();
 	}
@@ -57,7 +57,7 @@ class installController extends install
 	 * @brief mysql db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 */
-	function procMysqlDBSetting()
+	public function procMysqlDBSetting()
 	{
 		return $this->_procDBSetting();
 	}
@@ -66,7 +66,7 @@ class installController extends install
 	 * @brief postgresql db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 */
-	function procPostgresqlDBSetting()
+	public function procPostgresqlDBSetting()
 	{
 		return $this->_procDBSetting();
 	}
@@ -75,7 +75,7 @@ class installController extends install
 	 * @brief sqlite db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 */
-	function procSqliteDBSetting()
+	public function procSqliteDBSetting()
 	{
 		return $this->_procDBSetting();
 	}
@@ -83,7 +83,7 @@ class installController extends install
 	/**
 	 * @brief division install step... DB Config temp file create
 	 */
-	function _procDBSetting()
+	public function _procDBSetting()
 	{
 		// Get DB-related variables
 		$con_string = Context::gets('db_type','db_port','db_hostname','db_userid','db_password','db_database','db_table_prefix');
@@ -99,7 +99,7 @@ class installController extends install
 		Context::setDBInfo($db_info);
 
 		// Check if available to connect to the DB
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$output = $oDB->getError();
 		if(!$output->toBool()) return $output;
 		if(!$oDB->isConnected()) return $oDB->getError();
@@ -118,7 +118,7 @@ class installController extends install
 	/**
 	 * @brief division install step... rewrite, time_zone Config temp file create
 	 */
-	function procConfigSetting()
+	public function procConfigSetting()
 	{
 		// Get variables
 		$config_info = Context::gets('use_rewrite','time_zone');
@@ -138,7 +138,7 @@ class installController extends install
 	/**
 	 * @brief Install with received information
 	 */
-	function procInstall()
+	public function procInstall()
 	{
 		// Check if it is already installed
 		if(Context::isInstalled()) return new BaseObject(-1, 'msg_already_installed');
@@ -174,7 +174,7 @@ class installController extends install
 		// Set DB type and information
 		Context::setDBInfo($db_info);
 		// Create DB Instance
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		// Check if available to connect to the DB
 		if(!$oDB->isConnected()) return $oDB->getError();
 
@@ -223,7 +223,7 @@ class installController extends install
 	/**
 	 * @brief Make DB Information by Install Config
 	 */
-	function _makeDbInfoByInstallConfig()
+	public function _makeDbInfoByInstallConfig()
 	{
 		$db_info = new stdClass();
 		$db_info->master_db = array(
@@ -261,7 +261,7 @@ class installController extends install
 	/**
 	 * @brief Set FTP Information
 	 */
-	function procInstallFTP()
+	public function procInstallFTP()
 	{
 		if(Context::isInstalled()) return new BaseObject(-1, 'msg_already_installed');
 		$ftp_info = Context::gets('ftp_host', 'ftp_user','ftp_password','ftp_port','ftp_root_path');
@@ -322,7 +322,7 @@ class installController extends install
 		FileHandler::WriteFile(Context::getFTPConfigFile(), join(PHP_EOL, $buff));
 	}
 
-	function procInstallCheckFtp()
+	public function procInstallCheckFtp()
 	{
 		$ftp_info = Context::gets('ftp_user','ftp_password','ftp_port','sftp');
 		$ftp_info->ftp_port = (int)$ftp_info->ftp_port;
@@ -359,7 +359,7 @@ class installController extends install
 	/**
 	 * @brief Result returned after checking the installation environment
 	 */
-	function checkInstallEnv()
+	public function checkInstallEnv()
 	{
 		// Check each item
 		$checklist = array();
@@ -410,7 +410,7 @@ class installController extends install
 	/**
 	 * @brief License agreement
 	 */
-	function procInstallLicenseAggrement()
+	public function procInstallLicenseAggrement()
 	{
 		$vars = Context::getRequestVars();
 
@@ -440,7 +440,7 @@ class installController extends install
 	 *
 	 * @return bool
 	*/
-	function checkRewriteUsable() {
+	public function checkRewriteUsable() {
 		$checkString = "isApproached";
 		$checkFilePath = 'files/config/tmpRewriteCheck.txt';
 
@@ -484,7 +484,7 @@ class installController extends install
 	 * @brief Create files and subdirectories
 	 * Local evironment setting before installation by using DB information
 	 */
-	function makeDefaultDirectory()
+	public function makeDefaultDirectory()
 	{
 		$directory_list = array(
 			'./files/config',
@@ -504,7 +504,7 @@ class installController extends install
 	 *
 	 * Create a table by using schema xml file in the shcema directory of each module
 	 */
-	function installDownloadedModule()
+	public function installDownloadedModule()
 	{
 		$oModuleModel = getModel('module');
 		// Create a table ny finding schemas/*.xml file in each module
@@ -572,10 +572,10 @@ class installController extends install
 	/**
 	 * @brief Install an each module
 	 */
-	function installModule($module, $module_path)
+	public function installModule($module, $module_path)
 	{
 		// create db instance
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		// Create a table if the schema xml exists in the "schemas" directory of the module
 		$schema_dir = sprintf('%s/schemas/', $module_path);
 		$schema_files = FileHandler::readDir($schema_dir, NULL, false, true);
@@ -596,7 +596,7 @@ class installController extends install
 		return new BaseObject();
 	}
 
-	function _getDBConfigFileContents($db_info)
+	public function _getDBConfigFileContents($db_info)
 	{
 		if(substr($db_info->master_db['db_table_prefix'], -1) != '_')
 		{
@@ -622,7 +622,7 @@ class installController extends install
 	 * @brief Create DB temp config file
 	 * Create the config file when all settings are completed
 	 */
-	function makeDBConfigFile()
+	public function makeDBConfigFile()
 	{
 		$db_tmp_config_file = $this->db_tmp_config_file;
 
@@ -641,7 +641,7 @@ class installController extends install
 	 * @brief Create etc config file
 	 * Create the config file when all settings are completed
 	 */
-	function makeEtcConfigFile($config_info)
+	public function makeEtcConfigFile($config_info)
 	{
 		$etc_tmp_config_file = $this->etc_tmp_config_file;
 
@@ -661,7 +661,7 @@ class installController extends install
 	 * @brief Create config file
 	 * Create the config file when all settings are completed
 	 */
-	function makeConfigFile()
+	public function makeConfigFile()
 	{
 		try {
 			$config_file = Context::getConfigFile();
@@ -686,7 +686,7 @@ class installController extends install
 		}
 	}
 
-	function installByConfig($install_config_file)
+	public function installByConfig($install_config_file)
 	{
 		include $install_config_file;
 		if(!is_array($auto_config)) return false;

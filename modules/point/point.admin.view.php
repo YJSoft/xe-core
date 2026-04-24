@@ -10,7 +10,7 @@ class pointAdminView extends point
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		// Get teh configuration information
 		$oModuleModel = getModel('module');
@@ -30,7 +30,7 @@ class pointAdminView extends point
 	/**
 	 * @brief Default configurations
 	 */
-	function dispPointAdminConfig()
+	public function dispPointAdminConfig()
 	{
 		// Get the list of level icons
 		$level_icon_list = FileHandler::readDir("./modules/point/icons");
@@ -58,7 +58,7 @@ class pointAdminView extends point
 	/**
 	 * @brief Set per-module scores
 	 */
-	function dispPointAdminModuleConfig()
+	public function dispPointAdminModuleConfig()
 	{
 		// Get a list of mid
 		$oModuleModel = getModel('module');
@@ -87,7 +87,7 @@ class pointAdminView extends point
 	/**
 	 * @brief Configure the functional act
 	 */
-	function dispPointAdminActConfig()
+	public function dispPointAdminActConfig()
 	{
 		// Set the template
 		$this->setTemplateFile('action_config');
@@ -96,7 +96,7 @@ class pointAdminView extends point
 	/**
 	 * @brief Get a list of member points
 	 */
-	function dispPointAdminPointList()
+	public function dispPointAdminPointList()
 	{
 		$oPointModel = getModel('point');
 

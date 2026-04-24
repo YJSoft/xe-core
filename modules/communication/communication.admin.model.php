@@ -12,7 +12,7 @@ class communicationAdminModel extends communication
 	/**
 	 * Initialization
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -21,7 +21,7 @@ class communicationAdminModel extends communication
 	 * the html to select colorset of the skin
 	 * @return void
 	 */
-	function getCommunicationAdminColorset()
+	public function getCommunicationAdminColorset()
 	{
 		$skin = Context::get('skin');
 		$type = Context::get('type') == 'P' ? 'P' : 'M';

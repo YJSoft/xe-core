@@ -21,7 +21,7 @@ class QueryParser
 	 *
 	 * @var QueryTag object
 	 */
-	var $queryTag;
+	public $queryTag;
 
 	/**
 	 * Constructor
@@ -30,7 +30,7 @@ class QueryParser
 	 * @param bool $isSubQuery
 	 * @return void
 	 */
-	function __construct($query = NULL, $isSubQuery = FALSE)
+	public function __construct($query = NULL, $isSubQuery = FALSE)
 	{
 		if($query)
 		{
@@ -48,7 +48,7 @@ class QueryParser
 	 * @param bool $table_name
 	 * @return array
 	 */
-	function getTableInfo($query_id, $table_name)
+	public function getTableInfo($query_id, $table_name)
 	{
 		$column_type = array();
 		$module = '';
@@ -115,7 +115,7 @@ class QueryParser
 	 *
 	 * @return string
 	 */
-	function toString()
+	public function toString()
 	{
 		return "<?php if(!defined('__XE__')) exit();\n"
 				. $this->queryTag->toString()

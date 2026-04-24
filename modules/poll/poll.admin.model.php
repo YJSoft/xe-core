@@ -10,14 +10,14 @@ class pollAdminModel extends poll
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Get the list of polls
 	 */
-	function getPollList($args)
+	public function getPollList($args)
 	{
 		$output = executeQueryArray('poll.getPollList', $args);
 		if(!$output->toBool()) return $output;
@@ -29,7 +29,7 @@ class pollAdminModel extends poll
 	/**
 	 * @brief Get the list of polls with member info
 	 */
-	function getPollListWithMember($args)
+	public function getPollListWithMember($args)
 	{
 		$output = executeQueryArray('poll.getPollListWithMember', $args);
 		if(!$output->toBool()) return $output;
@@ -40,7 +40,7 @@ class pollAdminModel extends poll
 	/**
 	 * @brief Get the original poll
 	 */
-	function getPollAdminTarget()
+	public function getPollAdminTarget()
 	{
 		$poll_srl = Context::get('poll_srl');
 		$upload_target_srl = Context::get('upload_target_srl');

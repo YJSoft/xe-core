@@ -14,7 +14,7 @@ class ConditionArgument extends Argument
 	 * Operator keyword. for example 'in', 'notint', 'between'
 	 * @var string
 	 */
-	var $operation;
+	public $operation;
 
 	/**
 	 * constructor
@@ -23,7 +23,7 @@ class ConditionArgument extends Argument
 	 * @param string $operation
 	 * @return void
 	 */
-	function __construct($name, $value, $operation)
+	public function __construct($name, $value, $operation)
 	{
 		$operationList = array('in' => 1, 'notin' => 1, 'not_in' => 1, 'between' => 1);
 		if(isset($value) && isset($operationList[$operation]) && !is_array($value) && $value != '')
@@ -40,7 +40,7 @@ class ConditionArgument extends Argument
 	 * create condition value. set $this->value
 	 * @return void
 	 */
-	function createConditionValue()
+	public function createConditionValue()
 	{
 		if(!isset($this->value))
 		{
@@ -118,7 +118,7 @@ class ConditionArgument extends Argument
 	 *
 	 * @return type string
 	 */
-	function getType()
+	public function getType()
 	{
 		if($this->type)
 		{
@@ -134,7 +134,7 @@ class ConditionArgument extends Argument
 		}
 	}
 
-	function setColumnType($column_type)
+	public function setColumnType($column_type)
 	{
 		if(!isset($this->value))
 		{

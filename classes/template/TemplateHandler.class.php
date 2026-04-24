@@ -57,7 +57,7 @@ class TemplateHandler
 	 * returns TemplateHandler's singleton object
 	 * @return TemplateHandler instance
 	 */
-	static public function &getInstance()
+	public static function getInstance()
 	{
 		static $oTemplate = NULL;
 
@@ -1006,7 +1006,7 @@ class TemplateHandler
 	 * @param string $path
 	 * @return string
 	 */
-	function _getRelativeDir($path)
+	public function _getRelativeDir($path)
 	{
 		$_path = $path;
 
@@ -1055,7 +1055,7 @@ class TemplateHandler
 	 * @param string $php
 	 * @return string $__Context->varname
 	 */
-	function _replaceVar($php)
+	public static function _replaceVar($php)
 	{
 		if(!strlen($php))
 		{
@@ -1064,7 +1064,7 @@ class TemplateHandler
 		return preg_replace('@(?<!::|\\\\|(?<!eval\()\')\$([a-z]|_[a-z0-9])@i', '\$__Context->$1', $php);
 	}
 
-	function isAutoescape()
+	public function isAutoescape()
 	{
 		$absPath = str_replace(_XE_PATH_, '', $this->path);
 		$dirTpl = '(addon|admin|adminlogging|autoinstall|board|comment|communication|counter|document|editor|file|importer|install|integration_search|krzip|layout|member|menu|message|module|page|point|poll|rss|seo|session|spamfilter|syndication|tag|trash|widget)';

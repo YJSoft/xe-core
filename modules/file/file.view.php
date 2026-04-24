@@ -10,7 +10,7 @@ class fileView extends file
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -21,7 +21,7 @@ class fileView extends file
 	 * @param string $obj The html string of page of addition setup of module
 	 * @return BaseObject
 	 */
-	function triggerDispFileAdditionSetup(&$obj)
+	public function triggerDispFileAdditionSetup(&$obj)
 	{
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
@@ -43,7 +43,7 @@ class fileView extends file
 		$group_list = $oMemberModel->getGroups($site_module_info->site_srl);
 		Context::set('group_list', $group_list);
 		// Set a template file
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path.'tpl', 'file_module_config');
 		$obj .= $tpl;
 

@@ -10,14 +10,14 @@ class tagController extends tag
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief , (Comma) to clean up the tags attached to the trigger
 	 */
-	function triggerArrangeTag(&$obj)
+	public function triggerArrangeTag(&$obj)
 	{
 		if(!$obj->tags) return new BaseObject();
 		// tags by variable
@@ -40,7 +40,7 @@ class tagController extends tag
 	 * @brief Input trigger tag
 	 * Enter a Tag to delete that article and then re-enter all the tags using a method
 	 */
-	function triggerInsertTag(&$obj)
+	public function triggerInsertTag(&$obj)
 	{
 		$module_srl = $obj->module_srl;
 		$document_srl = $obj->document_srl;
@@ -72,7 +72,7 @@ class tagController extends tag
 	 * @brief Delete the tag trigger a specific article
 	 * document_srl delete tag belongs to
 	 */
-	function triggerDeleteTag(&$obj)
+	public function triggerDeleteTag(&$obj)
 	{
 		$document_srl = $obj->document_srl;
 		if(!$document_srl) return new BaseObject();
@@ -85,7 +85,7 @@ class tagController extends tag
 	/**
 	 * @brief module delete trigger to delete all the tags
 	 */
-	function triggerDeleteModuleTags(&$obj)
+	public function triggerDeleteModuleTags(&$obj)
 	{
 		$module_srl = $obj->module_srl;
 		if(!$module_srl) return new BaseObject();

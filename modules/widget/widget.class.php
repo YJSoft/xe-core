@@ -10,7 +10,7 @@ class widget extends ModuleObject
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Create cache directory used by widget
 		FileHandler::makeDir('./files/cache/widget');
@@ -25,7 +25,7 @@ class widget extends ModuleObject
 	/**
 	 * @brief a method to check if successfully installed
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -44,7 +44,7 @@ class widget extends ModuleObject
 	/**
 	 * @brief Execute update
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -66,7 +66,7 @@ class widget extends ModuleObject
 	/**
 	 * @brief Re-generate the cache file
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 }

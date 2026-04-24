@@ -13,7 +13,7 @@ class counterModel extends counter
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -23,7 +23,7 @@ class counterModel extends counter
 	 * @param integer $site_srl Site_srl
 	 * @return bool
 	 */
-	function isLogged($site_srl = 0)
+	public function isLogged($site_srl = 0)
 	{
 		$args = new stdClass();
 		$args->regdate = date('Ymd');
@@ -59,7 +59,7 @@ class counterModel extends counter
 	 * @param integer $site_srl Site_srl
 	 * @return bool
 	 */
-	function isInsertedTodayStatus($site_srl = 0)
+	public function isInsertedTodayStatus($site_srl = 0)
 	{
 		$args = new stdClass;
 		$args->regdate = date('Ymd');
@@ -104,7 +104,7 @@ class counterModel extends counter
 	 * @param integer $site_srl Site_srl
 	 * @return BaseObject
 	 */
-	function getStatus($selected_date, $site_srl = 0)
+	public function getStatus($selected_date, $site_srl = 0)
 	{
 		// If more than one date logs are selected
 		$args = new stdClass();
@@ -143,7 +143,7 @@ class counterModel extends counter
 	 * @param integer $site_srl Site_srl
 	 * @return BaseObject
 	 */
-	function getHourlyStatus($type = 'hour', $selected_date, $site_srl = 0, $isPageView = false)
+	public function getHourlyStatus($type = 'hour', $selected_date, $site_srl = 0, $isPageView = false)
 	{
 		$max = 0;
 		$sum = 0;

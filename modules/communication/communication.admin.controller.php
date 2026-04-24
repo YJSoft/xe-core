@@ -12,7 +12,7 @@ class communicationAdminController extends communication
 	/**
 	 * Initialization
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -21,7 +21,7 @@ class communicationAdminController extends communication
 	 * save configurations of the communication module
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationAdminInsertConfig()
+	public function procCommunicationAdminInsertConfig()
 	{
 		// get the default information
 		$args = Context::gets('skin', 'colorset', 'editor_skin', 'sel_editor_colorset', 'mskin', 'mcolorset', 'layout_srl', 'mlayout_srl', 'grant_write_default','grant_write_group');

@@ -14,37 +14,37 @@ class FrontEndFileHandler extends Handler
 	 * Map for css
 	 * @var array
 	 */
-	var $cssMap = array();
+	public $cssMap = array();
 
 	/**
 	 * Map for Javascript at head
 	 * @var array
 	 */
-	var $jsHeadMap = array();
+	public $jsHeadMap = array();
 
 	/**
 	 * Map for Javascript at body
 	 * @var array
 	 */
-	var $jsBodyMap = array();
+	public $jsBodyMap = array();
 
 	/**
 	 * Index for css
 	 * @var array
 	 */
-	var $cssMapIndex = array();
+	public $cssMapIndex = array();
 
 	/**
 	 * Index for javascript at head
 	 * @var array
 	 */
-	var $jsHeadMapIndex = array();
+	public $jsHeadMapIndex = array();
 
 	/**
 	 * Index for javascript at body
 	 * @var array
 	 */
-	var $jsBodyMapIndex = array();
+	public $jsBodyMapIndex = array();
 
 	/**
 	 * Check SSL
@@ -52,7 +52,7 @@ class FrontEndFileHandler extends Handler
 	 * @return bool If using ssl returns true, otherwise returns false.
      * @deprecated
 	 */
-	function isSsl()
+	public function isSsl()
 	{
 		if(!is_null(self::$isSSL))
 		{
@@ -86,7 +86,7 @@ class FrontEndFileHandler extends Handler
 	 * @param array $args Arguments
 	 * @return void
 	 * */
-	function loadFile($args)
+	public function loadFile($args)
 	{
 		if(!is_array($args))
 		{
@@ -213,7 +213,7 @@ class FrontEndFileHandler extends Handler
 	 * @param string $media Media of file to unload. Only use when file is css.
 	 * @return void
 	 */
-	function unloadFile($fileName, $targetIe = '', $media = 'all')
+	public function unloadFile($fileName, $targetIe = '', $media = 'all')
 	{
 		$file = $this->getFileInfo($fileName, $targetIe, $media);
 
@@ -246,7 +246,7 @@ class FrontEndFileHandler extends Handler
 	 * @param string $type Type to unload. all, css, js
 	 * @return void
 	 */
-	function unloadAllFiles($type = 'all')
+	public function unloadAllFiles($type = 'all')
 	{
 		if($type == 'css' || $type == 'all')
 		{
@@ -268,7 +268,7 @@ class FrontEndFileHandler extends Handler
 	 *
 	 * @return array Returns css file list. Array contains file, media, targetie.
 	 */
-	function getCssFileList()
+	public function getCssFileList()
 	{
 		$map = &$this->cssMap;
 		$mapIndex = &$this->cssMapIndex;
@@ -310,7 +310,7 @@ class FrontEndFileHandler extends Handler
 	 * @param string $type Type of javascript. head, body
 	 * @return array Returns javascript file list. Array contains file, targetie.
 	 */
-	function getJsFileList($type = 'head')
+	public function getJsFileList($type = 'head')
 	{
 		$ignore = array('modernizr.js', 'common.js', 'js_app.js', 'xml2json.js', 'xml_handler.js', 'xml_js_filter.js');
 		$pathCommonJs = getScriptPath() . 'common/js';
@@ -371,7 +371,7 @@ class FrontEndFileHandler extends Handler
 	 * @param array $index Not used
 	 * @return void
 	 */
-	function _sortMap(&$map, &$index)
+	public function _sortMap(&$map, &$index)
 	{
 		ksort($map);
 	}
@@ -382,7 +382,7 @@ class FrontEndFileHandler extends Handler
 	 * @param string $path Path to normalize
 	 * @return string Normalized path
 	 */
-	function _normalizeFilePath($path)
+	public function _normalizeFilePath($path)
 	{
 		if(strpos($path, '://') === FALSE && $path[0] != '/' && $path[0] != '.')
 		{
@@ -409,7 +409,7 @@ class FrontEndFileHandler extends Handler
 	 * @param string $path Path to get absolute url
 	 * @return string Absolute url
 	 */
-	function _getAbsFileUrl($path)
+	public function _getAbsFileUrl($path)
 	{
 		$path = $this->_normalizeFilePath($path);
 		$script_path = getScriptPath();
@@ -440,7 +440,7 @@ class FrontEndFileHandler extends Handler
 	 * @param array $file file info.
 	 * @return void
 	 */
-	function _arrangeCssIndex($dirName, &$file)
+	public function _arrangeCssIndex($dirName, &$file)
 	{
 		if($file->index !== 0)
 		{

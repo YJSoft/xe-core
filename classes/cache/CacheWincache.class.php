@@ -18,7 +18,7 @@ class CacheWincache extends CacheBase
 	 * @param void $opt Not used
 	 * @return CacheWincache instance of CacheWincache
 	 */
-	function getInstance($opt = null)
+	public function getInstance($opt = null)
 	{
 		if(!$GLOBALS['__CacheWincache__'])
 		{
@@ -32,7 +32,7 @@ class CacheWincache extends CacheBase
 	 *
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 	}
 
@@ -41,7 +41,7 @@ class CacheWincache extends CacheBase
 	 *
 	 * @return bool Return true on support or false on not support
 	 */
-	function isSupport()
+	public function isSupport()
 	{
 		return self::$isSupport;
 	}
@@ -57,7 +57,7 @@ class CacheWincache extends CacheBase
 	 * 							If no ttl is supplied, use the default valid time CacheWincache::valid_time.
 	 * @return bool Returns true on success or false on failure.
 	 */
-	function put($key, $buff, $valid_time = 0)
+	public function put($key, $buff, $valid_time = 0)
 	{
 		if($valid_time == 0)
 		{
@@ -74,7 +74,7 @@ class CacheWincache extends CacheBase
 	 * 								If stored time is older then modified time, the data is invalid.
 	 * @return bool Return true on valid or false on invalid.
 	 */
-	function isValid($key, $modified_time = 0)
+	public function isValid($key, $modified_time = 0)
 	{
 		$_key = md5(_XE_PATH_ . $key);
 		$obj = wincache_ucache_get($_key, $success);
@@ -101,7 +101,7 @@ class CacheWincache extends CacheBase
 	 * 								If stored time is older then modified time, return false.
 	 * @return false|mixed Return false on failure or older then modified time. Return the string associated with the $key on success.
 	 */
-	function get($key, $modified_time = 0)
+	public function get($key, $modified_time = 0)
 	{
 		$_key = md5(_XE_PATH_ . $key);
 		$obj = wincache_ucache_get($_key, $success);
@@ -125,7 +125,7 @@ class CacheWincache extends CacheBase
 	 * @param string $_key Used to store the value.
 	 * @return void
 	 */
-	function _delete($_key)
+	public function _delete($_key)
 	{
 		wincache_ucache_delete($_key);
 	}
@@ -136,7 +136,7 @@ class CacheWincache extends CacheBase
 	 * @param string $key Used to store the value.
 	 * @return void
 	 */
-	function delete($key)
+	public function delete($key)
 	{
 		$_key = md5(_XE_PATH_ . $key);
 		$this->_delete($_key);
@@ -147,7 +147,7 @@ class CacheWincache extends CacheBase
 	 *
 	 * @return bool Returns true on success or false on failure.
 	 */
-	function truncate()
+	public function truncate()
 	{
 		return wincache_ucache_clear();
 	}

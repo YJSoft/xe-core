@@ -10,7 +10,7 @@ class spamfilterAdminView extends spamfilter
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		// Set template path
 		$this->setTemplatePath($this->module_path.'tpl');
@@ -19,7 +19,7 @@ class spamfilterAdminView extends spamfilter
 	/**
 	 * @brief Output the list of banned IPs
 	 */
-	function dispSpamfilterAdminDeniedIPList()
+	public function dispSpamfilterAdminDeniedIPList()
 	{
 		// Get the list of denied IP addresses and words
 		$oSpamFilterModel = getModel('spamfilter');
@@ -37,7 +37,7 @@ class spamfilterAdminView extends spamfilter
 	/**
 	 * @brief Output the list of banned words
 	 */
-	function dispSpamfilterAdminDeniedWordList()
+	public function dispSpamfilterAdminDeniedWordList()
 	{
 		// Get the list of denied IP addresses and words
 		$oSpamFilterModel = getModel('spamfilter');
@@ -54,7 +54,7 @@ class spamfilterAdminView extends spamfilter
 	/**
 	 * @brief Configure auto block
 	 */
-	function dispSpamfilterAdminConfigBlock()
+	public function dispSpamfilterAdminConfigBlock()
 	{
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');

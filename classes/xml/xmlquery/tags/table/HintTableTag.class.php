@@ -16,7 +16,7 @@ class HintTableTag extends TableTag
 	 * Action for example, 'select', 'insert', 'delete'...
 	 * @var array
 	 */
-	var $index;
+	public $index;
 
 	/**
 	 * constructor
@@ -25,13 +25,13 @@ class HintTableTag extends TableTag
 	 * @param array $index
 	 * @return void
 	 */
-	function __construct($table, $index)
+	public function __construct($table, $index)
 	{
 		parent::__construct($table);
 		$this->index = $index;
 	}
 
-	function getTableString()
+	public function getTableString()
 	{
 		$dbParser = DB::getParser();
 		$dbType = ucfirst(Context::getDBType());
@@ -52,7 +52,7 @@ class HintTableTag extends TableTag
 		return $result;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		if(!isset($this->conditionsTag))
 		{

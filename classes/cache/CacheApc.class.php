@@ -16,7 +16,7 @@ class CacheApc extends CacheBase
 	 * @param void $opt Not used
 	 * @return CacheApc instance of CacheApc
 	 */
-	function getInstance($opt = null)
+	public function getInstance($opt = null)
 	{
 		if(!$GLOBALS['__CacheApc__'])
 		{
@@ -30,7 +30,7 @@ class CacheApc extends CacheBase
 	 *
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 	}
 
@@ -39,7 +39,7 @@ class CacheApc extends CacheBase
 	 *
 	 * @return bool Return true on support or false on not support
 	 */
-	function isSupport()
+	public function isSupport()
 	{
 		return self::$isSupport;
 	}
@@ -54,7 +54,7 @@ class CacheApc extends CacheBase
 	 * 							If no ttl is supplied, use the default valid time CacheApc::valid_time.
 	 * @return bool Returns true on success or false on failure.
 	 */
-	function put($key, $buff, $valid_time = 0)
+	public function put($key, $buff, $valid_time = 0)
 	{
 		if($valid_time == 0)
 		{
@@ -72,7 +72,7 @@ class CacheApc extends CacheBase
 	 * 								If stored time is older then modified time, the data is invalid.
 	 * @return bool Return true on valid or false on invalid.
 	 */
-	function isValid($key, $modified_time = 0)
+	public function isValid($key, $modified_time = 0)
 	{
 		$_key = md5(_XE_PATH_ . $key);
 		$obj = apc_fetch($_key, $success);
@@ -99,7 +99,7 @@ class CacheApc extends CacheBase
 	 * 								If stored time is older then modified time, return false.
 	 * @return false|mixed Return false on failure or older then modified time. Return the string associated with the $key on success.
 	 */
-	function get($key, $modified_time = 0)
+	public function get($key, $modified_time = 0)
 	{
 		$_key = md5(_XE_PATH_ . $key);
 		$obj = apc_fetch($_key, $success);
@@ -123,7 +123,7 @@ class CacheApc extends CacheBase
 	 * @param string $key Used to store the value.
 	 * @return void
 	 */
-	function delete($key)
+	public function delete($key)
 	{
 		$_key = md5(_XE_PATH_ . $key);
 		return apc_delete($_key);
@@ -134,7 +134,7 @@ class CacheApc extends CacheBase
 	 *
 	 * @return bool Returns true on success or false on failure.
 	 */
-	function truncate()
+	public function truncate()
 	{
 		return apc_clear_cache('user');
 	}
@@ -142,7 +142,7 @@ class CacheApc extends CacheBase
 	/**
 	 * @DEPRECATED
 	 */
-	function _delete($key)
+	public function _delete($key)
 	{
 		return $this->delete($key);
 	}

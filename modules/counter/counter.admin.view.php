@@ -14,7 +14,7 @@ class counterAdminView extends counter
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		// set the template path
 		$this->setTemplatePath($this->module_path . 'tpl');
@@ -25,7 +25,7 @@ class counterAdminView extends counter
 	 *
 	 * @return BaseObject
 	 */
-	function dispCounterAdminIndex()
+	public function dispCounterAdminIndex()
 	{
 		// set today's if no date is given
 		$selected_date = (int)Context::get('selected_date');

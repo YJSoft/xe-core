@@ -11,7 +11,7 @@ class moduleAdminModel extends module
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -19,7 +19,7 @@ class moduleAdminModel extends module
 	 * @brief Return a list of target modules by using module_srls separated by comma(,)
 	 * Used in the ModuleSelector
 	 */
-	function getModuleAdminModuleList()
+	public function getModuleAdminModuleList()
 	{
 		$oModuleController = getController('module');
 		$oModuleModel = getModel('module');
@@ -44,7 +44,7 @@ class moduleAdminModel extends module
 		$this->add('module_list', $module_list);
 	}
 
-	function getModuleMidList($args)
+	public function getModuleMidList($args)
 	{
 		$args->list_count = 20;
 		$args->page_count = 10;
@@ -56,7 +56,7 @@ class moduleAdminModel extends module
 		return $output;
 	}
 
-	function getSelectedManageHTML($grantList, $tabChoice = array(), $modulePath = NULL)
+	public function getSelectedManageHTML($grantList, $tabChoice = array(), $modulePath = NULL)
 	{
 		if($modulePath)
 		{
@@ -126,7 +126,7 @@ class moduleAdminModel extends module
 		Context::set('tabChoice', $tabChoice);
 
 		// Get information of module_grants
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path.'tpl', 'include.manage_selected.html');
 	}
 
@@ -134,7 +134,7 @@ class moduleAdminModel extends module
 	 * @brief Common:: module's permission displaying page in the module
 	 * Available when using module instance in all the modules
 	 */
-	function getModuleGrantHTML($module_srl, $source_grant_list)
+	public function getModuleGrantHTML($module_srl, $source_grant_list)
 	{
 		if(!$module_srl)
 		{
@@ -205,7 +205,7 @@ class moduleAdminModel extends module
 		$security->encodeHTML('admin_member..nick_name');
 
 		// Get information of module_grants
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path.'tpl', 'module_grants');
 	}
 
@@ -286,7 +286,7 @@ class moduleAdminModel extends module
 	/**
 	 * @brief Common:: skin setting page for the module
 	 */
-	function getModuleSkinHTML($module_srl)
+	public function getModuleSkinHTML($module_srl)
 	{
 		return $this->_getModuleSkinHTML($module_srl, 'P');
 	}
@@ -297,7 +297,7 @@ class moduleAdminModel extends module
 	 * @param $module_srl sequence of module
 	 * @return string The html code
 	 */
-	function getModuleMobileSkinHTML($module_srl)
+	public function getModuleMobileSkinHTML($module_srl)
 	{
 		return $this->_getModuleSkinHtml($module_srl, 'M');
 	}
@@ -309,7 +309,7 @@ class moduleAdminModel extends module
 	 * @param $mode P or M
 	 * @return string The HTML code
 	 */
-	function _getModuleSkinHTML($module_srl, $mode)
+	public function _getModuleSkinHTML($module_srl, $mode)
 	{
 		$mode = $mode === 'P' ? 'P' : 'M';
 
@@ -388,7 +388,7 @@ class moduleAdminModel extends module
 		$security->encodeHTML('module_info.browser_title');
 		$security->encodeHTML('skin_info...');
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path.'tpl', 'skin_config');
 	}
 
@@ -396,7 +396,7 @@ class moduleAdminModel extends module
 	 * @brief Get values for a particular language code
 	 * Return its corresponding value if lang_code is specified. Otherwise return $name.
 	 */
-	function getLangCode($site_srl, $name, $isFullLanguage = FALSE)
+	public function getLangCode($site_srl, $name, $isFullLanguage = FALSE)
 	{
 		if($isFullLanguage)
 		{
@@ -449,7 +449,7 @@ class moduleAdminModel extends module
 	/**
 	 * @brief Return if the module language in ajax is requested
 	 */
-	function getModuleAdminLangCode()
+	public function getModuleAdminLangCode()
 	{
 		$name = Context::get('name');
 		if(!$name) return new BaseObject(-1,'msg_invalid_request');
@@ -462,7 +462,7 @@ class moduleAdminModel extends module
 	/**
 	 * @brief Returns lang list by lang name
 	 */
-	function getModuleAdminLangListByName()
+	public function getModuleAdminLangListByName()
 	{
 		$args = Context::getRequestVars();
 		if(!$args->site_srl) $args->site_srl = 0;
@@ -482,7 +482,7 @@ class moduleAdminModel extends module
 	/**
 	 * @brief Return lang list
 	 */
-	function getModuleAdminLangListByValue()
+	public function getModuleAdminLangListByValue()
 	{
 		$args = Context::getRequestVars();
 		if(!$args->site_srl) $args->site_srl = 0;
@@ -514,7 +514,7 @@ class moduleAdminModel extends module
 	/**
 	 * @brief Return current lang list
 	 */
-	function getLangListByLangcode($args)
+	public function getLangListByLangcode($args)
 	{
 		$output = executeQueryArray('module.getLangListByLangcode', $args);
 		if(!$output->toBool()) return array();
@@ -525,7 +525,7 @@ class moduleAdminModel extends module
 	/**
 	 * return multilingual html
 	 */
-	function getModuleAdminMultilingualHtml()
+	public function getModuleAdminMultilingualHtml()
 	{
 		$oTemplate = TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile(_XE_PATH_ . 'modules/module/tpl', 'multilingual_v17.html');
@@ -536,7 +536,7 @@ class moduleAdminModel extends module
 	/**
 	 * return multilingual list html
 	 */
-	function getModuleAdminLangListHtml()
+	public function getModuleAdminLangListHtml()
 	{
 		$site_module_info = Context::get('site_module_info');
 		$args = new stdClass();
@@ -575,7 +575,7 @@ class moduleAdminModel extends module
 	/**
 	 * return module searcher html
 	 */
-	function getModuleAdminModuleSearcherHtml()
+	public function getModuleAdminModuleSearcherHtml()
 	{
 		Context::loadLang(_XE_PATH_ . 'modules/admin/lang');
 		$oTemplate = TemplateHandler::getInstance();
@@ -587,7 +587,7 @@ class moduleAdminModel extends module
 	/**
 	 * return module info.
 	 */
-	function getModuleAdminModuleInfo()
+	public function getModuleAdminModuleInfo()
 	{
 		if(Context::get('search_module_srl'))
 		{

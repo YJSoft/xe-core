@@ -10,7 +10,7 @@ class moduleController extends module
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -19,7 +19,7 @@ class moduleController extends module
 	 * Action forward finds and forwards if an action is not in the requested module
 	 * This is used when installing a module
 	 */
-	function insertActionForward($module, $type, $act)
+	public function insertActionForward($module, $type, $act)
 	{
 		$args = new stdClass();
 		$args->module = $module;
@@ -41,7 +41,7 @@ class moduleController extends module
 	/**
 	 * @brief Delete action forward
 	 */
-	function deleteActionForward($module, $type, $act)
+	public function deleteActionForward($module, $type, $act)
 	{
 		$args = new stdClass();
 		$args->module = $module;
@@ -65,7 +65,7 @@ class moduleController extends module
 	 * module trigger is to call a trigger to a target module
 	 *
 	 */
-	function insertTrigger($trigger_name, $module, $type, $called_method, $called_position)
+	public function insertTrigger($trigger_name, $module, $type, $called_method, $called_position)
 	{
 		$args = new stdClass();
 		$args->trigger_name = $trigger_name;
@@ -94,7 +94,7 @@ class moduleController extends module
 	 * @brief Delete module trigger
 	 *
 	 */
-	function deleteTrigger($trigger_name, $module, $type, $called_method, $called_position)
+	public function deleteTrigger($trigger_name, $module, $type, $called_method, $called_position)
 	{
 		$args = new stdClass();
 		$args->trigger_name = $trigger_name;
@@ -123,7 +123,7 @@ class moduleController extends module
 	 * @brief Delete module trigger
 	 *
 	 */
-	function deleteModuleTriggers($module)
+	public function deleteModuleTriggers($module)
 	{
 		$args = new stdClass();
 		$args->module = $module;
@@ -148,7 +148,7 @@ class moduleController extends module
 	 * @brief Add module extend
 	 *
 	 */
-	function insertModuleExtend($parent_module, $extend_module, $type, $kind='')
+	public function insertModuleExtend($parent_module, $extend_module, $type, $kind='')
 	{
 		if($kind != 'admin') $kind = '';
 		if(!in_array($type,array('model','controller','view','api','mobile'))) return false;
@@ -174,7 +174,7 @@ class moduleController extends module
 	 * @brief Delete module extend
 	 *
 	 */
-	function deleteModuleExtend($parent_module, $extend_module, $type, $kind='')
+	public function deleteModuleExtend($parent_module, $extend_module, $type, $kind='')
 	{
 		$cache_file = './files/config/module_extend.php';
 		FileHandler::removeFile($cache_file);
@@ -190,7 +190,7 @@ class moduleController extends module
 		return $output;
 	}
 
-	function updateModuleConfig($module, $config, $site_srl = 0)
+	public function updateModuleConfig($module, $config, $site_srl = 0)
 	{
 		$args = new stdClass();
 		$args->module = $module;
@@ -213,7 +213,7 @@ class moduleController extends module
 	 * @brief Enter a specific set of modules
 	 * In order to manage global configurations of modules such as board, member and so on
 	 */
-	function insertModuleConfig($module, $config, $site_srl = 0)
+	public function insertModuleConfig($module, $config, $site_srl = 0)
 	{
 		$args =new stdClass();
 		$args->module = $module;
@@ -238,7 +238,7 @@ class moduleController extends module
 	 * @brief Save module configurations of the mid
 	 * Manage mid configurations depending on module
 	 */
-	function insertModulePartConfig($module, $module_srl, $config)
+	public function insertModulePartConfig($module, $module_srl, $config)
 	{
 		$args = new stdClass();
 		$args->module = $module;
@@ -263,7 +263,7 @@ class moduleController extends module
 	/**
 	 * @brief create virtual site
 	 */
-	function insertSite($domain, $index_module_srl)
+	public function insertSite($domain, $index_module_srl)
 	{
 		if(isSiteID($domain))
 		{
@@ -296,7 +296,7 @@ class moduleController extends module
 	/**
 	 * @brief modify virtual site
 	 */
-	function updateSite($args)
+	public function updateSite($args)
 	{
 		$oModuleModel = getModel('module');
 		$columnList = array('sites.site_srl', 'sites.domain');
@@ -338,7 +338,7 @@ class moduleController extends module
 	/**
 	 * @brief Arrange module information
 	 */
-	function arrangeModuleInfo(&$args, &$extra_vars)
+	public function arrangeModuleInfo(&$args, &$extra_vars)
 	{
 		// Remove unnecessary information
 		unset($args->body);
@@ -377,7 +377,7 @@ class moduleController extends module
 	/**
 	 * @brief Insert module
 	 */
-	function insertModule($args)
+	public function insertModule($args)
 	{
 		if(isset($args->isMenuCreate))
 		{
@@ -396,7 +396,7 @@ class moduleController extends module
 		if($oModuleModel->isIDExists($args->mid, $args->site_srl)) return new BaseObject(-1, 'msg_module_name_exists');
 
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 		// Get colorset from the skin information
 		$module_path = ModuleHandler::getModulePath($args->module);
@@ -505,7 +505,7 @@ class moduleController extends module
 	/**
 	 * @brief Modify module information
 	 */
-	function updateModule($args)
+	public function updateModule($args)
 	{
 		if(isset($args->isMenuCreate))
 		{
@@ -519,7 +519,7 @@ class moduleController extends module
 		$output = $this->arrangeModuleInfo($args, $extra_vars);
 		if(!$output->toBool()) return $output;
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$oModuleModel = getModel('module');
@@ -645,7 +645,7 @@ class moduleController extends module
 	/**
 	 * @brief Change the module's virtual site
 	 */
-	function updateModuleSite($module_srl, $site_srl, $layout_srl = 0)
+	public function updateModuleSite($module_srl, $site_srl, $layout_srl = 0)
 	{
 		$args = new stdClass;
 		$args->module_srl = $module_srl;
@@ -669,7 +669,7 @@ class moduleController extends module
 	 * Attempt to delete all related information when deleting a module.
 	 * Origin method is changed. because menu validation check is needed
 	 */
-	function deleteModule($module_srl, $site_srl = 0)
+	public function deleteModule($module_srl, $site_srl = 0)
 	{
 		if(!$module_srl) return new BaseObject(-1,'msg_invalid_request');
 
@@ -749,7 +749,7 @@ class moduleController extends module
 		if(!$output->toBool()) return $output;
 
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$args = new stdClass();
@@ -796,7 +796,7 @@ class moduleController extends module
 	 * @brief Change other information of the module
 	 * @deprecated
 	 */
-	function updateModuleSkinVars($module_srl, $skin_vars)
+	public function updateModuleSkinVars($module_srl, $skin_vars)
 	{
 		return new BaseObject();
 	}
@@ -804,7 +804,7 @@ class moduleController extends module
 	/**
 	 * @brief Set is_default as N in all modules(the default module is disabled)
 	 */
-	function clearDefaultModule()
+	public function clearDefaultModule()
 	{
 		$output = executeQuery('module.clearDefaultModule');
 		if(!$output->toBool()) return $output;
@@ -821,7 +821,7 @@ class moduleController extends module
 	/**
 	 * @brief Update menu_srl of mid which belongs to menu_srl
 	 */
-	function updateModuleMenu($args)
+	public function updateModuleMenu($args)
 	{
 		$output = executeQuery('module.updateModuleMenu', $args);
 
@@ -837,7 +837,7 @@ class moduleController extends module
 	/**
 	 * @brief Update layout_srl of mid which belongs to menu_srl
 	 */
-	function updateModuleLayout($layout_srl, $menu_srl_list)
+	public function updateModuleLayout($layout_srl, $menu_srl_list)
 	{
 		if(!count($menu_srl_list)) return;
 
@@ -858,7 +858,7 @@ class moduleController extends module
 	/**
 	 * @brief Change the site administrator
 	 */
-	function insertSiteAdmin($site_srl, $arr_admins)
+	public function insertSiteAdmin($site_srl, $arr_admins)
 	{
 		// Remove the site administrator
 		$args = new stdClass;
@@ -904,7 +904,7 @@ class moduleController extends module
 	/**
 	 * @brief Specify the admin ID to a module
 	 */
-	function insertAdminId($module_srl, $admin_id)
+	public function insertAdminId($module_srl, $admin_id)
 	{
 		$oMemberModel = getModel('member');
 		$member_config = $oMemberModel->getMemberConfig();
@@ -924,7 +924,7 @@ class moduleController extends module
 	/**
 	 * @brief Remove the admin ID from a module
 	 */
-	function deleteAdminId($module_srl, $admin_id = '')
+	public function deleteAdminId($module_srl, $admin_id = '')
 	{
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -943,7 +943,7 @@ class moduleController extends module
 	 * @param $module_srl Sequence of module
 	 * @param $obj Skin variables
 	 */
-	function insertModuleSkinVars($module_srl, $obj)
+	public function insertModuleSkinVars($module_srl, $obj)
 	{
 		return $this->_insertModuleSkinVars($module_srl, $obj, 'P');
 	}
@@ -953,7 +953,7 @@ class moduleController extends module
 	 * @param $module_srl Sequence of module
 	 * @param $obj Skin variables
 	 */
-	function insertModuleMobileSkinVars($module_srl, $obj)
+	public function insertModuleMobileSkinVars($module_srl, $obj)
 	{
 		return $this->_insertModuleSkinVars($module_srl, $obj, 'M');
 	}
@@ -962,7 +962,7 @@ class moduleController extends module
 	/**
 	 * @brief Insert skin vars to a module
 	 */
-	function _insertModuleSkinVars($module_srl, $obj, $mode)
+	public function _insertModuleSkinVars($module_srl, $obj, $mode)
 	{
 		$mode = $mode === 'P' ? 'P' : 'M';
 
@@ -1018,7 +1018,7 @@ class moduleController extends module
 	 * Remove skin vars ofa module
 	 * @param $module_srl seqence of module
 	 */
-	function deleteModuleSkinVars($module_srl)
+	public function deleteModuleSkinVars($module_srl)
 	{
 		return $this->_deleteModuleSkinVars($module_srl, 'P');
 	}
@@ -1027,7 +1027,7 @@ class moduleController extends module
 	 * Remove mobile skin vars ofa module
 	 * @param $module_srl seqence of module
 	 */
-	function deleteModuleMobileSkinVars($module_srl)
+	public function deleteModuleMobileSkinVars($module_srl)
 	{
 		return $this->_deleteModuleSkinVars($module_srl, 'M');
 	}
@@ -1035,7 +1035,7 @@ class moduleController extends module
 	/**
 	 * @brief Remove skin vars of a module
 	 */
-	function _deleteModuleSkinVars($module_srl, $mode)
+	public function _deleteModuleSkinVars($module_srl, $mode)
 	{
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -1066,7 +1066,7 @@ class moduleController extends module
 	/**
 	 * @brief Register extra vars to the module
 	 */
-	function insertModuleExtraVars($module_srl, $obj)
+	public function insertModuleExtraVars($module_srl, $obj)
 	{
 		$this->deleteModuleExtraVars($module_srl);
 		getDestroyXeVars($obj);
@@ -1096,7 +1096,7 @@ class moduleController extends module
 	/**
 	 * @brief Remove extra vars from the module
 	 */
-	function deleteModuleExtraVars($module_srl)
+	public function deleteModuleExtraVars($module_srl)
 	{
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -1117,7 +1117,7 @@ class moduleController extends module
 	/**
 	 * @brief Grant permission to the module
 	 */
-	function insertModuleGrants($module_srl, $obj)
+	public function insertModuleGrants($module_srl, $obj)
 	{
 		$this->deleteModuleGrants($module_srl);
 		if(!$obj || !count($obj)) return;
@@ -1141,7 +1141,7 @@ class moduleController extends module
 	/**
 	 * @brief Remove permission from the module
 	 */
-	function deleteModuleGrants($module_srl)
+	public function deleteModuleGrants($module_srl)
 	{
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -1151,7 +1151,7 @@ class moduleController extends module
 	/**
 	 * @brief Change user-defined language
 	 */
-	function replaceDefinedLangCode(&$output, $isReplaceLangCode = true)
+	public function replaceDefinedLangCode(&$output, $isReplaceLangCode = true)
 	{
 		if($isReplaceLangCode)
 		{
@@ -1159,7 +1159,7 @@ class moduleController extends module
 		}
 	}
 
-	function _replaceLangCode($matches)
+	public function _replaceLangCode($matches)
 	{
 		static $lang = false;
 
@@ -1193,7 +1193,7 @@ class moduleController extends module
 	/**
 	 * @brief Add and update a file into the file box
 	 */
-	function procModuleFileBoxAdd()
+	public function procModuleFileBoxAdd()
 	{
 		$ajax = Context::get('ajax');
 		if ($ajax) Context::setRequestMethod('JSON');
@@ -1263,7 +1263,7 @@ class moduleController extends module
 	/**
 	 * @brief Update a file into the file box
 	 */
-	function updateModuleFileBox($vars)
+	public function updateModuleFileBox($vars)
 	{
 		$args = new stdClass;
 		// have file
@@ -1308,7 +1308,7 @@ class moduleController extends module
 	/**
 	 * @brief Add a file into the file box
 	 */
-	function insertModuleFileBox($vars)
+	public function insertModuleFileBox($vars)
 	{
 		// set module_filebox_srl
 		$vars->module_filebox_srl = getNextSequence();
@@ -1351,7 +1351,7 @@ class moduleController extends module
 	/**
 	 * @brief Delete a file from the file box
 	 */
-	function procModuleFileBoxDelete()
+	public function procModuleFileBoxDelete()
 	{
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin !='Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
@@ -1364,7 +1364,7 @@ class moduleController extends module
 		if(!$output->toBool()) return $output;
 	}
 
-	function deleteModuleFileBox($vars)
+	public function deleteModuleFileBox($vars)
 	{
 		// delete real file
 		$oModuleModel = getModel('module');
@@ -1379,7 +1379,7 @@ class moduleController extends module
 	/**
 	 * @brief function of locking (timeout is in seconds)
 	 */
-	function lock($lock_name, $timeout, $member_srl = null)
+	public function lock($lock_name, $timeout, $member_srl = null)
 	{
 		$this->unlockTimeoutPassed();
 		$args = new stdClass;
@@ -1396,12 +1396,12 @@ class moduleController extends module
 		return $output;
 	}
 
-	function unlockTimeoutPassed()
+	public function unlockTimeoutPassed()
 	{
 		executeQuery('module.deleteLocksTimeoutPassed');
 	}
 
-	function unlock($lock_name, $deadline)
+	public function unlock($lock_name, $deadline)
 	{
 		$args = new stdClass;
 		$args->lock_name = $lock_name;
@@ -1410,7 +1410,7 @@ class moduleController extends module
 		return $output;
 	}
 
-	function updateModuleInSites($site_srls, $args)
+	public function updateModuleInSites($site_srls, $args)
 	{
 		$args = new stdClass;
 		$args->site_srls = $site_srls;

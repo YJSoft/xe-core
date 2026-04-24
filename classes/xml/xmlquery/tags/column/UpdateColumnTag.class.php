@@ -16,14 +16,14 @@ class UpdateColumnTag extends ColumnTag
 	 *
 	 * @var QueryArgument object
 	 */
-	var $argument;
+	public $argument;
 
 	/**
 	 * Default value
 	 *
 	 * @var string
 	 */
-	var $default_value;
+	public $default_value;
 
 	/**
 	 * Constructor
@@ -31,7 +31,7 @@ class UpdateColumnTag extends ColumnTag
 	 * @param object $column
 	 * @return void
 	 */
-	function __construct($column)
+	public function __construct($column)
 	{
 		parent::__construct($column->attrs->name);
 
@@ -77,7 +77,7 @@ class UpdateColumnTag extends ColumnTag
 	 *
 	 * @return string
 	 */
-	function getExpressionString()
+	public function getExpressionString()
 	{
 		if($this->argument)
 		{
@@ -98,7 +98,7 @@ class UpdateColumnTag extends ColumnTag
 	 *
 	 * @return QueryArgument
 	 */
-	function getArgument()
+	public function getArgument()
 	{
 		return $this->argument;
 	}

@@ -7,9 +7,9 @@ class memberMobile extends memberView
 	 * Support method are 
 	 * dispMemberInfo, dispMemberSignUpForm, dispMemberFindAccount, dispMemberGetTempPassword, dispMemberModifyInfo, dispMemberModifyInfoBefore
 	 */
-	var $memberInfo;
+	public $memberInfo;
 
-	function init()
+	public function init()
 	{
 		// Get the member configuration
 		$oMemberModel = getModel('member');
@@ -58,7 +58,7 @@ class memberMobile extends memberView
 		}
 	}
 
-	function dispMemberModifyInfo()
+	public function dispMemberModifyInfo()
 	{
 		parent::dispMemberModifyInfo();
 

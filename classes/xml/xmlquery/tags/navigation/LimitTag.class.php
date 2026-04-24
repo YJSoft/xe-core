@@ -15,38 +15,38 @@ class LimitTag
 	 * Value is relate to limit query
 	 * @var array
 	 */
-	var $arguments;
+	public $arguments;
 
 	/**
 	 * QueryArgument object
 	 * @var QueryArgument
 	 */
-	var $page;
+	public $page;
 
 	/**
 	 * QueryArgument object
 	 * @var QueryArgument
 	 */
-	var $page_count;
+	public $page_count;
 
 	/**
 	 * QueryArgument object
 	 * @var QueryArgument
 	 */
-	var $list_count;
+	public $list_count;
 
 	/**
 	 * QueryArgument object
 	 * @var QueryArgument
 	 */
-	var $offset;
+	public $offset;
 
 	/**
 	 * constructor
 	 * @param object $index
 	 * @return void
 	 */
-	function __construct($index)
+	public function __construct($index)
 	{
 		if($index->page && $index->page->attrs && $index->page_count && $index->page_count->attrs)
 		{
@@ -72,7 +72,7 @@ class LimitTag
 		}
 	}
 
-	function toString()
+	public function toString()
 	{
 		if($this->page)
 		{
@@ -88,7 +88,7 @@ class LimitTag
 		}
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		return $this->arguments;
 	}

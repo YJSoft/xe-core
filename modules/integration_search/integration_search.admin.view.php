@@ -12,14 +12,14 @@ class integration_searchAdminView extends integration_search
 	 *
 	 * @var object module config
 	 */
-	var $config = null;
+	public $config = null;
 
 	/**
 	 * Initialization
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');
@@ -34,7 +34,7 @@ class integration_searchAdminView extends integration_search
 	 *
 	 * @return BaseObject
 	 */
-	function dispIntegration_searchAdminContent()
+	public function dispIntegration_searchAdminContent()
 	{
 		// Get a list of skins(themes)
 		$oModuleModel = getModel('module');
@@ -73,7 +73,7 @@ class integration_searchAdminView extends integration_search
 	 *
 	 * @return BaseObject
 	 */
-	function dispIntegration_searchAdminSkinInfo()
+	public function dispIntegration_searchAdminSkinInfo()
 	{
 		$oModuleModel = getModel('module');
 		$skin_info = $oModuleModel->loadSkinInfo($this->module_path, $this->config->skin);

@@ -13,7 +13,7 @@ class addonAdminView extends addon
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		$this->setTemplatePath($this->module_path . 'tpl');
 	}
@@ -23,7 +23,7 @@ class addonAdminView extends addon
 	 *
 	 * @return BaseObject
 	 */
-	function dispAddonAdminIndex()
+	public function dispAddonAdminIndex()
 	{
 		$oAdminModel = getAdminModel('admin');
 
@@ -50,7 +50,7 @@ class addonAdminView extends addon
 	 *
 	 * @return BaseObject
 	 */
-	function dispAddonAdminSetup()
+	public function dispAddonAdminSetup()
 	{
 		$site_module_info = Context::get('site_module_info');
 		// Wanted to add the requested
@@ -111,7 +111,7 @@ class addonAdminView extends addon
 	 *
 	 * @return BaseObject
 	 */
-	function dispAddonAdminInfo()
+	public function dispAddonAdminInfo()
 	{
 		$site_module_info = Context::get('site_module_info');
 		// Wanted to add the requested

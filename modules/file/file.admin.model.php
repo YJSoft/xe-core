@@ -10,7 +10,7 @@ class fileAdminModel extends file
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -62,7 +62,7 @@ class fileAdminModel extends file
 	 * @param array $columnList Column list to get from DB
 	 * @return BaseObject BaseObject contains query result
 	 */
-	function getFileList($obj, $columnList = array())
+	public function getFileList($obj, $columnList = array())
 	{
 		$args = new stdClass();
 		$this->_makeSearchParam($obj, $args);
@@ -116,7 +116,7 @@ class fileAdminModel extends file
 	 * @param object $obj Search options (not used...)
 	 * @return array
 	 */
-	function getFilesCountByGroupValid($obj = '')
+	public function getFilesCountByGroupValid($obj = '')
 	{
 		//$this->_makeSearchParam($obj, $args);
 
@@ -130,7 +130,7 @@ class fileAdminModel extends file
 	 * @param string $date Date string
 	 * @return int
 	 */
-	function getFilesCountByDate($date = '')
+	public function getFilesCountByDate($date = '')
 	{
 		if($date) $args->regDate = date('Ymd', strtotime($date));
 
@@ -147,7 +147,7 @@ class fileAdminModel extends file
 	 * @param object $args Result searach options
 	 * @return void
 	 */
-	function _makeSearchParam(&$obj, &$args)
+	public function _makeSearchParam(&$obj, &$args)
 	{
 		// Search options
 		$search_target = $obj->search_target?$obj->search_target:trim(Context::get('search_target'));

@@ -14,76 +14,76 @@ class extract
 	 * Temp file's key. made by md5 with filename
 	 * @var string
 	 */
-	var $key = '';
+	public $key = '';
 	/**
 	 * Temp cache file path
 	 * @var string
 	 */
-	var $cache_path = './files/cache/importer';
+	public $cache_path = './files/cache/importer';
 	/**
 	 * Temp index cache file path
 	 * @var string
 	 */
-	var $cache_index_file = './files/cache/importer';
+	public $cache_index_file = './files/cache/importer';
 	/**
 	 * File name
 	 * @var string
 	 */
-	var $filename = null;
+	public $filename = null;
 	/**
 	 * Start tag
 	 * @var string
 	 */
-	var $startTag = '';
+	public $startTag = '';
 	/**
 	 * End tag
 	 * @var string
 	 */
-	var $endTag = '';
+	public $endTag = '';
 	/**
 	 * Item start tag
 	 * @var string
 	 */
-	var $itemStartTag = '';
+	public $itemStartTag = '';
 	/**
 	 * Item end tag
 	 * @var string
 	 */
-	var $itemEndTag = '';
+	public $itemEndTag = '';
 
 	/**
 	 * File resource
 	 * @var string
 	 */
-	var $fd = null;
+	public $fd = null;
 	/**
 	 * Index file resource
 	 * @var string
 	 */
-	var $index_fd = null;
+	public $index_fd = null;
 
 	/**
 	 * Start tag open status
 	 * @var bool
 	 */
-	var $isStarted = false;
+	public $isStarted = false;
 	/**
 	 * End tag close status
 	 * @var bool
 	 */
-	var $isFinished = true;
+	public $isFinished = true;
 
 	/**
 	 * Buffer
 	 * @var string
 	 */
-	var $buff = 0;
+	public $buff = 0;
 
 	/**
 	 * File count
 	 * @var int
 	 */
-	var $index = 0;
+	public $index = 0;
 
 	/**
 	 * Get arguments for constructor, file name, start tag, end tag, tag name for each item
@@ -94,7 +94,7 @@ class extract
 	 * @param string $itemEndTag
 	 * @return BaseObject
 	 */
-	function set($filename, $startTag, $endTag, $itemTag, $itemEndTag)
+	public function set($filename, $startTag, $endTag, $itemTag, $itemEndTag)
 	{
 		$this->filename = $filename;
 
@@ -117,7 +117,7 @@ class extract
 	 * Open an indicator of the file
 	 * @return BaseObject
 	 */
-	function openFile()
+	public function openFile()
 	{
 		FileHandler::removeFile($this->cache_index_file);
 		$this->index_fd = fopen($this->cache_index_file,"a");
@@ -188,14 +188,14 @@ class extract
 	 * Close an indicator of the file
 	 * @return void
 	 */
-	function closeFile()
+	public function closeFile()
 	{
 		$this->isFinished = true;
 		fclose($this->fd);
 		fclose($this->index_fd);
 	}
 
-	function isFinished()
+	public function isFinished()
 	{
 		return $this->isFinished || !$this->fd || feof($this->fd);
 	}
@@ -204,7 +204,7 @@ class extract
 	 * Save item
 	 * @return void
 	 */
-	function saveItems()
+	public function saveItems()
 	{
 		FileHandler::removeDir($this->cache_path.$this->key);
 		$this->index = 0;
@@ -218,7 +218,7 @@ class extract
 	 * Merge item
 	 * @return void
 	 */
-	function mergeItems($filename)
+	public function mergeItems($filename)
 	{
 		$this->saveItems();
 
@@ -245,7 +245,7 @@ class extract
 	 * Get item. Put data to buff
 	 * @return void
 	 */
-	function getItem()
+	public function getItem()
 	{
 		if($this->isFinished()) return;
 
@@ -300,17 +300,17 @@ class extract
 		}
 	}
 
-	function getTotalCount()
+	public function getTotalCount()
 	{
 		return $this->index;
 	}
 
-	function getKey()
+	public function getKey()
 	{
 		return $this->key;
 	}
 
-	function _addTagCRTail($str) {
+	public function _addTagCRTail($str) {
 		$str = preg_replace('/<\/([^>]*)></i', "</$1>\r\n<", $str);
 		return $str;
 	}

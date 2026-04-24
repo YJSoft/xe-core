@@ -12,7 +12,7 @@ class communicationController extends communication
 	/**
 	 * Initialization
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -21,7 +21,7 @@ class communicationController extends communication
 	 * change the settings of message box
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationUpdateAllowMessage()
+	public function procCommunicationUpdateAllowMessage()
 	{
 		if(!Context::get('is_logged'))
 		{
@@ -50,7 +50,7 @@ class communicationController extends communication
 	 * Send a message
 	 * @return BaseObject
 	 */
-	function procCommunicationSendMessage()
+	public function procCommunicationSendMessage()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -172,7 +172,7 @@ class communicationController extends communication
 	 * @param boolean $sender_log (default true)
 	 * @return BaseObject
 	 */
-	function sendMessage($sender_srl, $receiver_srl, $title, $content, $sender_log = TRUE)
+	public function sendMessage($sender_srl, $receiver_srl, $title, $content, $sender_log = TRUE)
 	{
 		$content = removeHackTag($content);
 		$title = htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
@@ -274,7 +274,7 @@ class communicationController extends communication
 	 * store a specific message into the archive
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationStoreMessage()
+	public function procCommunicationStoreMessage()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -314,7 +314,7 @@ class communicationController extends communication
 	 * Delete a message
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationDeleteMessage()
+	public function procCommunicationDeleteMessage()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -374,7 +374,7 @@ class communicationController extends communication
 	 * Delete the multiple messages
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationDeleteMessages()
+	public function procCommunicationDeleteMessages()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -455,7 +455,7 @@ class communicationController extends communication
 	 * Add a friend
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationAddFriend()
+	public function procCommunicationAddFriend()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -503,7 +503,7 @@ class communicationController extends communication
 	 * Move a group of the friend
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationMoveFriend()
+	public function procCommunicationMoveFriend()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -570,7 +570,7 @@ class communicationController extends communication
 	 * Delete a friend 
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationDeleteFriend()
+	public function procCommunicationDeleteFriend()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -633,7 +633,7 @@ class communicationController extends communication
 	 * Add a group of friends
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationAddFriendGroup()
+	public function procCommunicationAddFriendGroup()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -709,7 +709,7 @@ class communicationController extends communication
 	 * change a name of friend group
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationRenameFriendGroup()
+	public function procCommunicationRenameFriendGroup()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -744,7 +744,7 @@ class communicationController extends communication
 	 * Delete a group of friends
 	 * @return void|BaseObject (success : void, fail : BaseObject)
 	 */
-	function procCommunicationDeleteFriendGroup()
+	public function procCommunicationDeleteFriendGroup()
 	{
 		// Check login information
 		if(!Context::get('is_logged'))
@@ -772,7 +772,7 @@ class communicationController extends communication
 	 * @param int $message_srl 
 	 * @return BaseObject
 	 */
-	function setMessageReaded($message_srl)
+	public function setMessageReaded($message_srl)
 	{
 		$args = new stdClass();
 		$args->message_srl = $message_srl;

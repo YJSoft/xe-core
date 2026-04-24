@@ -12,7 +12,7 @@ class integration_search extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Registered in action forward
 		$oModuleController = getController('module');
@@ -26,7 +26,7 @@ class integration_search extends ModuleObject
 	 *
 	 * @return bool
 	 */
-	function checkUpdate() 
+	public function checkUpdate() 
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -56,7 +56,7 @@ class integration_search extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleUpdate() 
+	public function moduleUpdate() 
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -91,7 +91,7 @@ class integration_search extends ModuleObject
 	 *
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 }

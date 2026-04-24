@@ -8,14 +8,14 @@
 class emoticon extends EditorHandler
 {
 	// editor_sequence from the editor must attend mandatory wearing ....
-	var $editor_sequence = 0;
-	var $component_path = '';
-	var $emoticon_path = '';
+	public $editor_sequence = 0;
+	public $component_path = '';
+	public $emoticon_path = '';
 
 	/**
 	 * @brief editor_sequence and components out of the path
 	 */
-	function __construct($editor_sequence, $component_path)
+	public function __construct($editor_sequence, $component_path)
 	{
 		$this->editor_sequence = $editor_sequence;
 		$this->component_path = $component_path;
@@ -25,7 +25,7 @@ class emoticon extends EditorHandler
 	/**
 	 * @brief Returns a list of emoticons file
 	 */
-	function getEmoticonList()
+	public function getEmoticonList()
 	{
 		$emoticon = Context::get('emoticon');
 		if(!$emoticon || !preg_match("/^([a-z0-9\_]+)$/i",$emoticon)) return new BaseObject(-1,'msg_invalid_request');
@@ -38,7 +38,7 @@ class emoticon extends EditorHandler
 	/**
 	 * @brief Likely to be recursively emoticons will search all the files to a subdirectory. 8000 gaekkajineun ran tests whether the stack and raise beef pro-overs and Unsure. (06/09/2007, Benny)
 	 */
-	function getEmoticons($path)
+	public function getEmoticons($path)
 	{
 		$emoticon_path = sprintf("%s/%s", $this->emoticon_path, $path);
 		$output = array();
@@ -57,7 +57,7 @@ class emoticon extends EditorHandler
 	/**
 	 * @brief popup window to display in popup window request is to add content
 	 */
-	function getPopupContent()
+	public function getPopupContent()
 	{
 		// Bringing a list of emoticons directory
 		$emoticon_dirs = FileHandler::readDir($this->emoticon_path);
@@ -77,14 +77,14 @@ class emoticon extends EditorHandler
 		$tpl_path = $this->component_path.'tpl';
 		$tpl_file = 'popup.html';
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
 
 	/**
 	 * @brief Emoticon of the path were added to solve the problem. (06/09/2007 Benny)
 	 */
-	function transHTML($xml_obj)
+	public function transHTML($xml_obj)
 	{
 		$src = $xml_obj->attrs->src;
 		$alt = $xml_obj->attrs->alt;

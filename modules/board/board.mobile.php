@@ -5,7 +5,7 @@ require_once(_XE_PATH_.'modules/board/board.view.php');
 
 class boardMobile extends boardView
 {
-	function init()
+	public function init()
 	{
 		$oSecurity = new Security();
 		$oSecurity->encodeHTML('document_srl', 'comment_srl', 'vid', 'mid', 'page', 'category', 'search_target', 'search_keyword', 'sort_index', 'order_type', 'trackback_srl');
@@ -77,17 +77,17 @@ class boardMobile extends boardView
 		Context::addJsFilter($this->module_path.'tpl/filter', 'input_password.xml');
 	}
 
-	function dispBoardCategory()
+	public function dispBoardCategory()
 	{
 		$this->dispBoardCategoryList();
 		$category_list = Context::get('category_list');
 		$this->setTemplateFile('category.html');
 	}
 
-	function getBoardCommentPage()
+	public function getBoardCommentPage()
 	{
 		$document_srl = Context::get('document_srl');
-		$oDocumentModel =& getModel('document');
+		$oDocumentModel =getModel('document');
 		if(!$document_srl)
 		{
 			return new BaseObject(-1, "msg_invalid_request");
@@ -109,10 +109,10 @@ class boardMobile extends boardView
 		$this->add("html", $html);
 	}
 
-	function dispBoardMessage($msg_code)
+	public function dispBoardMessage($msg_code)
 	{
 		$msg = Context::getLang($msg_code);
-		$oMessageObject = &ModuleHandler::getModuleInstance('message','mobile');
+		$oMessageObject = ModuleHandler::getModuleInstance('message','mobile');
 		$oMessageObject->setError(-1);
 		$oMessageObject->setMessage($msg);
 		$oMessageObject->dispMessage();

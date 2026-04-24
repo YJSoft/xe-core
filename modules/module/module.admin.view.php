@@ -10,7 +10,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		// Set the template path
 		$this->setTemplatePath($this->module_path.'tpl');
@@ -19,7 +19,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Module admin page
 	 */
-	function dispModuleAdminContent()
+	public function dispModuleAdminContent()
 	{
 		$this->dispModuleAdminList();
 	}
@@ -27,7 +27,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Display a lost of modules
 	 */
-	function dispModuleAdminList()
+	public function dispModuleAdminList()
 	{
 		// Obtain a list of modules
 		$oAdminModel = getAdminModel('admin');
@@ -80,7 +80,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Pop-up details of the module (conf/info.xml)
 	 */
-	function dispModuleAdminInfo()
+	public function dispModuleAdminInfo()
 	{
 		// Obtain a list of modules
 		$oModuleModel = getModel('module');
@@ -100,7 +100,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Module Categories
 	 */
-	function dispModuleAdminCategory()
+	public function dispModuleAdminCategory()
 	{
 		$module_category_srl = Context::get('module_category_srl');
 
@@ -138,7 +138,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Feature to copy module
 	 */
-	function dispModuleAdminCopyModule()
+	public function dispModuleAdminCopyModule()
 	{
 		// Get a target module to copy
 		$module_srl = Context::get('module_srl');
@@ -160,7 +160,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Applying the default settings to all modules
 	 */
-	function dispModuleAdminModuleSetup()
+	public function dispModuleAdminModuleSetup()
 	{
 		$module_srls = Context::get('module_srls');
 
@@ -196,7 +196,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Apply module addition settings to all modules
 	 */
-	function dispModuleAdminModuleAdditionSetup()
+	public function dispModuleAdminModuleAdditionSetup()
 	{
 		$module_srls = Context::get('module_srls');
 
@@ -219,7 +219,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Applying module permission settings to all modules
 	 */
-	function dispModuleAdminModuleGrantSetup()
+	public function dispModuleAdminModuleGrantSetup()
 	{
 		$module_srls = Context::get('module_srls');
 
@@ -263,7 +263,7 @@ class moduleAdminView extends module
 	/**
 	 * @brief Language codes
 	 */
-	function dispModuleAdminLangcode()
+	public function dispModuleAdminLangcode()
 	{
 		// Get the language file of the current site
 		$site_module_info = Context::get('site_module_info');
@@ -296,7 +296,7 @@ class moduleAdminView extends module
 		$this->setTemplateFile('module_langcode');
 	}
 
-	function dispModuleAdminFileBox()
+	public function dispModuleAdminFileBox()
 	{
 		$oModuleModel = getModel('module');
 		$output = $oModuleModel->getModuleFileBoxList();

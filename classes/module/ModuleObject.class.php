@@ -9,30 +9,30 @@
 class ModuleObject extends BaseObject
 {
 
-	var $mid = NULL; ///< string to represent run-time instance of Module (XE Module)
-	var $module = NULL; ///< Class name of Xe Module that is identified by mid
-	var $module_srl = NULL; ///< integer value to represent a run-time instance of Module (XE Module)
-	var $module_info = NULL; ///< an object containing the module information
-	var $origin_module_info = NULL;
-	var $xml_info = NULL; ///< an object containing the module description extracted from XML file
-	var $module_path = NULL; ///< a path to directory where module source code resides
-	var $act = NULL; ///< a string value to contain the action name
-	var $template_path = NULL; ///< a path of directory where template files reside
-	var $template_file = NULL; ///< name of template file
-	var $layout_path = ''; ///< a path of directory where layout files reside
-	var $layout_file = ''; ///< name of layout file
-	var $edited_layout_file = ''; ///< name of temporary layout files that is modified in an admin mode
-	var $stop_proc = FALSE; ///< a flag to indicating whether to stop the execution of code.
-	var $module_config = NULL;
-	var $ajaxRequestMethod = array('XMLRPC', 'JSON');
-	var $gzhandler_enable = TRUE;
+	public $mid = NULL; ///< string to represent run-time instance of Module (XE Module)
+	public $module = NULL; ///< Class name of Xe Module that is identified by mid
+	public $module_srl = NULL; ///< integer value to represent a run-time instance of Module (XE Module)
+	public $module_info = NULL; ///< an object containing the module information
+	public $origin_module_info = NULL;
+	public $xml_info = NULL; ///< an object containing the module description extracted from XML file
+	public $module_path = NULL; ///< a path to directory where module source code resides
+	public $act = NULL; ///< a string value to contain the action name
+	public $template_path = NULL; ///< a path of directory where template files reside
+	public $template_file = NULL; ///< name of template file
+	public $layout_path = ''; ///< a path of directory where layout files reside
+	public $layout_file = ''; ///< name of layout file
+	public $edited_layout_file = ''; ///< name of temporary layout files that is modified in an admin mode
+	public $stop_proc = FALSE; ///< a flag to indicating whether to stop the execution of code.
+	public $module_config = NULL;
+	public $ajaxRequestMethod = array('XMLRPC', 'JSON');
+	public $gzhandler_enable = TRUE;
 
 	/**
 	 * setter to set the name of module
 	 * @param string $module name of module
 	 * @return void
 	 * */
-	function setModule($module)
+	public function setModule($module)
 	{
 		$this->module = $module;
 	}
@@ -42,7 +42,7 @@ class ModuleObject extends BaseObject
 	 * @param string $path the directory path to a module directory
 	 * @return void
 	 * */
-	function setModulePath($path)
+	public function setModulePath($path)
 	{
 		if(substr_compare($path, '/', -1) !== 0)
 		{
@@ -57,7 +57,7 @@ class ModuleObject extends BaseObject
 	 * @remark redirect_url is used only for ajax requests
 	 * @return void
 	 * */
-	function setRedirectUrl($url = './', $output = NULL)
+	public function setRedirectUrl($url = './', $output = NULL)
 	{
 		$ajaxRequestMethod = array_flip($this->ajaxRequestMethod);
 		if(!isset($ajaxRequestMethod[Context::getRequestMethod()]))
@@ -75,7 +75,7 @@ class ModuleObject extends BaseObject
 	 * get url for redirection
 	 * @return string redirect_url
 	 * */
-	function getRedirectUrl()
+	public function getRedirectUrl()
 	{
 		return $this->get('redirect_url');
 	}
@@ -86,7 +86,7 @@ class ModuleObject extends BaseObject
 	 * @param string $type type of message (error, info, update)
 	 * @return void
 	 * */
-	function setMessage($message = 'success', $type = NULL)
+	public function setMessage($message = 'success', $type = NULL)
 	{
 		parent::setMessage($message);
 		$this->setMessageType($type);
@@ -97,7 +97,7 @@ class ModuleObject extends BaseObject
 	 * @param string $type type of message (error, info, update)
 	 * @return void
 	 * */
-	function setMessageType($type)
+	public function setMessageType($type)
 	{
 		$this->add('message_type', $type);
 	}
@@ -106,7 +106,7 @@ class ModuleObject extends BaseObject
 	 * get type of message
 	 * @return string $type
 	 * */
-	function getMessageType()
+	public function getMessageType()
 	{
 		$type = $this->get('message_type');
 		$typeList = array('error' => 1, 'info' => 1, 'update' => 1);
@@ -123,7 +123,7 @@ class ModuleObject extends BaseObject
 	 * Tpl as the common run of the refresh.html ..
 	 * @return void
 	 * */
-	function setRefreshPage()
+	public function setRefreshPage()
 	{
 		$this->setTemplatePath('./common/tpl');
 		$this->setTemplateFile('refresh');
@@ -134,7 +134,7 @@ class ModuleObject extends BaseObject
 	 * @param string $act
 	 * @return void
 	 * */
-	function setAct($act)
+	public function setAct($act)
 	{
 		$this->act = $act;
 	}
@@ -145,7 +145,7 @@ class ModuleObject extends BaseObject
 	 * @param object $xml_info object containing module description
 	 * @return void
 	 * */
-	function setModuleInfo($module_info, $xml_info)
+	public function setModuleInfo($module_info, $xml_info)
 	{
 		// The default variable settings
 		$this->mid = $module_info->mid;
@@ -224,7 +224,7 @@ class ModuleObject extends BaseObject
 	 * @param string $msg_code an error code
 	 * @return ModuleObject $this
 	 * */
-	function stop($msg_code)
+	public function stop($msg_code)
 	{
 		// flag setting to stop the proc processing
 		$this->stop_proc = TRUE;
@@ -249,7 +249,7 @@ class ModuleObject extends BaseObject
 	 * @param string name of file
 	 * @return void
 	 * */
-	function setTemplateFile($filename)
+	public function setTemplateFile($filename)
 	{
 		if(isset($filename) && substr_compare($filename, '.html', -5) !== 0)
 		{
@@ -262,7 +262,7 @@ class ModuleObject extends BaseObject
 	 * retrieve the directory path of the template directory
 	 * @return string
 	 * */
-	function getTemplateFile()
+	public function getTemplateFile()
 	{
 		return $this->template_file;
 	}
@@ -272,7 +272,7 @@ class ModuleObject extends BaseObject
 	 * @param string path of template directory.
 	 * @return void
 	 * */
-	function setTemplatePath($path)
+	public function setTemplatePath($path)
 	{
 		if(!$path) return;
 
@@ -292,7 +292,7 @@ class ModuleObject extends BaseObject
 	 * retrieve the directory path of the template directory
 	 * @return string
 	 * */
-	function getTemplatePath()
+	public function getTemplatePath()
 	{
 		return $this->template_path;
 	}
@@ -302,7 +302,7 @@ class ModuleObject extends BaseObject
 	 * @param string name of file
 	 * @return void
 	 * */
-	function setEditedLayoutFile($filename)
+	public function setEditedLayoutFile($filename)
 	{
 		if(!$filename) return;
 
@@ -317,7 +317,7 @@ class ModuleObject extends BaseObject
 	 * retreived the file name of edited_layout_file
 	 * @return string
 	 * */
-	function getEditedLayoutFile()
+	public function getEditedLayoutFile()
 	{
 		return $this->edited_layout_file;
 	}
@@ -327,7 +327,7 @@ class ModuleObject extends BaseObject
 	 * @param string name of file
 	 * @return void
 	 * */
-	function setLayoutFile($filename)
+	public function setLayoutFile($filename)
 	{
 		if(!$filename) return;
 
@@ -342,7 +342,7 @@ class ModuleObject extends BaseObject
 	 * get the file name of the layout file
 	 * @return string
 	 * */
-	function getLayoutFile()
+	public function getLayoutFile()
 	{
 		return $this->layout_file;
 	}
@@ -351,7 +351,7 @@ class ModuleObject extends BaseObject
 	 * set the directory path of the layout directory
 	 * @param string path of layout directory.
 	 * */
-	function setLayoutPath($path)
+	public function setLayoutPath($path)
 	{
 		if(!$path) return;
 
@@ -370,7 +370,7 @@ class ModuleObject extends BaseObject
 	 * set the directory path of the layout directory
 	 * @return string
 	 * */
-	function getLayoutPath($layout_name = "", $layout_type = "P")
+	public function getLayoutPath($layout_name = "", $layout_type = "P")
 	{
 		return $this->layout_path;
 	}
@@ -379,7 +379,7 @@ class ModuleObject extends BaseObject
 	 * excute the member method specified by $act variable
 	 * @return boolean true : success false : fail
 	 * */
-	function proc()
+	public function proc()
 	{
 		// pass if stop_proc is true
 		if($this->stop_proc)

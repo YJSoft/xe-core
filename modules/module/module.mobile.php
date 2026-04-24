@@ -2,7 +2,7 @@
 /* Copyright (C) XEHub <https://www.xehub.io> */
 class moduleMobile extends moduleObject
 {
-	function dispModuleChangeLang()
+	public function dispModuleChangeLang()
 	{
 		$this->setTemplatePath(sprintf("%stpl/",$this->module_path));
 		$this->setTemplateFile('lang.html');

@@ -16,7 +16,7 @@ class commentAdminView extends comment
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -25,7 +25,7 @@ class commentAdminView extends comment
 	 * Display the list(for administrators)
 	 * @return void
 	 */
-	function dispCommentAdminList()
+	public function dispCommentAdminList()
 	{
 		// option to get a list
 		$args = new stdClass();
@@ -103,7 +103,7 @@ class commentAdminView extends comment
 	 * Show the blacklist of comments in the admin page
 	 * @return void
 	 */
-	function dispCommentAdminDeclared()
+	public function dispCommentAdminDeclared()
 	{
 		// option to get a blacklist
 		$args = new stdClass();

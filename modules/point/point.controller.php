@@ -10,14 +10,14 @@ class pointController extends point
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Membership point application trigger
 	 */
-	function triggerInsertMember(&$obj)
+	public function triggerInsertMember(&$obj)
 	{
 		// Get the point module information
 		$oModuleModel = getModel('module');
@@ -39,7 +39,7 @@ class pointController extends point
 	/**
 	 * @brief A trigger to add points to the member for login
 	 */
-	function triggerAfterLogin(&$obj)
+	public function triggerAfterLogin(&$obj)
 	{
 		$member_srl = $obj->member_srl;
 		if(!$member_srl) return new BaseObject();
@@ -63,7 +63,7 @@ class pointController extends point
 	/**
 	 * @brief A trigger to add points to the member for creating a post
 	 */
-	function triggerInsertDocument(&$obj)
+	public function triggerInsertDocument(&$obj)
 	{
 		$oDocumentModel = getModel('document');
 		if($obj->status != $oDocumentModel->getConfigStatus('temp'))
@@ -99,7 +99,7 @@ class pointController extends point
 	 * @brief The trigger to give points for normal saving the temporarily saved document
 	 * Temporary storage at the point in 1.2.3 changed to avoid payment
 	 */
-	function triggerUpdateDocument(&$obj)
+	public function triggerUpdateDocument(&$obj)
 	{
 		$oDocumentModel = getModel('document');
 		$document_srl = $obj->document_srl;
@@ -134,7 +134,7 @@ class pointController extends point
 	/**
 	 * @brief The trigger which deducts the points related to post comments before deleting the post itself
 	 */
-	function triggerBeforeDeleteDocument(&$obj)
+	public function triggerBeforeDeleteDocument(&$obj)
 	{
 		$document_srl = $obj->document_srl;
 		$member_srl = $obj->member_srl;
@@ -185,7 +185,7 @@ class pointController extends point
 	/**
 	 * @brief A trigger to give points for deleting the post
 	 */
-	function triggerDeleteDocument(&$obj)
+	public function triggerDeleteDocument(&$obj)
 	{
 		$oDocumentModel = getModel('document');
 
@@ -221,7 +221,7 @@ class pointController extends point
 	/**
 	 * @brief A trigger which gives points for entering a comment
 	 */
-	function triggerInsertComment(&$obj)
+	public function triggerInsertComment(&$obj)
 	{
 		$module_srl = $obj->module_srl;
 		$member_srl = $obj->member_srl;
@@ -251,7 +251,7 @@ class pointController extends point
 	/**
 	 * @brief A trigger which gives points for deleting a comment
 	 */
-	function triggerDeleteComment(&$obj)
+	public function triggerDeleteComment(&$obj)
 	{
 		$oModuleModel = getModel('module');
 		$oPointModel = getModel('point');
@@ -286,7 +286,7 @@ class pointController extends point
 	 * @brief Add the file registration trigger
 	 * To prevent taking points for invalid file registration this method wlil return a null object
 	 */
-	function triggerInsertFile(&$obj)
+	public function triggerInsertFile(&$obj)
 	{
 		return new BaseObject();
 	}
@@ -295,7 +295,7 @@ class pointController extends point
 	 * @brief A trigger to give points for deleting a file
 	 * Remove points only in case an invalid file is being deleted
 	 */
-	function triggerDeleteFile(&$obj)
+	public function triggerDeleteFile(&$obj)
 	{
 		if($obj->isvalid != 'Y') return new BaseObject();
 
@@ -322,7 +322,7 @@ class pointController extends point
 	/**
 	 * @brief The trigger called before a file is downloaded
 	 */
-	function triggerBeforeDownloadFile(&$obj)
+	public function triggerBeforeDownloadFile(&$obj)
 	{
 		$logged_info = Context::get('logged_info');
 		$member_srl = $logged_info->member_srl;
@@ -373,7 +373,7 @@ class pointController extends point
 	/**
 	 * @brief The trigger to give or take points for downloading the file
 	 */
-	function triggerDownloadFile(&$obj)
+	public function triggerDownloadFile(&$obj)
 	{
 		// Run only when logged in
 		$logged_info = Context::get('logged_info');
@@ -414,7 +414,7 @@ class pointController extends point
 	 * @brief Give points for hits increase
 	 * Run it even if there are no points
 	 */
-	function triggerUpdateReadedCount(&$obj)
+	public function triggerUpdateReadedCount(&$obj)
 	{
 		$oModuleModel = getModel('module');
 		$oPointModel = getModel('point');
@@ -473,7 +473,7 @@ class pointController extends point
 	/**
 	 * @brief Points for voting up or down
 	 */
-	function triggerUpdateVotedCount(&$obj)
+	public function triggerUpdateVotedCount(&$obj)
 	{
 		$module_srl = $obj->module_srl;
 		$member_srl = $obj->member_srl;
@@ -508,7 +508,7 @@ class pointController extends point
 	/**
 	 * @brief Set points
 	 */
-	function setPoint($member_srl, $point, $mode = null)
+	public function setPoint($member_srl, $point, $mode = null)
 	{
 		$member_srl = abs($member_srl);
 		$mode_arr = array('add', 'minus', 'update', 'signup');
@@ -559,7 +559,7 @@ class pointController extends point
 		}
 
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		// If there are points, update, if no, insert
@@ -711,7 +711,7 @@ class pointController extends point
 		return $output;
 	}
 
-	function triggerCopyModule(&$obj)
+	public function triggerCopyModule(&$obj)
 	{
 		$oModuleModel = getModel('module');
 		$pointConfig = $oModuleModel->getModulePartConfig('point', $obj->originModuleSrl);

@@ -14,7 +14,7 @@ class counterController extends counter
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -25,7 +25,7 @@ class counterController extends counter
 	 *
 	 * @return void
 	 */
-	function procCounterExecute()
+	public function procCounterExecute()
 	{
 
 	}
@@ -35,7 +35,7 @@ class counterController extends counter
 	 *
 	 * @return void
 	 */
-	function counterExecute()
+	public function counterExecute()
 	{
 		$oDB = DB::getInstance();
 		$oDB->begin();
@@ -76,7 +76,7 @@ class counterController extends counter
 	 * @param integer $site_srl
 	 * @return BaseObject result of count query
 	 */
-	function insertLog($site_srl = 0)
+	public function insertLog($site_srl = 0)
 	{
 		$args = new stdClass();
 		$args->regdate = date("YmdHis");
@@ -92,7 +92,7 @@ class counterController extends counter
 	 * @param integer $site_srl
 	 * @return void
 	 */
-	function insertUniqueVisitor($site_srl = 0)
+	public function insertUniqueVisitor($site_srl = 0)
 	{
 		$args = new stdClass();
 		$args->regdate = '0,' . date('Ymd');
@@ -114,7 +114,7 @@ class counterController extends counter
 	 * @param integer $site_srl
 	 * @return void
 	 */
-	function insertPageView($site_srl = 0)
+	public function insertPageView($site_srl = 0)
 	{
 		$args = new stdClass;
 		$args->regdate = '0,' . date('Ymd');
@@ -136,7 +136,7 @@ class counterController extends counter
 	 * @param integer $site_srl
 	 * @return void
 	 */
-	function insertTotalStatus($site_srl = 0)
+	public function insertTotalStatus($site_srl = 0)
 	{
 		$args = new stdClass();
 		$args->regdate = 0;
@@ -159,7 +159,7 @@ class counterController extends counter
 	 * @param integer $site_srl
 	 * @return void
 	 */
-	function insertTodayStatus($regdate = 0, $site_srl = 0)
+	public function insertTodayStatus($regdate = 0, $site_srl = 0)
 	{
 		$args = new stdClass();
 		if($regdate)
@@ -200,7 +200,7 @@ class counterController extends counter
 	 * @param integer $site_srl
 	 * @return void
 	 */
-	function deleteSiteCounterLogs($site_srl)
+	public function deleteSiteCounterLogs($site_srl)
 	{
 		$args = new stdClass();
 		$args->site_srl = $site_srl;

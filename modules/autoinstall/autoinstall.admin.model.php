@@ -8,15 +8,15 @@
 class autoinstallAdminModel extends autoinstall
 {
 
-	var $layout_category_srl = 18322954;
-	var $mobile_layout_category_srl = 18994172;
-	var $module_skin_category_srl = 18322943;
-	var $module_mobile_skin_category_srl = 18994170;
+	public $layout_category_srl = 18322954;
+	public $mobile_layout_category_srl = 18994172;
+	public $module_skin_category_srl = 18322943;
+	public $module_mobile_skin_category_srl = 18994170;
 
 	/**
 	 * Pre process parameters
 	 */
-	function preProcParam(&$order_target, &$order_type, &$page)
+	public function preProcParam(&$order_target, &$order_type, &$page)
 	{
 		$order_target_array = array('newest' => 1, 'download' => 1, 'popular' => 1);
 		if(!isset($order_target_array[$order_target]))
@@ -40,7 +40,7 @@ class autoinstallAdminModel extends autoinstall
 	/**
 	 * Return list of package that can have instance
 	 */
-	function getAutoinstallAdminMenuPackageList()
+	public function getAutoinstallAdminMenuPackageList()
 	{
 		$search_keyword = Context::get('search_keyword');
 		$order_target = Context::get('order_target');
@@ -54,7 +54,7 @@ class autoinstallAdminModel extends autoinstall
 	/**
 	 * Return list of layout package
 	 */
-	function getAutoinstallAdminLayoutPackageList()
+	public function getAutoinstallAdminLayoutPackageList()
 	{
 		$search_keyword = Context::get('search_keyword');
 		$order_target = Context::get('order_target');
@@ -84,7 +84,7 @@ class autoinstallAdminModel extends autoinstall
 	/**
 	 * Return list of module skin package
 	 */
-	function getAutoinstallAdminSkinPackageList()
+	public function getAutoinstallAdminSkinPackageList()
 	{
 		Context::setRequestMethod('JSON');
 		$search_keyword = Context::get('search_keyword');
@@ -116,7 +116,7 @@ class autoinstallAdminModel extends autoinstall
 	/**
 	 * Get Package List
 	 */
-	function getPackageList($type, $order_target = 'newest', $order_type = 'desc', $page = '1', $search_keyword = NULL, $category_srl = NULL, $parent_program = NULL)
+	public function getPackageList($type, $order_target = 'newest', $order_type = 'desc', $page = '1', $search_keyword = NULL, $category_srl = NULL, $parent_program = NULL)
 	{
 		if($type == 'menu')
 		{
@@ -162,7 +162,7 @@ class autoinstallAdminModel extends autoinstall
 	/**
 	 * Get is authed ftp
 	 */
-	function getAutoinstallAdminIsAuthed()
+	public function getAutoinstallAdminIsAuthed()
 	{
 		$oAdminModel = getAdminModel('autoinstall');
 		$package = $oAdminModel->getInstallInfo(Context::get('package_srl'));

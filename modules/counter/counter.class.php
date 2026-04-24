@@ -13,7 +13,7 @@ class counter extends ModuleObject
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		$oCounterController = getController('counter');
 
@@ -31,7 +31,7 @@ class counter extends ModuleObject
 	 *
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		// Add site_srl to the counter
 		$oDB = DB::getInstance();
@@ -61,7 +61,7 @@ class counter extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		// Add site_srl to the counter
 		$oDB = DB::getInstance();
@@ -92,7 +92,7 @@ class counter extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		
 	}

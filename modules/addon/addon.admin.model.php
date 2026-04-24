@@ -13,7 +13,7 @@ class addonAdminModel extends addon
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -24,7 +24,7 @@ class addonAdminModel extends addon
 	 * @param string $addon_name Name to get path
 	 * @return string Returns a path
 	 */
-	function getAddonPath($addon_name)
+	public function getAddonPath($addon_name)
 	{
 		$class_path = sprintf('./addons/%s/', $addon_name);
 		if(is_dir($class_path))
@@ -39,7 +39,7 @@ class addonAdminModel extends addon
 	 *
 	 * @return BaseObject
 	 */
-	function getAddonListForSuperAdmin()
+	public function getAddonListForSuperAdmin()
 	{
 		$addonList = $this->getAddonList(0, 'site');
 
@@ -71,7 +71,7 @@ class addonAdminModel extends addon
 	 * @param string $gtype site or global
 	 * @return array Returns addon list
 	 */
-	function getAddonList($site_srl = 0, $gtype = 'site')
+	public function getAddonList($site_srl = 0, $gtype = 'site')
 	{
 		// Wanted to add a list of activated
 		$inserted_addons = $this->getInsertedAddons($site_srl, $gtype);
@@ -143,7 +143,7 @@ class addonAdminModel extends addon
 	 * @param string $gtype site or global
 	 * @return object Returns a information
 	 */
-	function getAddonInfoXml($addon, $site_srl = 0, $gtype = 'site')
+	public function getAddonInfoXml($addon, $site_srl = 0, $gtype = 'site')
 	{
 		// Get a path of the requested module. Return if not exists.
 		$addon_path = $this->getAddonPath($addon);
@@ -402,7 +402,7 @@ class addonAdminModel extends addon
 	 * @param string $gtype site or global
 	 * @return array Returns list
 	 */
-	function getInsertedAddons($site_srl = 0, $gtype = 'site')
+	public function getInsertedAddons($site_srl = 0, $gtype = 'site')
 	{
 		$args = new stdClass();
 		$args->list_order = 'addon';
@@ -439,7 +439,7 @@ class addonAdminModel extends addon
 	 * @param string $gtype site or global
 	 * @return bool If addon is activated returns true. Otherwise returns false.
 	 */
-	function isActivatedAddon($addon, $site_srl = 0, $type = "pc", $gtype = 'site')
+	public function isActivatedAddon($addon, $site_srl = 0, $type = "pc", $gtype = 'site')
 	{
 		$args = new stdClass();
 		$args->addon = $addon;

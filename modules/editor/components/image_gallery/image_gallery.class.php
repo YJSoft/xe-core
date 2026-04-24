@@ -8,13 +8,13 @@
 class image_gallery extends EditorHandler
 {
 	// editor_sequence from the editor must attend mandatory wearing ....
-	var $editor_sequence = 0;
-	var $component_path = '';
+	public $editor_sequence = 0;
+	public $component_path = '';
 
 	/**
 	 * @brief editor_sequence and components out of the path
 	 */
-	function __construct($editor_sequence, $component_path)
+	public function __construct($editor_sequence, $component_path)
 	{
 		$this->editor_sequence = $editor_sequence;
 		$this->component_path = $component_path;
@@ -23,7 +23,7 @@ class image_gallery extends EditorHandler
 	/**
 	 * @brief popup window to display in popup window request is to add content
 	 */
-	function getPopupContent()
+	public function getPopupContent()
 	{
 		// Pre-compiled source code to compile template return to
 		$tpl_path = $this->component_path.'tpl';
@@ -31,7 +31,7 @@ class image_gallery extends EditorHandler
 
 		Context::set("tpl_path", $tpl_path);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
 
@@ -41,7 +41,7 @@ class image_gallery extends EditorHandler
 	 * Images and multimedia, seolmundeung unique code is required for the editor component added to its own code, and then
 	 * DocumentModule:: transContent() of its components transHtml() method call to change the html code for your own
 	 */
-	function transHTML($xml_obj)
+	public function transHTML($xml_obj)
 	{
 		$gallery_info = new stdClass();
 		$gallery_info->srl = rand(111111, 999999);
@@ -85,7 +85,7 @@ class image_gallery extends EditorHandler
 		if($gallery_info->gallery_style == "list") $tpl_file = 'list_gallery.html';
 		else $tpl_file = 'slide_gallery.html';
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
 }

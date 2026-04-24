@@ -14,7 +14,7 @@ class trashAdminView extends trash
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		// 템플릿 경로 지정 (board의 경우 tpl에 관리자용 템플릿 모아놓음)
 		$template_path = sprintf("%stpl/",$this->module_path);
@@ -25,7 +25,7 @@ class trashAdminView extends trash
 	 * Trash list
 	 * @return void
 	 */
-	function dispTrashAdminList()
+	public function dispTrashAdminList()
 	{
 		$args = new stdClass();
 		$args->page = Context::get('page'); // /< Page
@@ -80,7 +80,7 @@ class trashAdminView extends trash
 	
 	
 	// Trash View - sejin7940
-	function dispTrashAdminView() 
+	public function dispTrashAdminView() 
 	{
 		$trash_srl = Context::get('trash_srl');
 
@@ -94,11 +94,11 @@ class trashAdminView extends trash
 		Context::set('oTrashVO',$output->data);
 		Context::set('oOrigin',$originObject);
 
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$remover_info = $oMemberModel->getMemberInfoByMemberSrl($output->data->getRemoverSrl());
 		Context::set('remover_info', $remover_info);
 
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($originObject->module_srl);
 		Context::set('module_info', $module_info);
 

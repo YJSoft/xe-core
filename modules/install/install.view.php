@@ -7,12 +7,12 @@
  */
 class installView extends install
 {
-	var $install_enable = false;
+	public $install_enable = false;
 
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		// Set browser title
 		Context::setBrowserTitle(Context::getLang('introduce_title'));
@@ -30,7 +30,7 @@ class installView extends install
 	/**
 	 * @brief Display license messages
 	 */
-	function dispInstallIntroduce()
+	public function dispInstallIntroduce()
 	{
 		$install_config_file = FileHandler::getRealPath('./config/install.config.php');
 		if(file_exists($install_config_file))
@@ -82,7 +82,7 @@ class installView extends install
 	/**
 	 * @brief License agreement
 	 */
-	function dispInstallLicenseAgreement()
+	public function dispInstallLicenseAgreement()
 	{
 		$this->setTemplateFile('license_agreement');
 
@@ -93,7 +93,7 @@ class installView extends install
 	/**
 	 * @brief Display messages about installation environment
 	 */
-	function dispInstallCheckEnv()
+	public function dispInstallCheckEnv()
 	{
 		$oInstallController = getController('install');
 		$useRewrite = $oInstallController->checkRewriteUsable() ? 'Y' : 'N';
@@ -109,7 +109,7 @@ class installView extends install
 	/**
 	 * @brief Choose a DB
 	 */
-	function dispInstallSelectDB()
+	public function dispInstallSelectDB()
 	{
 		// Display check_env if it is not installable
 		if(!$this->install_enable) return $this->dispInstallCheckEnv();
@@ -144,7 +144,7 @@ class installView extends install
 	/**
 	 * @brief Display a screen to enter DB and administrator's information
 	 */
-	function dispInstallDBForm()
+	public function dispInstallDBForm()
 	{
 		// Display check_env if not installable
 		if(!$this->install_enable) return $this->dispInstallCheckEnv();
@@ -175,7 +175,7 @@ class installView extends install
 	/**
 	 * @brief Display a screen to enter DB and administrator's information
 	 */
-	function dispInstallConfigForm()
+	public function dispInstallConfigForm()
 	{
 		// Display check_env if not installable
 		if(!$this->install_enable) return $this->dispInstallCheckEnv();
@@ -188,7 +188,7 @@ class installView extends install
 		$this->setTemplateFile('config_form');
 	}
 
-	function useRewriteModule()
+	public function useRewriteModule()
 	{
 		if(function_exists('apache_get_modules') && in_array('mod_rewrite',apache_get_modules()))
 		{
@@ -206,7 +206,7 @@ class installView extends install
 	/**
 	 * @brief Display a screen to enter DB and administrator's information
 	 */
-	function dispInstallManagerForm()
+	public function dispInstallManagerForm()
 	{
 		// Display check_env if not installable
 		if(!$this->install_enable)

@@ -22,7 +22,7 @@ class admin extends ModuleObject
 	 * Install admin module
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		return new BaseObject();
 	}
@@ -31,7 +31,7 @@ class admin extends ModuleObject
 	 * If update is necessary it returns true
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
@@ -54,7 +54,7 @@ class admin extends ModuleObject
 	 * Update module
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
@@ -91,7 +91,7 @@ class admin extends ModuleObject
 	 * Regenerate cache file
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 
 	}
@@ -313,7 +313,7 @@ class admin extends ModuleObject
 	 * Return parent menu key by child menu
 	 * @return string
 	 */
-	function _getGnbKey($menuName)
+	public function _getGnbKey($menuName)
 	{
 		switch($menuName)
 		{
@@ -362,7 +362,7 @@ class admin extends ModuleObject
 	 * Return parent old menu key by child menu
 	 * @return string
 	 */
-	function _getOldGnbKey($menuName)
+	public function _getOldGnbKey($menuName)
 	{
 		switch($menuName)
 		{

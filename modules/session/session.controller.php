@@ -10,21 +10,21 @@ class sessionController extends session
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
-	function open()
-	{
-		return true;
-	}
-
-	function close()
+	public function open()
 	{
 		return true;
 	}
 
-	function write($session_key, $val)
+	public function close()
+	{
+		return true;
+	}
+
+	public function write($session_key, $val)
 	{
 		if(!$session_key || !$this->session_started) return;
 
@@ -77,7 +77,7 @@ class sessionController extends session
 		return true;
 	}
 
-	function destroy($session_key)
+	public function destroy($session_key)
 	{
 		if(!$session_key || !$this->session_started) return;
 
@@ -89,7 +89,7 @@ class sessionController extends session
 		return true;
 	}
 
-	function gc($maxlifetime)
+	public function gc($maxlifetime)
 	{
 		if(!$this->session_started) return;
 

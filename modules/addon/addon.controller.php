@@ -13,7 +13,7 @@ class addonController extends addon
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -23,7 +23,7 @@ class addonController extends addon
 	 * @param $type pc or mobile
 	 * @return string Returns a path
 	 */
-	function getCacheFilePath($type = "pc")
+	public function getCacheFilePath($type = "pc")
 	{
 		static $addon_file;
 		if(isset($addon_file))
@@ -61,7 +61,7 @@ class addonController extends addon
 	 * @param int $site_srl Site srl
 	 * @return string[] Returns list that contain mid
 	 */
-	function _getMidList($selected_addon, $site_srl = 0)
+	public function _getMidList($selected_addon, $site_srl = 0)
 	{
 		$oAddonAdminModel = getAdminModel('addon');
 		$addon_info = $oAddonAdminModel->getAddonInfoXml($selected_addon, $site_srl);
@@ -76,7 +76,7 @@ class addonController extends addon
 	 * @param string $gtype site or global
 	 * @return void
 	 */
-	function makeCacheFile($site_srl = 0, $type = "pc", $gtype = 'site')
+	public function makeCacheFile($site_srl = 0, $type = "pc", $gtype = 'site')
 	{
 		// Add-on module for use in creating the cache file
 		$buff = array('<?php if(!defined("__XE__")) exit();', '$_m = Context::get(\'mid\');');
@@ -152,7 +152,7 @@ class addonController extends addon
 	 * @param string $gtype site or global
 	 * @return BaseObject
 	 */
-	function doSetup($addon, $extra_vars, $site_srl = 0, $gtype = 'site')
+	public function doSetup($addon, $extra_vars, $site_srl = 0, $gtype = 'site')
 	{
 		if(!is_array($extra_vars->mid_list))
 		{
@@ -176,7 +176,7 @@ class addonController extends addon
 	 * @param int $site_srl Site srl
 	 * @return void
 	 */
-	function removeAddonConfig($site_srl)
+	public function removeAddonConfig($site_srl)
 	{
 		$addon_path = _XE_PATH_ . 'files/cache/addons/';
 		$addon_file = $addon_path . $site_srl . '.acivated_addons.cache.php';

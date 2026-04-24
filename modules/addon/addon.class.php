@@ -13,7 +13,7 @@ class addon extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Register to add a few
 		$oAddonController = getAdminController('addon');
@@ -31,7 +31,7 @@ class addon extends ModuleObject
 	 *
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
@@ -65,7 +65,7 @@ class addon extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oDB = DB::getInstance();
 
@@ -115,7 +115,7 @@ class addon extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 
 	}

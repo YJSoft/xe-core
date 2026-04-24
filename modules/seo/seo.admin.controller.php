@@ -1,7 +1,7 @@
 <?php
 class seoAdminController extends seo
 {
-	function procSeoAdminSaveSetting()
+	public function procSeoAdminSaveSetting()
 	{
 		$oModuleController = getController('module');
 
@@ -72,7 +72,7 @@ class seoAdminController extends seo
 		}
 	}
 
-	function procSeoAdminInsertModuleConfig()
+	public function procSeoAdminInsertModuleConfig()
 	{
 		$vars = Context::getRequestVars();
 		$oModule = getModel('module');

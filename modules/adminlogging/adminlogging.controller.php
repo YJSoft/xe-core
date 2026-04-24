@@ -16,7 +16,7 @@ class adminloggingController extends adminlogging
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		// forbit access if the user is not an administrator
 		$oMemberModel = getModel('member');
@@ -31,7 +31,7 @@ class adminloggingController extends adminlogging
 	 * Insert log
 	 * @return void
 	 */
-	function insertLog($module, $act)
+	public function insertLog($module, $act)
 	{
 		if(!$module || !$act)
 		{

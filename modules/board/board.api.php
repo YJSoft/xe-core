@@ -10,14 +10,14 @@
 class boardAPI extends board {
 
 /* do not use dispBoardContent .
-	function dispBoardContent(&$oModule) {
+	public function dispBoardContent(&$oModule) {
 	}
 */
 
 	/**
 	 * @brief notice list
 	 **/
-	function dispBoardNoticeList(&$oModule) {
+	public function dispBoardNoticeList(&$oModule) {
 		 $oModule->add('notice_list',$this->arrangeContentList(Context::get('notice_list')));
 	}
 
@@ -25,7 +25,7 @@ class boardAPI extends board {
 	/**
 	 * @brief content list
 	 **/
-	function dispBoardContentList(&$oModule) {
+	public function dispBoardContentList(&$oModule) {
 		$api_type = Context::get('api_type');
 		$document_list = $this->arrangeContentList(Context::get('document_list'));
 
@@ -50,14 +50,14 @@ class boardAPI extends board {
 	/**
 	 * @brief category list
 	 **/
-	function dispBoardCategoryList(&$oModule) {
+	public function dispBoardCategoryList(&$oModule) {
 		$oModule->add('category_list',Context::get('category_list'));
 	}
 
 	/**
 	 * @brief board content view
 	 **/
-	function dispBoardContentView(&$oModule) {
+	public function dispBoardContentView(&$oModule) {
 		$oDocument = Context::get('oDocument');
 		if($oDocument->isExists() && $oDocument->isAccessible())
 		{
@@ -78,7 +78,7 @@ class boardAPI extends board {
 	/**
 	 * @brief contents file list
 	 **/
-	function dispBoardContentFileList(&$oModule) {
+	public function dispBoardContentFileList(&$oModule) {
 		$oDocument = Context::get('oDocument');
 		if($oDocument->isExists() && $oDocument->isAccessible())
 		{
@@ -94,14 +94,14 @@ class boardAPI extends board {
 	/**
 	 * @brief tag list
 	 **/
-	function dispBoardTagList(&$oModule) {
+	public function dispBoardTagList(&$oModule) {
 		$oModule->add('tag_list',Context::get('tag_list'));
 	}
 
 	/**
 	 * @brief comments list
 	 **/
-	function dispBoardContentCommentList(&$oModule) {
+	public function dispBoardContentCommentList(&$oModule) {
 		$oDocument = Context::get('oDocument');
 		if ($oDocument->isExists() && $oDocument->isAccessible())
 		{
@@ -118,7 +118,7 @@ class boardAPI extends board {
 		}
 	}
 
-	function arrangeContentList($content_list) {
+	public function arrangeContentList($content_list) {
 		$output = array();
 		if(count($content_list)) {
 			foreach($content_list as $key => $val) $output[] = $this->arrangeContent($val);
@@ -127,7 +127,7 @@ class boardAPI extends board {
 	}
 
 
-	function arrangeContent($content) {
+	public function arrangeContent($content) {
 		$oBoardView = getView('board');
 		$output = new stdClass;
 		if($content){
@@ -150,7 +150,7 @@ class boardAPI extends board {
 		return $output;
 	}
 
-	function arrangeComment($comment_list) {
+	public function arrangeComment($comment_list) {
 		$output = array();
 		if(count($comment_list) > 0 ) {
 			foreach($comment_list as $key => $val){
@@ -166,7 +166,7 @@ class boardAPI extends board {
 	}
 
 
-	function arrangeFile($file_list) {
+	public function arrangeFile($file_list) {
 		$output = array();
 		if(count($file_list) > 0) {
 			foreach($file_list as $key => $val){
@@ -181,7 +181,7 @@ class boardAPI extends board {
 		return $output;
 	}
 
-	function arrangeExtraVars($list) {
+	public function arrangeExtraVars($list) {
 		$output = array();
 		if(count($list)) {
 			foreach($list as $key => $val){

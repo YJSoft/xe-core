@@ -8,13 +8,13 @@
 class poll_maker extends EditorHandler
 {
 	// editor_sequence from the editor must attend mandatory wearing ....
-	var $editor_sequence = 0;
-	var $component_path = '';
+	public $editor_sequence = 0;
+	public $component_path = '';
 
 	/**
 	 * @brief editor_sequence and components out of the path
 	 */
-	function __construct($editor_sequence, $component_path)
+	public function __construct($editor_sequence, $component_path)
 	{
 		$this->editor_sequence = $editor_sequence;
 		$this->component_path = $component_path;
@@ -23,7 +23,7 @@ class poll_maker extends EditorHandler
 	/**
 	 * @brief popup window to display in popup window request is to add content
 	 */
-	function getPopupContent()
+	public function getPopupContent()
 	{
 		// Wanted Skins survey
 		$oModuleModel = getModel('module');
@@ -33,7 +33,7 @@ class poll_maker extends EditorHandler
 		$tpl_path = $this->component_path.'tpl';
 		$tpl_file = 'popup.html';
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
 
@@ -43,7 +43,7 @@ class poll_maker extends EditorHandler
 	 * Images and multimedia, seolmundeung unique code is required for the editor component added to its own code, and then
 	 * DocumentModule:: transContent() of its components transHtml() method call to change the html code for your own
 	 */
-	function transHTML($xml_obj)
+	public function transHTML($xml_obj)
 	{
 		$poll_srl = $xml_obj->attrs->poll_srl;
 		$skin = $xml_obj->attrs->skin;

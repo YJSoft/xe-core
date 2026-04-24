@@ -11,14 +11,14 @@ class member extends ModuleObject {
 	 *
 	 * @var boolean
 	 */
-	var $useSha1 = false;
+	public $useSha1 = false;
 
 	/**
 	 * constructor
 	 *
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 		if(!Context::isInstalled()) return;
 
@@ -38,12 +38,12 @@ class member extends ModuleObject {
 	 *
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Register action forward (to use in administrator mode)
 		$oModuleController = getController('module');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->addIndex("member_group","idx_site_title", array("site_srl","title"),true);
 
 		$oModuleModel = getModel('module');
@@ -178,9 +178,9 @@ class member extends ModuleObject {
 	 *
 	 * @return boolean
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -263,9 +263,9 @@ class member extends ModuleObject {
 	 *
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$oMemberAdminController = getAdminController('member');
@@ -429,14 +429,14 @@ class member extends ModuleObject {
 	 *
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 
 	/**
 	 * @brief Record login error and return the error, about IPaddress.
 	 */
-	function recordLoginError($error = 0, $message = 'success')
+	public function recordLoginError($error = 0, $message = 'success')
 	{
 		if($error == 0) return new BaseObject($error, $message);
 
@@ -445,7 +445,7 @@ class member extends ModuleObject {
 		$config = $oMemberModel->getMemberConfig();
 
 		// Check if there is recoding table.
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		if(!$oDB->isTableExists('member_login_count') || $config->enable_login_fail_report == 'N') return new BaseObject($error, $message);
 
 		$args = new stdClass();
@@ -481,7 +481,7 @@ class member extends ModuleObject {
 	/**
 	 * @brief Record login error and return the error, about MemberSrl.
 	 */
-	function recordMemberLoginError($error = 0, $message = 'success', $args = NULL)
+	public function recordMemberLoginError($error = 0, $message = 'success', $args = NULL)
 	{
 		if($error == 0 || !$args->member_srl) return new BaseObject($error, $message);
 
@@ -490,7 +490,7 @@ class member extends ModuleObject {
 		$config = $oMemberModel->getMemberConfig();
 
 		// Check if there is recoding table.
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		if(!$oDB->isTableExists('member_count_history') || $config->enable_login_fail_report == 'N') return new BaseObject($error, $message);
 
 		$output = executeQuery('member.getLoginCountHistoryByMemberSrl', $args);

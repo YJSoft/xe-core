@@ -15,14 +15,14 @@ class Security
 	 * Action target variable. If this value is null, the method will use Context variables
 	 * @var mixed
 	 */
-	var $_targetVar = NULL;
+	public $_targetVar = NULL;
 
 	/**
 	 * @constructor
 	 * @param mixed $var Target context
 	 * @return void
 	 */
-	function __construct($var = NULL)
+	public function __construct($var = NULL)
 	{
 		$this->_targetVar = $var;
 	}
@@ -34,7 +34,7 @@ class Security
 	 * separate the owner(object or array) and the item(property or element) using a dot(.)
 	 * @return mixed
 	 */
-	function encodeHTML(/* , $varName1, $varName2, ... */)
+	public function encodeHTML(/* , $varName1, $varName2, ... */)
 	{
 		$varNames = func_get_args();
 		if(count($varNames) < 0)
@@ -109,7 +109,7 @@ class Security
 	 * @param array $name
 	 * @return mixed
 	 */
-	function _encodeHTML($var, $name = array())
+	public function _encodeHTML($var, $name = array())
 	{
 		if(is_string($var))
 		{
@@ -183,7 +183,7 @@ class Security
 	 * @param string $xml
 	 * @return bool
 	 */
-	static function detectingXEE($xml)
+	public static function detectingXEE($xml)
 	{
 		if(!$xml) return FALSE;
 

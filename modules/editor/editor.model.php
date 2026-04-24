@@ -7,7 +7,7 @@
  */
 class editorModel extends editor
 {
-	var $loaded_component_list = array();
+	public $loaded_component_list = array();
 	/**
 	 * @brief Return the editor
 	 *
@@ -21,7 +21,7 @@ class editorModel extends editor
 	/**
 	 * @brief Return editor setting for each module
 	 */
-	function getEditorConfig($module_srl = null)
+	public function getEditorConfig($module_srl = null)
 	{
 		if(!$GLOBALS['__editor_module_config__'][$module_srl] && $module_srl)
 		{
@@ -90,12 +90,12 @@ class editorModel extends editor
 		return $editor_config;
 	}
 
-	function loadDrComponents()
+	public function loadDrComponents()
 	{
 		$drComponentPath = _XE_PATH_ . 'modules/editor/skins/dreditor/drcomponents/';
 		$drComponentList = FileHandler::readDir($drComponentPath);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 
 		$drComponentInfo = array();
 		if($drComponentList)
@@ -113,7 +113,7 @@ class editorModel extends editor
 		Context::set('drComponentList',$drComponentInfo);
 	}
 
-	function getDrComponentXmlInfo($drComponentName)
+	public function getDrComponentXmlInfo($drComponentName)
 	{
 		$lang_type = Context::getLangType();
 		// Get the xml file path of requested component
@@ -192,7 +192,7 @@ class editorModel extends editor
 	 * You can call upload_target_srl when modifying content
 	 * The upload_target_srl is used for a routine to check if an attachment exists
 	 */
-	function getEditor($upload_target_srl = 0, $option = null)
+	public function getEditor($upload_target_srl = 0, $option = null)
 	{
 		/**
 		 * Editor's default options
@@ -372,7 +372,7 @@ class editorModel extends editor
 	 * 2 types of editors supported; document and comment.
 	 * 2 types of editors can be used on a single module. For instance each for original post and reply port.
 	 */
-	function getModuleEditor($type = 'document', $module_srl, $upload_target_srl, $primary_key_name, $content_key_name)
+	public function getModuleEditor($type = 'document', $module_srl, $upload_target_srl, $primary_key_name, $content_key_name)
 	{
 		// Get editor settings of the module
 		$editor_config = $this->getEditorConfig($module_srl);
@@ -505,7 +505,7 @@ class editorModel extends editor
 	/**
 	 * @brief Get information which has been auto-saved
 	 */
-	function getSavedDoc($upload_target_srl)
+	public function getSavedDoc($upload_target_srl)
 	{
 		$auto_save_args = new stdClass();
 		$auto_save_args->module_srl = Context::get('module_srl');
@@ -566,7 +566,7 @@ class editorModel extends editor
 	/**
 	 * @brief create objects of the component
 	 */
-	function getComponentObject($component, $editor_sequence = 0, $site_srl = 0)
+	public function getComponentObject($component, $editor_sequence = 0, $site_srl = 0)
 	{
 		if(!preg_match('/^[a-zA-Z0-9_-]+$/',$component) || !preg_match('/^[0-9]+$/', $editor_sequence . $site_srl)) return;
 
@@ -592,7 +592,7 @@ class editorModel extends editor
 	/**
 	 * @brief Return a list of the editor skin
 	 */
-	function getEditorSkinList()
+	public function getEditorSkinList()
 	{
 		return FileHandler::readDir('./modules/editor/skins');
 	}
@@ -600,7 +600,7 @@ class editorModel extends editor
 	/**
 	 * @brief Return the cache file name of editor component list
 	 */
-	function getCacheFile($filter_enabled= true, $site_srl = 0)
+	public function getCacheFile($filter_enabled= true, $site_srl = 0)
 	{
 		$lang = Context::getLangType();
 		$cache_path = _XE_PATH_.'files/cache/editor/cache/';
@@ -612,7 +612,7 @@ class editorModel extends editor
 		return $cache_file;
 	}
 
-	function getComponentListCacheKey($filter_enabled = true, $site_srl = 0)
+	public function getComponentListCacheKey($filter_enabled = true, $site_srl = 0)
 	{
 		$cache_key = array();
 		$cache_key[] = Context::getLangType();
@@ -625,7 +625,7 @@ class editorModel extends editor
 	/**
 	 * @brief Return a component list (DB Information included)
 	 */
-	function getComponentList($filter_enabled = true, $site_srl=0, $from_db=false)
+	public function getComponentList($filter_enabled = true, $site_srl=0, $from_db=false)
 	{
 		$component_list = false;
 
@@ -705,7 +705,7 @@ class editorModel extends editor
 	/**
 	 * @brief Get xml and db information of the component
 	 */
-	function getComponent($component_name, $site_srl = 0)
+	public function getComponent($component_name, $site_srl = 0)
 	{
 		$args = new stdClass();
 		$args->component_name = $component_name;
@@ -764,7 +764,7 @@ class editorModel extends editor
 	/**
 	 * @brief Read xml information of the component
 	 */
-	function getComponentXmlInfo($component)
+	public function getComponentXmlInfo($component)
 	{
 		$lang_type = Context::getLangType();
 

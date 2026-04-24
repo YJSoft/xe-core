@@ -9,21 +9,21 @@
 
 class board extends ModuleObject
 {
-	var $search_option = array('title_content','title','content','comment','user_name','nick_name','user_id','tag'); ///< 검색 옵션
+	public $search_option = array('title_content','title','content','comment','user_name','nick_name','user_id','tag'); ///< 검색 옵션
 
-	var $order_target = array('list_order', 'update_order', 'regdate', 'voted_count', 'blamed_count', 'readed_count', 'comment_count', 'title', 'nick_name', 'user_name', 'user_id'); // 정렬 옵션
+	public $order_target = array('list_order', 'update_order', 'regdate', 'voted_count', 'blamed_count', 'readed_count', 'comment_count', 'title', 'nick_name', 'user_name', 'user_id'); // 정렬 옵션
 
-	var $skin = "default"; ///< skin name
-	var $list_count = 20; ///< the number of documents displayed in a page
-	var $page_count = 10; ///< page number
-	var $category_list = NULL; ///< category list
+	public $skin = "default"; ///< skin name
+	public $list_count = 20; ///< the number of documents displayed in a page
+	public $page_count = 10; ///< page number
+	public $category_list = NULL; ///< category list
 
 	/**
 	 * constructor
 	 *
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 		if(!Context::isInstalled()) return;
 
@@ -41,7 +41,7 @@ class board extends ModuleObject
 	/**
 	 * @brief install the module
 	 **/
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// use action forward(enabled in the admin model)
 		$oModuleController = getController('module');
@@ -82,7 +82,7 @@ class board extends ModuleObject
 	/**
 	 * @brief chgeck module method
 	 **/
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -104,7 +104,7 @@ class board extends ModuleObject
 	/**
 	 * @brief update module
 	 **/
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -128,7 +128,7 @@ class board extends ModuleObject
 		return new BaseObject(0, 'success_updated');
 	}
 
-	function moduleUninstall()
+	public function moduleUninstall()
 	{
 		$output = executeQueryArray("board.getAllBoard");
 		if(!$output->data) return new BaseObject();

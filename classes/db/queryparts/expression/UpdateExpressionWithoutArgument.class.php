@@ -15,7 +15,7 @@ class UpdateExpressionWithoutArgument extends UpdateExpression
 	 * argument
 	 * @var object
 	 */
-	var $argument;
+	public $argument;
 
 	/**
 	 * constructor
@@ -23,18 +23,18 @@ class UpdateExpressionWithoutArgument extends UpdateExpression
 	 * @param object $argument
 	 * @return void
 	 */
-	function __construct($column_name, $argument)
+	public function __construct($column_name, $argument)
 	{
 		Expression::__construct($column_name);
 		$this->argument = $argument;
 	}
 
-	function getExpression($with_value = true)
+	public function getExpression($with_value = true)
 	{
 		return "$this->column_name = $this->argument";
 	}
 
-	function getValue()
+	public function getValue()
 	{
 		// TODO Escape value according to column type instead of variable type
 		$value = $this->argument;
@@ -45,7 +45,7 @@ class UpdateExpressionWithoutArgument extends UpdateExpression
 		return $value;
 	}
 
-	function show()
+	public function show()
 	{
 		if(!$this->argument)
 		{
@@ -59,12 +59,12 @@ class UpdateExpressionWithoutArgument extends UpdateExpression
 		return true;
 	}
 
-	function getArgument()
+	public function getArgument()
 	{
 		return null;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		return array();
 	}

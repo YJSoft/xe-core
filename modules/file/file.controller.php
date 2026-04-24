@@ -10,7 +10,7 @@ class fileController extends file
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -23,7 +23,7 @@ class fileController extends file
 	 *
 	 * @return void
 	 */
-	function procFileUpload()
+	public function procFileUpload()
 	{
 		// Basic variables setting
 		$oFileModel = getModel('file');
@@ -86,7 +86,7 @@ class fileController extends file
 	 *
 	 * @return BaseObject
 	 */
-	function procFileIframeUpload()
+	public function procFileIframeUpload()
 	{
 		// Basic variables setting
 		$callback = Context::get('callback');
@@ -146,7 +146,7 @@ class fileController extends file
 	 *
 	 * @return BaseObject
 	 */
-	function procFileImageResize()
+	public function procFileImageResize()
 	{
 		$file_srl = Context::get('file_srl');
 		$width = Context::get('width');
@@ -214,7 +214,7 @@ class fileController extends file
 	 *
 	 * return void
 	 */
-	function procFileDownload()
+	public function procFileDownload()
 	{
 		$oFileModel = getModel('file');
 
@@ -295,13 +295,13 @@ class fileController extends file
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin != 'Y')
 			{
-				$oModuleModel =& getModel('module');
+				$oModuleModel =getModel('module');
 				$columnList = array('module_srl', 'site_srl');
 				$module_info = $oModuleModel->getModuleInfoByModuleSrl($file_obj->module_srl, $columnList);
 
 				if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl))
 				{
-					$oMemberModel =& getModel('member');
+					$oMemberModel =getModel('member');
 					$member_groups = $oMemberModel->getMemberGroups($logged_info->member_srl, $module_info->site_srl);
 
 					$is_permitted = false;
@@ -429,7 +429,7 @@ class fileController extends file
 	 *
 	 * @return BaseObject
 	 */
-	function procFileDelete()
+	public function procFileDelete()
 	{
 		// Basic variable setting(upload_target_srl and module_srl set)
 		$editor_sequence = Context::get('editor_sequence');
@@ -483,7 +483,7 @@ class fileController extends file
 	 *
 	 * @return BaseObject
 	 */
-	function procFileGetList()
+	public function procFileGetList()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
 
@@ -529,7 +529,7 @@ class fileController extends file
 	 * @param object $obj Trigger object
 	 * @return BaseObject
 	 */
-	function triggerCheckAttached(&$obj)
+	public function triggerCheckAttached(&$obj)
 	{
 		$document_srl = $obj->document_srl;
 		if(!$document_srl) return new BaseObject();
@@ -546,7 +546,7 @@ class fileController extends file
 	 * @param object $obj Trigger object
 	 * @return BaseObject
 	 */
-	function triggerAttachFiles(&$obj)
+	public function triggerAttachFiles(&$obj)
 	{
 		$document_srl = $obj->document_srl;
 		if(!$document_srl) return new BaseObject();
@@ -563,7 +563,7 @@ class fileController extends file
 	 * @param object $obj Trigger object
 	 * @return BaseObject
 	 */
-	function triggerDeleteAttached(&$obj)
+	public function triggerDeleteAttached(&$obj)
 	{
 		$document_srl = $obj->document_srl;
 		if(!$document_srl) return new BaseObject();
@@ -578,7 +578,7 @@ class fileController extends file
 	 * @param object $obj Trigger object
 	 * @return BaseObject
 	 */
-	function triggerCommentCheckAttached(&$obj)
+	public function triggerCommentCheckAttached(&$obj)
 	{
 		$comment_srl = $obj->comment_srl;
 		if(!$comment_srl) return new BaseObject();
@@ -595,7 +595,7 @@ class fileController extends file
 	 * @param object $obj Trigger object
 	 * @return BaseObject
 	 */
-	function triggerCommentAttachFiles(&$obj)
+	public function triggerCommentAttachFiles(&$obj)
 	{
 		$comment_srl = $obj->comment_srl;
 		$uploaded_count = $obj->uploaded_count;
@@ -613,7 +613,7 @@ class fileController extends file
 	 * @param object $obj Trigger object
 	 * @return BaseObject
 	 */
-	function triggerCommentDeleteAttached(&$obj)
+	public function triggerCommentDeleteAttached(&$obj)
 	{
 		$comment_srl = $obj->comment_srl;
 		if(!$comment_srl) return new BaseObject();
@@ -630,7 +630,7 @@ class fileController extends file
 	 * @param object $obj Trigger object
 	 * @return BaseObject
 	 */
-	function triggerDeleteModuleFiles(&$obj)
+	public function triggerDeleteModuleFiles(&$obj)
 	{
 		$module_srl = $obj->module_srl;
 		if(!$module_srl) return new BaseObject();
@@ -647,7 +647,7 @@ class fileController extends file
 	 * @param int $module_srl
 	 * @return void
 	 */
-	function setUploadInfo($editor_sequence, $upload_target_srl = 0, $module_srl = 0)
+	public function setUploadInfo($editor_sequence, $upload_target_srl = 0, $module_srl = 0)
 	{
 		if(!$module_srl)
 		{
@@ -677,7 +677,7 @@ class fileController extends file
 	 * @param int $upload_target_srl
 	 * @return BaseObject
 	 */
-	function setFilesValid($upload_target_srl)
+	public function setFilesValid($upload_target_srl)
 	{
 		$args = new stdClass();
 		$args->upload_target_srl = $upload_target_srl;
@@ -715,7 +715,7 @@ class fileController extends file
 	 * @param bool $manual_insert If set true, pass validation check
 	 * @return BaseObject
 	 */
-	function insertFile($file_info, $module_srl, $upload_target_srl, $download_count = 0, $manual_insert = false)
+	public function insertFile($file_info, $module_srl, $upload_target_srl, $download_count = 0, $manual_insert = false)
 	{
 		$file_info['extension'] = strtolower(pathinfo($file_info['name'], PATHINFO_EXTENSION));
 		$file_info['original_extension'] = $file_info['extension'];
@@ -903,7 +903,7 @@ class fileController extends file
 	 * @param int $file_srl Sequence of file to delete
 	 * @return BaseObject
 	 */
-	function deleteFile($file_srl)
+	public function deleteFile($file_srl)
 	{
 		if(!$file_srl) return;
 
@@ -968,7 +968,7 @@ class fileController extends file
 	 * @param int $upload_target_srl Upload target srl to delete files
 	 * @return BaseObject
 	 */
-	function deleteFiles($upload_target_srl)
+	public function deleteFiles($upload_target_srl)
 	{
 		// Get a list of attachements
 		$oFileModel = getModel('file');
@@ -1012,7 +1012,7 @@ class fileController extends file
 	 * @param int $target_srl New sequence of target
 	 * @return void
 	 */
-	function moveFile($source_srl, $target_module_srl, $target_srl)
+	public function moveFile($source_srl, $target_module_srl, $target_srl)
 	{
 		if($source_srl == $target_srl) return;
 
@@ -1092,7 +1092,7 @@ class fileController extends file
 		$args->file_srl = $vars->file_srl;
 		$args->upload_target_srl = $upload_target_srl;
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 		
 		$args->cover_image = 'N';
@@ -1133,12 +1133,12 @@ class fileController extends file
 	 * @param int $upload_target_srl
 	 * @return void
 	 */
-	function printUploadedFileList($editor_sequence, $upload_target_srl)
+	public function printUploadedFileList($editor_sequence, $upload_target_srl)
 	{
 		return;
 	}
 
-	function triggerCopyModule(&$obj)
+	public function triggerCopyModule(&$obj)
 	{
 		$oModuleModel = getModel('module');
 		$fileConfig = $oModuleModel->getModulePartConfig('file', $obj->originModuleSrl);

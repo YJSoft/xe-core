@@ -17,18 +17,18 @@ class importerAdminController extends importer
 	 * Unit count
 	 * @var int
 	 */
-	var $unit_count = 300;
+	public $unit_count = 300;
 	/**
 	 * Xml parser
 	 * @var XmlParser
 	 */
-	var $oXmlParser = null;
+	public $oXmlParser = null;
 
 	/**
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -36,7 +36,7 @@ class importerAdminController extends importer
 	 * Check whether the passing filename exists or not. Detect the file type, too.
 	 * @return void
 	 */
-	function procImporterAdminCheckXmlFile()
+	public function procImporterAdminCheckXmlFile()
 	{
 		global $lang;
 
@@ -96,7 +96,7 @@ class importerAdminController extends importer
 	 * Sync member information with document information
 	 * @return void
 	 */
-	function procImporterAdminSync()
+	public function procImporterAdminSync()
 	{
 		$oMemberModel = getModel('member');
 		$member_config = $oMemberModel->getMemberConfig();
@@ -169,7 +169,7 @@ class importerAdminController extends importer
 	 * Pre-analyze the xml file and cache it
 	 * @return void
 	 */
-	function procImporterAdminPreProcessing()
+	public function procImporterAdminPreProcessing()
 	{
 		// Get the target xml file to import
 		$xml_file = Context::get('xml_file');
@@ -278,7 +278,7 @@ class importerAdminController extends importer
 	 * Migrate data after completing xml file extraction
 	 * @return void
 	 */
-	function procImporterAdminImport()
+	public function procImporterAdminImport()
 	{
 		// Variable setting
 		$type = Context::get('type');
@@ -342,7 +342,7 @@ class importerAdminController extends importer
 	 * @param string $index_file
 	 * @return int
 	 */
-	function importMember($key, $cur, $index_file)
+	public function importMember($key, $cur, $index_file)
 	{
 		if(!$cur) $cur = 0;
 		// Create the xmlParser object
@@ -529,7 +529,7 @@ class importerAdminController extends importer
 	 * @param string $index_file
 	 * @return int
 	 */
-	function importMessage($key, $cur, $index_file)
+	public function importMessage($key, $cur, $index_file)
 	{
 		if(!$cur) $cur = 0;
 		// Create the xmlParser object
@@ -628,7 +628,7 @@ class importerAdminController extends importer
 	 * @param int $module_srl
 	 * @return int
 	 */
-	function importModule($key, $cur, $index_file, $module_srl)
+	public function importModule($key, $cur, $index_file, $module_srl)
 	{
 		// Pre-create the objects needed
 		$this->oXmlParser = new XmlParser();
@@ -874,7 +874,7 @@ class importerAdminController extends importer
 	 * @param int $document_srl
 	 * @return int
 	 */
-	function importTrackbacks($fp, $module_srl, $document_srl)
+	public function importTrackbacks($fp, $module_srl, $document_srl)
 	{
 		$started = false;
 		$buff = null;
@@ -922,7 +922,7 @@ class importerAdminController extends importer
 	 * @param int $document_srl
 	 * @return int
 	 */
-	function importComments($fp, $module_srl, $document_srl)
+	public function importComments($fp, $module_srl, $document_srl)
 	{
 		$started = false;
 		$buff = null;
@@ -1062,7 +1062,7 @@ class importerAdminController extends importer
 	 * @param array $files
 	 * @return int
 	 */
-	function importAttaches($fp, $module_srl, $upload_target_srl, &$files)
+	public function importAttaches($fp, $module_srl, $upload_target_srl, &$files)
 	{
 		$uploaded_count = 0;
 
@@ -1187,7 +1187,7 @@ class importerAdminController extends importer
 	 * Return a filename to temporarily use
 	 * @return string
 	 */
-	function getTmpFilename()
+	public function getTmpFilename()
 	{
 		$path = "./files/cache/importer";
 		FileHandler::makeDir($path);
@@ -1201,7 +1201,7 @@ class importerAdminController extends importer
 	 * @param resource $fp
 	 * @return string
 	 */
-	function saveTemporaryFile($fp)
+	public function saveTemporaryFile($fp)
 	{
 		$temp_filename = $this->getTmpFilename();
 		$f = fopen($temp_filename, "w");
@@ -1230,7 +1230,7 @@ class importerAdminController extends importer
 	 * @param resource $fp
 	 * @return array
 	 */
-	function importExtraVars($fp)
+	public function importExtraVars($fp)
 	{
 		$buff = null;
 		while(!feof($fp))

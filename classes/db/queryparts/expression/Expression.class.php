@@ -20,24 +20,24 @@ class Expression
 	 * column name
 	 * @var string
 	 */
-	var $column_name;
+	public $column_name;
 
 	/**
 	 * constructor
 	 * @param string $column_name
 	 * @return void
 	 */
-	function __construct($column_name)
+	public function __construct($column_name)
 	{
 		$this->column_name = $column_name;
 	}
 
-	function getColumnName()
+	public function getColumnName()
 	{
 		return $this->column_name;
 	}
 
-	function show()
+	public function show()
 	{
 		return false;
 	}
@@ -46,7 +46,7 @@ class Expression
 	 * Return column expression, ex) column as alias
 	 * @return string
 	 */
-	function getExpression()
+	public function getExpression()
 	{
 		
 	}

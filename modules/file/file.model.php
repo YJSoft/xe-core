@@ -10,7 +10,7 @@ class fileModel extends file
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -22,7 +22,7 @@ class fileModel extends file
 	 *
 	 * @return void
 	 */
-	function getFileList()
+	public function getFileList()
 	{
 		$oModuleModel = getModel('module');
 
@@ -121,7 +121,7 @@ class fileModel extends file
 	 * @param int $upload_target_srl The sequence to get a number of files
 	 * @return int Returns a number of files
 	 */
-	function getFilesCount($upload_target_srl)
+	public function getFilesCount($upload_target_srl)
 	{
 		$args = new stdClass();
 		$args->upload_target_srl = $upload_target_srl;
@@ -136,7 +136,7 @@ class fileModel extends file
 	 * @param string $sid
 	 * @return string Returns a url
 	 */
-	function getDownloadUrl($file_srl, $sid, $module_srl="")
+	public function getDownloadUrl($file_srl, $sid, $module_srl="")
 	{
 		return sprintf('?module=%s&amp;act=%s&amp;file_srl=%s&amp;sid=%s&amp;module_srl=%s', 'file', 'procFileDownload', $file_srl, $sid, $module_srl);
 	}
@@ -147,7 +147,7 @@ class fileModel extends file
 	 * @param int $module_srl If set this, returns specific module's configuration. Otherwise returns global configuration.
 	 * @return object Returns configuration.
 	 */
-	function getFileConfig($module_srl = null)
+	public function getFileConfig($module_srl = null)
 	{
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');
@@ -209,7 +209,7 @@ class fileModel extends file
 	 * @param array $columnList The list of columns to get from DB
 	 * @return BaseObject|object|array If error returns an instance of BaseObject. If result set is one returns a object that contins file information. If result set is more than one returns array of object.
 	 */
-	function getFile($file_srl, $columnList = array())
+	public function getFile($file_srl, $columnList = array())
 	{
 		$args = new stdClass();
 		$args->file_srl = $file_srl;
@@ -249,7 +249,7 @@ class fileModel extends file
 	 * @param string $sortIndex The column that used as sort index
 	 * @return array Returns array of object that contains file information. If no result returns null.
 	 */
-	function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false)
+	public function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false)
 	{
 		$args = new stdClass();
 		$args->upload_target_srl = $upload_target_srl;
@@ -277,7 +277,7 @@ class fileModel extends file
 	 *
 	 * @return object Returns a file configuration of current module. If user is admin, returns PHP's max file size and allow all file types.
 	 */
-	function getUploadConfig()
+	public function getUploadConfig()
 	{
 		$logged_info = Context::get('logged_info');
 
@@ -308,7 +308,7 @@ class fileModel extends file
 	 * @param int $attached_size
 	 * @return string
 	 */
-	function getUploadStatus($attached_size = 0)
+	public function getUploadStatus($attached_size = 0)
 	{
 		$file_config = $this->getUploadConfig();
 		// Display upload status
@@ -331,7 +331,7 @@ class fileModel extends file
 	 * @param int $module_srl The sequence of module to get configuration
 	 * @return object
 	 */
-	function getFileModuleConfig($module_srl)
+	public function getFileModuleConfig($module_srl)
 	{
 		return $this->getFileConfig($module_srl);
 	}
@@ -343,7 +343,7 @@ class fileModel extends file
 	 * @param object $member_info The member information to get grant
 	 * @return object Returns a grant of file
 	 */
-	function getFileGrant($file_info, $member_info)
+	public function getFileGrant($file_info, $member_info)
 	{
 		if(!$file_info) return null;
 

@@ -7,14 +7,14 @@
  */
 class pageAdminView extends page
 {
-	var $module_srl = 0;
-	var $list_count = 20;
-	var $page_count = 10;
+	public $module_srl = 0;
+	public $list_count = 20;
+	public $page_count = 10;
 
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		// Pre-check if module_srl exists. Set module_info if exists
 		$module_srl = Context::get('module_srl');
@@ -50,7 +50,7 @@ class pageAdminView extends page
 	/**
 	 * @brief Manage a list of pages showing
 	 */
-	function dispPageAdminContent()
+	public function dispPageAdminContent()
 	{
 		$args = new stdClass();
 		$args->sort_index = "module_srl";
@@ -95,7 +95,7 @@ class pageAdminView extends page
 	/**
 	 * @brief Information output of the selected page
 	 */
-	function dispPageAdminInfo()
+	public function dispPageAdminInfo()
 	{
 		// Get module_srl by GET parameter
 		$module_srl = Context::get('module_srl');
@@ -144,7 +144,7 @@ class pageAdminView extends page
 	 * @brief Additional settings page showing
 	 * For additional settings in a service module in order to establish links with other modules peyijiim
 	 */
-	function dispPageAdminPageAdditionSetup()
+	public function dispPageAdminPageAdditionSetup()
 	{
 		// call by reference content from other modules to come take a year in advance for putting the variable declaration
 		$content = '';
@@ -159,7 +159,7 @@ class pageAdminView extends page
 		$security->encodeHTML('module_info.');
 	}
 
-	function dispPageAdminMobileContent()
+	public function dispPageAdminMobileContent()
 	{
 		if($this->module_info->page_type == 'OUTSIDE')
 		{
@@ -171,7 +171,7 @@ class pageAdminView extends page
 			Context::set('module_srl',$this->module_srl);
 		}
 
-		$oPageMobile = &getMobile('page');
+		$oPageMobile = getMobile('page');
 		$oPageMobile->module_info = $this->module_info;
 		$page_type_name = strtolower($this->module_info->page_type);
 		$method = '_get' . ucfirst($page_type_name) . 'Content';
@@ -195,7 +195,7 @@ class pageAdminView extends page
 		$this->setTemplateFile('mcontent');
 	}
 
-	function dispPageAdminMobileContentModify()
+	public function dispPageAdminMobileContentModify()
 	{
 		Context::set('module_info', $this->module_info);
 
@@ -212,7 +212,7 @@ class pageAdminView extends page
 	/**
 	 * @brief Edit Page Content
 	 */
-	function dispPageAdminContentModify()
+	public function dispPageAdminContentModify()
 	{
 		// Set the module information
 		Context::set('module_info', $this->module_info);
@@ -227,7 +227,7 @@ class pageAdminView extends page
 		}
 	}
 
-	function _setWidgetTypeContentModify($isMobile = false)
+	public function _setWidgetTypeContentModify($isMobile = false)
 	{
 		// Setting contents
 		if($isMobile)
@@ -262,7 +262,7 @@ class pageAdminView extends page
 		$this->setTemplateFile($templateFile);
 	}
 
-	function _setArticleTypeContentModify($isMobile = false)
+	public function _setArticleTypeContentModify($isMobile = false)
 	{
 		$oDocumentModel = getModel('document');
 		$oDocument = $oDocumentModel->getDocument(0, true);
@@ -304,7 +304,7 @@ class pageAdminView extends page
 	/**
 	 * @brief Delete page output
 	 */
-	function dispPageAdminDelete()
+	public function dispPageAdminDelete()
 	{
 		$module_srl = Context::get('module_srl');
 		if(!$module_srl) return $this->dispContent();
@@ -323,7 +323,7 @@ class pageAdminView extends page
 	/**
 	 * @brief Rights Listing
 	 */
-	function dispPageAdminGrantInfo()
+	public function dispPageAdminGrantInfo()
 	{
 		// Common module settings page, call rights
 		$oModuleAdminModel = getAdminModel('module');
@@ -339,7 +339,7 @@ class pageAdminView extends page
 	/**
 	 * Display skin setting page
 	 */
-	function dispPageAdminSkinInfo()
+	public function dispPageAdminSkinInfo()
 	{
 		$oModuleAdminModel = getAdminModel('module');
 		$skin_content = $oModuleAdminModel->getModuleSkinHTML($this->module_info->module_srl);
@@ -351,7 +351,7 @@ class pageAdminView extends page
 	/**
 	 * Display mobile skin setting page
 	 */
-	function dispPageAdminMobileSkinInfo()
+	public function dispPageAdminMobileSkinInfo()
 	{
 		$oModuleAdminModel = getAdminModel('module');
 		$skin_content = $oModuleAdminModel->getModuleMobileSkinHTML($this->module_info->module_srl);

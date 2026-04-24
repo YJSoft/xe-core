@@ -13,7 +13,7 @@ class communication extends ModuleObject
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Create a temporary file storage for one new private message notification
 		FileHandler::makeDir('./files/member_extra_info/new_message_flags');
@@ -24,7 +24,7 @@ class communication extends ModuleObject
 	 * method to check if successfully installed.
 	 * @return boolean true : need to update false : don't need to update
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -61,7 +61,7 @@ class communication extends ModuleObject
 	 * Update
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -104,7 +104,7 @@ class communication extends ModuleObject
 	 * Re-generate the cache file
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		
 	}

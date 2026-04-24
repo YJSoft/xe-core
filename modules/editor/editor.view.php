@@ -11,14 +11,14 @@ class editorView extends editor
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Action to get a request to display compoenet pop-up
 	 */
-	function dispEditorPopup()
+	public function dispEditorPopup()
 	{
 		// add a css file
 		Context::loadFile($this->module_path."tpl/css/editor.css", true);
@@ -53,7 +53,7 @@ class editorView extends editor
 	/**
 	 * @brief Get component information
 	 */
-	function dispEditorComponentInfo()
+	public function dispEditorComponentInfo()
 	{
 		$component_name = Context::get('component_name');
 
@@ -78,7 +78,7 @@ class editorView extends editor
 	/**
 	 * @brief Add a form for editor addition setup
 	 */
-	function triggerDispEditorAdditionSetup(&$obj)
+	public function triggerDispEditorAdditionSetup(&$obj)
 	{
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
@@ -130,7 +130,7 @@ class editorView extends editor
 		$security->encodeHTML('editor_comment_colorset_list..title');			
 
 		// Set a template file
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path.'tpl', 'editor_module_config');
 		$obj .= $tpl;
 
@@ -138,13 +138,13 @@ class editorView extends editor
 	}
 
 
-	function dispEditorPreview()
+	public function dispEditorPreview()
 	{
 		$this->setTemplatePath($this->module_path.'tpl');
 		$this->setTemplateFile('preview');
 	}
 
-	function dispEditorSkinColorset()
+	public function dispEditorSkinColorset()
 	{
 		$skin = Context::get('skin');
 		if (!preg_match('/^[a-zA-Z0-9_-]+$/', $skin))
@@ -158,7 +158,7 @@ class editorView extends editor
 		Context::set('colorset', $colorset);
 	}
 
-	function dispEditorConfigPreview()
+	public function dispEditorConfigPreview()
 	{
 		$oEditorModel = getModel('editor');
 		$config = $oEditorModel->getEditorConfig();

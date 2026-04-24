@@ -11,7 +11,7 @@ class layoutView extends layout
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		$this->setTemplatePath($this->module_path.'tpl');
 	}
@@ -20,7 +20,7 @@ class layoutView extends layout
 	 * Pop-up layout details(conf/info.xml)
 	 * @return void
 	 */
-	function dispLayoutInfo()
+	public function dispLayoutInfo()
 	{
 		// Get the layout information
 		$oLayoutModel = getModel('layout');
@@ -313,7 +313,7 @@ class layoutView extends layout
 	 * Preview a layout
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispLayoutPreview()
+	public function dispLayoutPreview()
 	{
 		if(!checkCSRF())
 		{
@@ -366,7 +366,7 @@ class layoutView extends layout
 		FileHandler::writeFile($edited_layout_file, $code);
 
 		// Compile
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 
 		$layout_path = $layout_info->path;
 		$layout_file = 'layout';
@@ -374,7 +374,7 @@ class layoutView extends layout
 		$layout_tpl = $oTemplate->compile($layout_path, $layout_file, $edited_layout_file);
 		Context::set('layout','none');
 		// Convert widgets and others
-		$oContext = &Context::getInstance();
+		$oContext = Context::getInstance();
 		Context::set('layout_tpl', $layout_tpl);
 		// Delete Temporary Files
 		FileHandler::removeFile($edited_layout_file);

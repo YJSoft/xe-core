@@ -16,7 +16,7 @@ class menuAdminModel extends menu
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -25,7 +25,7 @@ class menuAdminModel extends menu
 	 * @param object $obj
 	 * @return object
 	 */
-	function getMenuList($obj)
+	public function getMenuList($obj)
 	{
 		if(!$obj->site_srl)
 		{
@@ -51,7 +51,7 @@ class menuAdminModel extends menu
 	 * @param int $site_srl
 	 * @return array
 	 */
-	function getMenus($site_srl = null)
+	public function getMenus($site_srl = null)
 	{
 		if(!isset($site_srl))
 		{
@@ -74,7 +74,7 @@ class menuAdminModel extends menu
 	 * @param int $menu_srl
 	 * @return object
 	 */
-	function getMenu($menu_srl)
+	public function getMenu($menu_srl)
 	{
 		// Get information from the DB
 		$args = new stdClass();
@@ -94,7 +94,7 @@ class menuAdminModel extends menu
 	 * @param string $title
 	 * @return object
 	 */
-	function getMenuByTitle($title, $site_srl = 0)
+	public function getMenuByTitle($title, $site_srl = 0)
 	{
 		// Get information from the DB
 		if(!is_array($title))
@@ -124,7 +124,7 @@ class menuAdminModel extends menu
 	 * @param string $title
 	 * @return object
 	 */
-	function getMenuListByTitle($title)
+	public function getMenuListByTitle($title)
 	{
 		// Get information from the DB
 		$args = new stdClass();
@@ -144,7 +144,7 @@ class menuAdminModel extends menu
 	 * @param int $menu_item_srl
 	 * @return object
 	 */
-	function getMenuItemInfo($menu_item_srl)
+	public function getMenuItemInfo($menu_item_srl)
 	{
 		// Get the menu information if menu_item_srl exists
 		$args = new stdClass();
@@ -170,7 +170,7 @@ class menuAdminModel extends menu
 	 * Return item information of the menu_srl
 	 * @return void
 	 */
-	function getMenuAdminItemInfo()
+	public function getMenuAdminItemInfo()
 	{
 		$menuItemSrl = Context::get('menu_item_srl');
 		$menuItem = $this->getMenuItemInfo($menuItemSrl);
@@ -251,7 +251,7 @@ class menuAdminModel extends menu
 	 * @param array $columnList
 	 * @return object
 	 */
-	function getMenuItems($menu_srl, $parent_srl = null, $columnList = array())
+	public function getMenuItems($menu_srl, $parent_srl = null, $columnList = array())
 	{
 		$args = new stdClass();
 		$args->menu_srl = $menu_srl;
@@ -267,7 +267,7 @@ class menuAdminModel extends menu
 	 * @param int $site_srl
 	 * @return array
 	 */
-	function getMenuItemNames($source_name, $site_srl = null)
+	public function getMenuItemNames($source_name, $site_srl = null)
 	{
 		if(!$site_srl)
 		{
@@ -284,7 +284,7 @@ class menuAdminModel extends menu
 	 * Return html after compiling tpl on the server in order to add menu information on the admin page
 	 * @return void
 	 */
-	function getMenuAdminTplInfo()
+	public function getMenuAdminTplInfo()
 	{
 		// Get information on the menu for the parameter settings
 		$menu_item_srl = Context::get('menu_item_srl');
@@ -324,7 +324,7 @@ class menuAdminModel extends menu
 		$security->encodeHTML('item_info.name');
 
 		// Compile the template file into tpl variable and then return it
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path.'tpl', 'menu_item_info');
 
 		$this->add('tpl', str_replace("\n"," ",$tpl));
@@ -333,7 +333,7 @@ class menuAdminModel extends menu
 	/**
 	 * get installed menu type api
 	 */
-	function getMenuAdminInstalledMenuType()
+	public function getMenuAdminInstalledMenuType()
 	{
 		$oModuleModel = getModel('module');
 		$oAutoinstallModel = getModel('autoinstall');
@@ -395,7 +395,7 @@ class menuAdminModel extends menu
 	 * @param int $site_srl
 	 * @return array
 	 */
-	function getModuleListInSitemap($site_srl = 0)
+	public function getModuleListInSitemap($site_srl = 0)
 	{
 		$oModuleModel = getModel('module');
 		$moduleList = array('page');

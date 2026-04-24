@@ -13,13 +13,13 @@ class IndexHint
 	 * index name
 	 * @var string
 	 */
-	var $index_name;
+	public $index_name;
 
 	/**
 	 * index hint type, ex) IGNORE, FORCE, USE...
 	 * @var string
 	 */
-	var $index_hint_type;
+	public $index_hint_type;
 
 	/**
 	 * constructor
@@ -27,18 +27,18 @@ class IndexHint
 	 * @param string $index_hint_type
 	 * @return void
 	 */
-	function __construct($index_name, $index_hint_type)
+	public function __construct($index_name, $index_hint_type)
 	{
 		$this->index_name = $index_name;
 		$this->index_hint_type = $index_hint_type;
 	}
 
-	function getIndexName()
+	public function getIndexName()
 	{
 		return $this->index_name;
 	}
 
-	function getIndexHintType()
+	public function getIndexHintType()
 	{
 		return $this->index_hint_type;
 	}

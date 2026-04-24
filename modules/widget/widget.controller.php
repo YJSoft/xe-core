@@ -9,23 +9,23 @@ class widgetController extends widget
 {
 	// The results are not widget modify/delete and where to use the flag for
 	// layout_javascript_mode include all the results into the javascript mode Sikkim
-	var $javascript_mode = false;
-	var $layout_javascript_mode = false;
+	public $javascript_mode = false;
+	public $layout_javascript_mode = false;
 
 	// Where the cache files are created widget
-	var $cache_path = './files/cache/widget_cache/';
+	public $cache_path = './files/cache/widget_cache/';
 
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Selected photos - the return of the skin-color three
 	 */
-	function procWidgetGetColorsetList()
+	public function procWidgetGetColorsetList()
 	{
 		$widget = Context::get('selected_widget');
 		$skin = Context::get('skin');
@@ -47,7 +47,7 @@ class widgetController extends widget
 	/**
 	 * @brief Return the generated code of the widget
 	 */
-	function procWidgetGenerateCode()
+	public function procWidgetGenerateCode()
 	{
 		$widget = Context::get('selected_widget');
 		if(!$widget) return new BaseObject(-1,'msg_invalid_request');
@@ -63,7 +63,7 @@ class widgetController extends widget
 	/**
 	 * @brief Edit page request for the creation of the widget code
 	 */
-	function procWidgetGenerateCodeInPage()
+	public function procWidgetGenerateCodeInPage()
 	{
 		$widget = Context::get('selected_widget');
 		if(!$widget) return new BaseObject(-1,'msg_invalid_request');
@@ -83,7 +83,7 @@ class widgetController extends widget
 	/**
 	 * @brief Upload widget styles
 	 */
-	function procWidgetStyleExtraImageUpload()
+	public function procWidgetStyleExtraImageUpload()
 	{
 		$attribute = $this->arrangeWidgetVars($widget, Context::getRequestVars(), $vars);
 
@@ -96,7 +96,7 @@ class widgetController extends widget
 	/**
 	 * @brief Add content widget
 	 */
-	function procWidgetInsertDocument()
+	public function procWidgetInsertDocument()
 	{
 		// Variable Wanted
 		$module_srl = Context::get('module_srl');
@@ -159,7 +159,7 @@ class widgetController extends widget
 	/**
 	 * @brief Copy the content widget
 	 */
-	function procWidgetCopyDocument()
+	public function procWidgetCopyDocument()
 	{
 		// Variable Wanted
 		$document_srl = Context::get('document_srl');
@@ -201,7 +201,7 @@ class widgetController extends widget
 	/**
 	 * @brief Deleting widgets
 	 */
-	function procWidgetDeleteDocument()
+	public function procWidgetDeleteDocument()
 	{
 		// Variable Wanted
 		$document_srl = Context::get('document_srl');
@@ -237,7 +237,7 @@ class widgetController extends widget
 	/**
 	 * @brief Modify the code in Javascript widget/Javascript edit mode for dragging and converted to
 	 */
-	function setWidgetCodeInJavascriptMode()
+	public function setWidgetCodeInJavascriptMode()
 	{
 		$this->layout_javascript_mode = true;
 	}
@@ -246,7 +246,7 @@ class widgetController extends widget
 	 * @brief Widget code compiles and prints the information to trigger
 	 * display:: before invoked in
 	 */
-	function triggerWidgetCompile(&$content)
+	public function triggerWidgetCompile(&$content)
 	{
 		if(Context::getResponseMethod()!='HTML') return new BaseObject();
 		$content = $this->transWidgetCode($content, $this->layout_javascript_mode);
@@ -256,7 +256,7 @@ class widgetController extends widget
 	/**
 	 * @breif By converting the specific content of the widget tag return
 	 */
-	function transWidgetCode($content, $javascript_mode = false, $isReplaceLangCode = true)
+	public function transWidgetCode($content, $javascript_mode = false, $isReplaceLangCode = true)
 	{
 		// Changing user-defined language
 		$oModuleController = getController('module');
@@ -274,7 +274,7 @@ class widgetController extends widget
 	/**
 	 * @brief Widget code with the actual code changes
 	 */
-	function transWidget($matches)
+	public function transWidget($matches)
 	{
 		$buff = trim($matches[0]);
 
@@ -294,7 +294,7 @@ class widgetController extends widget
 	/**
 	 * @brief Widget box with the actual code changes
 	 */
-	function transWidgetBox($matches)
+	public function transWidgetBox($matches)
 	{
 		$buff = preg_replace('/<div><div>(.*)$/i','</div>',$matches[0]);
 		$oXmlParser = new XmlParser();
@@ -313,7 +313,7 @@ class widgetController extends widget
 	 * @brief Re-create specific content within a widget
 	 * Widget on the page and create cache file in the module using
 	 */
-	function recompileWidget($content)
+	public function recompileWidget($content)
 	{
 		// Language in bringing
 		$lang_list = Context::get('lang_supported');
@@ -353,7 +353,7 @@ class widgetController extends widget
 	/**
 	 * @brief Widget cache handling
 	 */
-	function getCache($widget, $args, $lang_type = null, $ignore_cache = false)
+	public function getCache($widget, $args, $lang_type = null, $ignore_cache = false)
 	{
 		// If the specified language specifies the current language
 		if(!$lang_type) $lang_type = Context::getLangType();
@@ -440,7 +440,7 @@ class widgetController extends widget
 	 *
 	 * $Javascript_mode is true when editing your page by the code for handling Includes photos
 	 */
-	function execute($widget, $args, $javascript_mode = false, $escaped = true)
+	public function execute($widget, $args, $javascript_mode = false, $escaped = true)
 	{
 		// Save for debug run-time widget
 		if(__DEBUG__==3) $start = getMicroTime();
@@ -661,7 +661,7 @@ class widgetController extends widget
 	/**
 	 * @brief Return widget object
 	 */
-	function getWidgetObject($widget)
+	public function getWidgetObject($widget)
 	{
 		if(!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $widget))
 		{
@@ -697,7 +697,7 @@ class widgetController extends widget
 		return $GLOBALS['_xe_loaded_widgets_'][$widget];
 	}
 
-	function compileWidgetStyle($widgetStyle,$widget,$widget_content_body, $args, $javascript_mode)
+	public function compileWidgetStyle($widgetStyle,$widget,$widget_content_body, $args, $javascript_mode)
 	{
 		if(!$widgetStyle) return $widget_content_body;
 
@@ -729,7 +729,7 @@ class widgetController extends widget
 		}
 		// Compilation
 		$widgetstyle_path = $oWidgetModel->getWidgetStylePath($widgetStyle);
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($widgetstyle_path, 'widgetstyle');
 
 		return $tpl;
@@ -738,7 +738,7 @@ class widgetController extends widget
 	/**
 	 * @brief request parameters and variables sort through the information widget
 	 */
-	function arrangeWidgetVars($widget, $request_vars, &$vars)
+	public function arrangeWidgetVars($widget, $request_vars, &$vars)
 	{
 		$oWidgetModel = getModel('widget');
 		$widget_info = $oWidgetModel->getWidgetInfo($widget);

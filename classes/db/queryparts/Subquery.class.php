@@ -13,13 +13,13 @@ class Subquery extends Query
 	 * table alias
 	 * @var string
 	 */
-	var $alias;
+	public $alias;
 
 	/**
 	 * join type
 	 * @var string
 	 */
-	var $join_type;
+	public $join_type;
 
 	/**
 	 * constructor
@@ -33,7 +33,7 @@ class Subquery extends Query
 	 * @param string $join_type
 	 * @return void
 	 */
-	function __construct($alias, $columns, $tables, $conditions, $groups, $orderby, $limit, $join_type = null)
+	public function __construct($alias, $columns, $tables, $conditions, $groups, $orderby, $limit, $join_type = null)
 	{
 		$this->alias = $alias;
 
@@ -49,12 +49,12 @@ class Subquery extends Query
 		$this->join_type = $join_type;
 	}
 
-	function getAlias()
+	public function getAlias()
 	{
 		return $this->alias;
 	}
 
-	function isJoinTable()
+	public function isJoinTable()
 	{
 		if($this->join_type)
 		{
@@ -63,14 +63,14 @@ class Subquery extends Query
 		return false;
 	}
 
-	function toString($with_values = true)
+	public function toString($with_values = true)
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 
 		return '(' . $oDB->getSelectSql($this, $with_values) . ')';
 	}
 
-	function isSubquery()
+	public function isSubquery()
 	{
 		return true;
 	}

@@ -12,20 +12,20 @@ class autoinstallAdminView extends autoinstall
 	 * Category list
 	 * @var array
 	 */
-	var $categories;
+	public $categories;
 
 	/**
 	 * Is set a ftp information
 	 * @var bool
 	 */
-	var $ftp_set = FALSE;
+	public $ftp_set = FALSE;
 
 	/**
 	 * initialize
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		$template_path = sprintf("%stpl/", $this->module_path);
 		Context::set('original_site', _XE_LOCATION_SITE_);
@@ -87,7 +87,7 @@ class autoinstallAdminView extends autoinstall
 	 * @param object $targets
 	 * @return object
 	 */
-	function rearrange(&$item, &$targets)
+	public function rearrange(&$item, &$targets)
 	{
 		$ret = new stdClass();
 		foreach($targets as $target)
@@ -167,7 +167,7 @@ class autoinstallAdminView extends autoinstall
 	 * @param object $packages Local data
 	 * @return object
 	 */
-	function rearranges($items, $packages = null)
+	public function rearranges($items, $packages = null)
 	{
 		if(!is_array($items))
 		{
@@ -294,7 +294,7 @@ class autoinstallAdminView extends autoinstall
 	 *
 	 * @return BaseObject
 	 */
-	function dispAutoinstallAdminInstalledPackages()
+	public function dispAutoinstallAdminInstalledPackages()
 	{
 		$page = Context::get('page');
 		if(!$page)
@@ -349,7 +349,7 @@ class autoinstallAdminView extends autoinstall
 	 *
 	 * @return BaseObject
 	 */
-	function dispAutoinstallAdminInstall()
+	public function dispAutoinstallAdminInstall()
 	{
 		$package_srl = Context::get('package_srl');
 		if(!$package_srl)
@@ -386,7 +386,7 @@ class autoinstallAdminView extends autoinstall
 	 *
 	 * @return BaseObject
 	 */
-	function dispAutoinstallAdminIndex()
+	public function dispAutoinstallAdminIndex()
 	{
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('autoinstall');
@@ -490,7 +490,7 @@ class autoinstallAdminView extends autoinstall
 	 *
 	 * @return void
 	 */
-	function dispCategory()
+	public function dispCategory()
 	{
 		$oModel = getModel('autoinstall');
 		$this->categories = $oModel->getCategoryList();
@@ -502,7 +502,7 @@ class autoinstallAdminView extends autoinstall
 	 *
 	 * @return BaseObject
 	 */
-	function dispAutoinstallAdminUninstall()
+	public function dispAutoinstallAdminUninstall()
 	{
 		$package_srl = Context::get('package_srl');
 		if(!$package_srl)

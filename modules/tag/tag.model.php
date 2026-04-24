@@ -10,7 +10,7 @@ class tagModel extends tag
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -18,7 +18,7 @@ class tagModel extends tag
 	 * @brief Imported Tag List
 	 * Many of the specified module in order to extract the number of tags
 	 */
-	function getTagList($obj)
+	public function getTagList($obj)
 	{
 		if($obj->mid)
 		{
@@ -50,7 +50,7 @@ class tagModel extends tag
 	/**
 	 * @brief document_srl the import tag
 	 */
-	function getDocumentSrlByTag($obj)
+	public function getDocumentSrlByTag($obj)
 	{
 		$args = new stdClass;
 		if(is_array($obj->module_srl))
@@ -71,7 +71,7 @@ class tagModel extends tag
 	/**
 	 * @brief document used in the import tag
 	 */
-	function getDocumentsTagList($obj)
+	public function getDocumentsTagList($obj)
 	{
 		$args = new stdClass;
 		if(is_array($obj->document_srl))
@@ -92,7 +92,7 @@ class tagModel extends tag
 	/**
 	 * @brief Tag is used with a particular tag list
 	 */
-	function getTagWithUsedList($obj)
+	public function getTagWithUsedList($obj)
 	{
 		$args = new stdClass;
 		if(is_array($obj->module_srl))

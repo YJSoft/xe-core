@@ -2,9 +2,9 @@
 /* Copyright (C) XEHub <https://www.xehub.io> */
 class installModel extends install
 {
-	var $pwd;
+	public $pwd;
 
-	function getSFTPList()
+	public function getSFTPList()
 	{
 		$ftp_info =  Context::getRequestVars();
 		if(!$ftp_info->ftp_host)
@@ -33,7 +33,7 @@ class installModel extends install
 		$this->add('list', $list);
 	}
 
-	function getInstallFTPList()
+	public function getInstallFTPList()
 	{
 		if(!($ftp_info = Context::getRequestVars()) || !$ftp_info->ftp_user || !$ftp_info->ftp_password) 
 		{

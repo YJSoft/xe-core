@@ -14,7 +14,7 @@ class autoinstallModel extends autoinstall
 	 * @param int $category_srl The sequence of category to get information
 	 * @return object
 	 */
-	function getCategory($category_srl)
+	public function getCategory($category_srl)
 	{
 		$args = new stdClass();
 		$args->category_srl = $category_srl;
@@ -31,7 +31,7 @@ class autoinstallModel extends autoinstall
 	 *
 	 * @return array
 	 */
-	function getPackages()
+	public function getPackages()
 	{
 		$output = executeQueryArray("autoinstall.getPackages");
 		if(!$output->data)
@@ -47,7 +47,7 @@ class autoinstallModel extends autoinstall
 	 * @param int $package_srl The sequence of package to get information
 	 * @return object
 	 */
-	function getInstalledPackage($package_srl)
+	public function getInstalledPackage($package_srl)
 	{
 		$args = new stdClass();
 		$args->package_srl = $package_srl;
@@ -65,7 +65,7 @@ class autoinstallModel extends autoinstall
 	 * @param int $package_srl The sequence of package to get information
 	 * @return object
 	 */
-	function getPackage($package_srl)
+	public function getPackage($package_srl)
 	{
 		$args = new stdClass();
 		$args->package_srl = $package_srl;
@@ -82,7 +82,7 @@ class autoinstallModel extends autoinstall
 	 *
 	 * @return array
 	 */
-	function getCategoryList()
+	public function getCategoryList()
 	{
 		$output = executeQueryArray("autoinstall.getCategories");
 		if(!$output->toBool() || !$output->data)
@@ -123,7 +123,7 @@ class autoinstallModel extends autoinstall
 	 * @param int $category_srl The sequence of category to get count
 	 * @return int
 	 */
-	function getPackageCount($category_srl)
+	public function getPackageCount($category_srl)
 	{
 		$args = new stdClass();
 		$args->category_srl = $category_srl;
@@ -140,7 +140,7 @@ class autoinstallModel extends autoinstall
 	 *
 	 * @return int
 	 */
-	function getInstalledPackageCount()
+	public function getInstalledPackageCount()
 	{
 		$output = executeQuery("autoinstall.getInstalledPackageCount");
 		if(!$output->data)
@@ -159,7 +159,7 @@ class autoinstallModel extends autoinstall
 	 * @param array $resultList Final result list
 	 * @return string $siblingList Comma seperated list
 	 */
-	function setDepth(&$item, $depth, &$list, &$resultList)
+	public function setDepth(&$item, $depth, &$list, &$resultList)
 	{
 		$resultList[$item->category_srl] = &$item;
 		$item->depth = $depth;
@@ -181,7 +181,7 @@ class autoinstallModel extends autoinstall
 	 *
 	 * @return object Returns lastest package information. If no result returns null.
 	 */
-	function getLatestPackage()
+	public function getLatestPackage()
 	{
 		$output = executeQueryArray("autoinstall.getLatestPackage");
 		if(!$output->data)
@@ -197,7 +197,7 @@ class autoinstallModel extends autoinstall
 	 * @param array $package_list Package sequence list to get information
 	 * @return array Returns array contains pacakge information. If no result returns empty array.
 	 */
-	function getInstalledPackages($package_list)
+	public function getInstalledPackages($package_list)
 	{
 		$args = new stdClass();
 		$args->package_list = $package_list;
@@ -220,7 +220,7 @@ class autoinstallModel extends autoinstall
 	 * @param int $page
 	 * @return BaseObject
 	 */
-	function getInstalledPackageList($page)
+	public function getInstalledPackageList($page)
 	{
 		$args = new stdClass();
 		$args->page = $page;
@@ -249,7 +249,7 @@ class autoinstallModel extends autoinstall
 	 * @param string $path Path to get type
 	 * @return string
 	 */
-	function getTypeFromPath($path)
+	public function getTypeFromPath($path)
 	{
 		if(!$path)
 		{
@@ -277,7 +277,7 @@ class autoinstallModel extends autoinstall
 	 * @param string $type Type to get config file path
 	 * @return string
 	 */
-	function getConfigFilePath($type)
+	public function getConfigFilePath($type)
 	{
 		$config_file = NULL;
 		switch($type)
@@ -312,7 +312,7 @@ class autoinstallModel extends autoinstall
 	 * @param string $path Path
 	 * @return bool
 	 */
-	function checkRemovable($path)
+	public function checkRemovable($path)
 	{
 		$path_array = explode("/", $path);
 		$target_name = array_pop($path_array);
@@ -337,7 +337,7 @@ class autoinstallModel extends autoinstall
 	 * @param string $path Path to get sequence
 	 * @return int
 	 */
-	function getPackageSrlByPath($path)
+	public function getPackageSrlByPath($path)
 	{
 		if(!$path)
 		{
@@ -367,7 +367,7 @@ class autoinstallModel extends autoinstall
 	 * @param int $packageSrl Sequence of pakcage to get url
 	 * @return string
 	 */
-	function getRemoveUrlByPackageSrl($packageSrl)
+	public function getRemoveUrlByPackageSrl($packageSrl)
 	{
 		$ftp_info = Context::getFTPInfo();
 		if(!$ftp_info->ftp_root_path)
@@ -389,7 +389,7 @@ class autoinstallModel extends autoinstall
 	 * @param string $path Path to get url
 	 * @return string
 	 */
-	function getRemoveUrlByPath($path)
+	public function getRemoveUrlByPath($path)
 	{
 		if(!$path)
 		{
@@ -417,7 +417,7 @@ class autoinstallModel extends autoinstall
 	 * @param int $packageSrl Sequence to get url
 	 * @return string
 	 */
-	function getUpdateUrlByPackageSrl($packageSrl)
+	public function getUpdateUrlByPackageSrl($packageSrl)
 	{
 		if(!$packageSrl)
 		{
@@ -433,7 +433,7 @@ class autoinstallModel extends autoinstall
 	 * @param string $path Path to get url
 	 * @return string
 	 */
-	function getUpdateUrlByPath($path)
+	public function getUpdateUrlByPath($path)
 	{
 		if(!$path)
 		{
@@ -449,7 +449,7 @@ class autoinstallModel extends autoinstall
 		return getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminInstall', 'package_srl', $packageSrl);
 	}
 
-	function getHaveInstance($columnList = array())
+	public function getHaveInstance($columnList = array())
 	{
 		$output = executeQueryArray('autoinstall.getHaveInstance', NULL, $columnList);
 		if(!$output->data)

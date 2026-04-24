@@ -11,14 +11,14 @@ class widgetModel extends widget
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Wanted widget's path
 	 */
-	function getWidgetPath($widget_name)
+	public function getWidgetPath($widget_name)
 	{
 		$path = sprintf('./widgets/%s/', $widget_name);
 		if(is_dir($path)) return $path;
@@ -29,7 +29,7 @@ class widgetModel extends widget
 	/**
 	 * @brief Wanted widget style path
 	 */
-	function getWidgetStylePath($widgetStyle_name)
+	public function getWidgetStylePath($widgetStyle_name)
 	{
 		$path = sprintf('./widgetstyles/%s/', $widgetStyle_name);
 		if(is_dir($path)) return $path;
@@ -40,7 +40,7 @@ class widgetModel extends widget
 	/**
 	 * @brief Wanted widget style path
 	 */
-	function getWidgetStyleTpl($widgetStyle_name)
+	public function getWidgetStyleTpl($widgetStyle_name)
 	{
 		$path = $this->getWidgetStylePath($widgetStyle_name);
 		$tpl = sprintf('%swidgetstyle.html', $path);
@@ -51,7 +51,7 @@ class widgetModel extends widget
 	 * @brief Wanted photos of the type and information
 	 * Download a widget with type (generation and other means)
 	 */
-	function getDownloadedWidgetList()
+	public function getDownloadedWidgetList()
 	{
 		$oAutoinstallModel = getModel('autoinstall');
 
@@ -96,7 +96,7 @@ class widgetModel extends widget
 	 * @brief Wanted photos of the type and information
 	 * Download a widget with type (generation and other means)
 	 */
-	function getDownloadedWidgetStyleList()
+	public function getDownloadedWidgetStyleList()
 	{
 		// 've Downloaded the widget and the widget's list of installed Wanted
 		$searched_list = FileHandler::readDir('./widgetstyles');
@@ -120,7 +120,7 @@ class widgetModel extends widget
 	 * @brief Modules conf/info.xml wanted to read the information
 	 * It uses caching to reduce time for xml parsing ..
 	 */
-	function getWidgetInfo($widget)
+	public function getWidgetInfo($widget)
 	{
 		// Get a path of the requested module. Return if not exists.
 		$widget_path = $this->getWidgetPath($widget);
@@ -261,7 +261,7 @@ class widgetModel extends widget
 	 * @brief Modules conf/info.xml wanted to read the information
 	 * It uses caching to reduce time for xml parsing ..
 	 */
-	function getWidgetStyleInfo($widgetStyle)
+	public function getWidgetStyleInfo($widgetStyle)
 	{
 		$widgetStyle = preg_replace('/[^a-zA-Z0-9-_]/', '', $widgetStyle);
 		$widgetStyle_path = $this->getWidgetStylePath($widgetStyle);

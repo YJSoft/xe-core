@@ -10,14 +10,14 @@ class moduleAdminController extends module
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Add the module category
 	 */
-	function procModuleAdminInsertCategory()
+	public function procModuleAdminInsertCategory()
 	{
 		$args = new stdClass();
 		$args->title = Context::get('title');
@@ -33,7 +33,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Update category
 	 */
-	function procModuleAdminUpdateCategory()
+	public function procModuleAdminUpdateCategory()
 	{
 		$output = $this->doUpdateModuleCategory();
 		if(!$output->toBool()) return $output;
@@ -47,7 +47,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Delete category
 	 */
-	function procModuleAdminDeleteCategory()
+	public function procModuleAdminDeleteCategory()
 	{
 		$output = $this->doDeleteModuleCategory();
 		if(!$output->toBool()) return $output;
@@ -61,7 +61,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Change the title of the module category
 	 */
-	function doUpdateModuleCategory()
+	public function doUpdateModuleCategory()
 	{
 		$args = new stdClass();
 		$args->title = Context::get('title');
@@ -72,7 +72,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Delete the module category
 	 */
-	function doDeleteModuleCategory()
+	public function doDeleteModuleCategory()
 	{
 		$args = new stdClass;
 		$args->module_category_srl = Context::get('module_category_srl');
@@ -82,7 +82,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Copy Module
 	 */
-	function procModuleAdminCopyModule($args = NULL)
+	public function procModuleAdminCopyModule($args = NULL)
 	{
 		$isProc = false;
 		if(!$args)
@@ -166,7 +166,7 @@ class moduleAdminController extends module
 			}
 		}
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 		// Copy a module
 		$triggerObj = new stdClass();
@@ -273,7 +273,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Save the module permissions
 	 */
-	function procModuleAdminInsertGrant()
+	public function procModuleAdminInsertGrant()
 	{
 		$oModuleController = getController('module');
 		$oModuleModel = getModel('module');
@@ -358,7 +358,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Updating Skins
 	 */
-	function procModuleAdminUpdateSkinInfo()
+	public function procModuleAdminUpdateSkinInfo()
 	{
 		// Get information of the module_srl
 		$module_srl = Context::get('module_srl');
@@ -502,7 +502,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief List module information
 	 */
-	function procModuleAdminModuleSetup()
+	public function procModuleAdminModuleSetup()
 	{
 		$vars = Context::getRequestVars();
 
@@ -558,7 +558,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief List permissions of the module
 	 */
-	function procModuleAdminModuleGrantSetup()
+	public function procModuleAdminModuleGrantSetup()
 	{
 		$module_srls = Context::get('module_srls');
 		if(!$module_srls) return new BaseObject(-1,'msg_invalid_request');
@@ -655,7 +655,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Add/Update language
 	 */
-	function procModuleAdminInsertLang()
+	public function procModuleAdminInsertLang()
 	{
 		// Get language code
 		$site_module_info = Context::get('site_module_info');
@@ -708,7 +708,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Remove language
 	 */
-	function procModuleAdminDeleteLang()
+	public function procModuleAdminDeleteLang()
 	{
 		// Get language code
 		$site_module_info = Context::get('site_module_info');
@@ -729,7 +729,7 @@ class moduleAdminController extends module
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function procModuleAdminGetList()
+	public function procModuleAdminGetList()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_permitted');
 
@@ -842,7 +842,7 @@ class moduleAdminController extends module
 	/**
 	 * @brief Save the file of user-defined language code
 	 */
-	function makeCacheDefinedLangCode($site_srl = 0)
+	public function makeCacheDefinedLangCode($site_srl = 0)
 	{
 		$args = new stdClass();
 

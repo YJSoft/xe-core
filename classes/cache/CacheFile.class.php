@@ -14,14 +14,14 @@ class CacheFile extends CacheBase
 	 * Path that value to stored
 	 * @var string
 	 */
-	var $cache_dir = 'files/cache/store/';
+	public $cache_dir = 'files/cache/store/';
 
 	/**
 	 * Get instance of CacheFile
 	 *
 	 * @return CacheFile instance of CacheFile
 	 */
-	function getInstance()
+	public function getInstance()
 	{
 		if(!$GLOBALS['__CacheFile__'])
 		{
@@ -35,7 +35,7 @@ class CacheFile extends CacheBase
 	 *
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 		$this->cache_dir = _XE_PATH_ . $this->cache_dir;
 		FileHandler::makeDir($this->cache_dir);
@@ -47,7 +47,7 @@ class CacheFile extends CacheBase
 	 * @param string $key The key that will be associated with the item.
 	 * @return string Returns cache file path
 	 */
-	function getCacheFileName($key)
+	public function getCacheFileName($key)
 	{
 		$path_string = preg_replace("/[^a-z0-9-_:\.]+/i", '_', $key);
 		return $this->cache_dir . str_replace(':', DIRECTORY_SEPARATOR, $path_string) . '.php';
@@ -58,7 +58,7 @@ class CacheFile extends CacheBase
 	 *
 	 * @return true
 	 */
-	function isSupport()
+	public function isSupport()
 	{
 		return true;
 	}
@@ -71,7 +71,7 @@ class CacheFile extends CacheBase
 	 * @param int $valid_time Not used
 	 * @return void
 	 */
-	function put($key, $obj, $valid_time = 0)
+	public function put($key, $obj, $valid_time = 0)
 	{
 		$cache_file = $this->getCacheFileName($key);
 		$data = serialize($obj);
@@ -95,7 +95,7 @@ class CacheFile extends CacheBase
 	 * @param int $modified_time Not used
 	 * @return bool Return true on valid or false on invalid.
 	 */
-	function isValid($key, $modified_time = 0)
+	public function isValid($key, $modified_time = 0)
 	{
 		$cache_file = $this->getCacheFileName($key);
 
@@ -120,7 +120,7 @@ class CacheFile extends CacheBase
 	 * @param int $modified_time Not used
 	 * @return false|mixed Return false on failure. Return the string associated with the $key on success.
 	 */
-	function get($key, $modified_time = 0)
+	public function get($key, $modified_time = 0)
 	{
 		if(!$cache_file = FileHandler::exists($this->getCacheFileName($key)))
 		{
@@ -144,7 +144,7 @@ class CacheFile extends CacheBase
 	 * @param string $_key Used to store the value.
 	 * @return void
 	 */
-	function _delete($_key)
+	public function _delete($_key)
 	{
 		$cache_file = $this->getCacheFileName($_key);
 		if(function_exists('opcache_invalidate'))
@@ -160,7 +160,7 @@ class CacheFile extends CacheBase
 	 * @param string $key Used to store the value.
 	 * @return void
 	 */
-	function delete($key)
+	public function delete($key)
 	{
 		$this->_delete($key);
 	}
@@ -170,7 +170,7 @@ class CacheFile extends CacheBase
 	 *
 	 * @return bool Returns true on success or false on failure.
 	 */
-	function truncate()
+	public function truncate()
 	{
 		FileHandler::removeFilesInDir($this->cache_dir);
 	}

@@ -14,7 +14,7 @@ class boardAdminView extends board {
 	 *
 	 * board module can be divided into general use and admin use.\n
 	 **/
-	function init() {
+	public function init() {
 		// check module_srl is existed or not
 		$module_srl = Context::get('module_srl');
 		if(!$module_srl && $this->module_srl) {
@@ -63,7 +63,7 @@ class boardAdminView extends board {
 	/**
 	 * @brief display the board module admin contents
 	 **/
-	function dispBoardAdminContent() {
+	public function dispBoardAdminContent() {
 		// setup the board module general information
 		$args = new stdClass();
 		$args->sort_index = "module_srl";
@@ -127,14 +127,14 @@ class boardAdminView extends board {
 	/**
 	 * @brief display the selected board module admin information
 	 **/
-	function dispBoardAdminBoardInfo() {
+	public function dispBoardAdminBoardInfo() {
 		$this->dispBoardAdminInsertBoard();
 	}
 
 	/**
 	 * @brief display the module insert form
 	 **/
-	function dispBoardAdminInsertBoard() {
+	public function dispBoardAdminInsertBoard() {
 		if(!in_array($this->module_info->module, array('admin', 'board','blog','guestbook'))) {
 			return $this->alertMessage('msg_invalid_request');
 		}
@@ -194,7 +194,7 @@ class boardAdminView extends board {
 	 * @brief display the additional setup panel
 	 * additonal setup panel is for connecting the service modules with other modules
 	 **/
-	function dispBoardAdminBoardAdditionSetup() {
+	public function dispBoardAdminBoardAdditionSetup() {
 		// sice content is obtained from other modules via call by reference, declare it first
 		$content = '';
 
@@ -211,7 +211,7 @@ class boardAdminView extends board {
 	/**
 	 * @brief display the board mdoule delete page
 	 **/
-	function dispBoardAdminDeleteBoard() {
+	public function dispBoardAdminDeleteBoard() {
 		if(!Context::get('module_srl')) return $this->dispBoardAdminContent();
 		if(!in_array($this->module_info->module, array('admin', 'board','blog','guestbook'))) {
 			return $this->alertMessage('msg_invalid_request');
@@ -235,7 +235,7 @@ class boardAdminView extends board {
 	/**
 	 * @brief display category information
 	 **/
-	function dispBoardAdminCategoryInfo() {
+	public function dispBoardAdminCategoryInfo() {
 		$oDocumentModel = getModel('document');
 		$category_content = $oDocumentModel->getCategoryHTML($this->module_info->module_srl);
 		Context::set('category_content', $category_content);
@@ -247,7 +247,7 @@ class boardAdminView extends board {
 	/**
 	 * @brief display the grant information
 	 **/
-	function dispBoardAdminGrantInfo() {
+	public function dispBoardAdminGrantInfo() {
 		// get the grant infotmation from admin module
 		$oModuleAdminModel = getAdminModel('module');
 		$grant_content = $oModuleAdminModel->getModuleGrantHTML($this->module_info->module_srl, $this->xml_info->grant);
@@ -259,7 +259,7 @@ class boardAdminView extends board {
 	/**
 	 * @brief display extra variables
 	 **/
-	function dispBoardAdminExtraVars() {
+	public function dispBoardAdminExtraVars() {
 		$oDocumentModel = getModel('document');
 		$extra_vars_content = $oDocumentModel->getExtraVarsHTML($this->module_info->module_srl);
 		Context::set('extra_vars_content', $extra_vars_content);
@@ -270,7 +270,7 @@ class boardAdminView extends board {
 	/**
 	 * @brief display the module skin information
 	 **/
-	function dispBoardAdminSkinInfo() {
+	public function dispBoardAdminSkinInfo() {
 		 // get the grant infotmation from admin module
 		$oModuleAdminModel = getAdminModel('module');
 		$skin_content = $oModuleAdminModel->getModuleSkinHTML($this->module_info->module_srl);
@@ -282,7 +282,7 @@ class boardAdminView extends board {
 	/**
 	 * Display the module mobile skin information
 	 **/
-	function dispBoardAdminMobileSkinInfo() {
+	public function dispBoardAdminMobileSkinInfo() {
 		 // get the grant infotmation from admin module
 		$oModuleAdminModel = getAdminModel('module');
 		$skin_content = $oModuleAdminModel->getModuleMobileSkinHTML($this->module_info->module_srl);
@@ -294,7 +294,7 @@ class boardAdminView extends board {
 	/**
 	 * @brief board module message
 	 **/
-	function alertMessage($message) {
+	public function alertMessage($message) {
 		$script =  sprintf('<script> xAddEventListener(window,"load", function() { alert("%s"); } );</script>', Context::getLang($message));
 		Context::addHtmlHeader( $script );
 	}

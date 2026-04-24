@@ -11,7 +11,7 @@ class file extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Register action forward (to use in administrator mode)
 		$oModuleController = getController('module');
@@ -51,9 +51,9 @@ class file extends ModuleObject
 	 *
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -95,9 +95,9 @@ class file extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -164,7 +164,7 @@ class file extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 }

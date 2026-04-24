@@ -8,7 +8,7 @@
 
 if(!function_exists('lcfirst'))
 {
-	function lcfirst($text)
+	public function lcfirst($text)
 	{
 		return strtolower(substr($text, 0, 1)) . substr($text, 1);
 	}
@@ -24,22 +24,22 @@ class krzip extends ModuleObject
 
 	public static $epostapi_host = 'http://biz.epost.go.kr/KpostPortal/openapi';
 
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		return $this->makeObject();
 	}
 
-	function moduleUninstall()
+	public function moduleUninstall()
 	{
 		return $this->makeObject();
 	}
 
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		return FALSE;
 	}
 
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		return $this->makeObject();
 	}

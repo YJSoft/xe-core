@@ -9,7 +9,7 @@ class HTMLDisplayHandler
 	 * @param ModuleObject $oModule the module object
 	 * @return string compiled template string
 	 */
-	function toDoc(&$oModule)
+	public function toDoc(&$oModule)
 	{
 		$oTemplate = TemplateHandler::getInstance();
 
@@ -145,7 +145,7 @@ class HTMLDisplayHandler
 	 * @param string $output compiled template string
 	 * @return void
 	 */
-	function prepareToPrint(&$output)
+	public function prepareToPrint(&$output)
 	{
 		if(Context::getResponseMethod() != 'HTML')
 		{
@@ -241,7 +241,7 @@ class HTMLDisplayHandler
 	 * @param array $match input value.
 	 * @return string input value.
 	 */
-	function _preserveValue($match)
+	public function _preserveValue($match)
 	{
 		$INPUT_ERROR = Context::get('INPUT_ERROR');
 
@@ -295,7 +295,7 @@ class HTMLDisplayHandler
 	 * @param array $matches select tag.
 	 * @return string select tag.
 	 */
-	function _preserveSelectValue($matches)
+	public function _preserveSelectValue($matches)
 	{
 		$INPUT_ERROR = Context::get('INPUT_ERROR');
 		preg_replace('@\sselected(="[^"]*?")?@', ' ', $matches[0]);
@@ -319,7 +319,7 @@ class HTMLDisplayHandler
 	 * @param array $matches textarea tag information.
 	 * @return string textarea tag
 	 */
-	function _preserveTextAreaValue($matches)
+	public function _preserveTextAreaValue($matches)
 	{
 		$INPUT_ERROR = Context::get('INPUT_ERROR');
 		preg_match('@<textarea.*?>@is', $matches[0], $mm);
@@ -332,7 +332,7 @@ class HTMLDisplayHandler
 	 * @param array $matches
 	 * @return void
 	 */
-	function _moveStyleToHeader($matches)
+	public function _moveStyleToHeader($matches)
 	{
 		if(isset($matches[1]) && stristr($matches[1], 'scoped'))
 		{
@@ -347,7 +347,7 @@ class HTMLDisplayHandler
 	 * @param array $matches
 	 * @return void
 	 */
-	function _moveLinkToHeader($matches)
+	public function _moveLinkToHeader($matches)
 	{
 		Context::addHtmlHeader($matches[0]);
 	}
@@ -358,7 +358,7 @@ class HTMLDisplayHandler
 	 * @param array $matches
 	 * @return void
 	 */
-	function _moveMetaToHeader($matches)
+	public function _moveMetaToHeader($matches)
 	{
 		Context::addHtmlHeader($matches[0]);
 	}
@@ -368,7 +368,7 @@ class HTMLDisplayHandler
 	 * @param array $matches
 	 * @return void
 	 */
-	function _transMeta($matches)
+	public function _transMeta($matches)
 	{
 		if($matches[1])
 		{
@@ -381,7 +381,7 @@ class HTMLDisplayHandler
 	 * import basic .js files.
 	 * @return void
 	 */
-	function _loadJSCSS()
+	public function _loadJSCSS()
 	{
 		$oContext = Context::getInstance();
 		$lang_type = Context::getLangType();

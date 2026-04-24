@@ -12,13 +12,13 @@ class CacheHandler extends Handler
 	 * instance of cache handler
 	 * @var CacheBase
 	 */
-	var $handler = null;
+	public $handler = null;
 
 	/**
 	 * Version of key group
 	 * @var int
 	 */
-	var $keyGroupVersions = null;
+	public $keyGroupVersions = null;
 
 	/**
 	 * Get a instance of CacheHandler(for singleton)
@@ -28,7 +28,7 @@ class CacheHandler extends Handler
 	 * @param boolean $always_use_file If set true, use a file cache always
 	 * @return CacheHandler
 	 */
-	function &getInstance($target = 'object', $info = null, $always_use_file = false)
+	public static function getInstance($target = 'object', $info = null, $always_use_file = false)
 	{
 		$cache_handler_key = $target . ($always_use_file ? '_file' : '');
 		if(!$GLOBALS['__XE_CACHE_HANDLER__'][$cache_handler_key])
@@ -49,7 +49,7 @@ class CacheHandler extends Handler
 	 * @param boolean $always_use_file If set true, use a file cache always
 	 * @return CacheHandler
 	 */
-	function __construct($target, $info = null, $always_use_file = false)
+	public function __construct($target, $info = null, $always_use_file = false)
 	{
 		if(!$info)
 		{
@@ -119,7 +119,7 @@ class CacheHandler extends Handler
 	 *
 	 * @return boolean
 	 */
-	function isSupport()
+	public function isSupport()
 	{
 		if($this->handler && $this->handler->isSupport())
 		{
@@ -135,7 +135,7 @@ class CacheHandler extends Handler
 	 * @param string $key The key that will be associated with the item.
 	 * @return string Returns cache name
 	 */
-	function getCacheKey($key)
+	public static function getCacheKey($key)
 	{
 		$key = str_replace('/', ':', $key);
 
@@ -150,7 +150,7 @@ class CacheHandler extends Handler
 	 * 								If stored time is older then modified time, return false.
 	 * @return false|mixed Return false on failure or older then modified time. Return the string associated with the $key on success.
 	 */
-	function get($key, $modified_time = 0)
+	public function get($key, $modified_time = 0)
 	{
 		if(!$this->handler)
 		{
@@ -172,7 +172,7 @@ class CacheHandler extends Handler
 	 * 							If no ttl is supplied, use the default valid time.
 	 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
 	 */
-	function put($key, $obj, $valid_time = 0)
+	public function put($key, $obj, $valid_time = 0)
 	{
 		if(!$this->handler && !$key)
 		{
@@ -190,7 +190,7 @@ class CacheHandler extends Handler
 	 * @param string $key Cache key
 	 * @return void
 	 */
-	function delete($key)
+	public function delete($key)
 	{
 		if(!$this->handler)
 		{
@@ -210,7 +210,7 @@ class CacheHandler extends Handler
 	 * 								If stored time is older then modified time, the data is invalid.
 	 * @return bool Return true on valid or false on invalid.
 	 */
-	function isValid($key, $modified_time = 0)
+	public function isValid($key, $modified_time = 0)
 	{
 		if(!$this->handler)
 		{
@@ -227,7 +227,7 @@ class CacheHandler extends Handler
 	 *
 	 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
 	 */
-	function truncate()
+	public function truncate()
 	{
 		if(!$this->handler)
 		{
@@ -253,7 +253,7 @@ class CacheHandler extends Handler
 	 * @param string $key Cache key
 	 * @return string
 	 */
-	function getGroupKey($keyGroupName, $key)
+	public function getGroupKey($keyGroupName, $key)
 	{
 		if(!$this->keyGroupVersions[$keyGroupName])
 		{
@@ -270,7 +270,7 @@ class CacheHandler extends Handler
 	 * @param string $keyGroupName Group name
 	 * @return void
 	 */
-	function invalidateGroupKey($keyGroupName)
+	public function invalidateGroupKey($keyGroupName)
 	{
 		$this->keyGroupVersions[$keyGroupName]++;
 		$this->handler->put('key_group_versions', $this->keyGroupVersions, 0);
@@ -289,7 +289,7 @@ class CacheBase
 	 * Default valid time
 	 * @var int
 	 */
-	var $valid_time = 36000;
+	public $valid_time = 36000;
 
 	/**
 	 * Get cached data
@@ -299,7 +299,7 @@ class CacheBase
 	 * 								If stored time is older then modified time, return false.
 	 * @return false|mixed Return false on failure or older then modified time. Return the string associated with the $key on success.
 	 */
-	function get($key, $modified_time = 0)
+	public function get($key, $modified_time = 0)
 	{
 		return false;
 	}
@@ -314,7 +314,7 @@ class CacheBase
 	 * 							If no ttl is supplied, use the default valid time.
 	 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
 	 */
-	function put($key, $obj, $valid_time = 0)
+	public function put($key, $obj, $valid_time = 0)
 	{
 		return false;
 	}
@@ -327,7 +327,7 @@ class CacheBase
 	 * 								If stored time is older then modified time, the data is invalid.
 	 * @return bool Return true on valid or false on invalid.
 	 */
-	function isValid($key, $modified_time = 0)
+	public function isValid($key, $modified_time = 0)
 	{
 		return false;
 	}
@@ -337,7 +337,7 @@ class CacheBase
 	 *
 	 * @return boolean
 	 */
-	function isSupport()
+	public function isSupport()
 	{
 		return false;
 	}
@@ -347,7 +347,7 @@ class CacheBase
 	 *
 	 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
 	 */
-	function truncate()
+	public function truncate()
 	{
 		return false;
 	}

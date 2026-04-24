@@ -14,7 +14,7 @@ class menu extends ModuleObject
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Create a directory to use menu
 		FileHandler::makeDir('./files/cache/menu');
@@ -26,9 +26,9 @@ class menu extends ModuleObject
 	 * A method to check if successfully installed
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -67,8 +67,8 @@ class menu extends ModuleObject
 	 * Execute update
 	 * @return BaseObject
 	 */
-	function moduleUpdate() {
-		$oDB = &DB::getInstance();
+	public function moduleUpdate() {
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -204,7 +204,7 @@ class menu extends ModuleObject
 	 * Re-generate the cache file
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		$oMenuAdminController = getAdminController('menu');
 		$oMenuAdminModel = getAdminModel('menu');

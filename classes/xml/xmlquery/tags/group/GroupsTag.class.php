@@ -15,14 +15,14 @@ class GroupsTag
 	 * column list
 	 * @var array
 	 */
-	var $groups;
+	public $groups;
 
 	/**
 	 * constructor
 	 * @param array|string $xml_groups
 	 * @return void
 	 */
-	function __construct($xml_groups)
+	public function __construct($xml_groups)
 	{
 		$this->groups = array();
 
@@ -33,7 +33,7 @@ class GroupsTag
 				$xml_groups = array($xml_groups);
 			}
 
-			$dbParser = &DB::getParser();
+			$dbParser = DB::getParser();
 			for($i = 0; $i < count($xml_groups); $i++)
 			{
 				$group = $xml_groups[$i];
@@ -49,7 +49,7 @@ class GroupsTag
 		}
 	}
 
-	function toString()
+	public function toString()
 	{
 		$output = 'array(' . PHP_EOL;
 		foreach($this->groups as $group)

@@ -10,7 +10,7 @@
 class WidgetHandler
 {
 
-	var $widget_path = '';
+	public $widget_path = '';
 
 }
 /* End of file WidgetHandler.class.php */

@@ -15,14 +15,14 @@ class ConditionsTag
 	 * ConditionGroupTag list
 	 * @var array value is ConditionGroupTag object
 	 */
-	var $condition_groups;
+	public $condition_groups;
 
 	/**
 	 * constructor
 	 * @param object $xml_conditions
 	 * @return void
 	 */
-	function __construct($xml_conditions)
+	public function __construct($xml_conditions)
 	{
 		$this->condition_groups = array();
 		if(!$xml_conditions)
@@ -71,7 +71,7 @@ class ConditionsTag
 	 * ConditionGroupTag object to string
 	 * @return string
 	 */
-	function toString()
+	public function toString()
 	{
 		$output_conditions = 'array(' . PHP_EOL;
 		foreach($this->condition_groups as $condition)
@@ -83,7 +83,7 @@ class ConditionsTag
 		return $output_conditions;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		foreach($this->condition_groups as $condition)

@@ -12,25 +12,25 @@ class BaseObject
 	 * Error code. If `0`, it is not an error.
 	 * @var int
 	 */
-	var $error = 0;
+	public $error = 0;
 
 	/**
 	 * Error message. If `success`, it is not an error.
 	 * @var string
 	 */
-	var $message = 'success';
+	public $message = 'success';
 
 	/**
 	 * An additional variable
 	 * @var array
 	 */
-	var $variables = array();
+	public $variables = array();
 
 	/**
 	 * http status code.
 	 * @var int
 	 */
-	var $httpStatusCode = NULL;
+	public $httpStatusCode = NULL;
 
 	/**
 	 * Constructor
@@ -39,7 +39,7 @@ class BaseObject
 	 * @param string $message Error message
 	 * @return void
 	 */
-	function __construct($error = 0, $message = 'success')
+	public function __construct($error = 0, $message = 'success')
 	{
 		$this->setError($error);
 		$this->setMessage($message);
@@ -51,7 +51,7 @@ class BaseObject
 	 * @param int $error error code
 	 * @return void
 	 */
-	function setError($error = 0)
+	public function setError($error = 0)
 	{
 		$this->error = $error;
 	}
@@ -61,7 +61,7 @@ class BaseObject
 	 *
 	 * @return int Returns an error code
 	 */
-	function getError()
+	public function getError()
 	{
 		return $this->error;
 	}
@@ -72,7 +72,7 @@ class BaseObject
 	 * @param int $code HTTP status code. Default value is `200` that means successful
 	 * @return void
 	 */
-	function setHttpStatusCode($code = '200')
+	public function setHttpStatusCode($code = '200')
 	{
 		$this->httpStatusCode = $code;
 	}
@@ -82,7 +82,7 @@ class BaseObject
 	 *
 	 * @return int Returns HTTP status code
 	 */
-	function getHttpStatusCode()
+	public function getHttpStatusCode()
 	{
 		return $this->httpStatusCode;
 	}
@@ -93,7 +93,7 @@ class BaseObject
 	 * @param string $message Error message
 	 * @return bool Alaways returns true.
 	 */
-	function setMessage($message = 'success', $type = NULL)
+	public function setMessage($message = 'success', $type = NULL)
 	{
 		if($str = Context::getLang($message))
 		{
@@ -113,7 +113,7 @@ class BaseObject
 	 *
 	 * @return string Returns message
 	 */
-	function getMessage()
+	public function getMessage()
 	{
 		return $this->message;
 	}
@@ -125,7 +125,7 @@ class BaseObject
 	 * @param mixed $val A value for the variable
 	 * @return void
 	 */
-	function add($key, $val)
+	public function add($key, $val)
 	{
 		$this->variables[$key] = $val;
 	}
@@ -136,7 +136,7 @@ class BaseObject
 	 * @param BaseObject|array $object Either object or array containg key/value pairs to be added
 	 * @return void
 	 */
-	function adds($object)
+	public function adds($object)
 	{
 		if(is_object($object))
 		{
@@ -158,7 +158,7 @@ class BaseObject
 	 * @param string $key
 	 * @return string Returns value to a given key
 	 */
-	function get($key)
+	public function get($key)
 	{
 		return $this->variables[$key];
 	}
@@ -168,7 +168,7 @@ class BaseObject
 	 *
 	 * @return BaseObject Returns an object containing key/value pairs
 	 */
-	function gets()
+	public function gets()
 	{
 		$args = func_get_args();
 		$output = new stdClass();
@@ -184,7 +184,7 @@ class BaseObject
 	 *
 	 * @return array
 	 */
-	function getVariables()
+	public function getVariables()
 	{
 		return $this->variables;
 	}
@@ -194,7 +194,7 @@ class BaseObject
 	 *
 	 * @return BaseObject
 	 */
-	function getObjectVars()
+	public function getObjectVars()
 	{
 		$output = new stdClass();
 		foreach($this->variables as $key => $val)
@@ -209,7 +209,7 @@ class BaseObject
 	 *
 	 * @return bool Retruns true : error isn't 0 or false : otherwise.
 	 */
-	function toBool()
+	public function toBool()
 	{
 		// TODO This method is misleading in that it returns true if error is 0, which should be true in boolean representation.
 		return ($this->error == 0);
@@ -220,7 +220,7 @@ class BaseObject
 	 *
 	 * @return bool
 	 */
-	function toBoolean()
+	public function toBoolean()
 	{
 		return $this->toBool();
 	}

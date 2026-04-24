@@ -11,7 +11,7 @@ class layout extends ModuleObject
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Create a directory to be used in the layout
 		FileHandler::makeDir('./files/cache/layout');
@@ -23,9 +23,9 @@ class layout extends ModuleObject
 	 * a method to check if successfully installed
 	 * @return boolean
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -66,9 +66,9 @@ class layout extends ModuleObject
 	 * Execute update
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -124,7 +124,7 @@ class layout extends ModuleObject
 	 * Re-generate the cache file
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		$path = './files/cache/layout';
 		if(!is_dir($path))

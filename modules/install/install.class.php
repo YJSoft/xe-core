@@ -10,7 +10,7 @@ class install extends ModuleObject
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		return new BaseObject();
 	}
@@ -18,7 +18,7 @@ class install extends ModuleObject
 	/**
 	 * @brief a method to check if successfully installed
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		return false;
 	}
@@ -26,7 +26,7 @@ class install extends ModuleObject
 	/**
 	 * @brief Execute update
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		return new BaseObject();
 	}
@@ -34,7 +34,7 @@ class install extends ModuleObject
 	/**
 	 * @brief Re-generate the cache file
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 }

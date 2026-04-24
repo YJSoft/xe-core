@@ -8,7 +8,7 @@
 
 class krzipAdminController extends krzip
 {
-	function procKrzipAdminInsertConfig()
+	public function procKrzipAdminInsertConfig()
 	{
 		$module_config = Context::getRequestVars();
 		getDestroyXeVars($module_config);

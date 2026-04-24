@@ -16,7 +16,7 @@ class commentController extends comment
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -25,7 +25,7 @@ class commentController extends comment
 	 * Action to handle recommendation votes on comments (Up)
 	 * @return BaseObject
 	 */
-	function procCommentVoteUp()
+	public function procCommentVoteUp()
 	{
 		if(!Context::get('is_logged'))
 		{
@@ -63,7 +63,7 @@ class commentController extends comment
 	 * Action to handle recommendation votes on comments (Down)
 	 * @return BaseObject
 	 */
-	function procCommentVoteDown()
+	public function procCommentVoteDown()
 	{
 		if(!Context::get('is_logged'))
 		{
@@ -101,7 +101,7 @@ class commentController extends comment
 	 * Action to be called when a comment posting is reported
 	 * @return void|BaseObject
 	 */
-	function procCommentDeclare()
+	public function procCommentDeclare()
 	{
 		if(!Context::get('is_logged'))
 		{
@@ -121,7 +121,7 @@ class commentController extends comment
 	 * Trigger to delete its comments together with document deleted
 	 * @return BaseObject
 	 */
-	function triggerDeleteDocumentComments(&$obj)
+	public function triggerDeleteDocumentComments(&$obj)
 	{
 		$document_srl = $obj->document_srl;
 		if(!$document_srl)
@@ -136,7 +136,7 @@ class commentController extends comment
 	 * Trigger to delete corresponding comments when deleting a module
 	 * @return object
 	 */
-	function triggerDeleteModuleComments(&$obj)
+	public function triggerDeleteModuleComments(&$obj)
 	{
 		$module_srl = $obj->module_srl;
 		if(!$module_srl)
@@ -153,7 +153,7 @@ class commentController extends comment
 	 * available only in the current connection of the session value
 	 * @return void
 	 */
-	function addGrant($comment_srl)
+	public function addGrant($comment_srl)
 	{
 		$_SESSION['own_comment'][$comment_srl] = TRUE;
 	}
@@ -164,7 +164,7 @@ class commentController extends comment
 	 * @param int $module_srl
 	 * @return bool
 	 */
-	function isModuleUsingPublishValidation($module_srl = NULL)
+	public function isModuleUsingPublishValidation($module_srl = NULL)
 	{
 		if($module_srl == NULL)
 		{
@@ -188,7 +188,7 @@ class commentController extends comment
 	 * @param bool $manual_inserted
 	 * @return object
 	 */
-	function insertComment($obj, $manual_inserted = FALSE)
+	public function insertComment($obj, $manual_inserted = FALSE)
 	{
 		if(!$manual_inserted && !checkCSRF())
 		{
@@ -515,7 +515,7 @@ class commentController extends comment
 	 * @param object $obj 
 	 * @return void
 	 */
-	function sendEmailToAdminAfterInsertComment($obj)
+	public function sendEmailToAdminAfterInsertComment($obj)
 	{
 		$using_validation = $this->isModuleUsingPublishValidation($obj->module_srl);
 
@@ -659,7 +659,7 @@ class commentController extends comment
 	 * @param bool $manual_updated
 	 * @return object
 	 */
-	function updateComment($obj, $is_admin = FALSE, $manual_updated = FALSE)
+	public function updateComment($obj, $is_admin = FALSE, $manual_updated = FALSE)
 	{
 		if(!$manual_updated && !checkCSRF())
 		{
@@ -783,7 +783,7 @@ class commentController extends comment
 	 * @param bool $isMoveToTrash
 	 * @return object
 	 */
-	function deleteComment($comment_srl, $is_admin = FALSE, $isMoveToTrash = FALSE)
+	public function deleteComment($comment_srl, $is_admin = FALSE, $isMoveToTrash = FALSE)
 	{
 		// create the comment model object
 		$oCommentModel = getModel('comment');
@@ -917,7 +917,7 @@ class commentController extends comment
 	 * Remove all comment relation log
 	 * @return BaseObject
 	 */
-	function deleteCommentLog($args)
+	public function deleteCommentLog($args)
 	{
 		$this->_deleteDeclaredComments($args);
 		$this->_deleteVotedComments($args);
@@ -929,7 +929,7 @@ class commentController extends comment
 	 * @param int $document_srl
 	 * @return object
 	 */
-	function deleteComments($document_srl, $obj = NULL)
+	public function deleteComments($document_srl, $obj = NULL)
 	{
 		// create the document model object
 		$oDocumentModel = getModel('document');
@@ -1006,7 +1006,7 @@ class commentController extends comment
 	 * @param array|string $commentSrls : srls string (ex: 1, 2,56, 88)
 	 * @return void
 	 */
-	function _deleteDeclaredComments($commentSrls)
+	public function _deleteDeclaredComments($commentSrls)
 	{
 		executeQuery('comment.deleteDeclaredComments', $commentSrls);
 		executeQuery('comment.deleteCommentDeclaredLog', $commentSrls);
@@ -1017,7 +1017,7 @@ class commentController extends comment
 	 * @param array|string $commentSrls : srls string (ex: 1, 2,56, 88)
 	 * @return void
 	 */
-	function _deleteVotedComments($commentSrls)
+	public function _deleteVotedComments($commentSrls)
 	{
 		executeQuery('comment.deleteCommentVotedLog', $commentSrls);
 	}
@@ -1028,7 +1028,7 @@ class commentController extends comment
 	 * @param int $point
 	 * @return BaseObject
 	 */
-	function updateVotedCount($comment_srl, $point = 1)
+	public function updateVotedCount($comment_srl, $point = 1)
 	{
 		if($point > 0)
 		{
@@ -1162,7 +1162,7 @@ class commentController extends comment
 	 * @param $comment_srl
 	 * @return void
 	 */
-	function declaredComment($comment_srl)
+	public function declaredComment($comment_srl)
 	{
 		// Fail if session information already has a reported document
 		if($_SESSION['declared_comment'][$comment_srl])
@@ -1237,7 +1237,7 @@ class commentController extends comment
 		}
 
 		// begin transaction
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		// execute insert
@@ -1284,7 +1284,7 @@ class commentController extends comment
 	 * @param strgin $target
 	 * @return void
 	 */
-	function addCommentPopupMenu($url, $str, $icon = '', $target = 'self')
+	public function addCommentPopupMenu($url, $str, $icon = '', $target = 'self')
 	{
 		$comment_popup_menu_list = Context::get('comment_popup_menu_list');
 		if(!is_array($comment_popup_menu_list))
@@ -1306,7 +1306,7 @@ class commentController extends comment
 	 * Save the comment extension form for each module
 	 * @return void
 	 */
-	function procCommentInsertModuleConfig()
+	public function procCommentInsertModuleConfig()
 	{
 		$module_srl = Context::get('target_module_srl');
 		if(preg_match('/^([0-9,]+)$/', $module_srl))
@@ -1367,7 +1367,7 @@ class commentController extends comment
 	 * @param object $comment_config
 	 * @return BaseObject
 	 */
-	function setCommentModuleConfig($srl, $comment_config)
+	public function setCommentModuleConfig($srl, $comment_config)
 	{
 		$oModuleController = getController('module');
 		$oModuleController->insertModulePartConfig('comment', $srl, $comment_config);
@@ -1378,7 +1378,7 @@ class commentController extends comment
 	 * Get comment all list
 	 * @return void
 	 */
-	function procCommentGetList()
+	public function procCommentGetList()
 	{
 		if(!Context::get('is_logged'))
 		{
@@ -1417,7 +1417,7 @@ class commentController extends comment
 		$this->add('comment_list', $commentList);
 	}
 
-	function triggerCopyModule(&$obj)
+	public function triggerCopyModule(&$obj)
 	{
 		$oModuleModel = getModel('module');
 		$commentConfig = $oModuleModel->getModulePartConfig('comment', $obj->originModuleSrl);

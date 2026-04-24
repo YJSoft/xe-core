@@ -10,14 +10,14 @@ class pollModel extends poll
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief The function examines if the user has already been polled
 	 */
-	function isPolled($poll_srl)
+	public function isPolled($poll_srl)
 	{
 		$args = new stdClass;
 		$args->poll_srl = $poll_srl;
@@ -40,7 +40,7 @@ class pollModel extends poll
 	 * @brief Return the HTML data of the survey
 	 * Return the result after checking if the poll has responses
 	 */
-	function getPollHtml($poll_srl, $style = '', $skin = 'default')
+	public function getPollHtml($poll_srl, $style = '', $skin = 'default')
 	{
 		$args = new stdClass;
 		$args->poll_srl = $poll_srl;
@@ -92,14 +92,14 @@ class pollModel extends poll
 		// The skin for the default configurations, and the colorset configurations
 		$tpl_path = sprintf("%sskins/%s/", $this->module_path, $skin);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
 
 	/**
 	 * @brief Return the result's HTML
 	 */
-	function getPollResultHtml($poll_srl, $skin = 'default')
+	public function getPollResultHtml($poll_srl, $skin = 'default')
 	{
 		$args = new stdClass;
 		$args->poll_srl = $poll_srl;
@@ -140,13 +140,13 @@ class pollModel extends poll
 		// The skin for the default configurations, and the colorset configurations
 		$tpl_path = sprintf("%sskins/%s/", $this->module_path, $skin);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
 	/** [TO REVIEW]
 	 * @brief Selected poll - return the colorset of the skin
 	 */
-	function getPollGetColorsetList()
+	public function getPollGetColorsetList()
 	{
 		$skin = Context::get('skin') ?: 'default';
 		if(!preg_match('/^[a-zA-Z0-9_-]+$/', $skin))

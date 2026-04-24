@@ -3,9 +3,9 @@
 
 class pageMobile extends pageView
 {
-	function _getArticleContent()
+	public function _getArticleContent()
 	{
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 
 		$oDocumentModel = getModel('document');
 		$oDocument = $oDocumentModel->getDocument(0, true);

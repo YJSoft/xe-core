@@ -120,7 +120,7 @@ function getView($module_name)
  * @param string $module_name The module name to get a mobile instance
  * @return mixed Module mobile instance
  */
-function &getMobile($module_name)
+function getMobile($module_name)
 {
 	return getModule($module_name, 'mobile');
 }
@@ -1303,7 +1303,7 @@ if(!function_exists('hexrgb'))
 	 * @param string $hexstr
 	 * @return array
 	 */
-	function hexrgb($hexstr)
+	public function hexrgb($hexstr)
 	{
 		$int = hexdec($hexstr);
 

@@ -14,13 +14,13 @@ class menuMobile extends moduleObject
 	 * Result data list
 	 * @var array
 	 */
-	var $result = array();
+	public $result = array();
 
 	/**
 	 * Menu depth arrange
 	 * @return void
 	 */
-	function straightenMenu($menu_item, $depth)
+	public function straightenMenu($menu_item, $depth)
 	{
 		if(!$menu_item['link']) return;
 		$obj = new stdClass;
@@ -40,10 +40,10 @@ class menuMobile extends moduleObject
 	 * Display menu
 	 * @return void
 	 */
-	function dispMenuMenu()
+	public function dispMenuMenu()
 	{
 		$menu_srl = Context::get('menu_srl');
-		$oAdminModel =& getAdminModel('menu');
+		$oAdminModel =getAdminModel('menu');
 		$menu_info = $oAdminModel->getMenu($menu_srl);
 
 		if(!$menu_srl)

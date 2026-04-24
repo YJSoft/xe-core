@@ -17,14 +17,14 @@ class DBCubrid extends DB
 	 * prefix of XE tables(One more XE can be installed on a single DB)
 	 * @var string
 	 */
-	var $prefix = 'xe_';
+	public $prefix = 'xe_';
 
 	/**
 	 * max size of constant in CUBRID(if string is larger than this, '...'+'...' should be used)
 	 * @var int
 	 */
-	var $cutlen = 12000;
-	var $comment_syntax = '/* %s */';
+	public $cutlen = 12000;
+	public $comment_syntax = '/* %s */';
 
 	/**
 	 * column type used in CUBRID
@@ -33,7 +33,7 @@ class DBCubrid extends DB
 	 * becasue it uses commonly defined type in the schema/query xml
 	 * @var array
 	 */
-	var $column_type = array(
+	public $column_type = array(
 		'bignumber' => 'numeric(20)',
 		'number' => 'integer',
 		'varchar' => 'character varying',
@@ -49,7 +49,7 @@ class DBCubrid extends DB
 	 * constructor
 	 * @return void
 	 */
-	function __construct($auto_connect = TRUE)
+	public function __construct($auto_connect = TRUE)
 	{
 		$this->_setDBInfo();
 		if($auto_connect) $this->_connect();
@@ -59,7 +59,7 @@ class DBCubrid extends DB
 	 * Create an instance of this class
 	 * @return DBCubrid return DBCubrid object instance
 	 */
-	function create()
+	public function create()
 	{
 		return new DBCubrid;
 	}
@@ -70,7 +70,7 @@ class DBCubrid extends DB
 	 * @param array $connection connection's value is db_hostname, db_port, db_database, db_userid, db_password
 	 * @return resource
 	 */
-	function __connect($connection)
+	public function __connect($connection)
 	{
 		// attempts to connect
 		$result = @cubrid_connect($connection["db_hostname"], $connection["db_port"], $connection["db_database"], $connection["db_userid"], $connection["db_password"]);
@@ -102,7 +102,7 @@ class DBCubrid extends DB
 	 * @param resource $connection
 	 * @return void
 	 */
-	function _close($connection)
+	public function _close($connection)
 	{
 		@cubrid_commit($connection);
 		@cubrid_disconnect($connection);
@@ -114,7 +114,7 @@ class DBCubrid extends DB
 	 * @param string $string
 	 * @return string
 	 */
-	function addQuotes($string)
+	public function addQuotes($string)
 	{
 		if(version_compare(PHP_VERSION, "5.4.0", "<") &&
 				get_magic_quotes_gpc())
@@ -144,7 +144,7 @@ class DBCubrid extends DB
 	 * this method is private
 	 * @return boolean
 	 */
-	function _begin($transactionLevel = 0)
+	public function _begin($transactionLevel = 0)
 	{
 		if(__CUBRID_VERSION__ >= '8.4.0')
 		{
@@ -167,7 +167,7 @@ class DBCubrid extends DB
 	 * this method is private
 	 * @return boolean
 	 */
-	function _rollback($transactionLevel = 0)
+	public function _rollback($transactionLevel = 0)
 	{
 		$connection = $this->_getConnection('master');
 
@@ -190,7 +190,7 @@ class DBCubrid extends DB
 	 * this method is private
 	 * @return boolean
 	 */
-	function _commit()
+	public function _commit()
 	{
 		$connection = $this->_getConnection('master');
 		@cubrid_commit($connection);
@@ -204,7 +204,7 @@ class DBCubrid extends DB
 	 * @param resource $connection
 	 * @return resource
 	 */
-	function __query($query, $connection)
+	public function __query($query, $connection)
 	{
 		if($this->use_prepared_statements == 'Y')
 		{
@@ -289,7 +289,7 @@ class DBCubrid extends DB
 	 *
 	 * @author Corina Udrescu (dev@xpressengine.org)
 	 */
-	function _setError()
+	public function _setError()
 	{
 		$code = cubrid_error_code();
 		$msg = cubrid_error_msg();
@@ -303,7 +303,7 @@ class DBCubrid extends DB
 	 * @param int|NULL $arrayIndexEndValue
 	 * @return array
 	 */
-	function _fetch($result, $arrayIndexEndValue = NULL)
+	public function _fetch($result, $arrayIndexEndValue = NULL)
 	{
 		$output = array();
 		if(!$this->isConnected() || $this->isError() || !$result)
@@ -378,7 +378,7 @@ class DBCubrid extends DB
 	 * Auto_increment column only used in the CUBRID sequence table
 	 * @return int
 	 */
-	function getNextSequence()
+	public function getNextSequence()
 	{
 		$this->_makeSequence();
 
@@ -393,7 +393,7 @@ class DBCubrid extends DB
 	 * if the table already exists, set the status to GLOBALS
 	 * @return void
 	 */
-	function _makeSequence()
+	public function _makeSequence()
 	{
 		if($_GLOBALS['XE_EXISTS_SEQUENCE'])
 			return;
@@ -440,7 +440,7 @@ class DBCubrid extends DB
 	 * @param string $target_name
 	 * @return boolean
 	 */
-	function isTableExists($target_name)
+	public function isTableExists($target_name)
 	{
 		if($target_name == 'sequence')
 		{
@@ -479,7 +479,7 @@ class DBCubrid extends DB
 	 * @param boolean $notnull not null status, default value is false
 	 * @return void
 	 */
-	function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = null, $notnull = FALSE)
+	public function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = null, $notnull = FALSE)
 	{
 		$type = strtoupper($this->column_type[$type]);
 		if($type == 'INTEGER')
@@ -532,7 +532,7 @@ class DBCubrid extends DB
 	 * @param string $column_name column name
 	 * @return void
 	 */
-	function dropColumn($table_name, $column_name)
+	public function dropColumn($table_name, $column_name)
 	{
 		$query = sprintf("alter class \"%s%s\" drop \"%s\" ", $this->prefix, $table_name, $column_name);
 
@@ -545,7 +545,7 @@ class DBCubrid extends DB
 	 * @param string $column_name column name
 	 * @return boolean
 	 */
-	function isColumnExists($table_name, $column_name)
+	public function isColumnExists($table_name, $column_name)
 	{
 		$query = sprintf("select \"attr_name\" from \"db_attribute\" where " . "\"attr_name\" ='%s' and \"class_name\" = '%s%s'", $column_name, $this->prefix, $table_name);
 		$result = $this->_query($query);
@@ -577,7 +577,7 @@ class DBCubrid extends DB
 	 * @param boolean $is_unique
 	 * @return void
 	 */
-	function addIndex($table_name, $index_name, $target_columns, $is_unique = FALSE)
+	public function addIndex($table_name, $index_name, $target_columns, $is_unique = FALSE)
 	{
 		if(!is_array($target_columns))
 		{
@@ -596,7 +596,7 @@ class DBCubrid extends DB
 	 * @param boolean $is_unique
 	 * @return void
 	 */
-	function dropIndex($table_name, $index_name, $is_unique = FALSE)
+	public function dropIndex($table_name, $index_name, $is_unique = FALSE)
 	{
 		$query = sprintf("drop %s index \"%s\" on \"%s%s\"", $is_unique ? 'unique' : '', $index_name, $this->prefix, $table_name);
 
@@ -609,7 +609,7 @@ class DBCubrid extends DB
 	 * @param string $index_name index name
 	 * @return boolean
 	 */
-	function isIndexExists($table_name, $index_name)
+	public function isIndexExists($table_name, $index_name)
 	{
 		$query = sprintf("select \"index_name\" from \"db_index\" where " . "\"class_name\" = '%s%s' and (\"index_name\" = '%s' or \"index_name\" = '%s') ", $this->prefix, $table_name, $this->prefix . $index_name, $index_name);
 		$result = $this->_query($query);
@@ -632,7 +632,7 @@ class DBCubrid extends DB
 	 * Delete duplicated index of the table
 	 * @return boolean
 	 */
-	function deleteDuplicateIndexes()
+	public function deleteDuplicateIndexes()
 	{
 		$query = sprintf("
 				select \"class_name\"
@@ -695,7 +695,7 @@ class DBCubrid extends DB
 	 * @param string $xml_doc xml schema contents
 	 * @return void|object
 	 */
-	function createTableByXml($xml_doc)
+	public function createTableByXml($xml_doc)
 	{
 		return $this->_createTable($xml_doc);
 	}
@@ -705,7 +705,7 @@ class DBCubrid extends DB
 	 * @param string $file_name xml schema file path
 	 * @return void|object
 	 */
-	function createTableByXmlFile($file_name)
+	public function createTableByXmlFile($file_name)
 	{
 		if(!file_exists($file_name))
 		{
@@ -725,7 +725,7 @@ class DBCubrid extends DB
 	 * @param string $xml_doc xml schema contents
 	 * @return void|object
 	 */
-	function _createTable($xml_doc)
+	public function _createTable($xml_doc)
 	{
 		// xml parsing
 		$oXml = new XmlParser();
@@ -854,7 +854,7 @@ class DBCubrid extends DB
 	 * @param boolean $with_values
 	 * @return resource
 	 */
-	function _executeInsertAct($queryObject, $with_values = TRUE)
+	public function _executeInsertAct($queryObject, $with_values = TRUE)
 	{
 		if($this->use_prepared_statements == 'Y')
 		{
@@ -885,7 +885,7 @@ class DBCubrid extends DB
 	 * @param boolean $with_values
 	 * @return resource
 	 */
-	function _executeUpdateAct($queryObject, $with_values = TRUE)
+	public function _executeUpdateAct($queryObject, $with_values = TRUE)
 	{
 		if($this->use_prepared_statements == 'Y')
 		{
@@ -917,7 +917,7 @@ class DBCubrid extends DB
 	 * @param boolean $with_values
 	 * @return resource
 	 */
-	function _executeDeleteAct($queryObject, $with_values = TRUE)
+	public function _executeDeleteAct($queryObject, $with_values = TRUE)
 	{
 		if($this->use_prepared_statements == 'Y')
 		{
@@ -953,7 +953,7 @@ class DBCubrid extends DB
 	 * @param boolean $with_values
 	 * @return BaseObject
 	 */
-	function _executeSelectAct($queryObject, $connection = NULL, $with_values = TRUE)
+	public function _executeSelectAct($queryObject, $connection = NULL, $with_values = TRUE)
 	{
 		if($this->use_prepared_statements == 'Y')
 		{
@@ -997,7 +997,7 @@ class DBCubrid extends DB
 	 * @param BaseObject $queryObject
 	 * @return BaseObject
 	 */
-	function queryError($queryObject)
+	public function queryError($queryObject)
 	{
 		$limit = $queryObject->getLimit();
 		if($limit && $limit->isPageHandler())
@@ -1020,7 +1020,7 @@ class DBCubrid extends DB
 	 * @param boolean $with_values
 	 * @return BaseObject BaseObject with page info containing
 	 */
-	function queryPageLimit($queryObject, $connection, $with_values)
+	public function queryPageLimit($queryObject, $connection, $with_values)
 	{
 		$limit = $queryObject->getLimit();
 		// Total count
@@ -1118,7 +1118,7 @@ class DBCubrid extends DB
 	 * @param boolean $force
 	 * @return DBParser
 	 */
-	function getParser($force = FALSE)
+	public function getParser($force = FALSE)
 	{
 		return new DBParser('"', '"', $this->prefix);
 	}
@@ -1131,7 +1131,7 @@ class DBCubrid extends DB
 	 * @param int $list_count
 	 * @return string select paging sql
 	 */
-	function getSelectPageSql($query, $with_values = TRUE, $start_count = 0, $list_count = 0)
+	public function getSelectPageSql($query, $with_values = TRUE, $start_count = 0, $list_count = 0)
 	{
 
 		$select = $query->getSelectString($with_values);

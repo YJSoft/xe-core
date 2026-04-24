@@ -9,7 +9,7 @@ class XMLDisplayHandler
 	 * @param ModuleObject $oModule the module object
 	 * @return string
 	 */
-	function toDoc(&$oModule)
+	public function toDoc(&$oModule)
 	{
 		$variables = $oModule->getVariables();
 
@@ -29,7 +29,7 @@ class XMLDisplayHandler
 	 * @param object $obj 
 	 * @return string
 	 */
-	function _makeXmlDoc($obj)
+	public function _makeXmlDoc($obj)
 	{
 		if(!count($obj))
 		{

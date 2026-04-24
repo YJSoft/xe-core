@@ -11,14 +11,14 @@ class boardModel extends module
 	/**
 	 * @brief initialization
 	 **/
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief get the list configuration
 	 **/
-	function getListConfig($module_srl)
+	public function getListConfig($module_srl)
 	{
 		$oModuleModel = getModel('module');
 		$oDocumentModel = getModel('document');
@@ -57,7 +57,7 @@ class boardModel extends module
 	/**
 	 * @brief return the default list configration value
 	 **/
-	function getDefaultListConfig($module_srl)
+	public function getDefaultListConfig($module_srl)
 	{
 		// add virtual srl, title, registered date, update date, nickname, ID, name, readed count, voted count etc.
 		$virtual_vars = array( 'no', 'title', 'regdate', 'last_update', 'last_post', 'nick_name',
@@ -86,7 +86,7 @@ class boardModel extends module
 	/**
 	 * @brief return module name in sitemap
 	 **/
-	function triggerModuleListInSitemap(&$obj)
+	public function triggerModuleListInSitemap(&$obj)
 	{
 		array_push($obj, 'board');
 	}

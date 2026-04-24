@@ -9,7 +9,7 @@ class JSCallbackDisplayHandler
 	 * @param ModuleObject $oModule the module object
 	 * @return string
 	 */
-	function toDoc(&$oModule)
+	public function toDoc(&$oModule)
 	{
 		$variables = $oModule->getVariables();
 		$variables['error'] = $oModule->getError();

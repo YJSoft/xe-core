@@ -14,43 +14,43 @@ class DefaultValue
 	 * Column name
 	 * @var string
 	 */
-	var $column_name;
+	public $column_name;
 
 	/**
 	 * Value
 	 * @var mixed
 	 */
-	var $value;
+	public $value;
 
 	/**
 	 * sequnence status
 	 * @var bool
 	 */
-	var $is_sequence = FALSE;
+	public $is_sequence = FALSE;
 
 	/**
 	 * operation status
 	 * @var bool
 	 */
-	var $is_operation = FALSE;
+	public $is_operation = FALSE;
 
 	/**
 	 * operation
 	 * @var string
 	 */
-	var $operation = '';
+	public $operation = '';
 
 	/**
 	 * Checks if value is plain string or name of XE function (ipaddress, plus, etc).
 	 * @var bool
 	 */
-	var $_is_string = FALSE;
+	public $_is_string = FALSE;
 
 	/**
 	 * Checks if value is string resulted from evaluating a piece of PHP code (see $_SERVER[REMOTE_ADDR])
 	 * @var bool
 	 */
-	var $_is_string_from_function = FALSE;
+	public $_is_string_from_function = FALSE;
 
 	/**
 	 * constructor
@@ -58,7 +58,7 @@ class DefaultValue
 	 * @param mixed $value value
 	 * @return void
 	 */
-	function __construct($column_name, $value)
+	public function __construct($column_name, $value)
 	{
 		$dbParser = DB::getParser();
 		$this->column_name = $dbParser->parseColumnName($column_name);
@@ -66,7 +66,7 @@ class DefaultValue
 		$this->value = $this->_setValue();
 	}
 
-	function isString()
+	public function isString()
 	{
 		return $this->_is_string;
 		$str_pos = strpos($this->value, '(');
@@ -77,27 +77,27 @@ class DefaultValue
 		return FALSE;
 	}
 
-	function isStringFromFunction()
+	public function isStringFromFunction()
 	{
 		return $this->_is_string_from_function;
 	}
 
-	function isSequence()
+	public function isSequence()
 	{
 		return $this->is_sequence;
 	}
 
-	function isOperation()
+	public function isOperation()
 	{
 		return $this->is_operation;
 	}
 
-	function getOperation()
+	public function getOperation()
 	{
 		return $this->operation;
 	}
 
-	function _setValue()
+	public function _setValue()
 	{
 		if(!isset($this->value))
 		{
@@ -166,7 +166,7 @@ class DefaultValue
 		return $val;
 	}
 
-	function toString()
+	public function toString()
 	{
 		return $this->value;
 	}

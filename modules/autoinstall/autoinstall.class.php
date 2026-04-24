@@ -14,7 +14,7 @@ class XmlGenerater
 	 * @param array $params The data
 	 * @return string Returns xml string
 	 */
-	function generate(&$params)
+	public function generate(&$params)
 	{
 		$xmlDoc = '<?xml version="1.0" encoding="utf-8" ?><methodCall><params>';
 		if(!is_array($params))
@@ -37,7 +37,7 @@ class XmlGenerater
 	 * @param array $params Request data
 	 * @return object
 	 */
-	function getXmlDoc(&$params)
+	public function getXmlDoc(&$params)
 	{
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
@@ -63,14 +63,14 @@ class autoinstall extends ModuleObject
 	/**
 	 * Temporary directory path
 	 */
-	var $tmp_dir = './files/cache/autoinstall/';
+	public $tmp_dir = './files/cache/autoinstall/';
 
 	/**
 	 * Constructor
 	 *
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('autoinstall');
@@ -85,7 +85,7 @@ class autoinstall extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		$oModuleController = getController('module');
 
@@ -99,7 +99,7 @@ class autoinstall extends ModuleObject
 	 *
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
@@ -148,7 +148,7 @@ class autoinstall extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
@@ -198,7 +198,7 @@ class autoinstall extends ModuleObject
 	 * Re-generate the cache file
 	 * @return BaseObject
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		
 	}

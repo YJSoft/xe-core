@@ -13,13 +13,13 @@ class Table
 	 * table name
 	 * @var string
 	 */
-	var $name;
+	public $name;
 
 	/**
 	 * table alias
 	 * @var string
 	 */
-	var $alias;
+	public $alias;
 
 	/**
 	 * constructor
@@ -27,29 +27,29 @@ class Table
 	 * @param string $alias
 	 * @return void
 	 */
-	function __construct($name, $alias = NULL)
+	public function __construct($name, $alias = NULL)
 	{
 		$this->name = $name;
 		$this->alias = $alias;
 	}
 
-	function toString()
+	public function toString()
 	{
 		//return $this->name;
 		return sprintf("%s%s", $this->name, $this->alias ? ' as ' . $this->alias : '');
 	}
 
-	function getName()
+	public function getName()
 	{
 		return $this->name;
 	}
 
-	function getAlias()
+	public function getAlias()
 	{
 		return $this->alias;
 	}
 
-	function isJoinTable()
+	public function isJoinTable()
 	{
 		return false;
 	}

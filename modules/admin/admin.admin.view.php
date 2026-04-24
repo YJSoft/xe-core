@@ -16,15 +16,15 @@ class adminAdminView extends admin
 	 * layout list
 	 * @var array
 	 */
-	var $layout_list;
+	public $layout_list;
 
 	/**
 	 * easy install check file
 	 * @var array
 	 */
-	var $easyinstallCheckFile = './files/env/easyinstall_last';
+	public $easyinstallCheckFile = './files/env/easyinstall_last';
 
-	function __construct()
+	public function __construct()
 	{
 		$db_info = Context::getDBInfo();
 
@@ -43,7 +43,7 @@ class adminAdminView extends admin
 	 * Initilization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		// forbit access if the user is not an administrator
 		$oMemberModel = getModel('member');
@@ -91,7 +91,7 @@ class adminAdminView extends admin
 	 * check easy install
 	 * @return void
 	 */
-	function checkEasyinstall()
+	public function checkEasyinstall()
 	{
 		$lastTime = (int) FileHandler::readFile($this->easyinstallCheckFile);
 		if($lastTime > $_SERVER['REQUEST_TIME'] - 60 * 60 * 24 * 30)
@@ -127,7 +127,7 @@ class adminAdminView extends admin
 	 * update easy install file content
 	 * @return void
 	 */
-	function _markingCheckEasyinstall()
+	public function _markingCheckEasyinstall()
 	{
 		$currentTime = $_SERVER['REQUEST_TIME'];
 		FileHandler::writeFile($this->easyinstallCheckFile, $currentTime);
@@ -138,7 +138,7 @@ class adminAdminView extends admin
 	 * Setting admin logo, newest news setting
 	 * @return void
 	 */
-	function makeGnbUrl($module = 'admin')
+	public function makeGnbUrl($module = 'admin')
 	{
 		global $lang;
 
@@ -261,7 +261,7 @@ class adminAdminView extends admin
 	 * Display Super Admin Dashboard
 	 * @return void
 	 */
-	function dispAdminIndex()
+	public function dispAdminIndex()
 	{
 		$db_info = Context::getDBInfo();
 		Context::set('db_info',$db_info);
@@ -410,7 +410,7 @@ class adminAdminView extends admin
 	 * Display Configuration(settings) page
 	 * @return void
 	 */
-	function dispAdminConfigGeneral()
+	public function dispAdminConfigGeneral()
 	{
 		Context::loadLang('modules/install/lang');
 
@@ -483,7 +483,7 @@ class adminAdminView extends admin
 	 * Display FTP Configuration(settings) page
 	 * @return void
 	 */
-	function dispAdminConfigFtp()
+	public function dispAdminConfigFtp()
 	{
 		Context::loadLang('modules/install/lang');
 
@@ -501,7 +501,7 @@ class adminAdminView extends admin
 	 * Display Admin Menu Configuration(settings) page
 	 * @return void
 	 */
-	function dispAdminSetup()
+	public function dispAdminSetup()
 	{
 		$oModuleModel = getModel('module');
 		$configObject = $oModuleModel->getModuleConfig('admin');
@@ -520,7 +520,7 @@ class adminAdminView extends admin
 	 * Enviroment information send to XE collect server
 	 * @return void
 	 */
-	function showSendEnv()
+	public function showSendEnv()
 	{
 		return;
 	}
@@ -529,7 +529,7 @@ class adminAdminView extends admin
 	 * Retrun server environment to XML string
 	 * @return object
 	*/
-	function dispAdminViewServerEnv()
+	public function dispAdminViewServerEnv()
 	{
 		$info = array();
 
@@ -626,7 +626,7 @@ class adminAdminView extends admin
 		$this->setTemplateFile('server_env.html');
 	}
 	
-	function dispAdminCheckServerEnv()
+	public function dispAdminCheckServerEnv()
 	{
 		$oInstallController = getController('install');
 		$useRewrite = $oInstallController->checkRewriteUsable() ? 'Y' : 'N';

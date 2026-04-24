@@ -12,7 +12,7 @@ class rssView extends rss
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -24,7 +24,7 @@ class rssView extends rss
 	 * @param string $rss_title Rss title
 	 * @param string $add_description Add description
 	 */
-	function rss($document_list = null, $rss_title = null, $add_description = null)
+	public function rss($document_list = null, $rss_title = null, $add_description = null)
 	{
 		$oDocumentModel = getModel('document');
 		$oModuleModel = getModel('module');
@@ -214,7 +214,7 @@ class rssView extends rss
 	 *
 	 * @return BaseObject
 	 */
-	function atom()
+	public function atom()
 	{
 		Context::set('format', 'atom');
 		$this->rss();
@@ -225,7 +225,7 @@ class rssView extends rss
 	 *
 	 * @return BaseObject
 	 */
-	function dispError()
+	public function dispError()
 	{
 		// Prepare the output message
 		$this->rss(null, null, Context::getLang('msg_rss_is_disabled') );
@@ -238,7 +238,7 @@ class rssView extends rss
 	 * @param string $obj Will be inserted content in template
 	 * @return BaseObject
 	 */
-	function triggerDispRssAdditionSetup(&$obj)
+	public function triggerDispRssAdditionSetup(&$obj)
 	{
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
@@ -255,7 +255,7 @@ class rssView extends rss
 		$rss_config = $oRssModel->getRssModuleConfig($current_module_srl);
 		Context::set('rss_config', $rss_config);
 		// Set the template file
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path.'tpl', 'rss_module_config');
 		$obj .= $tpl;
 

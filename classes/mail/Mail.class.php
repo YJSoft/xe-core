@@ -15,122 +15,122 @@ class Mail extends PHPMailer
 	 * Sender name
 	 * @var string
 	 */
-	var $sender_name = '';
+	public $sender_name = '';
 
 	/**
 	 * Sender email address
 	 * @var string
 	 */
-	var $sender_email = '';
+	public $sender_email = '';
 
 	/**
 	 * Receiptor name
 	 * @var string
 	 */
-	var $receiptor_name = '';
+	public $receiptor_name = '';
 
 	/**
 	 * Receiptor email address
 	 * @var string
 	 */
-	var $receiptor_email = '';
+	public $receiptor_email = '';
 
 	/**
 	 * Title of email
 	 * @var string
 	 */
-	var $title = '';
+	public $title = '';
 
 	/**
 	 * Content of email
 	 * @var string
 	 */
-	var $content = '';
+	public $content = '';
 
 	/**
 	 * Content type
 	 * @var string
 	 */
-	var $content_type = 'html';
+	public $content_type = 'html';
 
 	/**
 	 * Message id
 	 * @var string
 	 */
-	var $messageId = NULL;
+	public $messageId = NULL;
 
 	/**
 	 * Reply to
 	 * @var string
 	 */
-	var $replyTo = NULL;
+	public $replyTo = NULL;
 
 	/**
 	 * BCC (Blind carbon copy)
 	 * @var string
 	 */
-	var $bcc = NULL;
+	public $bcc = NULL;
 
 	/**
 	 * Attachments
 	 * @var array
 	 */
-	var $attachments = array();
+	public $attachments = array();
 
 	/**
 	 * Content attachements
 	 * @var array
 	 */
-	var $cidAttachments = array();
+	public $cidAttachments = array();
 
 	/**
 	 * ???
 	 * @var ???
 	 */
-	var $mainMailPart = NULL;
+	public $mainMailPart = NULL;
 
 	/**
 	 * Raw body
 	 * @var string
 	 */
-	var $body = '';
+	public $body = '';
 
 	/**
 	 * Raw header
 	 * @var string
 	 */
-	var $header = '';
+	public $header = '';
 
 	/**
 	 * End of line
 	 * @var string
 	 */
-	var $eol = '';
+	public $eol = '';
 
 	/**
 	 * Reference
 	 * @var string
 	 */
-	var $references = '';
+	public $references = '';
 
 	/**
 	 * Additional parameters
 	 * @var string
 	 */
-	var $additional_params = NULL;
+	public $additional_params = NULL;
 
 	/**
 	 * Whether use or not use stmp
 	 * @var bool
 	 */
-	var $use_smtp = FALSE;
+	public $use_smtp = FALSE;
 
 	/**
 	 * Constructor function
 	 *
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 
 	}
@@ -142,7 +142,7 @@ class Mail extends PHPMailer
 	 * @param string $account_passwd Secure method ('ssl','tls')
 	 * @return void
 	 */
-	function useGmailAccount($account_name, $account_passwd)
+	public function useGmailAccount($account_name, $account_passwd)
 	{
 		$this->SMTPAuth = TRUE;
 		$this->SMTPSecure = "tls";
@@ -172,7 +172,7 @@ class Mail extends PHPMailer
 	 *
 	 * @return bool TRUE if SMTP is set correct, otherwise return FALSE
 	 */
-	function useSMTP($auth = NULL, $host = NULL, $user = NULL, $pass = NULL, $secure = NULL, $port = 25)
+	public function useSMTP($auth = NULL, $host = NULL, $user = NULL, $pass = NULL, $secure = NULL, $port = 25)
 	{
 		$this->SMTPAuth = $auth;
 		$this->Host = $host;
@@ -204,7 +204,7 @@ class Mail extends PHPMailer
 	 * @param string $additional_params Additional parameters
 	 * @return void
 	 */
-	function setAdditionalParams($additional_params)
+	public function setAdditionalParams($additional_params)
 	{
 		$this->additional_params = $additional_params;
 	}
@@ -216,7 +216,7 @@ class Mail extends PHPMailer
 	 * @param string $orgfilename Real path of file to attach
 	 * @return void
 	 */
-	function addAttachment($filename, $orgfilename)
+	public function addAttachment($filename, $orgfilename)
 	{
 		$this->attachments[$orgfilename] = $filename;
 	}
@@ -228,7 +228,7 @@ class Mail extends PHPMailer
 	 * @param string $cid Content-CID
 	 * @return void
 	 */
-	function addCidAttachment($filename, $cid)
+	public function addCidAttachment($filename, $cid)
 	{
 		$this->cidAttachments[$cid] = $filename;
 	}
@@ -240,7 +240,7 @@ class Mail extends PHPMailer
 	 * @param string $email Sender email address
 	 * @return void
 	 */
-	function setSender($name, $email)
+	public function setSender($name, $email)
 	{
 		if($this->Mailer == "mail")
 		{
@@ -258,7 +258,7 @@ class Mail extends PHPMailer
 	 *
 	 * @return string
 	 */
-	function getSender()
+	public function getSender()
 	{
 		if(!stristr(PHP_OS, 'win') && $this->sender_name)
 		{
@@ -274,7 +274,7 @@ class Mail extends PHPMailer
 	 * @param string $email Receiptor email address
 	 * @return void
 	 */
-	function setReceiptor($name, $email)
+	public function setReceiptor($name, $email)
 	{
 		if($this->Mailer == "mail")
 		{
@@ -292,7 +292,7 @@ class Mail extends PHPMailer
 	 *
 	 * @return string
 	 */
-	function getReceiptor()
+	public function getReceiptor()
 	{
 		if(!stristr(PHP_OS, 'win') && $this->receiptor_name && $this->receiptor_name != $this->receiptor_email)
 		{
@@ -307,7 +307,7 @@ class Mail extends PHPMailer
 	 * @param string $title Title to set
 	 * @return void
 	 */
-	function setTitle($title)
+	public function setTitle($title)
 	{
 		if($this->Mailer == "mail")
 		{
@@ -324,7 +324,7 @@ class Mail extends PHPMailer
 	 *
 	 * @return string
 	 */
-	function getTitle()
+	public function getTitle()
 	{
 		return '=?utf-8?b?' . base64_encode($this->title) . '?=';
 	}
@@ -335,7 +335,7 @@ class Mail extends PHPMailer
 	 * @param string $bcc
 	 * @return void
 	 */
-	function setBCC($bcc)
+	public function setBCC($bcc)
 	{
 		if($this->Mailer == "mail")
 		{
@@ -353,7 +353,7 @@ class Mail extends PHPMailer
 	 * @param string $messageId
 	 * @return void
 	 */
-	function setMessageID($messageId)
+	public function setMessageID($messageId)
 	{
 		$this->messageId = $messageId;
 	}
@@ -364,7 +364,7 @@ class Mail extends PHPMailer
 	 * @param string $references
 	 * @return void
 	 */
-	function setReferences($references)
+	public function setReferences($references)
 	{
 		$this->references = $references;
 	}
@@ -375,7 +375,7 @@ class Mail extends PHPMailer
 	 * @param string $replyTo
 	 * @return void
 	 */
-	function setReplyTo($replyTo)
+	public function setReplyTo($replyTo)
 	{
 		if($this->Mailer == "mail")
 		{
@@ -393,7 +393,7 @@ class Mail extends PHPMailer
 	 * @param string $content Content
 	 * @return void
 	 */
-	function setContent($content)
+	public function setContent($content)
 	{
 		$content = preg_replace_callback('/<img([^>]+)>/i', array($this, 'replaceResourceRealPath'), $content);
 		if($this->Mailer == "mail")
@@ -413,7 +413,7 @@ class Mail extends PHPMailer
 	 * @param array $matches Match info.
 	 * @return string
 	 */
-	function replaceResourceRealPath($matches)
+	public function replaceResourceRealPath($matches)
 	{
 		return preg_replace('/src=(["\']?)files/i', 'src=$1' . Context::getRequestUri() . 'files', $matches[0]);
 	}
@@ -423,7 +423,7 @@ class Mail extends PHPMailer
 	 *
 	 * @return string
 	 */
-	function getPlainContent()
+	public function getPlainContent()
 	{
 		return chunk_split(base64_encode(str_replace(array("<", ">", "&"), array("&lt;", "&gt;", "&amp;"), $this->content)));
 	}
@@ -433,7 +433,7 @@ class Mail extends PHPMailer
 	 *
 	 * @return string
 	 */
-	function getHTMLContent()
+	public function getHTMLContent()
 	{
 		return chunk_split(base64_encode($this->content_type != 'html' ? nl2br($this->content) : $this->content));
 	}
@@ -444,7 +444,7 @@ class Mail extends PHPMailer
 	 * @param string $mode
 	 * @return void
 	 */
-	function setContentType($mode = 'html')
+	public function setContentType($mode = 'html')
 	{
 		$this->content_type = $mode == 'html' ? 'html' : '';
 	}
@@ -454,7 +454,7 @@ class Mail extends PHPMailer
 	 *
 	 * @return void
 	 */
-	function procAttachments()
+	public function procAttachments()
 	{
 		if($this->Mailer == "mail")
 		{
@@ -504,7 +504,7 @@ class Mail extends PHPMailer
 	 *
 	 * @return void
 	 */
-	function procCidAttachments()
+	public function procCidAttachments()
 	{
 		if(count($this->cidAttachments) > 0)
 		{
@@ -541,7 +541,7 @@ class Mail extends PHPMailer
 	 *
 	 * @return bool TRUE in case of success, FALSE if sending fails
 	 */
-	function send()
+	public function send()
 	{
 		if($this->Mailer == "mail")
 		{
@@ -592,7 +592,7 @@ class Mail extends PHPMailer
 	 * @param string $email_address Email address
 	 * @return boolean TRUE if param is valid DNS otherwise FALSE
 	 */
-	function checkMailMX($email_address)
+	public function checkMailMX($email_address)
 	{
 		if(!Mail::isVaildMailAddress($email_address))
 		{
@@ -619,7 +619,7 @@ class Mail extends PHPMailer
 	 * @param string $email_address Email address
 	 * @return string email address if param is valid email address otherwise blank string
 	 */
-	function isVaildMailAddress($email_address)
+	public function isVaildMailAddress($email_address)
 	{
 		if(preg_match("/([a-z0-9\_\-\.]+)@([a-z0-9\_\-\.]+)/i", $email_address))
 		{
@@ -637,7 +637,7 @@ class Mail extends PHPMailer
 	 * @param string $filename filename
 	 * @return string MIME type of ext
 	 */
-	function returnMIMEType($filename)
+	public function returnMIMEType($filename)
 	{
 		preg_match("|\.([a-z0-9]{2,4})$|i", $filename, $fileSuffix);
 		switch(strtolower($fileSuffix[1]))

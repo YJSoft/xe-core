@@ -12,7 +12,7 @@ class communicationAdminView extends communication
 	/**
 	 * Initialization
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -21,7 +21,7 @@ class communicationAdminView extends communication
 	 * configuration to manage messages and friends
 	 * @return void
 	 */
-	function dispCommunicationAdminConfig()
+	public function dispCommunicationAdminConfig()
 	{
 		// Creating an object
 		$oEditorModel = getModel('editor');

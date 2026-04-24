@@ -15,7 +15,7 @@ class importerAdminView extends importer
 	 * Importer module is divided by general use and administrative use \n
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -23,7 +23,7 @@ class importerAdminView extends importer
 	 * Display a form to upload the xml file
 	 * @return void
 	 */
-	function dispImporterAdminContent()
+	public function dispImporterAdminContent()
 	{
 		$this->setTemplatePath($this->module_path.'tpl');
 
@@ -65,7 +65,7 @@ class importerAdminView extends importer
 	 * Display a form to upload the xml file
 	 * @return void
 	 */
-	function dispImporterAdminImportForm()
+	public function dispImporterAdminImportForm()
 	{
 		$oDocumentModel = getModel('document');	//for document lang use in this page
 

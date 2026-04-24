@@ -10,14 +10,14 @@ class moduleModel extends module
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Check if mid, vid are available
 	 */
-	function isIDExists($id, $site_srl = 0)
+	public function isIDExists($id, $site_srl = 0)
 	{
 		if(!preg_match('/^[a-z]{1}([a-z0-9_]+)$/i',$id)) return true;
 		// directory and rss/atom/api reserved checking, etc.
@@ -47,7 +47,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get site information
 	 */
-	function getSiteInfo($site_srl, $columnList = array())
+	public function getSiteInfo($site_srl, $columnList = array())
 	{
 		$args = new stdClass();
 		$args->site_srl = $site_srl;
@@ -55,7 +55,7 @@ class moduleModel extends module
 		return $output->data;
 	}
 
-	function getSiteInfoByDomain($domain, $columnList = array())
+	public function getSiteInfoByDomain($domain, $columnList = array())
 	{
 		$args = new stdClass();
 		$args->domain = $domain;
@@ -67,7 +67,7 @@ class moduleModel extends module
 	 * @brief Get module information with document_srl
 	 * In this case, it is unable to use the cache file
 	 */
-	function getModuleInfoByDocumentSrl($document_srl)
+	public function getModuleInfoByDocumentSrl($document_srl)
 	{
 		$args = new stdClass();
 		$args->document_srl = $document_srl;
@@ -79,7 +79,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get the default mid according to the domain
 	 */
-	function getDefaultMid()
+	public function getDefaultMid()
 	{
 		$default_url = Context::getDefaultUrl();
 		if($default_url && substr_compare($default_url, '/', -1) === 0) $default_url = substr($default_url, 0, -1);
@@ -164,7 +164,7 @@ class moduleModel extends module
 				if(!$output->data)
 				{
 					// Create a table if sites table doesn't exist
-					$oDB = &DB::getInstance();
+					$oDB = DB::getInstance();
 					if(!$oDB->isTableExists('sites')) $oDB->createTableByXmlFile(_XE_PATH_.'modules/module/schemas/sites.xml');
 					if(!$oDB->isTableExists('sites')) return;
 
@@ -205,7 +205,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get module information by mid
 	 */
-	function getModuleInfoByMid($mid, $site_srl = 0, $columnList = array())
+	public function getModuleInfoByMid($mid, $site_srl = 0, $columnList = array())
 	{
 		if(!$mid || ($mid && !preg_match("/^[a-z][a-z0-9_]+$/i", $mid)))
 		{
@@ -364,7 +364,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get module information corresponding to module_srl
 	 */
-	function getModuleInfoByModuleSrl($module_srl, $columnList = array())
+	public function getModuleInfoByModuleSrl($module_srl, $columnList = array())
 	{
 		$mid_info = false;
 
@@ -428,7 +428,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get module information corresponding to layout_srl
 	 */
-	function getModulesInfoByLayout($layout_srl, $columnList = array())
+	public function getModulesInfoByLayout($layout_srl, $columnList = array())
 	{
 		// Imported data
 		$args = new stdClass;
@@ -448,7 +448,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get module information corresponding to multiple module_srls
 	 */
-	function getModulesInfo($module_srls, $columnList = array())
+	public function getModulesInfo($module_srls, $columnList = array())
 	{
 		if(is_array($module_srls)) $module_srls = implode(',',$module_srls);
 		$args = new stdClass();
@@ -461,7 +461,7 @@ class moduleModel extends module
 	/**
 	 * @brief Add extra vars to the module basic information
 	 */
-	function addModuleExtraVars($module_info)
+	public function addModuleExtraVars($module_info)
 	{
 		// Process although one or more module informaion is requested
 		if(!is_array($module_info)) $target_module_info = array($module_info);
@@ -495,7 +495,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get a complete list of mid, which is created in the DB
 	 */
-	function getMidList($args = null, $columnList = array())
+	public function getMidList($args = null, $columnList = array())
 	{
 		$list = false;
 		$oCacheHandler = CacheHandler::getInstance('object', null, true);
@@ -540,7 +540,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get a complete list of module_srl, which is created in the DB
 	 */
-	function getModuleSrlList($args = null, $columnList = array())
+	public function getModuleSrlList($args = null, $columnList = array())
 	{
 		$output = executeQueryArray('module.getMidList', $args, $columnList);
 		if(!$output->toBool()) return $output;
@@ -554,7 +554,7 @@ class moduleModel extends module
 	/**
 	 * @brief Return an array of module_srl corresponding to a mid list
 	 */
-	function getModuleSrlByMid($mid)
+	public function getModuleSrlByMid($mid)
 	{
 		if($mid && !is_array($mid)) $mid = explode(',',$mid);
 		if(is_array($mid)) $mid = "'".implode("','",$mid)."'";
@@ -582,7 +582,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get forward value by the value of act
 	 */
-	function getActionForward($act)
+	public function getActionForward($act)
 	{
 		$action_forward = false;
 		// cache controll
@@ -626,7 +626,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get a list of all triggers on the trigger_name
 	 */
-	function getTriggers($trigger_name, $called_position)
+	public function getTriggers($trigger_name, $called_position)
 	{
 		if(is_null($GLOBALS['__triggers__']))
 		{
@@ -658,7 +658,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get specific triggers from the trigger_name
 	 */
-	function getTrigger($trigger_name, $module, $type, $called_method, $called_position)
+	public function getTrigger($trigger_name, $module, $type, $called_method, $called_position)
 	{
 		$triggers = $this->getTriggers($trigger_name, $called_position);
 
@@ -679,7 +679,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get module extend
 	 */
-	function getModuleExtend($parent_module, $type, $kind='')
+	public function getModuleExtend($parent_module, $type, $kind='')
 	{
 		$key = $parent_module.'.'.$kind.'.'.$type;
 
@@ -695,7 +695,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get all the module extend
 	 */
-	function loadModuleExtends()
+	public function loadModuleExtends()
 	{
 		$cache_file = './files/config/module_extend.php';
 		$cache_file = FileHandler::getRealPath($cache_file);
@@ -738,7 +738,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get information from conf/info.xml
 	 */
-	function getModuleInfoXml($module)
+	public function getModuleInfoXml($module)
 	{
 		// Get a path of the requested module. Return if not exists.
 		$module_path = ModuleHandler::getModulePath($module);
@@ -813,7 +813,7 @@ class moduleModel extends module
 	 * When caching, add codes so to include it directly
 	 * This is apparently good for performance, but not sure about its side-effects
 	 */
-	function getModuleActionXml($module)
+	public function getModuleActionXml($module)
 	{
 		// Get a path of the requested module. Return if not exists.
 		$class_path = ModuleHandler::getModulePath($module);
@@ -1041,7 +1041,7 @@ class moduleModel extends module
 	 * @brief Get a list of skins for the module
 	 * Return file analysis of skin and skin.xml
 	 */
-	function getSkins($path, $dir = 'skins')
+	public function getSkins($path, $dir = 'skins')
 	{
 		if(substr($path, -1) == '/')
 		{
@@ -1130,7 +1130,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get skin information on a specific location
 	 */
-	function loadSkinInfo($path, $skin, $dir = 'skins')
+	public function loadSkinInfo($path, $skin, $dir = 'skins')
 	{
 		// Read xml file having skin information
 		if(substr($path,-1) != '/')
@@ -1363,7 +1363,7 @@ class moduleModel extends module
 	/**
 	 * @brief Return the number of modules which are registered on a virtual site
 	 */
-	function getModuleCount($site_srl, $module = null)
+	public function getModuleCount($site_srl, $module = null)
 	{
 		$args = new stdClass;
 		$args->site_srl = $site_srl;
@@ -1376,7 +1376,7 @@ class moduleModel extends module
 	 * @brief Return module configurations
 	 * Global configuration is used to manage board, member and others
 	 */
-	function getModuleConfig($module, $site_srl = 0)
+	public function getModuleConfig($module, $site_srl = 0)
 	{
 		$config = false;
 		// cache controll
@@ -1416,7 +1416,7 @@ class moduleModel extends module
 	 * @brief Return the module configuration of mid
 	 * Manage mid configurations which depend on module
 	 */
-	function getModulePartConfig($module, $module_srl)
+	public function getModulePartConfig($module, $module_srl)
 	{
 		$config = false;
 		// cache controll
@@ -1455,7 +1455,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get all of module configurations for each mid
 	 */
-	function getModulePartConfigs($module, $site_srl = 0)
+	public function getModulePartConfigs($module, $site_srl = 0)
 	{
 		$args = new stdClass();
 		$args->module = $module;
@@ -1473,7 +1473,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get a list of module category
 	 */
-	function getModuleCategories($moduleCategorySrl = array())
+	public function getModuleCategories($moduleCategorySrl = array())
 	{
 		$args = new stdClass();
 		$args->moduleCategorySrl = $moduleCategorySrl;
@@ -1494,7 +1494,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get content from the module category
 	 */
-	function getModuleCategory($module_category_srl)
+	public function getModuleCategory($module_category_srl)
 	{
 		// Get data from the DB
 		$args = new stdClass;
@@ -1507,7 +1507,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get xml information of the module
 	 */
-	function getModulesXmlInfo()
+	public function getModulesXmlInfo()
 	{
 		// Get a list of downloaded and installed modules
 		$searched_list = FileHandler::readDir('./modules');
@@ -1536,9 +1536,9 @@ class moduleModel extends module
 		return $list;
 	}
 
-	function checkNeedInstall($module_name)
+	public function checkNeedInstall($module_name)
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$info = null;
 
 		$moduledir = ModuleHandler::getModulePath($module_name);
@@ -1560,7 +1560,7 @@ class moduleModel extends module
 		return false;
 	}
 
-	function checkNeedUpdate($module_name)
+	public function checkNeedUpdate($module_name)
 	{
 		// Check if it is upgraded to module.class.php on each module
 		$oDummy = getModule($module_name, 'class');
@@ -1594,10 +1594,10 @@ class moduleModel extends module
 	/**
 	 * @brief Get a type and information of the module
 	 */
-	function getModuleList()
+	public function getModuleList()
 	{
 		// Create DB Object
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		// Get a list of downloaded and installed modules
 		$searched_list = FileHandler::readDir('./modules', '/^([a-zA-Z0-9_-]+)$/');
 		sort($searched_list);
@@ -1660,7 +1660,7 @@ class moduleModel extends module
 	 * Because XE DBHandler doesn't support left outer join,
 	 * it should be as same as $Output->data[]->module_srl.
 	 */
-	function syncModuleToSite(&$data)
+	public function syncModuleToSite(&$data)
 	{
 		if(!$data) return;
 
@@ -1702,7 +1702,7 @@ class moduleModel extends module
 	/**
 	 * @brief Check if it is an administrator of site_module_info
 	 */
-	function isSiteAdmin($member_info, $site_srl = null)
+	public function isSiteAdmin($member_info, $site_srl = null)
 	{
 		if(!$member_info->member_srl) return false;
 		if($member_info->is_admin == 'Y') return true;
@@ -1728,7 +1728,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get admin information of the site
 	 */
-	function getSiteAdmin($site_srl)
+	public function getSiteAdmin($site_srl)
 	{
 		$args = new stdClass;
 		$args->site_srl = $site_srl;
@@ -1739,7 +1739,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get admin ID of the module
 	 */
-	function getAdminId($module_srl)
+	public function getAdminId($module_srl)
 	{
 		$obj = new stdClass();
 		$obj->module_srl = $module_srl;
@@ -1753,7 +1753,7 @@ class moduleModel extends module
 	 * @brief Get extra vars of the module
 	 * Extra information, not in the modules table
 	 */
-	function getModuleExtraVars($list_module_srl)
+	public function getModuleExtraVars($list_module_srl)
 	{
 		$extra_vars = array();
 		$get_module_srls = array();
@@ -1828,7 +1828,7 @@ class moduleModel extends module
 	/**
 	 * @brief Get skin information of the module
 	 */
-	function getModuleSkinVars($module_srl)
+	public function getModuleSkinVars($module_srl)
 	{
 		$skin_vars = false;
 		$oCacheHandler = CacheHandler::getInstance('object', null, true);
@@ -1861,7 +1861,7 @@ class moduleModel extends module
 	/**
 	 * Get default skin name
 	 */
-	function getModuleDefaultSkin($module_name, $skin_type = 'P', $site_srl = 0, $updateCache = true)
+	public function getModuleDefaultSkin($module_name, $skin_type = 'P', $site_srl = 0, $updateCache = true)
 	{
 		$target = ($skin_type == 'M') ? 'mskin' : 'skin';
 		if(!$site_srl) $site_srl = 0;
@@ -1915,7 +1915,7 @@ class moduleModel extends module
 	/**
 	 * @brief Combine skin information with module information
 	 */
-	function syncSkinInfoToModuleInfo(&$module_info)
+	public function syncSkinInfoToModuleInfo(&$module_info)
 	{
 		if(!$module_info->module_srl) return;
 
@@ -1943,7 +1943,7 @@ class moduleModel extends module
 	 * @param $module_srl Sequence of module
 	 * @return array
 	 */
-	function getModuleMobileSkinVars($module_srl)
+	public function getModuleMobileSkinVars($module_srl)
 	{
 		$skin_vars = false;
 		$oCacheHandler = CacheHandler::getInstance('object', null, true);
@@ -1977,7 +1977,7 @@ class moduleModel extends module
 	 * Combine skin information with module information
 	 * @param $module_info Module information
 	 */
-	function syncMobileSkinInfoToModuleInfo(&$module_info)
+	public function syncMobileSkinInfoToModuleInfo(&$module_info)
 	{
 		if(!$module_info->module_srl) return;
 		$skin_vars = false;
@@ -2012,7 +2012,7 @@ class moduleModel extends module
 	/**
 	 * @brief Return permission by using module info, xml info and member info
 	 */
-	function getGrant($module_info, $member_info, $xml_info = '')
+	public function getGrant($module_info, $member_info, $xml_info = '')
 	{
 		$grant = new stdClass();
 
@@ -2174,14 +2174,14 @@ class moduleModel extends module
 		return $grant;
 	}
 
-	function getModuleFileBox($module_filebox_srl)
+	public function getModuleFileBox($module_filebox_srl)
 	{
 		$args = new stdClass();
 		$args->module_filebox_srl = $module_filebox_srl;
 		return executeQuery('module.getModuleFileBox', $args);
 	}
 
-	function getModuleFileBoxList()
+	public function getModuleFileBoxList()
 	{
 		$oModuleModel = getModel('module');
 
@@ -2194,7 +2194,7 @@ class moduleModel extends module
 		return $output;
 	}
 
-	function unserializeAttributes($module_filebox_list)
+	public function unserializeAttributes($module_filebox_list)
 	{
 		if(is_array($module_filebox_list->data))
 		{
@@ -2225,7 +2225,7 @@ class moduleModel extends module
 		return $module_filebox_list;
 	}
 
-	function getFileBoxListHtml()
+	public function getFileBoxListHtml()
 	{
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin !='Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
@@ -2252,13 +2252,13 @@ class moduleModel extends module
 		$security = new Security();
 		$security->encodeHTML('filebox_list..comment', 'filebox_list..attributes.');
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$html = $oTemplate->compile(_XE_PATH_ . 'modules/module/tpl/', 'filebox_list_html');
 
 		$this->add('html', $html);
 	}
 
-	function getModuleFileBoxPath($module_filebox_srl)
+	public function getModuleFileBoxPath($module_filebox_srl)
 	{
 		return sprintf("./files/attach/filebox/%s",getNumberingPath($module_filebox_srl,3));
 	}
@@ -2267,7 +2267,7 @@ class moduleModel extends module
 	 * @brief Return ruleset cache file path
 	 * @param module, act
 	 */
-	function getValidatorFilePath($module, $ruleset, $mid=null)
+	public function getValidatorFilePath($module, $ruleset, $mid=null)
 	{
 		// load dynamic ruleset xml file
 		if(strpos($ruleset, '@') !== false)
@@ -2298,7 +2298,7 @@ class moduleModel extends module
 		return $xml_file;
 	}
 
-	function getLangListByLangcodeForAutoComplete()
+	public function getLangListByLangcodeForAutoComplete()
 	{
 		$keyword = Context::get('search_keyword');
 
@@ -2332,7 +2332,7 @@ class moduleModel extends module
 	/**
 	 * @brief already instance created module list
 	 */
-	function getModuleListByInstance($site_srl = 0, $columnList = array())
+	public function getModuleListByInstance($site_srl = 0, $columnList = array())
 	{
 		$args = new stdClass();
 		$args->site_srl = $site_srl;
@@ -2340,7 +2340,7 @@ class moduleModel extends module
 		return $output;
 	}
 
-	function getLangByLangcode()
+	public function getLangByLangcode()
 	{
 		$langCode = Context::get('langCode');
 		if (!$langCode) return;

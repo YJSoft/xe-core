@@ -13,15 +13,15 @@ class ConditionGroup
 	 * condition list
 	 * @var array
 	 */
-	var $conditions;
+	public $conditions;
 
 	/**
 	 * pipe can use 'and', 'or'...
 	 * @var string
 	 */
-	var $pipe;
-	var $_group;
-	var $_show;
+	public $pipe;
+	public $_group;
+	public $_show;
 
 	/**
 	 * constructor
@@ -29,7 +29,7 @@ class ConditionGroup
 	 * @param string $pipe
 	 * @return void
 	 */
-	function __construct($conditions, $pipe = "")
+	public function __construct($conditions, $pipe = "")
 	{
 		$this->conditions = array();
 		foreach($conditions as $condition)
@@ -51,12 +51,12 @@ class ConditionGroup
 		$this->pipe = $pipe;
 	}
 
-	function show()
+	public function show()
 	{
 		return $this->_show;
 	}
 
-	function setPipe($pipe)
+	public function setPipe($pipe)
 	{
 		if($this->pipe !== $pipe)
 		{
@@ -70,7 +70,7 @@ class ConditionGroup
 	 * @param boolean $with_value
 	 * @return string
 	 */
-	function toString($with_value = true)
+	public function toString($with_value = true)
 	{
 		if(!isset($this->_group))
 		{
@@ -101,7 +101,7 @@ class ConditionGroup
 	 * return argument list
 	 * @return array
 	 */
-	function getArguments()
+	public function getArguments()
 	{
 		$args = array();
 		foreach($this->conditions as $condition)

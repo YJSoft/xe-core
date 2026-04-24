@@ -10,11 +10,11 @@ class spamfilterAdminController extends spamfilter
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
-	function procSpamfilterAdminInsertConfig()
+	public function procSpamfilterAdminInsertConfig()
 	{
 		// Get the default information
 		$argsConfig = Context::gets('limits','check_trackback');
@@ -31,7 +31,7 @@ class spamfilterAdminController extends spamfilter
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function procSpamfilterAdminInsertDeniedIP()
+	public function procSpamfilterAdminInsertDeniedIP()
 	{
 		//스팸IP  추가
 		$ipaddress_list = Context::get('ipaddress_list');
@@ -50,7 +50,7 @@ class spamfilterAdminController extends spamfilter
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function procSpamfilterAdminInsertDeniedWord()
+	public function procSpamfilterAdminInsertDeniedWord()
 	{
 		//스팸 키워드 추가
 		$word_list = Context::get('word_list');
@@ -70,7 +70,7 @@ class spamfilterAdminController extends spamfilter
 	/**
 	 * @brief Delete the banned IP
 	 */
-	function procSpamfilterAdminDeleteDeniedIP()
+	public function procSpamfilterAdminDeleteDeniedIP()
 	{
 		$ipAddressList = Context::get('ipaddress');
 		if($ipAddressList) $this->deleteIP($ipAddressList);
@@ -84,7 +84,7 @@ class spamfilterAdminController extends spamfilter
 	/**
 	 * @brief Delete the prohibited Word
 	 */
-	function procSpamfilterAdminDeleteDeniedWord()
+	public function procSpamfilterAdminDeleteDeniedWord()
 	{
 		$wordList = Context::get('word');
 		$this->deleteWord($wordList);
@@ -99,7 +99,7 @@ class spamfilterAdminController extends spamfilter
 	 * @brief Delete IP
 	 * Remove the IP address which was previously registered as a spammers
 	 */
-	function deleteIP($ipaddress)
+	public function deleteIP($ipaddress)
 	{
 		if(!$ipaddress) return;
 
@@ -112,7 +112,7 @@ class spamfilterAdminController extends spamfilter
 	 * @brief Register the spam word
 	 * The post, which contains the newly registered spam word, should be considered as a spam
 	 */
-	function insertWord($word_list)
+	public function insertWord($word_list)
 	{
 
 		$word_list = str_replace("\r","",$word_list);
@@ -142,7 +142,7 @@ class spamfilterAdminController extends spamfilter
 	 * @brief Remove the spam word
 	 * Remove the word which was previously registered as a spam word
 	 */
-	function deleteWord($word)
+	public function deleteWord($word)
 	{
 		if(!$word) return;
 		$args = new stdClass;

@@ -16,7 +16,7 @@ class SelectColumnsTag
 	 *
 	 * @var array value is SelectColumnTag object
 	 */
-	var $columns;
+	public $columns;
 
 	/**
 	 * Constructor
@@ -25,7 +25,7 @@ class SelectColumnsTag
 	 * @internal param \Xml_Node_ $xml_columns
 	 * @return void
 	 */
-	function __construct($xml_columns_tag)
+	public function __construct($xml_columns_tag)
 	{
 		if(!$xml_columns_tag)
 		{
@@ -75,7 +75,7 @@ class SelectColumnsTag
 	 *
 	 * @return string
 	 */
-	function toString()
+	public function toString()
 	{
 		$output_columns = 'array(' . PHP_EOL;
 		foreach($this->columns as $column)
@@ -99,7 +99,7 @@ class SelectColumnsTag
 	 *
 	 * @return array
 	 */
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		foreach($this->columns as $column)

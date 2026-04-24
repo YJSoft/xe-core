@@ -14,48 +14,48 @@ class Argument
 	 * argument value
 	 * @var mixed
 	 */
-	var $value;
+	public $value;
 
 	/**
 	 * argument name
 	 * @var string
 	 */
-	var $name;
+	public $name;
 
 	/**
 	 * argument type
 	 * @var string
 	 */
-	var $type;
+	public $type;
 
 	/**
 	 * result of argument type check
 	 * @var bool
 	 */
-	var $isValid;
+	public $isValid;
 
 	/**
 	 * error message
 	 * @var BaseObject
 	 */
-	var $errorMessage;
+	public $errorMessage;
 
 	/**
 	 * column operation
 	 */
-	var $column_operation;
+	public $column_operation;
 
 	/**
 	 * Check if arg value is user submnitted or default
 	 * @var mixed
 	 */
-	var $uses_default_value;
+	public $uses_default_value;
 
 	/**
 	 * Caches escaped and toString value so that the parsing won't happen multiple times
 	 * @var mixed
 	 */
-	var $_value; //
+	public $_value; //
 
 	/**
 	 * constructor
@@ -64,14 +64,14 @@ class Argument
 	 * @return void
 	 */
 
-	function __construct($name, $value)
+	public function __construct($name, $value)
 	{
 		$this->value = $value;
 		$this->name = $name;
 		$this->isValid = TRUE;
 	}
 
-	function getType()
+	public function getType()
 	{
 		if(isset($this->type))
 		{
@@ -85,22 +85,22 @@ class Argument
 		return 'number';
 	}
 
-	function setColumnType($value)
+	public function setColumnType($value)
 	{
 		$this->type = $value;
 	}
 
-	function setColumnOperation($operation)
+	public function setColumnOperation($operation)
 	{
 		$this->column_operation = $operation;
 	}
 
-	function getName()
+	public function getName()
 	{
 		return $this->name;
 	}
 
-	function getValue()
+	public function getValue()
 	{
 		if(!isset($this->_value))
 		{
@@ -110,22 +110,22 @@ class Argument
 		return $this->_value;
 	}
 
-	function getPureValue()
+	public function getPureValue()
 	{
 		return $this->value;
 	}
 
-	function getColumnOperation()
+	public function getColumnOperation()
 	{
 		return $this->column_operation;
 	}
 
-	function getEscapedValue()
+	public function getEscapedValue()
 	{
 		return $this->escapeValue($this->value);
 	}
 
-	function getUnescapedValue()
+	public function getUnescapedValue()
 	{
 		if($this->value === 'null')
 		{
@@ -139,7 +139,7 @@ class Argument
 	 * @param mixed $value
 	 * @return string
 	 */
-	function toString($value)
+	public function toString($value)
 	{
 		if(is_array($value))
 		{
@@ -161,7 +161,7 @@ class Argument
 	 * @param mixed $value
 	 * @return mixed
 	 */
-	function escapeValue($value)
+	public function escapeValue($value)
 	{
 		$column_type = $this->getType();
 		if($column_type == 'column_name')
@@ -219,7 +219,7 @@ class Argument
 	 * @param string $value
 	 * @return string
 	 */
-	function _escapeStringValue($value)
+	public function _escapeStringValue($value)
 	{
 		// Remove non-utf8 chars.
 		$regex = '@((?:[\x00-\x7F]|[\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}){1,100})|([\xF0-\xF7][\x80-\xBF]{3})|([\x80-\xBF])|([\xC0-\xFF])@x';
@@ -230,7 +230,7 @@ class Argument
 		return '\'' . $value . '\'';
 	}
 
-	function utf8Replacer($captures)
+	public function utf8Replacer($captures)
 	{
 		if(strlen($captures[1]))
 		{
@@ -253,12 +253,12 @@ class Argument
 		}
 	}
 
-	function isValid()
+	public function isValid()
 	{
 		return $this->isValid;
 	}
 
-	function isColumnName()
+	public function isColumnName()
 	{
 		$type = $this->getType();
 		$value = $this->getUnescapedValue();
@@ -277,12 +277,12 @@ class Argument
 		return FALSE;
 	}
 
-	function getErrorMessage()
+	public function getErrorMessage()
 	{
 		return $this->errorMessage;
 	}
 
-	function ensureDefaultValue($default_value)
+	public function ensureDefaultValue($default_value)
 	{
 		if($this->value === NULL || $this->value === '')
 		{
@@ -296,7 +296,7 @@ class Argument
 	 * @param string $filter_type
 	 * @return void
 	 */
-	function checkFilter($filter_type)
+	public function checkFilter($filter_type)
 	{
 		if(isset($this->value) && $this->value != '')
 		{
@@ -358,7 +358,7 @@ class Argument
 		}
 	}
 
-	function checkMaxLength($length)
+	public function checkMaxLength($length)
 	{
 		if($this->value && (strlen($this->value) > $length))
 		{
@@ -369,7 +369,7 @@ class Argument
 		}
 	}
 
-	function checkMinLength($length)
+	public function checkMinLength($length)
 	{
 		if($this->value && (strlen($this->value) < $length))
 		{
@@ -380,7 +380,7 @@ class Argument
 		}
 	}
 
-	function checkNotNull()
+	public function checkNotNull()
 	{
 		if(!isset($this->value))
 		{

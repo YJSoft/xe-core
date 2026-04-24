@@ -12,7 +12,7 @@ class integration_searchModel extends module
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -28,7 +28,7 @@ class integration_searchModel extends module
 	 *
 	 * @return BaseObject output document list
 	 */
-	function getDocuments($target, $module_srls_list, $search_target, $search_keyword, $page=1, $list_count = 20)
+	public function getDocuments($target, $module_srls_list, $search_target, $search_keyword, $page=1, $list_count = 20)
 	{
 		if(is_array($module_srls_list)) $module_srls_list = implode(',',$module_srls_list);
 
@@ -71,7 +71,7 @@ class integration_searchModel extends module
 	 *
 	 * @return BaseObject output comment list
 	 */
-	function getComments($target, $module_srls_list, $search_keyword, $page=1, $list_count = 20)
+	public function getComments($target, $module_srls_list, $search_keyword, $page=1, $list_count = 20)
 	{
 		$args = new stdClass();
 
@@ -115,7 +115,7 @@ class integration_searchModel extends module
 	 *
 	 * @return BaseObject output trackback list
 	 */
-	function getTrackbacks($target, $module_srls_list, $search_target = "title", $search_keyword, $page=1, $list_count = 20)
+	public function getTrackbacks($target, $module_srls_list, $search_target = "title", $search_keyword, $page=1, $list_count = 20)
 	{
 		$oTrackbackModel = getAdminModel('trackback');
 		if(!$oTrackbackModel) return new BaseObject();
@@ -150,7 +150,7 @@ class integration_searchModel extends module
 	 *
 	 * @return BaseObject output file list
 	 */
-	function _getFiles($target, $module_srls_list, $search_keyword, $page, $list_count, $direct_download = 'Y')
+	public function _getFiles($target, $module_srls_list, $search_keyword, $page, $list_count, $direct_download = 'Y')
 	{
 		$args = new stdClass();
 
@@ -249,7 +249,7 @@ class integration_searchModel extends module
 	 *
 	 * @return BaseObject
 	 */
-	function getImages($target, $module_srls_list, $search_keyword, $page=1, $list_count = 20)
+	public function getImages($target, $module_srls_list, $search_keyword, $page=1, $list_count = 20)
 	{
 		return $this->_getFiles($target, $module_srls_list, $search_keyword, $page, $list_count);
 	}
@@ -265,7 +265,7 @@ class integration_searchModel extends module
 	 *
 	 * @return BaseObject
 	 */
-	function getFiles($target, $module_srls_list, $search_keyword, $page=1, $list_count = 20)
+	public function getFiles($target, $module_srls_list, $search_keyword, $page=1, $list_count = 20)
 	{
 		return $this->_getFiles($target, $module_srls_list, $search_keyword, $page, $list_count, 'N');
 	}

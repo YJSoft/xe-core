@@ -14,7 +14,7 @@ class documentView extends document
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -23,7 +23,7 @@ class documentView extends document
 	 * I make it out to find the geulman;;
 	 * @return void|BaseObject
 	 */
-	function dispDocumentPrint()
+	public function dispDocumentPrint()
 	{
 		// Bring a list of variables needed to implement
 		$document_srl = Context::get('document_srl');
@@ -54,7 +54,7 @@ class documentView extends document
 	 * Preview
 	 * @return void
 	 */
-	function dispDocumentPreview()
+	public function dispDocumentPreview()
 	{
 		if(!checkCSRF())
 		{
@@ -76,7 +76,7 @@ class documentView extends document
 	 * Selected by the administrator for the document management
 	 * @return void|BaseObject
 	 */
-	function dispDocumentManageDocument()
+	public function dispDocumentManageDocument()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
 		// Taken from a list of selected sessions
@@ -121,7 +121,7 @@ class documentView extends document
 	 * @param string $obj
 	 * @return BaseObject
 	 */
-	function triggerDispDocumentAdditionSetup(&$obj)
+	public function triggerDispDocumentAdditionSetup(&$obj)
 	{
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
@@ -146,7 +146,7 @@ class documentView extends document
 		if(!isset($document_config->use_history)) $document_config->use_history = 'N';
 		Context::set('document_config', $document_config);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path.'tpl', 'document_module_config');
 		$obj .= $tpl;
 
@@ -157,7 +157,7 @@ class documentView extends document
 	 * Document temp saved list
 	 * @return void
 	 */
-	function dispTempSavedList()
+	public function dispTempSavedList()
 	{
 		$this->setLayoutFile('popup_layout');
 

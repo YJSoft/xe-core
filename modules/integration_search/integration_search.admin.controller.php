@@ -12,7 +12,7 @@ class integration_searchAdminController extends integration_search
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -21,7 +21,7 @@ class integration_searchAdminController extends integration_search
 	 *
 	 * @return mixed
 	 */
-	function procIntegration_searchAdminInsertConfig()
+	public function procIntegration_searchAdminInsertConfig()
 	{
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');
@@ -46,7 +46,7 @@ class integration_searchAdminController extends integration_search
 	 *
 	 * @return mixed
 	 */
-	function procIntegration_searchAdminInsertSkin()
+	public function procIntegration_searchAdminInsertSkin()
 	{
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');

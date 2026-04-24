@@ -16,17 +16,17 @@ class StarExpression extends SelectExpression
 	 * constructor, set the column to asterisk
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 		parent::__construct("*");
 	}
 
-	function getArgument()
+	public function getArgument()
 	{
 		return null;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		// StarExpression has no arguments
 		return array();

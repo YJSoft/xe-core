@@ -20,7 +20,7 @@ class DBMysql_innodb extends DBMysql
 	 * Constructor
 	 * @return void
 	 */
-	function __construct($auto_connect = TRUE)
+	public function __construct($auto_connect = TRUE)
 	{
 		$this->_setDBInfo();
 		if($auto_connect) $this->_connect();
@@ -30,7 +30,7 @@ class DBMysql_innodb extends DBMysql
 	 * Create an instance of this class
 	 * @return DBMysql_innodb return DBMysql_innodb object instance
 	 */
-	function create()
+	public function create()
 	{
 		return new DBMysql_innodb;
 	}
@@ -41,7 +41,7 @@ class DBMysql_innodb extends DBMysql
 	 * @param resource $connection
 	 * @return void
 	 */
-	function _close($connection)
+	public function _close($connection)
 	{
 		@mysql_close($connection);
 	}
@@ -51,7 +51,7 @@ class DBMysql_innodb extends DBMysql
 	 * this method is private
 	 * @return boolean
 	 */
-	function _begin($transactionLevel = 0)
+	public function _begin($transactionLevel = 0)
 	{
 		$connection = $this->_getConnection('master');
 
@@ -71,7 +71,7 @@ class DBMysql_innodb extends DBMysql
 	 * this method is private
 	 * @return boolean
 	 */
-	function _rollback($transactionLevel = 0)
+	public function _rollback($transactionLevel = 0)
 	{
 		$connection = $this->_getConnection('master');
 
@@ -93,7 +93,7 @@ class DBMysql_innodb extends DBMysql
 	 * this method is private
 	 * @return boolean
 	 */
-	function _commit()
+	public function _commit()
 	{
 		$connection = $this->_getConnection('master');
 		$this->_query("commit", $connection);
@@ -107,7 +107,7 @@ class DBMysql_innodb extends DBMysql
 	 * @param resource $connection
 	 * @return resource
 	 */
-	function __query($query, $connection)
+	public function __query($query, $connection)
 	{
 		if(!$connection)
 		{
@@ -133,7 +133,7 @@ class DBMysql_innodb extends DBMysql
 	 * @param string $xml_doc xml schema contents
 	 * @return void|object
 	 */
-	function _createTable($xml_doc)
+	public function _createTable($xml_doc)
 	{
 		// xml parsing
 		$oXml = new XmlParser();

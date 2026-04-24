@@ -10,14 +10,14 @@ class editorAdminController extends editor
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief 컴포넌트 사용설정, 목록 순서 변경
 	 */
-	function procEditorAdminCheckUseListOrder()
+	public function procEditorAdminCheckUseListOrder()
 	{
 		$site_module_info = Context::get('site_module_info');
 		$enables = Context::get('enables');
@@ -52,7 +52,7 @@ class editorAdminController extends editor
 	/**
 	 * @brief check use component
 	 */
-	function editorCheckUse($componentList, $site_srl = 0)
+	public function editorCheckUse($componentList, $site_srl = 0)
 	{
 		$args = new stdClass();
 		$args->site_srl = $site_srl;
@@ -79,7 +79,7 @@ class editorAdminController extends editor
 	/**
 	 * @brief list order componet
 	 */
-	function editorListOrder($component_names, $site_srl = 0)
+	public function editorListOrder($component_names, $site_srl = 0)
 	{
 		$args = new stdClass();
 		$args->site_srl = $site_srl;
@@ -110,7 +110,7 @@ class editorAdminController extends editor
 	/**
 	 * @brief Set components
 	 */
-	function procEditorAdminSetupComponent()
+	public function procEditorAdminSetupComponent()
 	{
 		$site_module_info = Context::get('site_module_info');
 
@@ -140,7 +140,7 @@ class editorAdminController extends editor
 	/**
 	 * @brief Config components
 	 */
-	function procEditorAdminGeneralConfig()
+	public function procEditorAdminGeneralConfig()
 	{
 		$oModuleController = getController('module');
 		$configVars = Context::getRequestVars();
@@ -171,7 +171,7 @@ class editorAdminController extends editor
 	/**
 	 * @brief Add a component to DB
 	 */
-	function insertComponent($component_name, $enabled = false, $site_srl = 0)
+	public function insertComponent($component_name, $enabled = false, $site_srl = 0)
 	{
 		if($enabled) $enabled = 'Y';
 		else $enabled = 'N';

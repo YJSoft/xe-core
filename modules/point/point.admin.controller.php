@@ -10,14 +10,14 @@ class pointAdminController extends point
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Save the default configurations
 	 */
-	function procPointAdminInsertConfig()
+	public function procPointAdminInsertConfig()
 	{
 		// Get the configuration information
 		$oModuleModel = getModel('module');
@@ -125,7 +125,7 @@ class pointAdminController extends point
 	/**
 	 * @brief Save per-module configurations
 	 */
-	function procPointAdminInsertModuleConfig()
+	public function procPointAdminInsertModuleConfig()
 	{
 		$args = Context::getRequestVars();
 
@@ -162,7 +162,7 @@ class pointAdminController extends point
 	/**
 	 * @brief Save individual points per module
 	 */
-	function procPointAdminInsertPointModuleConfig()
+	public function procPointAdminInsertPointModuleConfig()
 	{
 		$module_srl = Context::get('target_module_srl');
 		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
@@ -196,7 +196,7 @@ class pointAdminController extends point
 	/**
 	 * @brief Change members points
 	 */
-	function procPointAdminUpdatePoint()
+	public function procPointAdminUpdatePoint()
 	{
 		$member_srl = Context::get('member_srl');
 		$point = Context::get('point');
@@ -231,7 +231,7 @@ class pointAdminController extends point
 	/**
 	 * @brief Recalculate points based on the list/comment/attachment and registration information. Granted only once a first-time login score.
 	 */
-	function procPointAdminReCal()
+	public function procPointAdminReCal()
 	{
 		@set_time_limit(0);
 		// Get per-module points information
@@ -329,7 +329,7 @@ class pointAdminController extends point
 	/**
 	 * @brief Apply member points saved by file to units of 5,000 people
 	 */
-	function procPointAdminApplyPoint()
+	public function procPointAdminApplyPoint()
 	{
 		$position = (int)Context::get('position');
 		$total = (int)Context::get('total');
@@ -374,7 +374,7 @@ class pointAdminController extends point
 	/**
 	 * @brief Reset points for each module
 	 */
-	function procPointAdminReset()
+	public function procPointAdminReset()
 	{
 		$module_srl = Context::get('module_srls');
 		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
@@ -406,7 +406,7 @@ class pointAdminController extends point
 	 * @brief Save the cache files
 	 * @deprecated
 	 */
-	function cacheActList()
+	public function cacheActList()
 	{
 		return;
 	}

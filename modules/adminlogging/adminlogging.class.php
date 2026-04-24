@@ -16,7 +16,7 @@ class adminlogging extends ModuleObject
 	 * Install adminlogging module
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		return new BaseObject();
 	}
@@ -25,7 +25,7 @@ class adminlogging extends ModuleObject
 	 * If update is necessary it returns true
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		return FALSE;
 	}
@@ -34,7 +34,7 @@ class adminlogging extends ModuleObject
 	 * Update module
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		return new BaseObject();
 	}
@@ -43,7 +43,7 @@ class adminlogging extends ModuleObject
 	 * Regenerate cache file
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		
 	}

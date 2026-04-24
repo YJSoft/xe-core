@@ -8,7 +8,7 @@ class VirtualXMLDisplayHandler
 	 * @param ModuleObject $oModule the module object
 	 * @return string
 	 */
-	function toDoc(&$oModule)
+	public function toDoc(&$oModule)
 	{
 		$error = $oModule->getError();
 		$message = $oModule->getMessage();

@@ -20,7 +20,7 @@ class DBMysqli_innodb extends DBMysql
 	 * Constructor
 	 * @return void
 	 */
-	function __construct($auto_connect = TRUE)
+	public function __construct($auto_connect = TRUE)
 	{
 		$this->_setDBInfo();
 		if($auto_connect) $this->_connect();
@@ -30,7 +30,7 @@ class DBMysqli_innodb extends DBMysql
 	 * Create an instance of this class
 	 * @return DBMysqli_innodb return DBMysqli_innodb object instance
 	 */
-	function create()
+	public function create()
 	{
 		return new DBMysqli_innodb;
 	}
@@ -41,7 +41,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param array $connection connection's value is db_hostname, db_port, db_database, db_userid, db_password
 	 * @return resource
 	 */
-	function __connect($connection)
+	public function __connect($connection)
 	{
 		// Attempt to connect
 		if($connection["db_port"])
@@ -75,7 +75,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param resource $connection
 	 * @return void
 	 */
-	function _close($connection)
+	public function _close($connection)
 	{
 		mysqli_close($connection);
 	}
@@ -85,7 +85,7 @@ class DBMysqli_innodb extends DBMysql
 	 * this method is private
 	 * @return boolean
 	 */
-	function _begin($transactionLevel = 0)
+	public function _begin($transactionLevel = 0)
 	{
 		$connection = $this->_getConnection('master');
 
@@ -105,7 +105,7 @@ class DBMysqli_innodb extends DBMysql
 	 * this method is private
 	 * @return boolean
 	 */
-	function _rollback($transactionLevel = 0)
+	public function _rollback($transactionLevel = 0)
 	{
 		$connection = $this->_getConnection('master');
 
@@ -128,7 +128,7 @@ class DBMysqli_innodb extends DBMysql
 	 * this method is private
 	 * @return boolean
 	 */
-	function _commit()
+	public function _commit()
 	{
 		$connection = $this->_getConnection('master');
 		mysqli_commit($connection);
@@ -143,7 +143,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param string $string
 	 * @return string
 	 */
-	function addQuotes($string)
+	public function addQuotes($string)
 	{
 		if(version_compare(PHP_VERSION, "5.4.0", "<") && get_magic_quotes_gpc())
 		{
@@ -164,7 +164,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param resource $connection
 	 * @return resource
 	 */
-	function __query($query, $connection)
+	public function __query($query, $connection)
 	{
 		if($this->use_prepared_statements == 'Y')
 		{
@@ -228,7 +228,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param array $params
 	 * @return void
 	 */
-	function _prepareQueryParameters(&$types, &$params)
+	public function _prepareQueryParameters(&$types, &$params)
 	{
 		$types = '';
 		$params = array();
@@ -282,7 +282,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param int|NULL $arrayIndexEndValue
 	 * @return array
 	 */
-	function _fetch($result, $arrayIndexEndValue = NULL)
+	public function _fetch($result, $arrayIndexEndValue = NULL)
 	{
 		if($this->use_prepared_statements != 'Y')
 		{
@@ -386,7 +386,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param boolean $with_values
 	 * @return resource
 	 */
-	function _executeInsertAct($queryObject, $with_values = false)
+	public function _executeInsertAct($queryObject, $with_values = false)
 	{
 		if($this->use_prepared_statements != 'Y')
 		{
@@ -404,7 +404,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param boolean $with_values
 	 * @return resource
 	 */
-	function _executeUpdateAct($queryObject, $with_values = false)
+	public function _executeUpdateAct($queryObject, $with_values = false)
 	{
 		if($this->use_prepared_statements != 'Y')
 		{
@@ -422,7 +422,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param boolean $with_values
 	 * @return resource
 	 */
-	function _executeDeleteAct($queryObject, $with_values = false)
+	public function _executeDeleteAct($queryObject, $with_values = false)
 	{
 		if($this->use_prepared_statements != 'Y')
 		{
@@ -443,7 +443,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param boolean $with_values
 	 * @return BaseObject
 	 */
-	function _executeSelectAct($queryObject, $connection = null, $with_values = false)
+	public function _executeSelectAct($queryObject, $connection = null, $with_values = false)
 	{
 		if($this->use_prepared_statements != 'Y')
 		{
@@ -461,7 +461,7 @@ class DBMysqli_innodb extends DBMysql
 	 * This method use only mysql
 	 * @return int
 	 */
-	function db_insert_id()
+	public function db_insert_id()
 	{
 		$connection = $this->_getConnection('master');
 		return mysqli_insert_id($connection);
@@ -472,7 +472,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param resource $result
 	 * @return object
 	 */
-	function db_fetch_object(&$result)
+	public function db_fetch_object(&$result)
 	{
 		return mysqli_fetch_object($result);
 	}
@@ -482,7 +482,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param resource $result
 	 * @return boolean Returns TRUE on success or FALSE on failure.
 	 */
-	function db_free_result(&$result)
+	public function db_free_result(&$result)
 	{
 		return mysqli_free_result($result);
 	}
@@ -496,7 +496,7 @@ class DBMysqli_innodb extends DBMysql
 	 * @param string $xml_doc xml schema contents
 	 * @return void|object
 	 */
-	function _createTable($xml_doc)
+	public function _createTable($xml_doc)
 	{
 		// xml parsing
 		$oXml = new XmlParser();

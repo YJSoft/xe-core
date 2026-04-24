@@ -14,7 +14,7 @@ class language_select extends WidgetHandler
 	 * Get extra_vars declared in ./widgets/widget/conf/info.xml as arguments
 	 * After generating the result, do not print but return it.
 	 */
-	function proc($args)
+	public function proc($args)
 	{
 		// Set a path of the template skin (values of skin, colorset settings)
 		$tpl_path = sprintf('%sskins/%s', $this->widget_path, $args->skin);
@@ -23,7 +23,7 @@ class language_select extends WidgetHandler
 		Context::set('colorset', $args->colorset);
 
 		// Compile a template
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
 }

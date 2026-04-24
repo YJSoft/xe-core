@@ -16,7 +16,7 @@ class commentView extends comment
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -26,7 +26,7 @@ class commentView extends comment
 	 * @param string $obj
 	 * @return string
 	 */
-	function triggerDispCommentAdditionSetup(&$obj)
+	public function triggerDispCommentAdditionSetup(&$obj)
 	{
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');

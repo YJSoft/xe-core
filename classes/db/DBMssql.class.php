@@ -16,9 +16,9 @@ class DBMssql extends DB
 	 * prefix of XE tables(One more XE can be installed on a single DB)
 	 * @var string
 	 */
-	var $prefix = 'xe';
-	var $param = array();
-	var $comment_syntax = '/* %s */';
+	public $prefix = 'xe';
+	public $param = array();
+	public $comment_syntax = '/* %s */';
 
 	/**
 	 * column type used in mssql
@@ -27,7 +27,7 @@ class DBMssql extends DB
 	 * becasue it uses commonly defined type in the schema/query xml
 	 * @var array
 	 */
-	var $column_type = array(
+	public $column_type = array(
 		'bignumber' => 'bigint',
 		'number' => 'int',
 		'varchar' => 'nvarchar',
@@ -42,7 +42,7 @@ class DBMssql extends DB
 	 * Constructor
 	 * @return void
 	 */
-	function __construct($auto_connect = TRUE)
+	public function __construct($auto_connect = TRUE)
 	{
 		$this->_setDBInfo();
 		if($auto_connect) $this->_connect();
@@ -52,7 +52,7 @@ class DBMssql extends DB
 	 * Create an instance of this class
 	 * @return DBMssql return DBMssql object instance
 	 */
-	function create()
+	public function create()
 	{
 		return new DBMssql;
 	}
@@ -63,7 +63,7 @@ class DBMssql extends DB
 	 * @param array $connection connection's value is db_hostname, db_database, db_userid, db_password
 	 * @return resource
 	 */
-	function __connect($connection)
+	public function __connect($connection)
 	{
 		//sqlsrv_configure( 'WarningsReturnAsErrors', 0 );
 		//sqlsrv_configure( 'LogSeverity', SQLSRV_LOG_SEVERITY_ALL );
@@ -85,7 +85,7 @@ class DBMssql extends DB
 	 * @param resource $connection
 	 * @return void
 	 */
-	function _close($connection)
+	public function _close($connection)
 	{
 		$this->commit();
 		sqlsrv_close($connection);
@@ -97,7 +97,7 @@ class DBMssql extends DB
 	 * @param string $string
 	 * @return string
 	 */
-	function addQuotes($string)
+	public function addQuotes($string)
 	{
 		if(version_compare(PHP_VERSION, "5.4.0", "<") && get_magic_quotes_gpc())
 		{
@@ -113,7 +113,7 @@ class DBMssql extends DB
 	 * this method is private
 	 * @return boolean
 	 */
-	function _begin($transactionLevel = 0)
+	public function _begin($transactionLevel = 0)
 	{
 		$connection = $this->_getConnection('master');
 
@@ -136,7 +136,7 @@ class DBMssql extends DB
 	 * this method is private
 	 * @return boolean
 	 */
-	function _rollback($transactionLevel = 0)
+	public function _rollback($transactionLevel = 0)
 	{
 		$connection = $this->_getConnection('master');
 
@@ -158,7 +158,7 @@ class DBMssql extends DB
 	 * this method is private
 	 * @return boolean
 	 */
-	function _commit()
+	public function _commit()
 	{
 		$connection = $this->_getConnection('master');
 		sqlsrv_commit($connection);
@@ -172,7 +172,7 @@ class DBMssql extends DB
 	 * @param resource $connection
 	 * @return resource|boolean Returns a statement resource on success and FALSE if an error occurred.
 	 */
-	function __query($query, $connection)
+	public function __query($query, $connection)
 	{
 		$_param = array();
 
@@ -254,7 +254,7 @@ class DBMssql extends DB
 	 * @param array $_param
 	 * @return array
 	 */
-	function _getParametersByReference($_param)
+	public function _getParametersByReference($_param)
 	{
 		$copy = array();
 		$args = array();
@@ -285,7 +285,7 @@ class DBMssql extends DB
 	 * @param int|NULL $arrayIndexEndValue
 	 * @return array
 	 */
-	function _fetch($result, $arrayIndexEndValue = NULL)
+	public function _fetch($result, $arrayIndexEndValue = NULL)
 	{
 		$output = array();
 		if(!$this->isConnected() || $this->isError() || !$result)
@@ -336,7 +336,7 @@ class DBMssql extends DB
 	 * Auto_increment column only used in the sequence table
 	 * @return int
 	 */
-	function getNextSequence()
+	public function getNextSequence()
 	{
 		$query = sprintf("insert into %ssequence (seq) values (ident_incr('%ssequence'))", $this->prefix, $this->prefix);
 		$this->_query($query);
@@ -354,7 +354,7 @@ class DBMssql extends DB
 	 * @param string $target_name
 	 * @return boolean
 	 */
-	function isTableExists($target_name)
+	public function isTableExists($target_name)
 	{
 		$query = sprintf("select name from sysobjects where name = '%s%s' and xtype='U'", $this->prefix, $this->addQuotes($target_name));
 		$result = $this->_query($query);
@@ -377,7 +377,7 @@ class DBMssql extends DB
 	 * @param boolean $notnull not null status, default value is false
 	 * @return void
 	 */
-	function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = null, $notnull = false)
+	public function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = null, $notnull = false)
 	{
 		if($this->isColumnExists($table_name, $column_name))
 		{
@@ -417,7 +417,7 @@ class DBMssql extends DB
 	 * @param string $column_name column name
 	 * @return void
 	 */
-	function dropColumn($table_name, $column_name)
+	public function dropColumn($table_name, $column_name)
 	{
 		if(!$this->isColumnExists($table_name, $column_name))
 		{
@@ -433,7 +433,7 @@ class DBMssql extends DB
 	 * @param string $column_name column name
 	 * @return boolean
 	 */
-	function isColumnExists($table_name, $column_name)
+	public function isColumnExists($table_name, $column_name)
 	{
 		$query = sprintf("select syscolumns.name as name from syscolumns, sysobjects where sysobjects.name = '%s%s' and sysobjects.id = syscolumns.id and syscolumns.name = '%s'", $this->prefix, $table_name, $column_name);
 		$result = $this->_query($query);
@@ -459,7 +459,7 @@ class DBMssql extends DB
 	 * @param boolean $is_unique
 	 * @return void
 	 */
-	function addIndex($table_name, $index_name, $target_columns, $is_unique = false)
+	public function addIndex($table_name, $index_name, $target_columns, $is_unique = false)
 	{
 		if($this->isIndexExists($table_name, $index_name))
 		{
@@ -481,7 +481,7 @@ class DBMssql extends DB
 	 * @param boolean $is_unique
 	 * @return void
 	 */
-	function dropIndex($table_name, $index_name, $is_unique = false)
+	public function dropIndex($table_name, $index_name, $is_unique = false)
 	{
 		if(!$this->isIndexExists($table_name, $index_name))
 		{
@@ -497,7 +497,7 @@ class DBMssql extends DB
 	 * @param string $index_name index name
 	 * @return boolean
 	 */
-	function isIndexExists($table_name, $index_name)
+	public function isIndexExists($table_name, $index_name)
 	{
 		$query = sprintf("select sysindexes.name as name from sysindexes, sysobjects where sysobjects.name = '%s%s' and sysobjects.id = sysindexes.id and sysindexes.name = '%s'", $this->prefix, $table_name, $index_name);
 
@@ -520,7 +520,7 @@ class DBMssql extends DB
 	 * @param string $xml_doc xml schema contents
 	 * @return void|object
 	 */
-	function createTableByXml($xml_doc)
+	public function createTableByXml($xml_doc)
 	{
 		return $this->_createTable($xml_doc);
 	}
@@ -530,7 +530,7 @@ class DBMssql extends DB
 	 * @param string $file_name xml schema file path
 	 * @return void|object
 	 */
-	function createTableByXmlFile($file_name)
+	public function createTableByXmlFile($file_name)
 	{
 		if(!file_exists($file_name))
 		{
@@ -550,7 +550,7 @@ class DBMssql extends DB
 	 * @param string $xml_doc xml schema contents
 	 * @return void|object
 	 */
-	function _createTable($xml_doc)
+	public function _createTable($xml_doc)
 	{
 		// xml parsing
 		$oXml = new XmlParser();
@@ -653,7 +653,7 @@ class DBMssql extends DB
 	 * @param BaseObject $queryObject
 	 * @return resource
 	 */
-	function _executeInsertAct($queryObject)
+	public function _executeInsertAct($queryObject)
 	{
 		$query = $this->getInsertSql($queryObject, false);
 		$this->param = $queryObject->getArguments();
@@ -665,7 +665,7 @@ class DBMssql extends DB
 	 * @param BaseObject $queryObject
 	 * @return resource
 	 */
-	function _executeUpdateAct($queryObject)
+	public function _executeUpdateAct($queryObject)
 	{
 		$query = $this->getUpdateSql($queryObject, false);
 		$this->param = $queryObject->getArguments();
@@ -679,7 +679,7 @@ class DBMssql extends DB
 	 * @param boolean $with_priority
 	 * @return string
 	 */
-	function getUpdateSql($query, $with_values = true, $with_priority = false)
+	public function getUpdateSql($query, $with_values = true, $with_priority = false)
 	{
 		$columnsList = $query->getUpdateString($with_values);
 		if($columnsList == '')
@@ -717,7 +717,7 @@ class DBMssql extends DB
 	 * @param BaseObject $queryObject
 	 * @return resource
 	 */
-	function _executeDeleteAct($queryObject)
+	public function _executeDeleteAct($queryObject)
 	{
 		$query = $this->getDeleteSql($queryObject, false);
 		$this->param = $queryObject->getArguments();
@@ -730,7 +730,7 @@ class DBMssql extends DB
 	 * @param boolean $with_values
 	 * @return string
 	 */
-	function getSelectSql($query, $with_values = TRUE, $connection=NULL)
+	public function getSelectSql($query, $with_values = TRUE, $connection=NULL)
 	{
 		$with_values = false;
 
@@ -841,7 +841,7 @@ class DBMssql extends DB
 	 * @param resource $connection
 	 * @return BaseObject
 	 */
-	function _executeSelectAct($queryObject, $connection = null)
+	public function _executeSelectAct($queryObject, $connection = null)
 	{
 		$query = $this->getSelectSql($queryObject, true, $connection);
 
@@ -871,7 +871,7 @@ class DBMssql extends DB
 	 * @param boolean $force
 	 * @return DBParser
 	 */
-	function getParser($force = FALSE)
+	public function getParser($force = FALSE)
 	{
 		return new DBParser("[", "]", $this->prefix);
 	}
@@ -881,7 +881,7 @@ class DBMssql extends DB
 	 * @param BaseObject $queryObject
 	 * @return BaseObject
 	 */
-	function queryError($queryObject)
+	public function queryError($queryObject)
 	{
 		$limit = $queryObject->getLimit();
 		if($limit && $limit->isPageHandler())
@@ -907,7 +907,7 @@ class DBMssql extends DB
 	 * @param resource $connection
 	 * @return BaseObject BaseObject with page info containing
 	 */
-	function queryPageLimit($queryObject, $result, $connection)
+	public function queryPageLimit($queryObject, $result, $connection)
 	{
 		$limit = $queryObject->getLimit();
 		if($limit && $limit->isPageHandler())

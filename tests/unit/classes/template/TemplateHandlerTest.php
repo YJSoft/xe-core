@@ -4,7 +4,7 @@ require_once _XE_PATH_.'classes/template/TemplateHandler.class.php';
 
 class TemplateHandlerTest extends \Codeception\TestCase\Test
 {
-    var $prefix = '<?php if(!defined("__XE__"))exit;';
+    public $prefix = '<?php if(!defined("__XE__"))exit;';
 
     static public function provider()
     {
@@ -462,7 +462,7 @@ class TemplateHandlerTest extends \Codeception\TestCase\Test
 class TemplateHandlerWrapper extends \TemplateHandler {
     private $inst;
 
-    function __construct() {
+    public function __construct() {
         $this->inst = parent::getInstance();
     }
 

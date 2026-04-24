@@ -16,7 +16,7 @@ class UpdateColumnsTag
 	 *
 	 * @var array value is UpdateColumnTag object
 	 */
-	var $columns;
+	public $columns;
 
 	/**
 	 * Constructor
@@ -24,7 +24,7 @@ class UpdateColumnsTag
 	 * @param array|object $xml_columns
 	 * @return void
 	 */
-	function __construct($xml_columns)
+	public function __construct($xml_columns)
 	{
 		$this->columns = array();
 
@@ -51,7 +51,7 @@ class UpdateColumnsTag
 	 *
 	 * @return string
 	 */
-	function toString()
+	public function toString()
 	{
 		$output_columns = 'array(' . PHP_EOL;
 		foreach($this->columns as $column)
@@ -68,7 +68,7 @@ class UpdateColumnsTag
 	 *
 	 * @return array
 	 */
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		foreach($this->columns as $column)

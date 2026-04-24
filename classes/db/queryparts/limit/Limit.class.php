@@ -13,25 +13,25 @@ class Limit
 	 * start number
 	 * @var int
 	 */
-	var $start;
+	public $start;
 
 	/**
 	 * list count
 	 * @var int
 	 */
-	var $list_count;
+	public $list_count;
 
 	/**
 	 * page count
 	 * @var int
 	 */
-	var $page_count;
+	public $page_count;
 
 	/**
 	 * current page
 	 * @var int
 	 */
-	var $page;
+	public $page;
 
 	/**
 	 * constructor
@@ -41,7 +41,7 @@ class Limit
 	 * @param int $offset
 	 * @return void
 	 */
-	function __construct($list_count, $page = NULL, $page_count = NULL, $offset = NULL)
+	public function __construct($list_count, $page = NULL, $page_count = NULL, $offset = NULL)
 	{
 		$this->list_count = $list_count;
 		if($page)
@@ -62,7 +62,7 @@ class Limit
 	 * In case you choose to use query limit in other cases than page select
 	 * @return boolean
 	 */
-	function isPageHandler()
+	public function isPageHandler()
 	{
 		if($this->page)
 		{
@@ -74,17 +74,17 @@ class Limit
 		}
 	}
 
-	function getOffset()
+	public function getOffset()
 	{
 		return $this->start;
 	}
 
-	function getLimit()
+	public function getLimit()
 	{
 		return $this->list_count->getValue();
 	}
 
-	function toString()
+	public function toString()
 	{
 		if($this->page || $this->start)
 		{

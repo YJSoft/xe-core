@@ -13,13 +13,13 @@ class ExtraVar
 	 * sequence of module
 	 * @var int
 	 */
-	var $module_srl = null;
+	public $module_srl = null;
 
 	/**
 	 * Current module's Set of ExtraItem
 	 * @var ExtraItem[]
 	 */
-	var $keys = null;
+	public $keys = null;
 
 	/**
 	 * Get instance of ExtraVar (singleton)
@@ -27,7 +27,7 @@ class ExtraVar
 	 * @param int $module_srl Sequence of module
 	 * @return ExtraVar
 	 */
-	function &getInstance($module_srl)
+	public static function getInstance($module_srl)
 	{
 		return new ExtraVar($module_srl);
 	}
@@ -38,7 +38,7 @@ class ExtraVar
 	 * @param int $module_srl Sequence of module
 	 * @return void
 	 */
-	function __construct($module_srl)
+	public function __construct($module_srl)
 	{
 		$this->module_srl = $module_srl;
 	}
@@ -49,7 +49,7 @@ class ExtraVar
 	 * @param object[] $extra_keys Array of extra variable. A value of array is object that contains module_srl, idx, name, default, desc, is_required, search, value, eid.
 	 * @return void
 	 */
-	function setExtraVarKeys($extra_keys)
+	public function setExtraVarKeys($extra_keys)
 	{
 		if(!is_array($extra_keys) || count($extra_keys) < 1)
 		{
@@ -68,7 +68,7 @@ class ExtraVar
 	 *
 	 * @return ExtraItem[]
 	 */
-	function getExtraVars()
+	public function getExtraVars()
 	{
 		return $this->keys;
 	}
@@ -87,61 +87,61 @@ class ExtraItem
 	 * Sequence of module
 	 * @var int
 	 */
-	var $module_srl = 0;
+	public $module_srl = 0;
 
 	/**
 	 * Index of extra variable
 	 * @var int
 	 */
-	var $idx = 0;
+	public $idx = 0;
 
 	/**
 	 * Name of extra variable
 	 * @var string
 	 */
-	var $name = 0;
+	public $name = 0;
 
 	/**
 	 * Type of extra variable
 	 * @var string text, homepage, email_address, tel, textarea, checkbox, date, select, radio, kr_zip
 	 */
-	var $type = 'text';
+	public $type = 'text';
 
 	/**
 	 * Default values
 	 * @var string[]
 	 */
-	var $default = null;
+	public $default = null;
 
 	/**
 	 * Description
 	 * @var string
 	 */
-	var $desc = '';
+	public $desc = '';
 
 	/**
 	 * Whether required or not requred this extra variable
 	 * @var string Y, N
 	 */
-	var $is_required = 'N';
+	public $is_required = 'N';
 
 	/**
 	 * Whether can or can not search this extra variable
 	 * @var string Y, N
 	 */
-	var $search = 'N';
+	public $search = 'N';
 
 	/**
 	 * Value
 	 * @var string
 	 */
-	var $value = null;
+	public $value = null;
 
 	/**
 	 * Unique id of extra variable in module
 	 * @var string
 	 */
-	var $eid = '';
+	public $eid = '';
 
 	/**
 	 * Constructor
@@ -157,7 +157,7 @@ class ExtraItem
 	 * @param string $eid Unique id of extra variable in module
 	 * @return void
 	 */
-	function __construct($module_srl, $idx, $name, $type = 'text', $default = null, $desc = '', $is_required = 'N', $search = 'N', $value = null, $eid = '')
+	public function __construct($module_srl, $idx, $name, $type = 'text', $default = null, $desc = '', $is_required = 'N', $search = 'N', $value = null, $eid = '')
 	{
 		if(!$idx)
 		{
@@ -182,7 +182,7 @@ class ExtraItem
 	 * @param string $value The value to set
 	 * @return void
 	 */
-	function setValue($value)
+	public function setValue($value)
 	{
 		$this->value = $value;
 	}
@@ -194,7 +194,7 @@ class ExtraItem
 	 * @param string $value Value
 	 * @return string Returns a converted value
 	 */
-	function _getTypeValue($type, $value)
+	public function _getTypeValue($type, $value)
 	{
 		$value = trim($value);
 		if(!isset($value))
@@ -294,7 +294,7 @@ class ExtraItem
 	 *
 	 * @return string Returns a value expressed in HTML.
 	 */
-	function getValue()
+	public function getValue()
 	{	
 		return $this->_getTypeValue($this->type, $this->value);
 	}
@@ -304,7 +304,7 @@ class ExtraItem
 	 *
 	 * @return string Returns a value expressed in HTML.
 	 */
-	function getValueHTML()
+	public function getValueHTML()
 	{
 		$value = $this->_getTypeValue($this->type, $this->value);
 
@@ -352,7 +352,7 @@ class ExtraItem
 	 *
 	 * @return string Returns a form html.
 	 */
-	function getFormHTML()
+	public function getFormHTML()
 	{
 		static $id_num = 1000;
 

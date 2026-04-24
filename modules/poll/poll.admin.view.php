@@ -10,14 +10,14 @@ class pollAdminView extends poll
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Administrator's Page
 	 */
-	function dispPollAdminList()
+	public function dispPollAdminList()
 	{
 		// Arrange the search options
 		$search_target = trim(Context::get('search_target'));
@@ -102,7 +102,7 @@ class pollAdminView extends poll
 	/**
 	 * @brief Confgure the poll skin and colorset
 	 */
-	function dispPollAdminConfig()
+	public function dispPollAdminConfig()
 	{
 		$oModuleModel = getModel('module');
 		// Get the configuration information
@@ -129,7 +129,7 @@ class pollAdminView extends poll
 	/**
 	 * @brief Poll Results
 	 */
-	function dispPollAdminResult()
+	public function dispPollAdminResult()
 	{
 		// Popup layout
 		$this->setLayoutFile("popup_layout");

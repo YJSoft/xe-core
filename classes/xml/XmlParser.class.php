@@ -15,7 +15,7 @@ class Xml_Node_
 	 * for undeclared properties.
 	 * No effect in PHP4
 	 */
-	function __get($name)
+	public function __get($name)
 	{
 		return NULL;
 	}
@@ -42,32 +42,32 @@ class XmlParser
 	 * Xml parser
 	 * @var resource
 	 */
-	var $oParser = NULL;
+	public $oParser = NULL;
 
 	/**
 	 * Input xml
 	 * @var string
 	 */
-	var $input = NULL;
+	public $input = NULL;
 
 	/**
 	 * Output object in array
 	 * @var array
 	 */
-	var $output = array();
+	public $output = array();
 
 	/**
 	 * The default language type
 	 * @var string
 	 */
-	var $lang = "en";
+	public $lang = "en";
 
 	/**
 	 * Load a xml file specified by a filename and parse it to Return the resultant data object
 	 * @param string $filename a file path of file
 	 * @return array Returns a data object containing data extracted from a xml file or NULL if a specified file does not exist
 	 */
-	function loadXmlFile($filename)
+	public function loadXmlFile($filename)
 	{
 		if(!file_exists($filename))
 		{
@@ -86,7 +86,7 @@ class XmlParser
 	 * @param mixed $arg2 ???
 	 * @return array Returns a resultant data object or NULL in case of error
 	 */
-	function parse($input = '', $arg1 = NULL, $arg2 = NULL)
+	public function parse($input = '', $arg1 = NULL, $arg2 = NULL)
 	{
 		// Save the compile starting time for debugging
 		if(__DEBUG__ == 3)
@@ -156,7 +156,7 @@ class XmlParser
 	 * @param array $attrs attributes to be set
 	 * @return array
 	 */
-	function _tagOpen($parser, $node_name, $attrs)
+	public function _tagOpen($parser, $node_name, $attrs)
 	{
 		$obj = new Xml_Node_();
 		$obj->node_name = strtolower($node_name);
@@ -172,7 +172,7 @@ class XmlParser
 	 * @param string $body a data to be added
 	 * @return void
 	 */
-	function _tagBody($parser, $body)
+	public function _tagBody($parser, $body)
 	{
 		//if(!trim($body)) return;
 		$this->output[count($this->output) - 1]->body .= $body;
@@ -184,7 +184,7 @@ class XmlParser
 	 * @param string $node_name name of xml node
 	 * @return void
 	 */
-	function _tagClosed($parser, $node_name)
+	public function _tagClosed($parser, $node_name)
 	{
 		$node_name = strtolower($node_name);
 		$cur_obj = array_pop($this->output);
@@ -226,7 +226,7 @@ class XmlParser
 	 * @param array $arr data array 
 	 * @return Xml_Node_ object
 	 */
-	function _arrToAttrsObj($arr)
+	public function _arrToAttrsObj($arr)
 	{
 		$output = new Xml_Node_();
 		foreach($arr as $key => $val)

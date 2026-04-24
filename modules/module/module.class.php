@@ -10,12 +10,12 @@ class module extends ModuleObject
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Register action forward (to use in administrator mode)
 		$oModuleController = getController('module');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->addIndex("modules","idx_site_mid", array("site_srl","mid"), true);
 		$oDB->addIndex('sites','unique_domain',array('domain'),true);
 		// Create a directory to use in the module module
@@ -50,9 +50,9 @@ class module extends ModuleObject
 	/**
 	 * @brief a method to check if successfully installed
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -125,9 +125,9 @@ class module extends ModuleObject
 	/**
 	 * @brief Execute update
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -445,7 +445,7 @@ class module extends ModuleObject
 		return new BaseObject(0, 'success_updated');
 	}
 
-	function updateForUniqueSiteDomain()
+	public function updateForUniqueSiteDomain()
 	{
 		$output = executeQueryArray("module.getNonuniqueDomains");
 		if(!$output->data) return;
@@ -476,7 +476,7 @@ class module extends ModuleObject
 	/**
 	 * @brief Re-generate the cache file
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleModel->getModuleList();

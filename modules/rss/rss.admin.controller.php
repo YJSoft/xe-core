@@ -12,7 +12,7 @@ class rssAdminController extends rss
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -21,7 +21,7 @@ class rssAdminController extends rss
 	 *
 	 * @return void
 	 */
-	function procRssAdminInsertConfig()
+	public function procRssAdminInsertConfig()
 	{
 		$oModuleModel = getModel('module');
 		$total_config = $oModuleModel->getModuleConfig('rss');
@@ -112,7 +112,7 @@ class rssAdminController extends rss
 	 *
 	 * @return void
 	 */
-	function procRssAdminInsertModuleConfig()
+	public function procRssAdminInsertModuleConfig()
 	{
 		$config_vars = Context::getRequestVars();
 
@@ -158,7 +158,7 @@ class rssAdminController extends rss
 	 * @param BaseObject $config RSS all feeds config list
 	 * @return BaseObject
 	 */
-	function setFeedConfig($config)
+	public function setFeedConfig($config)
 	{
 		$oModuleController = getController('module');
 		$oModuleController->insertModuleConfig('rss',$config);
@@ -175,7 +175,7 @@ class rssAdminController extends rss
 	 * @param string $feed_copyright Default value is 'N'
 	 * @return BaseObject
 	 */
-	function setRssModuleConfig($module_srl, $open_rss, $open_total_feed = 'N', $feed_description = 'N', $feed_copyright = 'N')
+	public function setRssModuleConfig($module_srl, $open_rss, $open_total_feed = 'N', $feed_description = 'N', $feed_copyright = 'N')
 	{
 		$oModuleController = getController('module');
 		$config = new stdClass;

@@ -11,25 +11,25 @@ class memberAdminModel extends member
 	 * info of member
 	 * @var object
 	 */
-	var $member_info = NULL;
+	public $member_info = NULL;
 
 	/**
 	 * info of member groups
 	 * @var array
 	 */
-	var $member_groups = NULL;
+	public $member_groups = NULL;
 
 	/**
 	 * info of sign up form
 	 * @var array
 	 */
-	var $join_form_list = NULL;
+	public $join_form_list = NULL;
 
 	/**
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -38,7 +38,7 @@ class memberAdminModel extends member
 	 * 
 	 * @return object|array (object : when member count is 1, array : when member count is more than 1)
 	 */
-	function getMemberList()
+	public function getMemberList()
 	{
 		// Search option
 		$args = new stdClass();
@@ -155,7 +155,7 @@ class memberAdminModel extends member
 	 *
 	 * @return array
 	 */
-	function getSiteMemberList($site_srl, $page = 1)
+	public function getSiteMemberList($site_srl, $page = 1)
 	{
 		$args->site_srl = $site_srl;
 		$args->page = $page;
@@ -171,7 +171,7 @@ class memberAdminModel extends member
 	 * 
 	 * @return array 
 	 */
-	function getSiteAdminMemberSrls()
+	public function getSiteAdminMemberSrls()
 	{
 		$output = executeQueryArray('member.getSiteAdminMemberSrls');
 		if(!$output->toBool() || !$output->data) return array();
@@ -190,7 +190,7 @@ class memberAdminModel extends member
 	 * 
 	 * @return void 
 	 */
-	function getMemberAdminColorset()
+	public function getMemberAdminColorset()
 	{
 		$skin = Context::get('skin');
 		if(!$skin) $tpl = "";
@@ -205,7 +205,7 @@ class memberAdminModel extends member
 			if(!$config->colorset) $config->colorset = "white";
 			Context::set('config', $config);
 
-			$oTemplate = &TemplateHandler::getInstance();
+			$oTemplate = TemplateHandler::getInstance();
 			$tpl = $oTemplate->compile($this->module_path.'tpl', 'new_colorset_list');
 		}
 
@@ -238,7 +238,7 @@ class memberAdminModel extends member
 	 *
 	 * @return int
 	 */
-	function getMemberGroupMemberCountByDate($date = '')
+	public function getMemberGroupMemberCountByDate($date = '')
 	{
 		if($date) $args->regDate = date('Ymd', strtotime($date));
 
@@ -253,7 +253,7 @@ class memberAdminModel extends member
 	 *
 	 * @return void
 	 */
-	function getMemberAdminInsertJoinForm()
+	public function getMemberAdminInsertJoinForm()
 	{
 		$member_join_form_srl = Context::get('member_join_form_srl');
 
@@ -283,7 +283,7 @@ class memberAdminModel extends member
 		$id_list = implode(',',$list);
 		Context::set('id_list',$id_list);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path.'tpl', 'insert_join_form');
 
 		$this->add('tpl', str_replace("\n"," ",$tpl));
@@ -294,7 +294,7 @@ class memberAdminModel extends member
 	 *
 	 * @return boolean (true : allowed, false : refuse)
 	 */
-	function getMemberAdminIPCheck()
+	public function getMemberAdminIPCheck()
 	{
 		$db_info = Context::getDBInfo();
 		$admin_ip_list = $db_info->admin_ip_list;

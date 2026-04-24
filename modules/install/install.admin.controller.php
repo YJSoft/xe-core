@@ -10,14 +10,14 @@ class installAdminController extends install
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Install the module
 	 */
-	function procInstallAdminInstall()
+	public function procInstallAdminInstall()
 	{
 		$module_name = Context::get('module_name');
 		if(!$module_name) return new BaseObject(-1, 'invalid_request');
@@ -31,7 +31,7 @@ class installAdminController extends install
 	/**
 	 * @brief Upate the module
 	 */
-	function procInstallAdminUpdate()
+	public function procInstallAdminUpdate()
 	{
 		@set_time_limit(0);
 		$module_name = Context::get('module_name');
@@ -47,7 +47,7 @@ class installAdminController extends install
 	/**
 	 * @brief Change settings
 	 */
-	function procInstallAdminSaveTimeZone()
+	public function procInstallAdminSaveTimeZone()
 	{
 		$db_info = Context::getDBInfo();
 
@@ -136,7 +136,7 @@ class installAdminController extends install
 		}
 	}
 
-	function procInstallAdminUpdateIndexModule()
+	public function procInstallAdminUpdateIndexModule()
 	{
 		if(!Context::get('index_module_srl') || !Context::get('menu_item_srl'))
 		{
@@ -170,7 +170,7 @@ class installAdminController extends install
 		$this->setMessage('success_updated');
 	}
 
-	function procInstallAdminRemoveFTPInfo()
+	public function procInstallAdminRemoveFTPInfo()
 	{
 		$ftp_config_file = Context::getFTPConfigFile();
 		if(file_exists($ftp_config_file)) unlink($ftp_config_file);
@@ -178,7 +178,7 @@ class installAdminController extends install
 		$this->setMessage('success_deleted');
 	}
 
-	function procInstallAdminSaveFTPInfo()
+	public function procInstallAdminSaveFTPInfo()
 	{
 		$ftp_info = Context::getFTPInfo();
 		$ftp_info->ftp_user = Context::get('ftp_user');
@@ -223,7 +223,7 @@ class installAdminController extends install
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function procInstallAdminConfig()
+	public function procInstallAdminConfig()
 	{
 		$use_mobile_view = Context::get('use_mobile_view');
 		if($use_mobile_view!='Y') $use_mobile_view = 'N';
@@ -295,7 +295,7 @@ class installAdminController extends install
 	/**
 	 * @brief Supported languages (was procInstallAdminSaveLangSelected)
 	 */
-	function saveLangSelected($selected_lang)
+	public function saveLangSelected($selected_lang)
 	{
 		$langs = $selected_lang;
 
@@ -315,7 +315,7 @@ class installAdminController extends install
 	 * @param $config
 	 * @return void
 	 */
-	function setModulesConfig($config)
+	public function setModulesConfig($config)
 	{
 		$documentConfig = getModel('document')->getDocumentConfig();
 

@@ -24,7 +24,7 @@ class XmlQueryParser extends XmlParser
 	 * constructor
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 
 	}
@@ -34,7 +34,7 @@ class XmlQueryParser extends XmlParser
 	 *
 	 * @return XmlQueryParser object
 	 */
-	function &getInstance()
+	public static function getInstance()
 	{
 		static $theInstance = NULL;
 		if(!isset($theInstance))
@@ -57,7 +57,7 @@ class XmlQueryParser extends XmlParser
 	 *
 	 * @return QueryParser object
 	 */
-	function &parse_xml_query($query_id, $xml_file, $cache_file)
+	public function parse_xml_query($query_id, $xml_file, $cache_file)
 	{
 		// Read xml file
 		$xml_obj = $this->getXmlFileContent($xml_file);
@@ -85,7 +85,7 @@ class XmlQueryParser extends XmlParser
 	 *
 	 * @return void
 	 */
-	function parse($query_id = NULL, $xml_file = NULL, $cache_file = NULL)
+	public function parse($query_id = NULL, $xml_file = NULL, $cache_file = NULL)
 	{
 		$this->parse_xml_query($query_id, $xml_file, $cache_file);
 	}
@@ -97,7 +97,7 @@ class XmlQueryParser extends XmlParser
 	 * @param $xml_file
 	 * @return array|NULL
 	 */
-	function getXmlFileContent($xml_file)
+	public static function getXmlFileContent($xml_file)
 	{
 		$buff = FileHandler::readFile($xml_file);
 		$xml_obj = parent::parse($buff);

@@ -16,7 +16,7 @@ class InsertColumnsTag
 	 *
 	 * @var array value is InsertColumnTag object
 	 */
-	var $columns;
+	public $columns;
 
 	/**
 	 * Constructor
@@ -24,7 +24,7 @@ class InsertColumnsTag
 	 * @param array|string $xml_columns
 	 * @return void
 	 */
-	function __construct($xml_columns)
+	public function __construct($xml_columns)
 	{
 		$this->columns = array();
 
@@ -60,7 +60,7 @@ class InsertColumnsTag
 	 *
 	 * @return string
 	 */
-	function toString()
+	public function toString()
 	{
 		$output_columns = 'array(' . PHP_EOL;
 		foreach($this->columns as $column)
@@ -77,7 +77,7 @@ class InsertColumnsTag
 	 *
 	 * @return array
 	 */
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		foreach($this->columns as $column)

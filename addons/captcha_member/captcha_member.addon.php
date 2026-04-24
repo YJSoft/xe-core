@@ -13,15 +13,15 @@ if(!class_exists('AddonMemberCaptcha', false))
 {
 	class AddonMemberCaptcha
 	{
-		var $addon_info;
-		var $target_acts = NULL;
+		public $addon_info;
+		public $target_acts = NULL;
 
-		function setInfo(&$addon_info)
+		public function setInfo(&$addon_info)
 		{
 			$this->addon_info = $addon_info;
 		}
 
-		function before_module_proc()
+		public function before_module_proc()
 		{
 			// if($_SESSION['member_captcha_authed'])
 			// {
@@ -29,7 +29,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			// }
 		}
 
-		function before_module_init(&$ModuleHandler)
+		public function before_module_init(&$ModuleHandler)
 		{
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin == 'Y' || $logged_info->is_site_admin)
@@ -99,7 +99,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			return true;
 		}
 
-		function createKeyword()
+		public function createKeyword()
 		{
 			$type = Context::get('captchaType');
 			if($type == 'inline' && $_SESSION['captcha_keyword'])
@@ -113,7 +113,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			$_SESSION['captcha_keyword'] = join('', $arr);
 		}
 
-		function before_module_init_setCaptchaSession()
+		public function before_module_init_setCaptchaSession()
 		{
 			if($_SESSION['member_captcha_authed'])
 			{
@@ -142,7 +142,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			exit();
 		}
 
-		function before_module_init_captchaImage()
+		public function before_module_init_captchaImage()
 		{
 			if($_SESSION['member_captcha_authed'])
 			{
@@ -167,7 +167,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			exit();
 		}
 
-		function createCaptchaImage($string)
+		public function createCaptchaImage($string)
 		{
 			$arr = array();
 			for($i = 0, $c = strlen($string); $i < $c; $i++)
@@ -257,7 +257,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			return $big;
 		}
 
-		function before_module_init_captchaAudio()
+		public function before_module_init_captchaAudio()
 		{
 			if($_SESSION['member_captcha_authed'])
 			{
@@ -279,7 +279,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			exit();
 		}
 
-		function createCaptchaAudio($string)
+		public function createCaptchaAudio($string)
 		{
 			$data = '';
 			$_audio = './addons/captcha/audio/F_%s.mp3';
@@ -306,7 +306,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			return $data;
 		}
 
-		function compareCaptcha()
+		public function compareCaptcha()
 		{
 			if(!in_array(Context::get('act'), $this->target_acts)) return true;
 
@@ -326,7 +326,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			return false;
 		}
 
-		function before_module_init_captchaCompare()
+		public function before_module_init_captchaCompare()
 		{
 			if(!$this->compareCaptcha())
 			{
@@ -345,7 +345,7 @@ if(!class_exists('AddonMemberCaptcha', false))
 			exit();
 		}
 
-		function inlineDisplay()
+		public function inlineDisplay()
 		{
 			unset($_SESSION['member_captcha_authed']);
 			$this->createKeyword();

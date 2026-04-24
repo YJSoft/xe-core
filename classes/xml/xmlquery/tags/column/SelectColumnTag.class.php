@@ -16,14 +16,14 @@ class SelectColumnTag extends ColumnTag
 	 *
 	 * @var string
 	 */
-	var $alias;
+	public $alias;
 
 	/**
 	 * Click count status
 	 *
 	 * @var bool
 	 */
-	var $click_count;
+	public $click_count;
 
 	/**
 	 * Constructor
@@ -31,7 +31,7 @@ class SelectColumnTag extends ColumnTag
 	 * @param string|object $column
 	 * @return void
 	 */
-	function __construct($column)
+	public function __construct($column)
 	{
 		if($column == "*" || $column->attrs->name == '*')
 		{
@@ -61,7 +61,7 @@ class SelectColumnTag extends ColumnTag
 	 *
 	 * @return string
 	 */
-	function getExpressionString()
+	public function getExpressionString()
 	{
 		if($this->name == '*')
 		{

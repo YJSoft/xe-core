@@ -8,7 +8,7 @@
 
 class krzipView extends krzip
 {
-	function init()
+	public function init()
 	{
 		$this->setTemplatePath($this->module_path . 'tpl');
 	}
@@ -18,7 +18,7 @@ class krzipView extends krzip
 	 * @param integer $api_handler
 	 * @return mixed
 	 */
-	function dispKrzipSearchForm($api_handler)
+	public function dispKrzipSearchForm($api_handler)
 	{
 		$oKrzipModel = getModel('krzip');
 		$module_config = $oKrzipModel->getConfig();

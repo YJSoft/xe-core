@@ -14,27 +14,27 @@ class menuAdminController extends menu
 	 * menu number
 	 * @var int
 	 */
-	var $menuSrl = null;
+	public $menuSrl = null;
 	/**
 	 * item key list
 	 * @var array
 	 */
-	var $itemKeyList = array();
+	public $itemKeyList = array();
 	/**
 	 * map
 	 * @var array
 	 */
-	var $map = array();
+	public $map = array();
 	/**
 	 * checked
 	 * @var array
 	 */
-	var $checked = array();
+	public $checked = array();
 	/**
 	 * inserted menu item serial number
 	 * @var array
 	 */
-	var $insertedMenuItemSrlList = array();
+	public $insertedMenuItemSrlList = array();
 	/**
 	 * home module's mid
 	 * @var string
@@ -50,12 +50,12 @@ class menuAdminController extends menu
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		$this->setTemplatePath($this->module_path.'tpl');
 	}
 
-	function __construct() {
+	public function __construct() {
 		$this->homeMenuCacheFile = _XE_PATH_ . $this->homeMenuCacheFile;
 	}
 
@@ -63,7 +63,7 @@ class menuAdminController extends menu
 	 * Add a menu
 	 * @return void|object
 	 */
-	function procMenuAdminInsert()
+	public function procMenuAdminInsert()
 	{
 		// List variables
 		$site_module_info = Context::get('site_module_info');
@@ -104,7 +104,7 @@ class menuAdminController extends menu
 		return $output;
 	}
 
-	function linkAllModuleInstancesToSitemap()
+	public function linkAllModuleInstancesToSitemap()
 	{
 		$unlinked_modules = false;
 		$args = new stdClass;
@@ -123,7 +123,7 @@ class menuAdminController extends menu
 
 	}
 
-	function getUnlinkedMenu()
+	public function getUnlinkedMenu()
 	{
 		// 'unlinked' menu 존재여부 확인
 		$oModuleModel = getModel('module');
@@ -166,7 +166,7 @@ class menuAdminController extends menu
 	 *
 	 * @return BaseObject
 	 */
-	function updateLinkModule($moduleInfos, $menuSrl)
+	public function updateLinkModule($moduleInfos, $menuSrl)
 	{
 		if(!$moduleInfos || !is_array($moduleInfos) || count($moduleInfos) == 0 || $menuSrl == 0)
 		{
@@ -227,7 +227,7 @@ class menuAdminController extends menu
 	 * Change the menu title
 	 * @return void|object
 	 */
-	function procMenuAdminUpdate()
+	public function procMenuAdminUpdate()
 	{
 		// List variables
 		$args = new stdClass();
@@ -247,7 +247,7 @@ class menuAdminController extends menu
 	 * Delete menu process method
 	 * @return void|BaseObject
 	 */
-	function procMenuAdminDelete()
+	public function procMenuAdminDelete()
 	{
 		$menu_srl = Context::get('menu_srl');
 
@@ -306,7 +306,7 @@ class menuAdminController extends menu
 	 * Delete menu_item and xml cache files
 	 * @return BaseObject
 	 */
-	function deleteMenu($menu_srl)
+	public function deleteMenu($menu_srl)
 	{
 		$oDB = DB::getInstance();
 		$oDB->begin();
@@ -815,7 +815,7 @@ class menuAdminController extends menu
 	 * Delete menu item(menu of the menu)
 	 * @return void|BaseObject
 	 */
-	function procMenuAdminDeleteItem()
+	public function procMenuAdminDeleteItem()
 	{
 		// argument variables
 		$args = new stdClass();
@@ -1010,7 +1010,7 @@ class menuAdminController extends menu
 	 * Move menu items
 	 * @return void
 	 */
-	function procMenuAdminMoveItem()
+	public function procMenuAdminMoveItem()
 	{
 		$mode = Context::get('mode');	//move
 		$parent_srl = Context::get('parent_srl');	// Parent menu item serial number
@@ -1288,7 +1288,7 @@ class menuAdminController extends menu
 	 * Arrange menu items
 	 * @return void|object
 	 */
-	function procMenuAdminArrangeItem()
+	public function procMenuAdminArrangeItem()
 	{
 		$this->menuSrl = Context::get('menu_srl');
 		$args = new stdClass();
@@ -1357,7 +1357,7 @@ class menuAdminController extends menu
 	 * @param object $target
 	 * @return void
 	 */
-	function _setParent($parent_srl, $child_index, &$target)
+	public function _setParent($parent_srl, $child_index, &$target)
 	{
 		$child_srl = $this->itemKeyList[$child_index];
 		$this->checked[$child_srl] = 1;
@@ -1380,7 +1380,7 @@ class menuAdminController extends menu
 	 * @param object $result
 	 * @return void
 	 */
-	function _recursiveMoveMenuItem($result)
+	public function _recursiveMoveMenuItem($result)
 	{
 		$i = 0;
 		while(count($result->child))
@@ -1403,7 +1403,7 @@ class menuAdminController extends menu
 	 * @param string $mode 'move' or 'insert'
 	 * @return void
 	 */
-	function moveMenuItem($menu_srl, $parent_srl, $source_srl, $target_srl, $mode, $isShortcut='Y', $url=NULL)
+	public function moveMenuItem($menu_srl, $parent_srl, $source_srl, $target_srl, $mode, $isShortcut='Y', $url=NULL)
 	{
 		// Get the original menus
 		$oMenuAdminModel = getAdminModel('menu');
@@ -1486,7 +1486,7 @@ class menuAdminController extends menu
 	 * It looks unnecessary at this moment however no need to eliminate the feature. Just leave it.
 	 * @return void
 	 */
-	function procMenuAdminMakeXmlFile()
+	public function procMenuAdminMakeXmlFile()
 	{
 		// Check input value
 		$menu_srl = Context::get('menu_srl');
@@ -1505,7 +1505,7 @@ class menuAdminController extends menu
 	 * Register a menu image button
 	 * @return void
 	 */
-	function procMenuAdminUploadButton()
+	public function procMenuAdminUploadButton()
 	{
 		$menu_srl = Context::get('menu_srl');
 		$menu_item_srl = Context::get('menu_item_srl');
@@ -1545,7 +1545,7 @@ class menuAdminController extends menu
 	 * Remove the menu image button
 	 * @return void
 	 */
-	function procMenuAdminDeleteButton()
+	public function procMenuAdminDeleteButton()
 	{
 		$menu_srl = Context::get('menu_srl');
 		$menu_item_srl = Context::get('menu_item_srl');
@@ -1560,7 +1560,7 @@ class menuAdminController extends menu
 	 * Get all act list for admin menu
 	 * @return void
 	 */
-	function procMenuAdminAllActList()
+	public function procMenuAdminAllActList()
 	{
 		$oModuleModel = getModel('module');
 		$installed_module_list = $oModuleModel->getModulesXmlInfo();
@@ -1582,7 +1582,7 @@ class menuAdminController extends menu
 	 * Get all act list for admin menu
 	 * @return void|object
 	 */
-	function procMenuAdminInsertItemForAdminMenu()
+	public function procMenuAdminInsertItemForAdminMenu()
 	{
 		$requestArgs = Context::getRequestVars();
 		$tmpMenuName = explode(':', $requestArgs->menu_name);
@@ -1763,7 +1763,7 @@ class menuAdminController extends menu
 	 * @param int $menu_srl
 	 * @return string
 	 */
-	function makeXmlFile($menu_srl)
+	public function makeXmlFile($menu_srl)
 	{
 		// Return if there is no information when creating the xml file
 		if(!$menu_srl) return;
@@ -1885,7 +1885,7 @@ class menuAdminController extends menu
 	 * @param string $domain
 	 * @return string
 	 */
-	function getXmlTree($source_node, $tree, $site_srl, $domain)
+	public function getXmlTree($source_node, $tree, $site_srl, $domain)
 	{
 		if(!$source_node) return;
 
@@ -1986,7 +1986,7 @@ class menuAdminController extends menu
 	 * @param string $domain
 	 * @return array
 	 */
-	function getPhpCacheCode($source_node, $tree, $site_srl, $domain)
+	public function getPhpCacheCode($source_node, $tree, $site_srl, $domain)
 	{
 		$output = array("buff"=>"", "url_list"=>array());
 		if(!$source_node) return $output;
@@ -2116,7 +2116,7 @@ class menuAdminController extends menu
 	 * @param int $layout_srl
 	 * @param array $menu_srl_list
 	 */
-	function updateMenuLayout($layout_srl, $menu_srl_list)
+	public function updateMenuLayout($layout_srl, $menu_srl_list)
 	{
 		if(!count($menu_srl_list)) return;
 		// Delete the value of menu_srls
@@ -2139,7 +2139,7 @@ class menuAdminController extends menu
 	 * @param object $args
 	 * @return array
 	 */
-	function _uploadButton($args)
+	public function _uploadButton($args)
 	{
 		// path setting
 		$path = sprintf('./files/attach/menu_button/%d/', $args->menu_srl);

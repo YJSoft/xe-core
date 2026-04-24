@@ -10,7 +10,7 @@ class spamfilter extends ModuleObject
 	/**
 	 * @brief Additional tasks required to accomplish during the installation
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Register action forward (to use in administrator mode)
 		$oModuleController = getController('module');
@@ -30,9 +30,9 @@ class spamfilter extends ModuleObject
 	/**
 	 * @brief A method to check if the installation has been successful
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -65,9 +65,9 @@ class spamfilter extends ModuleObject
 	/**
 	 * @brief Execute update
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -124,7 +124,7 @@ class spamfilter extends ModuleObject
 	/**
 	 * @brief Re-generate the cache file
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 }

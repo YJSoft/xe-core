@@ -171,7 +171,7 @@ class Password
 	 * @param string $hash The hash
 	 * @return string
 	 */
-	function checkAlgorithm($hash)
+	public function checkAlgorithm($hash)
 	{
 		if(preg_match('/^\$2[axy]\$([0-9]{2})\$/', $hash, $matches))
 		{
@@ -204,7 +204,7 @@ class Password
 	 * @param string $hash The hash
 	 * @return int
 	 */
-	function checkWorkFactor($hash)
+	public function checkWorkFactor($hash)
 	{
 		if(preg_match('/^\$2[axy]\$([0-9]{2})\$/', $hash, $matches))
 		{
@@ -430,7 +430,7 @@ class Password
 	 * @param string $b The second string
 	 * @return bool
 	 */
-	function strcmpConstantTime($a, $b)
+	public function strcmpConstantTime($a, $b)
 	{
 		$diff = strlen($a) ^ strlen($b);
 		$maxlen = min(strlen($a), strlen($b));

@@ -11,7 +11,7 @@ class layoutAdminView extends layout
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		$this->setTemplatePath($this->module_path.'tpl');
 	}
@@ -20,7 +20,7 @@ class layoutAdminView extends layout
 	 * Display a installed layout list
 	 * @return void
 	 */
-	function dispLayoutAdminInstalledList()
+	public function dispLayoutAdminInstalledList()
 	{
 		$type = Context::get('type');
 		$type = ($type != 'M') ? 'P' : 'M';
@@ -72,7 +72,7 @@ class layoutAdminView extends layout
 	 * Display list of pc layout all instance
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispLayoutAdminAllInstanceList()
+	public function dispLayoutAdminAllInstanceList()
 	{
 		$type = Context::get('type');
 
@@ -117,7 +117,7 @@ class layoutAdminView extends layout
 	/**
 	 * Sort layout instance by layout name, instance name
 	 */
-	function sortLayoutInstance($a, $b)
+	public function sortLayoutInstance($a, $b)
 	{
 		$aTitle = strtolower($a['title']);
 		$bTitle = strtolower($b['title']);
@@ -134,7 +134,7 @@ class layoutAdminView extends layout
 	 * Display list of pc layout instance
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispLayoutAdminInstanceList()
+	public function dispLayoutAdminInstanceList()
 	{
 		$type = Context::get('type');
 		$layout = Context::get('layout');
@@ -163,7 +163,7 @@ class layoutAdminView extends layout
 	 * Once select a layout with empty value in the DB, then adjust values
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispLayoutAdminInsert()
+	public function dispLayoutAdminInsert()
 	{
 		$oModel = getModel('layout');
 		$type = Context::get('type');
@@ -207,14 +207,14 @@ class layoutAdminView extends layout
 	 * Insert Layout details
 	 * @return void
 	 */
-	function dispLayoutAdminModify()
+	public function dispLayoutAdminModify()
 	{
 		$oLayoutAdminModel = getAdminModel('layout');
 		$oLayoutAdminModel->setLayoutAdminSetInfoView();
 
 		Context::set('is_sitemap', '0');
 		$script = '<script src="./modules/layout/tpl/js/layout_modify.js"></script>';
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$content = $oTemplate->compile($this->module_path.'tpl/', 'layout_info_view');
 
 		Context::set('content', $content);
@@ -226,7 +226,7 @@ class layoutAdminView extends layout
 	 * Edit layout codes
 	 * @return void
 	 */
-	function dispLayoutAdminEdit()
+	public function dispLayoutAdminEdit()
 	{
 		// Set the layout with its information
 		$layout_srl = Context::get('layout_srl');
@@ -290,7 +290,7 @@ class layoutAdminView extends layout
 	 * Preview a layout
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispLayoutAdminPreview()
+	public function dispLayoutAdminPreview()
 	{
 		$layout_srl = Context::get('layout_srl');
 		$code = Context::get('code');
@@ -330,7 +330,7 @@ class layoutAdminView extends layout
 		FileHandler::writeFile($edited_layout_file, $code);
 
 		// Compile
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 
 		$layout_path = $layout_info->path;
 		$layout_file = 'layout';
@@ -338,7 +338,7 @@ class layoutAdminView extends layout
 		$layout_tpl = $oTemplate->compile($layout_path, $layout_file, $edited_layout_file);
 		Context::set('layout','none');
 		// Convert widgets and others
-		$oContext = &Context::getInstance();
+		$oContext = Context::getInstance();
 		Context::set('layout_tpl', $layout_tpl);
 		// Delete Temporary Files
 		FileHandler::removeFile($edited_layout_file);
@@ -351,7 +351,7 @@ class layoutAdminView extends layout
 	 * @deprecated
 	 * @return void
 	 */
-	function dispLayoutAdminLayoutModify()
+	public function dispLayoutAdminLayoutModify()
 	{
 		// Get layout_srl
 		$current_module_info = Context::get('current_module_info');
@@ -389,7 +389,7 @@ class layoutAdminView extends layout
 			Context::addHtmlHeader($script);
 		}
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		Context::set('content', $oTemplate->compile($this->module_path.'tpl','about_faceoff'));
 		// Change widget codes in Javascript mode
 		$oWidgetController = getController('widget');
@@ -402,7 +402,7 @@ class layoutAdminView extends layout
 	 * Copy layout instance
 	 * @return void
 	 */
-	function dispLayoutAdminCopyLayout()
+	public function dispLayoutAdminCopyLayout()
 	{
 		$layoutSrl = Context::get('layout_srl');
 

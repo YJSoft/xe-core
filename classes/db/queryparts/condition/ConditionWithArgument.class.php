@@ -17,7 +17,7 @@ class ConditionWithArgument extends Condition
 	 * @param string $pipe
 	 * @return void
 	 */
-	function __construct($column_name, $argument, $operation, $pipe = "")
+	public function __construct($column_name, $argument, $operation, $pipe = "")
 	{
 		if($argument === null)
 		{
@@ -28,7 +28,7 @@ class ConditionWithArgument extends Condition
 		$this->_value = $argument->getValue();
 	}
 
-	function getArgument()
+	public function getArgument()
 	{
 		if(!$this->show())
 			return;
@@ -39,7 +39,7 @@ class ConditionWithArgument extends Condition
 	 * change string without value
 	 * @return string
 	 */
-	function toStringWithoutValue()
+	public function toStringWithoutValue()
 	{
 		$value = $this->argument->getUnescapedValue();
 
@@ -74,7 +74,7 @@ class ConditionWithArgument extends Condition
 	/**
 	 * @return boolean
 	 */
-	function show()
+	public function show()
 	{
 		if(!isset($this->_show))
 		{

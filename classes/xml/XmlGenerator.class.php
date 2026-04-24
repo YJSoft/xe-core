@@ -15,7 +15,7 @@ class XmlGenerator
 	 * @param object $xml
 	 * @return string
 	 */
-	function obj2xml($xml)
+	public function obj2xml($xml)
 	{
 		$buff = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
 
@@ -31,7 +31,7 @@ class XmlGenerator
 	 * @param object $node node in xml object
 	 * @return string
 	 */
-	function _makexml($node)
+	public function _makexml($node)
 	{
 		$body = '';
 		foreach($node as $key => $value)

@@ -10,14 +10,14 @@ class messageView extends message
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Display messages
 	 */
-	function dispMessage()
+	public function dispMessage()
 	{
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');

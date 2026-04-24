@@ -16,7 +16,7 @@ class InsertColumnTag extends ColumnTag
 	 *
 	 * @var QueryArgument object
 	 */
-	var $argument;
+	public $argument;
 
 	/**
 	 * Constructor
@@ -25,7 +25,7 @@ class InsertColumnTag extends ColumnTag
 	 *
 	 * @return void
 	 */
-	function __construct($column)
+	public function __construct($column)
 	{
 		parent::__construct($column->attrs->name);
 		$dbParser = DB::getParser();
@@ -40,7 +40,7 @@ class InsertColumnTag extends ColumnTag
 	 *
 	 * @return string
 	 */
-	function getExpressionString()
+	public function getExpressionString()
 	{
 		return sprintf('new InsertExpression(\'%s\', ${\'%s_argument\'})'
 						, $this->name
@@ -52,7 +52,7 @@ class InsertColumnTag extends ColumnTag
 	 *
 	 * @return QueryArgument
 	 */
-	function getArgument()
+	public function getArgument()
 	{
 		return $this->argument;
 	}

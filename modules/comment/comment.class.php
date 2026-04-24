@@ -18,7 +18,7 @@ class comment extends ModuleObject
 	 * Implemented if additional tasks are required when installing
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		$oDB = DB::getInstance();
 
@@ -48,7 +48,7 @@ class comment extends ModuleObject
 	 * Method to check if installation is succeeded
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
@@ -125,7 +125,7 @@ class comment extends ModuleObject
 	 * Execute update
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
@@ -210,7 +210,7 @@ class comment extends ModuleObject
 	 * Regenerate cache file
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		if(!is_dir('./files/cache/tmp'))
 		{

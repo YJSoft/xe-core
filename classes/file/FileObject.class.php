@@ -13,19 +13,19 @@ class FileObject extends BaseObject
 	 * File descriptor
 	 * @var resource
 	 */
-	var $fp = NULL;
+	public $fp = NULL;
 
 	/**
 	 * File path
 	 * @var string
 	 */
-	var $path = NULL;
+	public $path = NULL;
 
 	/**
 	 * File open mode
 	 * @var string
 	 */
-	var $mode = "r";
+	public $mode = "r";
 
 	/**
 	 * Constructor 
@@ -34,7 +34,7 @@ class FileObject extends BaseObject
 	 * @param string $mode File open mode 
 	 * @return void
 	 */
-	function __construct($path, $mode)
+	public function __construct($path, $mode)
 	{
 		if($path != NULL)
 		{
@@ -48,7 +48,7 @@ class FileObject extends BaseObject
 	 * @param string $file_name Path of target file
 	 * @return void 
 	 */
-	function append($file_name)
+	public function append($file_name)
 	{
 		$target = new FileObject($file_name, "r");
 		while(!$target->feof())
@@ -64,7 +64,7 @@ class FileObject extends BaseObject
 	 *
 	 * @return bool true: if eof. false: otherwise 
 	 */
-	function feof()
+	public function feof()
 	{
 		return feof($this->fp);
 	}
@@ -75,7 +75,7 @@ class FileObject extends BaseObject
 	 * @param int $size Size to read
 	 * @return string Returns the read string or false on failure.
 	 */
-	function read($size = 1024)
+	public function read($size = 1024)
 	{
 		return fread($this->fp, $size);
 	}
@@ -86,7 +86,7 @@ class FileObject extends BaseObject
 	 * @param string $str String to write
 	 * @return int Returns the number of bytes written, or false on error.
 	 */
-	function write($str)
+	public function write($str)
 	{
 		$len = strlen($str);
 		if(!$str || $len <= 0)
@@ -110,7 +110,7 @@ class FileObject extends BaseObject
 	 * @param string $mode File open mode (http://php.net/manual/en/function.fopen.php)
 	 * @return bool true if succeed, false otherwise.
 	 */
-	function open($path, $mode)
+	public function open($path, $mode)
 	{
 		if($this->fp != NULL)
 		{
@@ -131,7 +131,7 @@ class FileObject extends BaseObject
 	 *
 	 * @return string Returns the path of current file.
 	 */
-	function getPath()
+	public function getPath()
 	{
 		if($this->fp != NULL)
 		{
@@ -148,7 +148,7 @@ class FileObject extends BaseObject
 	 *
 	 * @return void
 	 */
-	function close()
+	public function close()
 	{
 		if($this->fp != NULL)
 		{

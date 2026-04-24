@@ -12,9 +12,9 @@
 class DisplayHandler extends Handler
 {
 
-	var $content_size = 0; // /< The size of displaying contents
-	var $gz_enabled = FALSE; // / <a flog variable whether to call contents after compressing by gzip
-	var $handler = NULL;
+	public $content_size = 0; // /< The size of displaying contents
+	public $gz_enabled = FALSE; // / <a flog variable whether to call contents after compressing by gzip
+	public $handler = NULL;
 
 	/**
 	 * print either html or xml content given oModule object
@@ -22,7 +22,7 @@ class DisplayHandler extends Handler
 	 * @param ModuleObject $oModule the module object
 	 * @return void
 	 */
-	function printContent(&$oModule)
+	public function printContent(&$oModule)
 	{
 		// Check if the gzip encoding supported
 		if(
@@ -131,7 +131,7 @@ class DisplayHandler extends Handler
 	 * __DEBUG_OUTPUT__ == 0, messages are written in ./files/_debug_message.php
 	 * @return void
 	 */
-	function _debugOutput()
+	public function _debugOutput()
 	{
 		if(!__DEBUG__)
 		{
@@ -314,7 +314,7 @@ class DisplayHandler extends Handler
 	 * print a HTTP HEADER for XML, which is encoded in UTF-8
 	 * @return void
 	 */
-	function _printXMLHeader()
+	public function _printXMLHeader()
 	{
 		header("Content-Type: text/xml; charset=UTF-8");
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -328,7 +328,7 @@ class DisplayHandler extends Handler
 	 * print a HTTP HEADER for HTML, which is encoded in UTF-8
 	 * @return void
 	 */
-	function _printHTMLHeader()
+	public function _printHTMLHeader()
 	{
 		header("Content-Type: text/html; charset=UTF-8");
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -342,7 +342,7 @@ class DisplayHandler extends Handler
 	 * print a HTTP HEADER for JSON, which is encoded in UTF-8
 	 * @return void
 	 */
-	function _printJSONHeader()
+	public function _printJSONHeader()
 	{
 		header("Content-Type: text/html; charset=UTF-8");
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -356,7 +356,7 @@ class DisplayHandler extends Handler
 	 * print a HTTP HEADER for HTML, which is encoded in UTF-8
 	 * @return void
 	 */
-	function _printHttpStatusCode($code)
+	public function _printHttpStatusCode($code)
 	{
 		$statusMessage = Context::get('http_status_message');
 		header("HTTP/1.0 $code $statusMessage");

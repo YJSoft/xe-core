@@ -16,7 +16,7 @@ class trashModel extends trash
 	 * @pram array $columnList
 	 * @return TrashVO
 	 */
-	function getTrash($trashSrl, $columnList = array())
+	public function getTrash($trashSrl, $columnList = array())
 	{
 		$oTrashVO = new TrashVO();
 		if(!$trashSrl) return $oTrashVO;
@@ -37,7 +37,7 @@ class trashModel extends trash
 	 * @param array $columnList
 	 * @return object
 	 */
-	function getTrashList($args, $columnList = array())
+	public function getTrashList($args, $columnList = array())
 	{
 		$output = executeQueryArray('trash.getTrashList', $args, $columnList);
 
@@ -59,7 +59,7 @@ class trashModel extends trash
 	 * @param array $columnList
 	 * @return object
 	 */
-	function getTrashAllList($args, $columnList = array())
+	public function getTrashAllList($args, $columnList = array())
 	{
 		$output = executeQueryArray('trash.getTrashAllList', $args, $columnList);
 
@@ -81,7 +81,7 @@ class trashModel extends trash
 	 * @param object $stdObject
 	 * @return void
 	 */
-	function _setTrashObject(&$oTrashVO, $stdObject)
+	public function _setTrashObject(&$oTrashVO, $stdObject)
 	{
 		$oTrashVO->setTrashSrl($stdObject->trash_srl);
 		$oTrashVO->setTitle($stdObject->title);

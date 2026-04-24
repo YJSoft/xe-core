@@ -10,14 +10,14 @@ class pageAdminController extends page
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Add a Page
 	 */
-	function procPageAdminInsert()
+	public function procPageAdminInsert()
 	{
 		// Create model/controller object of the module module
 		$oModuleController = getController('module');
@@ -119,12 +119,12 @@ class pageAdminController extends page
 	/**
 	 * @brief Page Modify
 	 */
-	function procPageAdminUpdate()
+	public function procPageAdminUpdate()
 	{
 		$this->procPageAdminInsert();
 	}
 
-	function putDocumentsInPageToArray($target, &$array)
+	public function putDocumentsInPageToArray($target, &$array)
 	{
 		if(!$target) return;
 		preg_match_all('!<img hasContent="true" ([^>]+)!is', $target, $matches);
@@ -143,7 +143,7 @@ class pageAdminController extends page
 	/**
 	 * @brief Save page edits
 	 */
-	function procPageAdminInsertContent()
+	public function procPageAdminInsertContent()
 	{
 		$module_srl = Context::get('module_srl');
 		$content = Context::get('content');
@@ -203,7 +203,7 @@ class pageAdminController extends page
 	/**
 	 * @brief Delete page
 	 */
-	function procPageAdminDelete()
+	public function procPageAdminDelete()
 	{
 		$module_srl = Context::get('module_srl');
 		// Get an original
@@ -222,7 +222,7 @@ class pageAdminController extends page
 	/**
 	 * @brief Additional pages of basic information
 	 */
-	function procPageAdminInsertConfig()
+	public function procPageAdminInsertConfig()
 	{
 		// Get the basic information
 		$args = Context::getRequestVars();
@@ -235,7 +235,7 @@ class pageAdminController extends page
 	/**
 	 * @brief Upload attachments
 	 */
-	function procUploadFile()
+	public function procUploadFile()
 	{
 		// Basic variables setting
 		$upload_target_srl = Context::get('upload_target_srl');
@@ -251,7 +251,7 @@ class pageAdminController extends page
 	 * @brief Delete the attachment
 	 * Delete individual files in the editor using
 	 */
-	function procDeleteFile()
+	public function procDeleteFile()
 	{
 		// Basic variable setting(upload_target_srl and module_srl set)
 		$upload_target_srl = Context::get('upload_target_srl');
@@ -267,7 +267,7 @@ class pageAdminController extends page
 	/**
 	 * @brief Clear widget cache files of the specified page
 	 */
-	function procPageAdminRemoveWidgetCache()
+	public function procPageAdminRemoveWidgetCache()
 	{
 		$module_srl = Context::get('module_srl');
 
@@ -311,7 +311,7 @@ class pageAdminController extends page
 		}
 	}
 
-	function procPageAdminArticleDocumentInsert()
+	public function procPageAdminArticleDocumentInsert()
 	{
 		$oDocumentModel = getModel('document');
 		$oDocumentController = getController('document');

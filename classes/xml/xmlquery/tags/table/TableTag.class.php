@@ -27,38 +27,38 @@ class TableTag
 	 * Unescaped name
 	 * @var string
 	 */
-	var $unescaped_name;
+	public $unescaped_name;
 
 	/**
 	 * name
 	 * @var string
 	 */
-	var $name;
+	public $name;
 
 	/**
 	 * alias
 	 * @var string
 	 */
-	var $alias;
+	public $alias;
 
 	/**
 	 * Join type
 	 * @example 'left join', 'left outer join', 'right join', 'right outer join'
 	 * @var string
 	 */
-	var $join_type;
+	public $join_type;
 
 	/**
 	 * Condition object
 	 * @var object
 	 */
-	var $conditions;
+	public $conditions;
 
 	/**
 	 * JoinConditionsTag
 	 * @var JoinConditionsTag object
 	 */
-	var $conditionsTag;
+	public $conditionsTag;
 
 	/**
 	 * constructor
@@ -66,7 +66,7 @@ class TableTag
 	 * @param object $table XML <table> tag
 	 * @return void
 	 */
-	function __construct($table)
+	public function __construct($table)
 	{
 		$dbParser = DB::getParser();
 
@@ -89,7 +89,7 @@ class TableTag
 		}
 	}
 
-	function isJoinTable()
+	public function isJoinTable()
 	{
 		$joinList = array('left join' => 1, 'left outer join' => 1, 'right join' => 1, 'right outer join' => 1);
 		if(isset($joinList[$this->join_type]) && count($this->conditions))
@@ -99,12 +99,12 @@ class TableTag
 		return false;
 	}
 
-	function getTableAlias()
+	public function getTableAlias()
 	{
 		return $this->alias;
 	}
 
-	function getTableName()
+	public function getTableName()
 	{
 		return $this->unescaped_name;
 	}
@@ -115,7 +115,7 @@ class TableTag
 	 * a Table or a JoinTable object
 	 * @return string 
 	 */
-	function getTableString()
+	public function getTableString()
 	{
 		$dbParser = DB::getParser();
 
@@ -131,7 +131,7 @@ class TableTag
 						, $this->alias ? ', \'' . $dbParser->escape($this->alias) . '\'' : '');
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		if(!isset($this->conditionsTag))
 		{

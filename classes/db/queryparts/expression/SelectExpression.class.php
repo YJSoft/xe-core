@@ -22,7 +22,7 @@ class SelectExpression extends Expression
 	 * column alias name
 	 * @var string
 	 */
-	var $column_alias;
+	public $column_alias;
 
 	/**
 	 * constructor
@@ -30,7 +30,7 @@ class SelectExpression extends Expression
 	 * @param string $alias
 	 * @return void
 	 */
-	function __construct($column_name, $alias = NULL)
+	public function __construct($column_name, $alias = NULL)
 	{
 		parent::__construct($column_name);
 		$this->column_alias = $alias;
@@ -40,27 +40,27 @@ class SelectExpression extends Expression
 	 * Return column expression, ex) column as alias
 	 * @return string
 	 */
-	function getExpression()
+	public function getExpression()
 	{
 		return sprintf("%s%s", $this->column_name, $this->column_alias ? " as " . $this->column_alias : "");
 	}
 
-	function show()
+	public function show()
 	{
 		return true;
 	}
 
-	function getArgument()
+	public function getArgument()
 	{
 		return null;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		return array();
 	}
 
-	function isSubquery()
+	public function isSubquery()
 	{
 		return false;
 	}

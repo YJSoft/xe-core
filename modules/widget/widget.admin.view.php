@@ -10,7 +10,7 @@ class widgetAdminView extends widget
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		$this->setTemplatePath($this->module_path.'tpl');
 	}
@@ -18,7 +18,7 @@ class widgetAdminView extends widget
 	/**
 	 * @brief Showing a list of widgets
 	 */
-	function dispWidgetAdminDownloadedList()
+	public function dispWidgetAdminDownloadedList()
 	{
 		// Set widget list
 		$oWidgetModel = getModel('widget');
@@ -45,7 +45,7 @@ class widgetAdminView extends widget
 		$this->setTemplateFile('downloaded_widget_list');
 	}
 
-	function dispWidgetAdminGenerateCode()
+	public function dispWidgetAdminGenerateCode()
 	{
 		$oView = getView('widget');
 		Context::set('in_admin', true);
@@ -56,7 +56,7 @@ class widgetAdminView extends widget
 	/**
 	 * @brief For information on direct entry widget popup kkuhim
 	 */
-	function dispWidgetAdminAddContent()
+	public function dispWidgetAdminAddContent()
 	{
 		$module_srl = Context::get('module_srl');
 		if(!$module_srl) return $this->stop("msg_invalid_request");

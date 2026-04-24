@@ -16,7 +16,7 @@ class EditorHandler extends BaseObject
 	 * @param object $info editor information
 	 * @return void
 	 * */
-	function setInfo($info)
+	public function setInfo($info)
 	{
 		Context::set('component_info', $info);
 

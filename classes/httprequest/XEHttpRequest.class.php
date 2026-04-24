@@ -17,31 +17,31 @@ class XEHttpRequest
 	 * target host
 	 * @var string
 	 */
-	var $m_host;
+	public $m_host;
 
 	/**
 	 * target Port
 	 * @var int
 	 */
-	var $m_port;
+	public $m_port;
 
 	/**
 	 * target scheme 
 	 * @var string
 	 */
-	var $m_scheme;
+	public $m_scheme;
 
 	/**
 	 * target header
 	 * @var array
 	 */
-	var $m_headers;
+	public $m_headers;
 
 	/**
 	 * constructor
 	 * @return void
 	 */
-	function __construct($host, $port, $scheme='')
+	public function __construct($host, $port, $scheme='')
 	{
 		$this->m_host = $host;
 		$this->m_port = $port;
@@ -55,7 +55,7 @@ class XEHttpRequest
 	 * @param string $value value string for HTTP header element
 	 * @return void
 	 */
-	function addToHeader($key, $value)
+	public function addToHeader($key, $value)
 	{
 		$this->m_headers[$key] = $value;
 	}
@@ -68,7 +68,7 @@ class XEHttpRequest
 	 * @param array $post_vars variables to send
 	 * @return object Returns an object containing HTTP Response body and HTTP response code
 	 */
-	function send($target = '/', $method = 'GET', $timeout = 3, $post_vars = NULL)
+	public function send($target = '/', $method = 'GET', $timeout = 3, $post_vars = NULL)
 	{
 		static $allow_methods = NULL;
 
@@ -112,7 +112,7 @@ class XEHttpRequest
 	 * @param array $post_vars variables to send
 	 * @return object Returns an object containing HTTP Response body and HTTP response code
 	 */
-	function sendWithSock($target, $method, $timeout, $post_vars)
+	public function sendWithSock($target, $method, $timeout, $post_vars)
 	{
 		static $crlf = "\r\n";
 
@@ -202,7 +202,7 @@ class XEHttpRequest
 	 * @param array $post_vars variables to send
 	 * @return object Returns an object containing HTTP Response body and HTTP response code
 	 */
-	function sendWithCurl($target, $method, $timeout, $post_vars)
+	public function sendWithCurl($target, $method, $timeout, $post_vars)
 	{
 		$headers = $this->m_headers + array();
 

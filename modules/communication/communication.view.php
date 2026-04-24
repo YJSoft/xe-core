@@ -13,7 +13,7 @@ class communicationView extends communication
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		$oCommunicationModel = getModel('communication');
 
@@ -48,7 +48,7 @@ class communicationView extends communication
 	 * Display message box
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispCommunicationMessages()
+	public function dispCommunicationMessages()
 	{
 		// Error appears if not logged-in
 		if(!Context::get('is_logged'))
@@ -133,7 +133,7 @@ class communicationView extends communication
 	 * display a new message
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispCommunicationNewMessage()
+	public function dispCommunicationNewMessage()
 	{
 		$this->setLayoutPath('./common/tpl/');
 		$this->setLayoutFile('popup_layout');
@@ -169,7 +169,7 @@ class communicationView extends communication
 	 * Display message sending
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispCommunicationSendMessage()
+	public function dispCommunicationSendMessage()
 	{
 		$this->setLayoutPath('./common/tpl/');
 		$this->setLayoutFile("popup_layout");
@@ -244,7 +244,7 @@ class communicationView extends communication
 	 * display a list of friends
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispCommunicationFriend()
+	public function dispCommunicationFriend()
 	{
 		// Error appears if not logged-in
 		if(!Context::get('is_logged'))
@@ -300,7 +300,7 @@ class communicationView extends communication
 	 * display Add a friend
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispCommunicationAddFriend()
+	public function dispCommunicationAddFriend()
 	{
 		$this->setLayoutPath('./common/tpl/');
 		$this->setLayoutFile("popup_layout");
@@ -342,7 +342,7 @@ class communicationView extends communication
 	 * display add a group of friends
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispCommunicationAddFriendGroup()
+	public function dispCommunicationAddFriendGroup()
 	{
 		$this->setLayoutPath('./common/tpl/');
 		$this->setLayoutFile("popup_layout");

@@ -14,68 +14,68 @@ class Validator
 	 * cache directory
 	 * @var string
 	 */
-	var $_cache_dir = '';
+	public $_cache_dir = '';
 
 	/**
 	 * last error
 	 * @var array
 	 */
-	var $_last_error;
+	public $_last_error;
 
 	/**
 	 * xml ruleset object
 	 * @var Xml_Node_ object
 	 */
-	var $_xml_ruleset = NULL;
+	public $_xml_ruleset = NULL;
 
 	/**
 	 * rule list
 	 * @var array
 	 */
-	var $_rules;
+	public $_rules;
 
 	/**
 	 * filter list
 	 * @var array
 	 */
-	var $_filters;
+	public $_filters;
 
 	/**
 	 * custom message list
 	 * @var array
 	 */
-	var $_messages;
+	public $_messages;
 
 	/**
 	 * custom field name list
 	 * @var array
 	 */
-	var $_fieldNames;
+	public $_fieldNames;
 
 	/**
 	 * Can usable status for multibyte string function
 	 * @var boolean
 	 */
-	var $_has_mb_func;
+	public $_has_mb_func;
 
 	/**
 	 * validator version
 	 * @var string
 	 */
-	var $_version = '1.0';
+	public $_version = '1.0';
 
 	/**
 	 * ruleset xml file path
 	 * @var string
 	 */
-	var $_xml_path = '';
+	public $_xml_path = '';
 
 	/**
 	 * @constructor
 	 * @param string $xml_path
 	 * @return void
 	 */
-	function __construct($xml_path = '')
+	public function __construct($xml_path = '')
 	{
 		$this->_rules = array();
 		$this->_filters = array();
@@ -103,7 +103,7 @@ class Validator
 	 * @destructor
 	 * @return void
 	 */
-	function __destruct()
+	public function __destruct()
 	{
 		$this->_rules = NULL;
 		$this->_filters = NULL;
@@ -114,7 +114,7 @@ class Validator
 	 * @param string $xml_path A file name to be loaded
 	 * @return boolean
 	 */
-	function load($xml_path)
+	public function load($xml_path)
 	{
 		$this->_xml_ruleset = NULL;
 
@@ -230,7 +230,7 @@ class Validator
 	 * @param string $cache_dir Root cache directory
 	 * @return void
 	 */
-	function setCacheDir($cache_dir)
+	public function setCacheDir($cache_dir)
 	{
 		if(is_dir($cache_dir))
 		{
@@ -243,7 +243,7 @@ class Validator
 	 * @param array $fields Target fields. The keys of the array represents field's name, its values represents field's value.
 	 * @return boolean TRUE if it is valid, FALSE otherwise.
 	 */
-	function validate($fields_ = null)
+	public function validate($fields_ = null)
 	{
 		if(is_array($fields_))
 		{
@@ -440,7 +440,7 @@ class Validator
 	 * @param string|array $array
 	 * @return string|array
 	 */
-	function arrayTrim($array)
+	public function arrayTrim($array)
 	{
 		if(!is_array($array))
 		{
@@ -460,7 +460,7 @@ class Validator
 	 * @param $msg error message
 	 * @return boolean always false
 	 */
-	function error($field, $msg)
+	public function error($field, $msg)
 	{
 		if(isset($this->_message[$msg]))
 		{
@@ -492,7 +492,7 @@ class Validator
 	 * Returns the last error infomation including a field name and an error message.
 	 * @return array The last error infomation
 	 */
-	function getLastError()
+	public function getLastError()
 	{
 		return $this->_last_error;
 	}
@@ -503,7 +503,7 @@ class Validator
 	 * @param mixed $rule
 	 * @return void
 	 */
-	function addRule($name, $rule = '')
+	public function addRule($name, $rule = '')
 	{
 		if(is_array($name))
 		{
@@ -540,7 +540,7 @@ class Validator
 	 * @param string $name rule name
 	 * @return void
 	 */
-	function removeRule($name)
+	public function removeRule($name)
 	{
 		unset($this->_rules[$name]);
 	}
@@ -551,7 +551,7 @@ class Validator
 	 * @param string $filter filter
 	 * @return void
 	 */
-	function addFilter($name, $filter = '')
+	public function addFilter($name, $filter = '')
 	{
 		if(is_array($name))
 		{
@@ -594,7 +594,7 @@ class Validator
 	 * @param string $name rule name
 	 * @return void
 	 */
-	function removeFilter($name)
+	public function removeFilter($name)
 	{
 		unset($this->_filters[$name]);
 	}
@@ -605,7 +605,7 @@ class Validator
 	 * @param string $value a value to be validated
 	 * @return boolean TRUE if the field is valid, FALSE otherwise.
 	 */
-	function applyRule($name, $value)
+	public function applyRule($name, $value)
 	{
 		$rule = $this->_rules[$name];
 
@@ -636,7 +636,7 @@ class Validator
 	 * @param string $str
 	 * @return int
 	 */
-	function mbStrLen($str)
+	public function mbStrLen($str)
 	{
 		$arr = count_chars($str);
 		for($i = 0x80; $i < 0xc0; $i++)
@@ -650,7 +650,7 @@ class Validator
 	 * Returns compiled javascript file path. The path begins from XE root directory.
 	 * @return string Compiled JavaScript file path
 	 */
-	function getJsPath()
+	public function getJsPath()
 	{
 		if(!$this->_cache_dir)
 		{
@@ -692,7 +692,7 @@ class Validator
 	 * Compile a ruleset to a javascript file
 	 * @return string
 	 */
-	function _compile2js()
+	public function _compile2js()
 	{
 		global $lang;
 

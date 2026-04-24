@@ -12,28 +12,28 @@ class memberAdminView extends member
 	 * 
 	 * @var array
 	 */
-	var $group_list = NULL;
+	public $group_list = NULL;
 
 	/**
 	 * Selected member info
 	 * 
 	 * @var array
 	 */
-	var $memberInfo = NULL;
+	public $memberInfo = NULL;
 
 	/**
 	 * Member module config.
 	 *
 	 * @var BaseObject
 	 */
-	var $memberConfig = NULL;
+	public $memberConfig = NULL;
 
 	/**
 	 * initialization
 	 *
 	 * @return void
 	 */
-	function init() 
+	public function init() 
 	{
 		$oMemberModel = getModel('member');
 		$this->memberConfig = $oMemberModel->getMemberConfig();
@@ -71,7 +71,7 @@ class memberAdminView extends member
 	 *
 	 * @return void
 	 */
-	function dispMemberAdminList()
+	public function dispMemberAdminList()
 	{
 		$oMemberAdminModel = getAdminModel('member');
 		$oMemberModel = getModel('member');
@@ -233,7 +233,7 @@ class memberAdminView extends member
 	 *
 	 * @return void
 	 */
-	function dispMemberAdminConfigOLD() 
+	public function dispMemberAdminConfigOLD() 
 	{
 		$oModuleModel = getModel('module');
 		$oMemberModel = getModel('member');
@@ -306,7 +306,7 @@ class memberAdminView extends member
 	 *
 	 * @return void
 	 */
-	function dispMemberAdminInfo()
+	public function dispMemberAdminInfo()
 	{
 		$oMemberModel = getModel('member');
 		$oModuleModel = getModel('module');
@@ -338,7 +338,7 @@ class memberAdminView extends member
 	 *
 	 * @return void
 	 */
-	function dispMemberAdminInsert()
+	public function dispMemberAdminInsert()
 	{
 		// retrieve extend form
 		$oMemberModel = getModel('member');
@@ -391,7 +391,7 @@ class memberAdminView extends member
 	 *
 	 * @return array
 	 */
-	function _getMemberInputTag($memberInfo, $isAdmin = false)
+	public function _getMemberInputTag($memberInfo, $isAdmin = false)
 	{
 		$logged_info = Context::get('logged_info');
 		$oMemberModel = getModel('member');
@@ -657,7 +657,7 @@ class memberAdminView extends member
 	 *
 	 * @return void
 	 */
-	function dispMemberAdminGroupList() 
+	public function dispMemberAdminGroupList() 
 	{
 		$oModuleModel = getModel('module');
 		$output = $oModuleModel->getModuleFileBoxList();
@@ -671,7 +671,7 @@ class memberAdminView extends member
 	 *
 	 * @return void
 	 */
-	function dispMemberAdminInsertJoinForm() {
+	public function dispMemberAdminInsertJoinForm() {
 		// Get the value of join_form
 		$member_join_form_srl = Context::get('member_join_form_srl');
 		if($member_join_form_srl)

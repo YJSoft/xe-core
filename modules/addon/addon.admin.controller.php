@@ -15,7 +15,7 @@ class addonAdminController extends addonController
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -25,7 +25,7 @@ class addonAdminController extends addonController
 	 *
 	 * @return BaseObject
 	 */
-	function procAddonAdminSaveActivate()
+	public function procAddonAdminSaveActivate()
 	{
 		$pcOnList = Context::get('pc_on');
 		$mobileOnList = Context::get('mobile_on');
@@ -159,7 +159,7 @@ class addonAdminController extends addonController
 	 *
 	 * @return BaseObject
 	 */
-	function procAddonAdminToggleActivate()
+	public function procAddonAdminToggleActivate()
 	{
 		$oAddonModel = getAdminModel('addon');
 
@@ -193,7 +193,7 @@ class addonAdminController extends addonController
 	 *
 	 * @return BaseObject
 	 */
-	function procAddonAdminSetupAddon()
+	public function procAddonAdminSetupAddon()
 	{
 		$args = Context::getRequestVars();
 		$module = $args->module;
@@ -230,7 +230,7 @@ class addonAdminController extends addonController
 	 * @param string $isUsed Whether to use
 	 * @return BaseObject
 	 */
-	function doInsert($addon, $site_srl = 0, $gtype = 'site', $isUsed = 'N')
+	public function doInsert($addon, $site_srl = 0, $gtype = 'site', $isUsed = 'N')
 	{
 		$args = new stdClass;
 		$args->addon = $addon;
@@ -252,7 +252,7 @@ class addonAdminController extends addonController
 	 * @param string $gtype site or global
 	 * @return BaseObject
 	 */
-	function doActivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site')
+	public function doActivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site')
 	{
 		$args = new stdClass();
 		$args->addon = $addon;
@@ -280,7 +280,7 @@ class addonAdminController extends addonController
 	 * @param string $type pc or mobile
 	 * @param string $gtype site or global
 	 */
-	function doDeactivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site')
+	public function doDeactivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site')
 	{
 		$args = new stdClass();
 		$args->addon = $addon;

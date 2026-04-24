@@ -11,7 +11,7 @@ require_once(_XE_PATH_ . 'modules/communication/communication.view.php');
 class communicationMobile extends communicationView
 {
 
-	function init()
+	public function init()
 	{
 		$oCommunicationModel = getModel('communication');
 
@@ -36,7 +36,7 @@ class communicationMobile extends communicationView
 	 * Display message box
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispCommunicationMessages()
+	public function dispCommunicationMessages()
 	{
 		// Error appears if not logged-in
 		if(!Context::get('is_logged'))
@@ -123,7 +123,7 @@ class communicationMobile extends communicationView
 	 * Display list of message box
 	 * @return void
 	 */
-	function dispCommunicationMessageBoxList()
+	public function dispCommunicationMessageBoxList()
 	{
 		$this->setTemplateFile('message_box');
 	}
@@ -132,7 +132,7 @@ class communicationMobile extends communicationView
 	 * Display message sending
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function dispCommunicationSendMessage()
+	public function dispCommunicationSendMessage()
 	{
 		$oCommunicationModel = getModel('communication');
 		$oMemberModel = getModel('member');

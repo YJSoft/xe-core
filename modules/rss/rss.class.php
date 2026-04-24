@@ -14,7 +14,7 @@ class rss extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Register in action forward
 		$oModuleController = getController('module');
@@ -33,7 +33,7 @@ class rss extends ModuleObject
 	 * A method to check if the installation has been successful
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -63,7 +63,7 @@ class rss extends ModuleObject
 	 *
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -99,7 +99,7 @@ class rss extends ModuleObject
 	 *
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 	}
 }

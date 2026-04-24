@@ -12,7 +12,7 @@ class rssController extends rss
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -21,7 +21,7 @@ class rssController extends rss
 	 *
 	 * @return BaseObject
 	 */
-	function triggerRssUrlInsert()
+	public function triggerRssUrlInsert()
 	{
 		$oModuleModel = getModel('module');
 		$total_config = $oModuleModel->getModuleConfig('rss');
@@ -66,7 +66,7 @@ class rssController extends rss
 		return new BaseObject();
 	}
 
-	function triggerCopyModule(&$obj)
+	public function triggerCopyModule(&$obj)
 	{
 		$oModuleModel = getModel('module');
 		$rssConfig = $oModuleModel->getModulePartConfig('rss', $obj->originModuleSrl);

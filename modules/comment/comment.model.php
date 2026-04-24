@@ -16,7 +16,7 @@ class commentModel extends comment
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 
 	}
@@ -26,7 +26,7 @@ class commentModel extends comment
 	 * Print, scrap, vote-up(recommen), vote-down(non-recommend), report features added
 	 * @return void
 	 */
-	function getCommentMenu()
+	public function getCommentMenu()
 	{
 		// get the post's id number and the current login information
 		$comment_srl = Context::get('target_srl');
@@ -119,7 +119,7 @@ class commentModel extends comment
 	 * @param int $comment_srl
 	 * @return bool
 	 */
-	function isGranted($comment_srl)
+	public function isGranted($comment_srl)
 	{
 		return $_SESSION['own_comment'][$comment_srl];
 	}
@@ -129,7 +129,7 @@ class commentModel extends comment
 	 * @param int $comment_srl
 	 * @return int
 	 */
-	function getChildCommentCount($comment_srl)
+	public function getChildCommentCount($comment_srl)
 	{
 		$args = new stdClass();
 		$args->comment_srl = $comment_srl;
@@ -142,7 +142,7 @@ class commentModel extends comment
 	 * @param int $comment_srl
 	 * @return int
 	 */
-	function getChildComments($comment_srl)
+	public function getChildComments($comment_srl)
 	{
 		$args = new stdClass();
 		$args->comment_srl = $comment_srl;
@@ -157,7 +157,7 @@ class commentModel extends comment
 	 * @param array $columnList
 	 * @return commentItem
 	 */
-	function getComment($comment_srl = 0, $is_admin = FALSE, $columnList = array())
+	public function getComment($comment_srl = 0, $is_admin = FALSE, $columnList = array())
 	{
 		$oComment = new commentItem($comment_srl, $columnList);
 		if($is_admin)
@@ -174,7 +174,7 @@ class commentModel extends comment
 	 * @param array $columnList
 	 * @return array
 	 */
-	function getComments($comment_srl_list, $columnList = array())
+	public function getComments($comment_srl_list, $columnList = array())
 	{
 		if(is_array($comment_srl_list))
 		{
@@ -226,7 +226,7 @@ class commentModel extends comment
 	 * @param int $document_srl
 	 * @return int
 	 */
-	function getCommentCount($document_srl)
+	public function getCommentCount($document_srl)
 	{
 		$args = new stdClass();
 		$args->document_srl = $document_srl;
@@ -267,7 +267,7 @@ class commentModel extends comment
 	 * @param array $moduleSrlList
 	 * @return int
 	 */
-	function getCommentCountByDate($date = '', $moduleSrlList = array())
+	public function getCommentCountByDate($date = '', $moduleSrlList = array())
 	{
 		if($date)
 		{
@@ -294,7 +294,7 @@ class commentModel extends comment
 	 * @param bool $published
 	 * @return int
 	 */
-	function getCommentAllCount($module_srl, $published = null)
+	public function getCommentAllCount($module_srl, $published = null)
 	{
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -331,7 +331,7 @@ class commentModel extends comment
 	 * Get the module info without duplication
 	 * @return array
 	 */
-	function getDistinctModules()
+	public function getDistinctModules()
 	{
 		return array();
 
@@ -359,7 +359,7 @@ class commentModel extends comment
 	 * @param array $columnList
 	 * @return array
 	 */
-	function getNewestCommentList($obj, $columnList = array())
+	public function getNewestCommentList($obj, $columnList = array())
 	{
 		$args = new stdClass();
 
@@ -446,7 +446,7 @@ class commentModel extends comment
 	 * @param int $count
 	 * @return object
 	 */
-	function getCommentList($document_srl, $page = 0, $is_admin = FALSE, $count = 0)
+	public function getCommentList($document_srl, $page = 0, $is_admin = FALSE, $count = 0)
 	{
 		if(!isset($document_srl))
 		{
@@ -551,7 +551,7 @@ class commentModel extends comment
 	 * @param int $document_srl
 	 * @return void
 	 */
-	function fixCommentList($module_srl, $document_srl)
+	public function fixCommentList($module_srl, $document_srl)
 	{
 		// create a lock file to prevent repeated work when performing a batch job
 		$lock_file = "./files/cache/tmp/lock." . $document_srl;
@@ -643,7 +643,7 @@ class commentModel extends comment
 	 * @param object $parent
 	 * @return void
 	 */
-	function _arrangeComment(&$comment_list, $list, $depth, $parent = NULL)
+	public function _arrangeComment(&$comment_list, $list, $depth, $parent = NULL)
 	{
 		if(!count($list))
 		{
@@ -684,7 +684,7 @@ class commentModel extends comment
 	 * @param array $columnList
 	 * @return object
 	 */
-	function getTotalCommentList($obj, $columnList = array())
+	public function getTotalCommentList($obj, $columnList = array())
 	{
 		$query_id = 'comment.getTotalCommentList';
 
@@ -832,7 +832,7 @@ class commentModel extends comment
 	 * @param object $obj
 	 * @return int
 	 */
-	function getTotalCommentCount($obj)
+	public function getTotalCommentCount($obj)
 	{
 		$query_id = 'comment.getTotalCommentCountByGroupStatus';
 
@@ -942,7 +942,7 @@ class commentModel extends comment
 	 * @param int $module_srl
 	 * @return object
 	 */
-	function getCommentConfig($module_srl)
+	public function getCommentConfig($module_srl)
 	{
 		$oModuleModel = getModel('module');
 		$comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
@@ -963,7 +963,7 @@ class commentModel extends comment
 	 * Return a list of voting member
 	 * @return void
 	 */
-	function getCommentVotedMemberList()
+	public function getCommentVotedMemberList()
 	{
 		$comment_srl = Context::get('comment_srl');
 		if(!$comment_srl)
@@ -1033,7 +1033,7 @@ class commentModel extends comment
 	 * Return a secret status by secret field
 	 * @return array
 	 */
-	function getSecretNameList()
+	public function getSecretNameList()
 	{
 		global $lang;
 
@@ -1052,7 +1052,7 @@ class commentModel extends comment
 	 * @param int $member_srl
 	 * @return int
 	 */
-	function getCommentCountByMemberSrl($member_srl)
+	public function getCommentCountByMemberSrl($member_srl)
 	{
 		$args = new stdClass();
 		$args->member_srl = $member_srl;
@@ -1070,7 +1070,7 @@ class commentModel extends comment
 	 * @param int $count
 	 * @return object
 	 */
-	function getCommentListByMemberSrl($member_srl, $columnList = array(), $page = 0, $is_admin = FALSE, $count = 0)
+	public function getCommentListByMemberSrl($member_srl, $columnList = array(), $page = 0, $is_admin = FALSE, $count = 0)
 	{
 		$args = new stdClass();
 		$args->member_srl = $member_srl;

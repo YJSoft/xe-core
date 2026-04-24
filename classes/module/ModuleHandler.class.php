@@ -13,14 +13,14 @@
 class ModuleHandler extends Handler
 {
 
-	var $module = NULL; ///< Module
-	var $act = NULL; ///< action
-	var $mid = NULL; ///< Module ID
-	var $document_srl = NULL; ///< Document Number
-	var $module_srl = NULL; ///< Module Number
-	var $module_info = NULL; ///< Module Info. Object
-	var $error = NULL; ///< an error code.
-	var $httpStatusCode = NULL; ///< http status code.
+	public $module = NULL; ///< Module
+	public $act = NULL; ///< action
+	public $mid = NULL; ///< Module ID
+	public $document_srl = NULL; ///< Document Number
+	public $module_srl = NULL; ///< Module Number
+	public $module_info = NULL; ///< Module Info. Object
+	public $error = NULL; ///< an error code.
+	public $httpStatusCode = NULL; ///< http status code.
 
 	/**
 	 * prepares variables to use in moduleHandler
@@ -32,7 +32,7 @@ class ModuleHandler extends Handler
 	 * @return void
 	 * */
 
-	function __construct($module = '', $act = '', $mid = '', $document_srl = '', $module_srl = '')
+	public function __construct($module = '', $act = '', $mid = '', $document_srl = '', $module_srl = '')
 	{
 		// If XE has not installed yet, set module as install
 		if(!Context::isInstalled())
@@ -151,7 +151,7 @@ class ModuleHandler extends Handler
 		return true;
 	}
 
-	function shutdownHandler()
+	public function shutdownHandler()
 	{
 		$errinfo = error_get_last();
 		if ($errinfo === null || ($errinfo['type'] != 1 && $errinfo['type'] != 4))
@@ -208,7 +208,7 @@ class ModuleHandler extends Handler
 	 * Initialization. It finds the target module based on module, mid, document_srl, and prepares to execute an action
 	 * @return boolean true: OK, false: redirected
 	 * */
-	function init()
+	public function init()
 	{
 		$oModuleModel = getModel('module');
 		$site_module_info = Context::get('site_module_info');
@@ -413,7 +413,7 @@ class ModuleHandler extends Handler
 	 * get a module instance and execute an action
 	 * @return ModuleObject executed module instance
 	 * */
-	function procModule()
+	public function procModule()
 	{
 		$oModuleModel = getModel('module');
 		$display_mode = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
@@ -907,7 +907,7 @@ class ModuleHandler extends Handler
 	 * set error message to Session.
 	 * @return void
 	 * */
-	function _setInputErrorToContext()
+	public function _setInputErrorToContext()
 	{
 		if($_SESSION['XE_VALIDATOR_ERROR'] && !Context::get('XE_VALIDATOR_ERROR'))
 		{
@@ -941,7 +941,7 @@ class ModuleHandler extends Handler
 	 * clear error message to Session.
 	 * @return void
 	 * */
-	function _clearErrorSession()
+	public static function _clearErrorSession()
 	{
 		$_SESSION['XE_VALIDATOR_ERROR'] = '';
 		$_SESSION['XE_VALIDATOR_MESSAGE'] = '';
@@ -955,7 +955,7 @@ class ModuleHandler extends Handler
 	 * occured error when, set input values to session.
 	 * @return void
 	 * */
-	function _setInputValueToSession()
+	public static function _setInputValueToSession()
 	{
 		$requestVars = Context::getRequestVars();
 		unset($requestVars->act, $requestVars->mid, $requestVars->vid, $requestVars->success_return_url, $requestVars->error_return_url);
@@ -970,7 +970,7 @@ class ModuleHandler extends Handler
 	 * @param ModuleObject $oModule module instance
 	 * @return void
 	 * */
-	function displayContent($oModule = NULL)
+	public function displayContent($oModule = NULL)
 	{
 		// If the module is not set or not an object, set error
 		if(!$oModule || !is_object($oModule))
@@ -1158,7 +1158,7 @@ class ModuleHandler extends Handler
 	 * @param string $module module name
 	 * @return string path of the module
 	 * */
-	function getModulePath($module)
+	public static function getModulePath($module)
 	{
 		return sprintf('./modules/%s/', $module);
 	}
@@ -1171,7 +1171,7 @@ class ModuleHandler extends Handler
 	 * @return ModuleObject module instance (if failed it returns null)
 	 * @remarks if there exists a module instance created before, returns it.
 	 * */
-	function &getModuleInstance($module, $type = 'view', $kind = '')
+	public static function getModuleInstance($module, $type = 'view', $kind = '')
 	{
 
 		if(__DEBUG__ == 3)
@@ -1258,7 +1258,7 @@ class ModuleHandler extends Handler
 		return $GLOBALS['_loaded_module'][$module][$type][$kind];
 	}
 
-	function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName)
+	public static function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName)
 	{
 		$classPath = ModuleHandler::getModulePath($module);
 
@@ -1297,7 +1297,7 @@ class ModuleHandler extends Handler
 	 * @param object $obj an object as a parameter to trigger
 	 * @return BaseObject
 	 * */
-	function triggerCall($trigger_name, $called_position, &$obj)
+	public static function triggerCall($trigger_name, $called_position, &$obj)
 	{
 		// skip if not installed
 		if(!Context::isInstalled())
@@ -1360,7 +1360,7 @@ class ModuleHandler extends Handler
 	 * @param string $code
 	 * @return string
 	 * */
-	function _setHttpStatusMessage($code)
+	public static function _setHttpStatusMessage($code)
 	{
 		$statusMessageList = array(
 			// 1×× Informational

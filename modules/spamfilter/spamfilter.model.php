@@ -10,14 +10,14 @@ class spamfilterModel extends spamfilter
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Return the user setting values of the Spam filter module
 	 */
-	function getConfig()
+	public function getConfig()
 	{
 		// Get configurations (using the module model object)
 		$oModuleModel = getModel('module');
@@ -27,7 +27,7 @@ class spamfilterModel extends spamfilter
 	/**
 	 * @brief Return the list of registered IP addresses which were banned
 	 */
-	function getDeniedIPList()
+	public function getDeniedIPList()
 	{
 		$args = new stdClass();
 		$args->sort_index = "regdate";
@@ -41,7 +41,7 @@ class spamfilterModel extends spamfilter
 	/**
 	 * @brief Check if the ipaddress is in the list of banned IP addresses
 	 */
-	function isDeniedIP()
+	public function isDeniedIP()
 	{
 		$ipaddress = $_SERVER['REMOTE_ADDR'];
 
@@ -61,7 +61,7 @@ class spamfilterModel extends spamfilter
 	/**
 	 * @brief Return the list of registered Words which were banned
 	 */
-	function getDeniedWordList()
+	public function getDeniedWordList()
 	{
 		$args = new stdClass();
 		$args->sort_index = "hit";
@@ -74,7 +74,7 @@ class spamfilterModel extends spamfilter
 	/**
 	 * @brief Check if the text, received as a parameter, is banned or not
 	 */
-	function isDeniedWord($text)
+	public function isDeniedWord($text)
 	{
 		$word_list = $this->getDeniedWordList();
 		if(!count($word_list)) return new BaseObject();
@@ -97,7 +97,7 @@ class spamfilterModel extends spamfilter
 	/**
 	 * @brief Check the specified time
 	 */
-	function checkLimited($isMessage = FALSE)
+	public function checkLimited($isMessage = FALSE)
 	{
 		$config = $this->getConfig();
 
@@ -138,7 +138,7 @@ class spamfilterModel extends spamfilter
 	/**
 	 * @brief Check if the trackbacks have already been registered to a particular article
 	 */
-	function isInsertedTrackback($document_srl)
+	public function isInsertedTrackback($document_srl)
 	{
 		$oTrackbackModel = getModel('trackback');
 		$count = $oTrackbackModel->getTrackbackCountByIPAddress($document_srl, $_SERVER['REMOTE_ADDR']);
@@ -150,7 +150,7 @@ class spamfilterModel extends spamfilter
 	/**
 	 * @brief Return the number of logs recorded within the interval for the specified IPaddress
 	 */
-	function getLogCount($time = 60, $ipaddress='')
+	public function getLogCount($time = 60, $ipaddress='')
 	{
 		if(!$ipaddress) $ipaddress = $_SERVER['REMOTE_ADDR'];
 

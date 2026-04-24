@@ -53,24 +53,24 @@ class XmlJsFilter extends XmlParser
 	 * version
 	 * @var string
 	 */
-	var $version = '0.2.5';
+	public $version = '0.2.5';
 
 	/**
 	 * compiled javascript cache path
 	 * @var string
 	 */
-	var $compiled_path = './files/cache/js_filter_compiled/'; // / directory path for compiled cache file
+	public $compiled_path = './files/cache/js_filter_compiled/'; // / directory path for compiled cache file
 	/**
 	 * Target xml file
 	 * @var string
 	 */
-	var $xml_file = NULL;
+	public $xml_file = NULL;
 
 	/**
 	 * Compiled js file
 	 * @var string
 	 */
-	var $js_file = NULL; // / 
+	public $js_file = NULL; // / 
 
 	/**
 	 * constructor
@@ -79,7 +79,7 @@ class XmlJsFilter extends XmlParser
 	 * @return void
 	 */
 
-	function __construct($path, $xml_file)
+	public function __construct($path, $xml_file)
 	{
 		if(substr($path, -1) !== '/')
 		{
@@ -93,7 +93,7 @@ class XmlJsFilter extends XmlParser
 	 * Compile a xml_file only when a corresponding js file does not exists or is outdated
 	 * @return void Returns NULL regardless of the success of failure of the operation
 	 */
-	function compile()
+	public function compile()
 	{
 		if(!file_exists($this->xml_file))
 		{
@@ -114,7 +114,7 @@ class XmlJsFilter extends XmlParser
 	 * compile a xml_file into js_file
 	 * @return void
 	 */
-	function _compile()
+	public function _compile()
 	{
 		global $lang;
 
@@ -422,7 +422,7 @@ class XmlJsFilter extends XmlParser
 	 * @param string $xml_file
 	 * @return string
 	 */
-	function _getCompiledFileName($xml_file)
+	public function _getCompiledFileName($xml_file)
 	{
 		return sprintf('%s%s.%s.compiled.js', $this->compiled_path, md5($this->version . $xml_file), Context::getLangType());
 	}

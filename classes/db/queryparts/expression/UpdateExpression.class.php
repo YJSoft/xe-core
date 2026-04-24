@@ -15,7 +15,7 @@ class UpdateExpression extends Expression
 	 * argument
 	 * @var object
 	 */
-	var $argument;
+	public $argument;
 
 	/**
 	 * constructor
@@ -23,7 +23,7 @@ class UpdateExpression extends Expression
 	 * @param object $argument
 	 * @return void
 	 */
-	function __construct($column_name, $argument)
+	public function __construct($column_name, $argument)
 	{
 		parent::__construct($column_name);
 		$this->argument = $argument;
@@ -33,7 +33,7 @@ class UpdateExpression extends Expression
 	 * Return column expression, ex) column = value
 	 * @return string
 	 */
-	function getExpression($with_value = true)
+	public function getExpression($with_value = true)
 	{
 		if($with_value)
 		{
@@ -46,7 +46,7 @@ class UpdateExpression extends Expression
 	 * Return column expression, ex) column = value
 	 * @return string
 	 */
-	function getExpressionWithValue()
+	public function getExpressionWithValue()
 	{
 		$value = $this->argument->getValue();
 		$operation = $this->argument->getColumnOperation();
@@ -62,7 +62,7 @@ class UpdateExpression extends Expression
 	 * Can use prepare statement
 	 * @return string
 	 */
-	function getExpressionWithoutValue()
+	public function getExpressionWithoutValue()
 	{
 		$operation = $this->argument->getColumnOperation();
 		if(isset($operation))
@@ -72,7 +72,7 @@ class UpdateExpression extends Expression
 		return "$this->column_name = ?";
 	}
 
-	function getValue()
+	public function getValue()
 	{
 		// TODO Escape value according to column type instead of variable type
 		$value = $this->argument->getValue();
@@ -83,7 +83,7 @@ class UpdateExpression extends Expression
 		return $value;
 	}
 
-	function show()
+	public function show()
 	{
 		if(!$this->argument)
 		{
@@ -97,12 +97,12 @@ class UpdateExpression extends Expression
 		return true;
 	}
 
-	function getArgument()
+	public function getArgument()
 	{
 		return $this->argument;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		if($this->argument)
 		{

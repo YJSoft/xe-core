@@ -13,7 +13,7 @@ class pointView extends point
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -21,7 +21,7 @@ class pointView extends point
 	 * @brief Additional configurations for a service module
 	 * Receive the form for the form used by point
 	 */
-	function triggerDispPointAdditionSetup(&$obj)
+	public function triggerDispPointAdditionSetup(&$obj)
 	{
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
@@ -55,7 +55,7 @@ class pointView extends point
 		$module_config['point_name'] = $config->point_name;
 		Context::set('module_config', $module_config);
 		// Set the template file
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path.'tpl', 'point_module_config');
 		$obj .= $tpl;
 

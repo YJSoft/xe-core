@@ -25,7 +25,7 @@ class TablesTag
 	 * Table list
 	 * @var array
 	 */
-	var $tables;
+	public $tables;
 
 	/**
 	 * constructor
@@ -33,7 +33,7 @@ class TablesTag
 	 * @param object $xml_index_hints_tag
 	 * @return void
 	 */
-	function __construct($xml_tables_tag, $xml_index_hints_tag = NULL)
+	public function __construct($xml_tables_tag, $xml_index_hints_tag = NULL)
 	{
 		$this->tables = array();
 
@@ -83,12 +83,12 @@ class TablesTag
 		}
 	}
 
-	function getTables()
+	public function getTables()
 	{
 		return $this->tables;
 	}
 
-	function toString()
+	public function toString()
 	{
 		$output_tables = 'array(' . PHP_EOL;
 		foreach($this->tables as $table)
@@ -107,7 +107,7 @@ class TablesTag
 		return $output_tables;
 	}
 
-	function getArguments()
+	public function getArguments()
 	{
 		$arguments = array();
 		foreach($this->tables as $table)

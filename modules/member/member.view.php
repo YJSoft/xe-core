@@ -7,14 +7,14 @@
  */
 class memberView extends member
 {
-	var $group_list = NULL; // /< Group list information
-	var $member_info = NULL; // /< Member information of the user
-	var $skin = 'default';
+	public $group_list = NULL; // /< Group list information
+	public $member_info = NULL; // /< Member information of the user
+	public $skin = 'default';
 
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 		// Get the member configuration
 		$oMemberModel = getModel('member');
@@ -58,7 +58,7 @@ class memberView extends member
 	/**
 	 * @brief Display member information
 	 */
-	function dispMemberInfo()
+	public function dispMemberInfo()
 	{
 		$oMemberModel = getModel('member');
 		$logged_info = Context::get('logged_info');
@@ -103,7 +103,7 @@ class memberView extends member
 		$this->setTemplateFile('member_info');
 	}
 
-	function _getDisplayedMemberInfo($memberInfo, $extendFormInfo, $memberConfig)
+	public function _getDisplayedMemberInfo($memberInfo, $extendFormInfo, $memberConfig)
 	{
 		$logged_info = Context::get('logged_info');
 		$displayDatas = array();
@@ -189,7 +189,7 @@ class memberView extends member
 	/**
 	 * @brief Display member join form
 	 */
-	function dispMemberSignUpForm()
+	public function dispMemberSignUpForm()
 	{
 		//setcookie for redirect url in case of going to member sign up
 		setcookie("XE_REDIRECT_URL", $_SERVER['HTTP_REFERER']);
@@ -222,7 +222,7 @@ class memberView extends member
 		$this->setTemplateFile('signup_form');
 	}
 
-	function dispMemberModifyInfoBefore()
+	public function dispMemberModifyInfoBefore()
 	{
 		$logged_info = Context::get('logged_info');
 		$oMemberModel = getModel('member');
@@ -257,7 +257,7 @@ class memberView extends member
 	/**
 	 * @brief Modify member information
 	 */
-	function dispMemberModifyInfo() 
+	public function dispMemberModifyInfo() 
 	{
 		if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD' && $_SESSION['rechecked_password_step'] != 'INPUT_DATA')
 		{
@@ -326,7 +326,7 @@ class memberView extends member
 	/**
 	 * @brief Display documents written by the member
 	 */
-	function dispMemberOwnDocument()
+	public function dispMemberOwnDocument()
 	{
 		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
@@ -354,7 +354,7 @@ class memberView extends member
 	/**
 	 * @brief Display documents scrapped by the member
 	 */
-	function dispMemberScrappedDocument()
+	public function dispMemberScrappedDocument()
 	{
 		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
@@ -381,7 +381,7 @@ class memberView extends member
 	/**
 	 * @brief Display documents saved by the member
 	 */
-	function dispMemberSavedDocument()
+	public function dispMemberSavedDocument()
 	{
 		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
@@ -407,7 +407,7 @@ class memberView extends member
 	/**
 	 * @brief Display the login form 
 	 */
-	function dispMemberLoginForm()
+	public function dispMemberLoginForm()
 	{
 		if(Context::get('is_logged'))
 		{
@@ -439,7 +439,7 @@ class memberView extends member
 	/**
 	 * @brief Change the user password
 	 */
-	function dispMemberModifyPassword()
+	public function dispMemberModifyPassword()
 	{
 		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
@@ -471,7 +471,7 @@ class memberView extends member
 	/**
 	 * @brief Member withdrawl
 	 */
-	function dispMemberLeave()
+	public function dispMemberLeave()
 	{
 		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
@@ -502,7 +502,7 @@ class memberView extends member
 	/**
 	 * @brief Member log-out
 	 */
-	function dispMemberLogout()
+	public function dispMemberLogout()
 	{
 		$oMemberController = getController('member');
 		$output = $oMemberController->procMemberLogout();
@@ -518,7 +518,7 @@ class memberView extends member
 	 * @brief Display a list of saved articles
 	 * @Deplicated - instead Document View - dispTempSavedList method use
 	 */
-	function dispSavedDocumentList()
+	public function dispSavedDocumentList()
 	{
 		return new BaseObject(0, 'Deplicated method');
 	}
@@ -526,7 +526,7 @@ class memberView extends member
 	/**
 	 * @brief Find user ID and password
 	 */
-	function dispMemberFindAccount()
+	public function dispMemberFindAccount()
 	{
 		if(Context::get('is_logged')) return $this->stop('already_logged');
 
@@ -540,7 +540,7 @@ class memberView extends member
 	/**
 	 * @brief Generate a temporary password
 	 */
-	function dispMemberGetTempPassword()
+	public function dispMemberGetTempPassword()
 	{
 		if(Context::get('is_logged')) return $this->stop('already_logged');
 
@@ -558,7 +558,7 @@ class memberView extends member
 	/**
 	 * @brief Page of re-sending an authentication mail
 	 */
-	function dispMemberResendAuthMail() 
+	public function dispMemberResendAuthMail() 
 	{
 		$authMemberSrl = $_SESSION['auth_member_srl'];
 		unset($_SESSION['auth_member_srl']);
@@ -583,7 +583,7 @@ class memberView extends member
 		}
 	}
 
-	function dispMemberModifyEmailAddress()
+	public function dispMemberModifyEmailAddress()
 	{
 		if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD' && $_SESSION['rechecked_password_step'] != 'INPUT_DATA')
 		{
@@ -601,7 +601,7 @@ class memberView extends member
 	 * Add javascript codes into the header by checking values of member join form, required and others
 	 * @return void
 	 */
-	function addExtraFormValidatorMessage()
+	public function addExtraFormValidatorMessage()
 	{
 		$oMemberModel = getModel('member');
 		$extraList = $oMemberModel->getUsedJoinFormList();
@@ -640,7 +640,7 @@ class memberView extends member
 	 * 
 	 * @return void
 	**/
-	function dispMemberSpammer()
+	public function dispMemberSpammer()
 	{
 		if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
 

@@ -15,7 +15,7 @@ class documentAdminController extends document
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -23,7 +23,7 @@ class documentAdminController extends document
 	 * Remove the selected docs from admin page
 	 * @return void
 	 */
-	function procDocumentAdminDeleteChecked()
+	public function procDocumentAdminDeleteChecked()
 	{
 		// error appears if no doc is selected
 		$cart = Context::get('cart');
@@ -51,14 +51,14 @@ class documentAdminController extends document
 	 * @param int $category_srl
 	 * @return BaseObject
 	 */
-	function moveDocumentModule($document_srl_list, $module_srl, $category_srl)
+	public function moveDocumentModule($document_srl_list, $module_srl, $category_srl)
 	{
 		if(!count($document_srl_list)) return;
 
 		$oDocumentModel = getModel('document');
 		$oDocumentController = getController('document');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$triggerObj = new stdClass();
@@ -231,7 +231,7 @@ class documentAdminController extends document
 	 * @param int $category_srl
 	 * @return object
 	 */
-	function copyDocumentModule($document_srl_list, $module_srl, $category_srl)
+	public function copyDocumentModule($document_srl_list, $module_srl, $category_srl)
 	{
 		if(count($document_srl_list) < 1) return;
 
@@ -240,7 +240,7 @@ class documentAdminController extends document
 
 		$oFileModel = getModel('file');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$triggerObj = new stdClass();
@@ -455,7 +455,7 @@ class documentAdminController extends document
 	 * @param int $module_srl
 	 * @return object
 	 */
-	function deleteModuleDocument($module_srl)
+	public function deleteModuleDocument($module_srl)
 	{
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -491,7 +491,7 @@ class documentAdminController extends document
 	 * Save the default settings of the document module
 	 * @return object
 	 */
-	function procDocumentAdminInsertConfig()
+	public function procDocumentAdminInsertConfig()
 	{
 		$oModuleController = getController('module');
 
@@ -514,7 +514,7 @@ class documentAdminController extends document
 	 * Revoke declaration of the blacklisted posts
 	 * @return object
 	 */
-	function procDocumentAdminCancelDeclare()
+	public function procDocumentAdminCancelDeclare()
 	{
 		$document_srl = trim(Context::get('document_srl'));
 
@@ -530,7 +530,7 @@ class documentAdminController extends document
 	 * Delete all thumbnails
 	 * @return void
 	 */
-	function procDocumentAdminDeleteAllThumbnail()
+	public function procDocumentAdminDeleteAllThumbnail()
 	{
 		$temp_cache_dir = './files/thumbnails_' . $_SERVER['REQUEST_TIME'];
 		FileHandler::rename('./files/thumbnails', $temp_cache_dir);
@@ -545,7 +545,7 @@ class documentAdminController extends document
 	 * Delete thumbnails with subdirectory
 	 * @return void
 	 */
-	function deleteThumbnailFile($path)
+	public function deleteThumbnailFile($path)
 	{
 		$directory = dir($path);
 		while($entry = $directory->read()) {
@@ -565,7 +565,7 @@ class documentAdminController extends document
 	 * Add or modify extra variables of the module
 	 * @return void|object
 	 */
-	function procDocumentAdminInsertExtraVar()
+	public function procDocumentAdminInsertExtraVar()
 	{
 		$module_srl = Context::get('module_srl');
 		$var_idx = Context::get('var_idx');
@@ -612,7 +612,7 @@ class documentAdminController extends document
 	 * Delete extra variables of the module
 	 * @return void|object
 	 */
-	function procDocumentAdminDeleteExtraVar()
+	public function procDocumentAdminDeleteExtraVar()
 	{
 		$module_srl = Context::get('module_srl');
 		$var_idx = Context::get('var_idx');
@@ -629,7 +629,7 @@ class documentAdminController extends document
 	 * Control the order of extra variables
 	 * @return void|object
 	 */
-	function procDocumentAdminMoveExtraVar()
+	public function procDocumentAdminMoveExtraVar()
 	{
 		$type = Context::get('type');
 		$module_srl = Context::get('module_srl');
@@ -709,7 +709,7 @@ class documentAdminController extends document
 	 * Insert alias for document
 	 * @return void|object
 	 */
-	function procDocumentAdminInsertAlias()
+	public function procDocumentAdminInsertAlias()
 	{
 		$args = Context::gets('module_srl','document_srl', 'alias_title');
 		$alias_srl = Context::get('alias_srl');
@@ -733,7 +733,7 @@ class documentAdminController extends document
 	 * Delete alias for document
 	 * @return void|object
 	 */
-	function procDocumentAdminDeleteAlias()
+	public function procDocumentAdminDeleteAlias()
 	{
 		$document_srl = Context::get('document_srl');
 		$alias_srl = Context::get('target_srl');
@@ -749,7 +749,7 @@ class documentAdminController extends document
 	  * @brief move a document to trash.
 	  * @see documentModel::getDocumentMenu
 	  */
-	function procDocumentAdminMoveToTrash()
+	public function procDocumentAdminMoveToTrash()
 	{
 		$document_srl = Context::get('document_srl');
 
@@ -823,14 +823,14 @@ class documentAdminController extends document
 	 * Restor document from trash
 	 * @return void|object
 	 */
-	function procDocumentAdminRestoreTrash()
+	public function procDocumentAdminRestoreTrash()
 	{
 		$trash_srl = Context::get('trash_srl');
 		$this->restoreTrash($trash_srl);
 	}
 
 	/*function restoreTrash($trash_srl){
-	  $oDB = &DB::getInstance();
+	  $oDB = DB::getInstance();
 	  $oDocumentModel = getModel('document');
 
 	  $trash_args->trash_srl = $trash_srl;
@@ -888,14 +888,14 @@ class documentAdminController extends document
 	 * @param object|array $originObject
 	 * @return object
 	 */
-	function restoreTrash($originObject)
+	public function restoreTrash($originObject)
 	{
 		if(is_array($originObject)) $originObject = (object)$originObject;
 
 		$oDocumentController = getController('document');
 		$oDocumentModel = getModel('document');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		//DB restore
@@ -935,7 +935,7 @@ class documentAdminController extends document
 	 * @param string $originObject string is serialized object
 	 * @return object
 	 */
-	function emptyTrash($originObject)
+	public function emptyTrash($originObject)
 	{
 		$originObject = unserialize($originObject);
 		if(is_array($originObject)) $originObject = (object) $originObject;

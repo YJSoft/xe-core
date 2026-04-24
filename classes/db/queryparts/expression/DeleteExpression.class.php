@@ -16,7 +16,7 @@ class DeleteExpression extends Expression
 	 * column value
 	 * @var mixed
 	 */
-	var $value;
+	public $value;
 
 	/**
 	 * constructor
@@ -24,7 +24,7 @@ class DeleteExpression extends Expression
 	 * @param mixed $value
 	 * @return void
 	 */
-	function __construct($column_name, $value)
+	public function __construct($column_name, $value)
 	{
 		parent::__construct($column_name);
 		$this->value = $value;
@@ -34,12 +34,12 @@ class DeleteExpression extends Expression
 	 * Return column expression, ex) column = value
 	 * @return string
 	 */
-	function getExpression()
+	public function getExpression()
 	{
 		return "$this->column_name = $this->value";
 	}
 
-	function getValue()
+	public function getValue()
 	{
 		// TODO Escape value according to column type instead of variable type
 		if(!is_numeric($this->value))
@@ -49,7 +49,7 @@ class DeleteExpression extends Expression
 		return $this->value;
 	}
 
-	function show()
+	public function show()
 	{
 		if(!$this->value)
 		{

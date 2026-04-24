@@ -10,19 +10,19 @@ class memberModel extends member
 	/**
 	 * @brief Keep data internally which may be frequently called ...
 	 */
-	var $join_form_list = NULL;
+	public $join_form_list = NULL;
 
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Return member's configuration
 	 */
-	function getMemberConfig()
+	public function getMemberConfig()
 	{
 		static $member_config;
 
@@ -82,7 +82,7 @@ class memberModel extends member
 		return $config;
 	}
 
-	function _getAgreement()
+	public function _getAgreement()
 	{
 		$agreement_file = _XE_PATH_.'files/member_extra_info/agreement_' . Context::get('lang_type') . '.txt';
 		if(is_readable($agreement_file))
@@ -113,7 +113,7 @@ class memberModel extends member
 	/**
 	 * @brief Display menus of the member
 	 */
-	function getMemberMenu()
+	public function getMemberMenu()
 	{
 		// Get member_srl of he target member and logged info of the current user
 		$member_srl = Context::get('target_srl');
@@ -194,7 +194,7 @@ class memberModel extends member
 	/**
 	 * @brief Check if logged-in
 	 */
-	function isLogged() {
+	public function isLogged() {
 		if($_SESSION['is_logged'])
 		{
 			if(Mobile::isFromMobilePhone())
@@ -226,7 +226,7 @@ class memberModel extends member
 	/**
 	 * @brief Return session information of the logged-in user
 	 */
-	function getLoggedInfo()
+	public function getLoggedInfo()
 	{
 		// Return session info if session info is requested and the user is logged-in
 		if($this->isLogged())
@@ -266,7 +266,7 @@ class memberModel extends member
 	/**
 	 * @brief Return member information with user_id
 	 */
-	function getMemberInfoByUserID($user_id, $columnList = array())
+	public function getMemberInfoByUserID($user_id, $columnList = array())
 	{
 		if(!$user_id) return;
 
@@ -284,7 +284,7 @@ class memberModel extends member
 	/**
 	 * @brief Return member information with email_address
 	 */
-	function getMemberInfoByEmailAddress($email_address)
+	public function getMemberInfoByEmailAddress($email_address)
 	{
 		if(!$email_address) return;
 
@@ -312,7 +312,7 @@ class memberModel extends member
 	/**
 	 * @brief Return member information with member_srl
 	 */
-	function getMemberInfoByMemberSrl($member_srl, $site_srl = 0, $columnList = array())
+	public function getMemberInfoByMemberSrl($member_srl, $site_srl = 0, $columnList = array())
 	{
 		if(!$member_srl) return;
 
@@ -353,7 +353,7 @@ class memberModel extends member
 	/**
 	 * @brief Add member info from extra_vars and other information
 	 */
-	function arrangeMemberInfo($info, $site_srl = 0)
+	public function arrangeMemberInfo($info, $site_srl = 0)
 	{
 		if(!$GLOBALS['__member_info__'][$info->member_srl])
 		{
@@ -430,7 +430,7 @@ class memberModel extends member
 	/**
 	 * @brief Get member_srl corresponding to userid
 	 */
-	function getMemberSrlByUserID($user_id)
+	public function getMemberSrlByUserID($user_id)
 	{
 		$args = new stdClass();
 		$args->user_id = $user_id;
@@ -441,7 +441,7 @@ class memberModel extends member
 	/**
 	 * @brief Get member_srl corresponding to EmailAddress
 	 */
-	function getMemberSrlByEmailAddress($email_address)
+	public function getMemberSrlByEmailAddress($email_address)
 	{
 		$args = new stdClass();
 		$args->email_address = $email_address;
@@ -452,7 +452,7 @@ class memberModel extends member
 	/**
 	 * @brief Get member_srl corresponding to nickname
 	 */
-	function getMemberSrlByNickName($nick_name)
+	public function getMemberSrlByNickName($nick_name)
 	{
 		$args = new stdClass();
 		$args->nick_name = $nick_name;
@@ -463,7 +463,7 @@ class memberModel extends member
 	/**
 	 * @brief Return member_srl of the current logged-in user
 	 */
-	function getLoggedMemberSrl()
+	public function getLoggedMemberSrl()
 	{
 		if(!$this->isLogged()) return;
 		return $_SESSION['member_srl'];
@@ -472,7 +472,7 @@ class memberModel extends member
 	/**
 	 * @brief Return user_id of the current logged-in user
 	 */
-	function getLoggedUserID()
+	public function getLoggedUserID()
 	{
 		if(!$this->isLogged()) return;
 		$logged_info = Context::get('logged_info');
@@ -482,7 +482,7 @@ class memberModel extends member
 	/**
 	 * @brief Get a list of groups which the member_srl belongs to
 	 */
-	function getMemberGroups($member_srl, $site_srl = 0, $force_reload = false)
+	public function getMemberGroups($member_srl, $site_srl = 0, $force_reload = false)
 	{
 		static $member_groups = array();
 
@@ -522,7 +522,7 @@ class memberModel extends member
 	/**
 	 * @brief Get a list of groups which member_srls belong to
 	 */
-	function getMembersGroups($member_srls, $site_srl = 0)
+	public function getMembersGroups($member_srls, $site_srl = 0)
 	{
 		$args->member_srls = implode(',',$member_srls);
 		$args->site_srl = $site_srl;
@@ -541,7 +541,7 @@ class memberModel extends member
 	/**
 	 * @brief Get a default group
 	 */
-	function getDefaultGroup($site_srl = 0, $columnList = array())
+	public function getDefaultGroup($site_srl = 0, $columnList = array())
 	{
 		$default_group = false;
 		$oCacheHandler = CacheHandler::getInstance('object', null, true);
@@ -571,7 +571,7 @@ class memberModel extends member
 	/**
 	 * @brief Get an admin group
 	 */
-	function getAdminGroup($columnList = array())
+	public function getAdminGroup($columnList = array())
 	{
 		$output = executeQuery('member.getAdminGroup', $args, $columnList);
 		return $output->data;
@@ -580,7 +580,7 @@ class memberModel extends member
 	/**
 	 * @brief Get group info corresponding to group_srl
 	 */
-	function getGroup($group_srl, $columnList = array())
+	public function getGroup($group_srl, $columnList = array())
 	{
 		$args = new stdClass;
 		$args->group_srl = $group_srl;
@@ -591,7 +591,7 @@ class memberModel extends member
 	/**
 	 * @brief Get a list of groups
 	 */
-	function getGroups($site_srl = 0)
+	public function getGroups($site_srl = 0)
 	{
 		if(!$GLOBALS['__group_info__'][$site_srl])
 		{
@@ -654,7 +654,7 @@ class memberModel extends member
 	 * To use as extend_filter, the argument should be boolean.
 	 * When the argument is true, it returns object result in type of filter.
 	 */
-	function getJoinFormList($filter_response = false)
+	public function getJoinFormList($filter_response = false)
 	{
 		global $lang;
 		// Set to ignore if a super administrator.
@@ -729,7 +729,7 @@ class memberModel extends member
 	 *
 	 * @return array $joinFormList
 	 */
-	function getUsedJoinFormList()
+	public function getUsedJoinFormList()
 	{
 		$args = new stdClass();
 		$args->sort_index = "list_order";
@@ -757,7 +757,7 @@ class memberModel extends member
 	/**
 	 * @brief Combine extend join form and member information (used to modify member information)
 	 */
-	function getCombineJoinForm($member_info)
+	public function getCombineJoinForm($member_info)
 	{
 		$extend_form_list = $this->getJoinFormlist();
 		if(!$extend_form_list) return;
@@ -796,7 +796,7 @@ class memberModel extends member
 	/**
 	 * @brief Get a join form
 	 */
-	function getJoinForm($member_join_form_srl)
+	public function getJoinForm($member_join_form_srl)
 	{
 		$args->member_join_form_srl = $member_join_form_srl;
 		$output = executeQuery('member.getJoinForm', $args);
@@ -821,7 +821,7 @@ class memberModel extends member
 	/**
 	 * @brief Get a list of denied IDs
 	 */
-	function getDeniedIDList()
+	public function getDeniedIDList()
 	{
 		if(!$this->denied_id_list)
 		{
@@ -836,14 +836,14 @@ class memberModel extends member
 		return $this->denied_id_list;
 	}
 
-	function getDeniedIDs()
+	public function getDeniedIDs()
 	{
 		$output = executeQueryArray('member.getDeniedIDs');
 		if(!$output->toBool()) return array();
 		return $output->data;
 	}
 
-	function getDeniedNickNames()
+	public function getDeniedNickNames()
 	{
 		$output = executeQueryArray('member.getDeniedNickNames');
 		if(!$output->toBool())
@@ -857,7 +857,7 @@ class memberModel extends member
 	/**
 	 * @brief Verify if ID is denied
 	 */
-	function isDeniedID($user_id)
+	public function isDeniedID($user_id)
 	{
 		$args = new stdClass();
 		$args->user_id = $user_id;
@@ -869,7 +869,7 @@ class memberModel extends member
 	/**
 	 * @brief Verify if nick name is denied
 	 */
-	function isDeniedNickName($nickName)
+	public function isDeniedNickName($nickName)
 	{
 		$args = new stdClass();
 		$args->nick_name = $nickName;
@@ -884,7 +884,7 @@ class memberModel extends member
 	/**
 	 * @brief Get information of the profile image
 	 */
-	function getProfileImage($member_srl)
+	public function getProfileImage($member_srl)
 	{
 		if(!isset($GLOBALS['__member_info__']['profile_image'][$member_srl]))
 		{
@@ -913,7 +913,7 @@ class memberModel extends member
 	/**
 	 * @brief Get the image name
 	 */
-	function getImageName($member_srl)
+	public function getImageName($member_srl)
 	{
 		if(!isset($GLOBALS['__member_info__']['image_name'][$member_srl]))
 		{
@@ -936,7 +936,7 @@ class memberModel extends member
 	/**
 	 * @brief Get the image mark
 	 */
-	function getImageMark($member_srl)
+	public function getImageMark($member_srl)
 	{
 		if(!isset($GLOBALS['__member_info__']['image_mark'][$member_srl]))
 		{
@@ -960,7 +960,7 @@ class memberModel extends member
 	/**
 	 * @brief Get the image mark of the group
 	 */
-	function getGroupImageMark($member_srl,$site_srl=0)
+	public function getGroupImageMark($member_srl,$site_srl=0)
 	{
 		if(!isset($GLOBALS['__member_info__']['group_image_mark'][$member_srl]))
 		{
@@ -1002,7 +1002,7 @@ class memberModel extends member
 	/**
 	 * @brief Get user's signature
 	 */
-	function getSignature($member_srl)
+	public function getSignature($member_srl)
 	{
 		if(!isset($GLOBALS['__member_info__']['signature'][$member_srl]))
 		{
@@ -1025,7 +1025,7 @@ class memberModel extends member
 	 * @param int $member_srl Set this to member_srl when comparing a member's password (optional)
 	 * @return bool
 	 */
-	function isValidPassword($hashed_password, $password_text, $member_srl=null)
+	public function isValidPassword($hashed_password, $password_text, $member_srl=null)
 	{
 		// False if no password in entered
 		if(!$password_text)
@@ -1080,13 +1080,13 @@ class memberModel extends member
 	 * @param string $algorithm The algorithm to use (optional, only set this when you want to use a non-default algorithm)
 	 * @return string
 	 */
-	function hashPassword($password_text, $algorithm = null)
+	public function hashPassword($password_text, $algorithm = null)
 	{
 		$oPassword = new Password();
 		return $oPassword->createHash($password_text, $algorithm);
 	}
 	
-	function checkPasswordStrength($password, $strength)
+	public function checkPasswordStrength($password, $strength)
 	{
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin == 'Y') return true;
@@ -1116,7 +1116,7 @@ class memberModel extends member
 		return true;
 	}
 	
-	function getAdminGroupSrl($site_srl = 0)
+	public function getAdminGroupSrl($site_srl = 0)
 	{
 		$groupSrl = 0;
 		$output = $this->getGroups($site_srl);

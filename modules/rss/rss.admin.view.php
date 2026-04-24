@@ -12,7 +12,7 @@ class rssAdminView extends rss
 	 *
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 		//Set template path
 		$this->setTemplatePath($this->module_path.'tpl');
@@ -23,7 +23,7 @@ class rssAdminView extends rss
 	 *
 	 * @return BaseObject
 	 */
-	function dispRssAdminIndex()
+	public function dispRssAdminIndex()
 	{
 		$oModuleModel = getModel('module');
 		$rss_config = $oModuleModel->getModulePartConfigs('rss');

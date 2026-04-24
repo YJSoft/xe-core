@@ -17,23 +17,23 @@ class document extends ModuleObject
 	 * Search option to use in admin page
 	 * @var array
 	 */
-	var $search_option = array('title','content','title_content','user_name',); // /< Search options
+	public $search_option = array('title','content','title_content','user_name',); // /< Search options
 	/**
 	 * Status list
 	 * @var array
 	 */
-	var $statusList = array('private'=>'PRIVATE', 'public'=>'PUBLIC', 'secret'=>'SECRET', 'temp'=>'TEMP');
+	public $statusList = array('private'=>'PRIVATE', 'public'=>'PUBLIC', 'secret'=>'SECRET', 'temp'=>'TEMP');
 
 	/**
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
 	 */
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		// Register action forward (to use in administrator mode)
 		$oModuleController = getController('module');
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->addIndex("documents","idx_module_list_order", array("module_srl","list_order"));
 		$oDB->addIndex("documents","idx_module_update_order", array("module_srl","update_order"));
 		$oDB->addIndex("documents","idx_module_readed_count", array("module_srl","readed_count"));
@@ -61,9 +61,9 @@ class document extends ModuleObject
 	 * A method to check if successfully installed
 	 * @return bool
 	 */
-	function checkUpdate()
+	public function checkUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -143,9 +143,9 @@ class document extends ModuleObject
 	 * Execute update
 	 * @return BaseObject
 	 */
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
@@ -344,7 +344,7 @@ class document extends ModuleObject
 	 * Re-generate the cache file
 	 * @return void
 	 */
-	function recompileCache()
+	public function recompileCache()
 	{
 		if(!is_dir('./files/cache/tmp'))
 		{
@@ -356,7 +356,7 @@ class document extends ModuleObject
 	 * Document Status List
 	 * @return array
 	 */
-	function getStatusList()
+	public function getStatusList()
 	{
 		return $this->statusList;
 	}
@@ -365,7 +365,7 @@ class document extends ModuleObject
 	 * Return default status
 	 * @return string
 	 */
-	function getDefaultStatus()
+	public function getDefaultStatus()
 	{
 		return $this->statusList['public'];
 	}
@@ -374,7 +374,7 @@ class document extends ModuleObject
 	 * Return status by key
 	 * @return string
 	 */
-	function getConfigStatus($key)
+	public function getConfigStatus($key)
 	{
 		if(array_key_exists(strtolower($key), $this->statusList)) return $this->statusList[$key];
 		else $this->getDefaultStatus();

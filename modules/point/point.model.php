@@ -7,19 +7,19 @@
  */
 class pointModel extends point
 {
-	var $pointList = array();
+	public $pointList = array();
 
 	/**
 	 * @brief Initialization
 	 */
-	function init()
+	public function init()
 	{
 	}
 
 	/**
 	 * @brief Check if there is points information
 	 */
-	function isExistsPoint($member_srl)
+	public function isExistsPoint($member_srl)
 	{
 		$member_srl = abs($member_srl);
 
@@ -55,7 +55,7 @@ class pointModel extends point
 	/**
 	 * @brief Get the points
 	 */
-	function getPoint($member_srl, $from_db = false)
+	public function getPoint($member_srl, $from_db = false)
 	{
 		$member_srl = abs($member_srl);
 
@@ -88,7 +88,7 @@ class pointModel extends point
 	/**
 	 * @brief Get the level
 	 */
-	function getLevel($point, $level_step)
+	public function getLevel($point, $level_step)
 	{
 		$level_count = count($level_step);
 		for($level=0;$level<=$level_count;$level++) if($point < $level_step[$level]) break;
@@ -99,7 +99,7 @@ class pointModel extends point
 	/**
 	 * @deprecated
 	 */
-	function getMembersPointInfo()
+	public function getMembersPointInfo()
 	{
 		$member_srls = Context::get('member_srls');
 		$member_srls = array_unique(explode(',', $member_srls));
@@ -146,7 +146,7 @@ class pointModel extends point
 	/**
 	 * @brief Get a list of points members list
 	 */
-	function getMemberList($args = null, $columnList = array())
+	public function getMemberList($args = null, $columnList = array())
 	{
 		// Arrange the search options
 		$args->is_admin = Context::get('is_admin')=='Y'?'Y':'';

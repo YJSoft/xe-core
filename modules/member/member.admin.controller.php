@@ -11,7 +11,7 @@ class memberAdminController extends member
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -19,7 +19,7 @@ class memberAdminController extends member
 	 * Add a user (Administrator)
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminInsert()
+	public function procMemberAdminInsert()
 	{
 		// if(Context::getRequestMethod() == "GET") return new BaseObject(-1, "msg_invalid_request");
 		// Extract the necessary information in advance
@@ -30,7 +30,7 @@ class memberAdminController extends member
 		}
 
 		$args = Context::gets('member_srl','email_address','find_account_answer', 'allow_mailing','allow_message','denied','is_admin','description','group_srl_list','limit_date');
-		$oMemberModel = &getModel ('member');
+		$oMemberModel = getModel ('member');
 		$config = $oMemberModel->getMemberConfig();
 		$getVars = array();
 		if($config->signupForm)
@@ -143,7 +143,7 @@ class memberAdminController extends member
 	 * Delete a user (Administrator)
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminDelete()
+	public function procMemberAdminDelete()
 	{
 		// Separate all the values into DB entries and others
 		$member_srl = Context::get('member_srl');
@@ -421,7 +421,7 @@ class memberAdminController extends member
 		$this->setRedirectUrl($returnUrl);
 	}
 
-	function createSignupForm($identifier)
+	public function createSignupForm($identifier)
 	{
 		global $lang;
 		$oMemberModel = getModel('member');
@@ -494,7 +494,7 @@ class memberAdminController extends member
 	 * @param string $agreement
 	 * @return void
 	 */
-	function _createSignupRuleset($signupForm, $agreement = null){
+	public function _createSignupRuleset($signupForm, $agreement = null){
 		$xml_file = './files/ruleset/insertMember.xml';
 		$buff = '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL.
 			'<ruleset version="1.5.0">' . PHP_EOL.
@@ -568,7 +568,7 @@ class memberAdminController extends member
 	 * @param string $identifier (login identifier)
 	 * @return void
 	 */
-	function _createLoginRuleset($identifier)
+	public function _createLoginRuleset($identifier)
 	{
 		$xml_file = './files/ruleset/login.xml';
 		$buff = '<?xml version="1.0" encoding="utf-8"?>'.
@@ -596,7 +596,7 @@ class memberAdminController extends member
 	 * @param string $identifier (login identifier)
 	 * @return void
 	 */
-	function _createFindAccountByQuestion($identifier)
+	public function _createFindAccountByQuestion($identifier)
 	{
 		$xml_file = './files/ruleset/find_member_account_by_question.xml';
 		$buff = '<?xml version="1.0" encoding="utf-8"?>'.
@@ -626,7 +626,7 @@ class memberAdminController extends member
 	 * Add a user group
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminInsertGroup()
+	public function procMemberAdminInsertGroup()
 	{
 		$args = Context::gets('title','description','is_default','image_mark');
 		$output = $this->insertGroup($args);
@@ -644,7 +644,7 @@ class memberAdminController extends member
 	 * Update user group information
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminUpdateGroup()
+	public function procMemberAdminUpdateGroup()
 	{
 		$group_srl = Context::get('group_srl');
 
@@ -665,7 +665,7 @@ class memberAdminController extends member
 	 * Update user group information
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminDeleteGroup()
+	public function procMemberAdminDeleteGroup()
 	{
 		$group_srl = Context::get('group_srl');
 
@@ -684,7 +684,7 @@ class memberAdminController extends member
 	 * Add a join form
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminInsertJoinForm()
+	public function procMemberAdminInsertJoinForm()
 	{
 		$args = new stdClass();
 		$args->member_join_form_srl = Context::get('member_join_form_srl');
@@ -775,7 +775,7 @@ class memberAdminController extends member
 	 * Delete a join form
 	 * @return void
 	 */
-	function procMemberAdminDeleteJoinForm()
+	public function procMemberAdminDeleteJoinForm()
 	{
 		$member_join_form_srl = Context::get('member_join_form_srl');
 		$this->deleteJoinForm($member_join_form_srl);
@@ -801,7 +801,7 @@ class memberAdminController extends member
 	 * @deprecated
 	 * @return void
 	 */
-	function procMemberAdminUpdateJoinForm()
+	public function procMemberAdminUpdateJoinForm()
 	{
 		$member_join_form_srl = Context::get('member_join_form_srl');
 		$mode = Context::get('mode');
@@ -832,13 +832,13 @@ class memberAdminController extends member
 	 * selected member manager layer in dispAdminList
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminSelectedMemberManage()
+	public function procMemberAdminSelectedMemberManage()
 	{
 		$var = Context::getRequestVars();
 		$groups = $var->groups;
 		$members = $var->member_srls;
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 
 		$oMemberController = getController('member');
@@ -923,7 +923,7 @@ class memberAdminController extends member
 	 * Delete the selected members
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminDeleteMembers()
+	public function procMemberAdminDeleteMembers()
 	{
 		$target_member_srls = Context::get('target_member_srls');
 		if(!$target_member_srls) return new BaseObject(-1, 'msg_invalid_request');
@@ -947,7 +947,7 @@ class memberAdminController extends member
 	 * Update a group of selected memebrs
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminUpdateMembersGroup()
+	public function procMemberAdminUpdateMembersGroup()
 	{
 		$member_srl = Context::get('member_srl');
 		if(!$member_srl) return new BaseObject(-1,'msg_invalid_request');
@@ -957,7 +957,7 @@ class memberAdminController extends member
 		if(!is_array($group_srl)) $group_srls = explode('|@|', $group_srl);
 		else $group_srls = $group_srl;
 
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$oDB->begin();
 		// Delete a group of selected members
 		$args = new stdClass;
@@ -1015,7 +1015,7 @@ class memberAdminController extends member
 	 * Add a denied ID
 	 * @return void
 	 */
-	function procMemberAdminInsertDeniedID()
+	public function procMemberAdminInsertDeniedID()
 	{
 		$user_ids = Context::get('user_id');
 
@@ -1041,7 +1041,7 @@ class memberAdminController extends member
 	 * Add a denied nick name
 	 * @return void
 	 */
-	function procMemberAdminUpdateDeniedNickName()
+	public function procMemberAdminUpdateDeniedNickName()
 	{
 		$nick_name = Context::get('nick_name');
 
@@ -1080,7 +1080,7 @@ class memberAdminController extends member
 	 * Update denied ID
 	 * @return void|BaseObject (void : success, BaseObject : fail)
 	 */
-	function procMemberAdminUpdateDeniedID()
+	public function procMemberAdminUpdateDeniedID()
 	{
 		$user_id = Context::get('user_id');
 		$mode = Context::get('mode');
@@ -1103,7 +1103,7 @@ class memberAdminController extends member
 	 * @param object $args
 	 * @return object (info of added member)
 	 */
-	function insertAdmin($args)
+	public function insertAdmin($args)
 	{
 		// Assign an administrator
 		$args->is_admin = 'Y';
@@ -1122,7 +1122,7 @@ class memberAdminController extends member
 	 * @param int $target_group_srl
 	 * @return BaseObject
 	 */
-	function changeGroup($source_group_srl, $target_group_srl)
+	public function changeGroup($source_group_srl, $target_group_srl)
 	{
 		$args = new stdClass;
 		$args->source_group_srl = $source_group_srl;
@@ -1139,7 +1139,7 @@ class memberAdminController extends member
 	 * @param object $args
 	 * @return BaseObject
 	 */
-	function insertGroup($args)
+	public function insertGroup($args)
 	{
 		if(!$args->site_srl) $args->site_srl = 0;
 		// Check the value of is_default.
@@ -1171,7 +1171,7 @@ class memberAdminController extends member
 	 * @param object $args
 	 * @return BaseObject
 	 */
-	function updateGroup($args)
+	public function updateGroup($args)
 	{
 		if(!$args->site_srl) $args->site_srl = 0;
 		// Check the value of is_default.
@@ -1197,7 +1197,7 @@ class memberAdminController extends member
 	 * @param int $site_srl
 	 * @return BaseObject
 	 */
-	function deleteGroup($group_srl, $site_srl = 0)
+	public function deleteGroup($group_srl, $site_srl = 0)
 	{
 		// Create a member model object
 		$oMemberModel = getModel('member');
@@ -1286,7 +1286,7 @@ class memberAdminController extends member
 	 * Set group order
 	 * @return void
 	 */
-	function procMemberAdminUpdateGroupOrder()
+	public function procMemberAdminUpdateGroupOrder()
 	{
 		$vars = Context::getRequestVars();
 
@@ -1307,7 +1307,7 @@ class memberAdminController extends member
 	 * Delete cached group data
 	 * @return void
 	*/
-	function _deleteMemberGroupCache($site_srl = 0)
+	public function _deleteMemberGroupCache($site_srl = 0)
 	{
 		//remove from cache
 		$oCacheHandler = CacheHandler::getInstance('object', null, true);
@@ -1323,7 +1323,7 @@ class memberAdminController extends member
 	 * @param string $description
 	 * @return BaseObject
 	 */
-	function insertDeniedID($user_id, $description = '')
+	public function insertDeniedID($user_id, $description = '')
 	{
 		$args = new stdClass();
 		$args->user_id = $user_id;
@@ -1333,7 +1333,7 @@ class memberAdminController extends member
 		return executeQuery('member.insertDeniedID', $args);
 	}
 
-	function insertDeniedNickName($nick_name, $description = '')
+	public function insertDeniedNickName($nick_name, $description = '')
 	{
 		$args = new stdClass();
 		$args->nick_name = $nick_name;
@@ -1347,7 +1347,7 @@ class memberAdminController extends member
 	 * @param string $user_id
 	 * @return object
 	 */
-	function deleteDeniedID($user_id)
+	public function deleteDeniedID($user_id)
 	{
 		if(!$user_id) unset($user_id);
 
@@ -1361,7 +1361,7 @@ class memberAdminController extends member
 	 * @param string $nick_name
 	 * @return object
 	 */
-	function deleteDeniedNickName($nick_name)
+	public function deleteDeniedNickName($nick_name)
 	{
 		if(!$nick_name) unset($nick_name);
 
@@ -1375,7 +1375,7 @@ class memberAdminController extends member
 	 * @param int $member_join_form_srl
 	 * @return BaseObject
 	 */
-	function deleteJoinForm($member_join_form_srl)
+	public function deleteJoinForm($member_join_form_srl)
 	{
 		$args = new stdClass();
 		$args->member_join_form_srl = $member_join_form_srl;
@@ -1389,7 +1389,7 @@ class memberAdminController extends member
 	 * @param int $member_join_form_srl
 	 * @return BaseObject
 	 */
-	function moveJoinFormUp($member_join_form_srl)
+	public function moveJoinFormUp($member_join_form_srl)
 	{
 		$oMemberModel = getModel('member');
 		// Get information of the join form
@@ -1436,7 +1436,7 @@ class memberAdminController extends member
 	 * @param int $member_join_form_srl
 	 * @return BaseObject
 	 */
-	function moveJoinFormDown($member_join_form_srl)
+	public function moveJoinFormDown($member_join_form_srl)
 	{
 		$oMemberModel = getModel('member');
 		// Get information of the join form

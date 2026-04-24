@@ -14,44 +14,44 @@ class QueryArgumentValidator
 	 * Argument name
 	 * @var string
 	 */
-	var $argument_name;
+	public $argument_name;
 
 	/**
 	 * Default value
 	 * @var string
 	 */
-	var $default_value;
+	public $default_value;
 
 	/**
 	 * Notnull status setting, if value should be not null, this value is 'notnull'
 	 * @var string
 	 */
-	var $notnull;
+	public $notnull;
 
 	/**
 	 * Filter for value type, for example number
 	 * @var string
 	 */
-	var $filter;
+	public $filter;
 
 	/**
 	 * Minimum length for value
 	 * @var int
 	 */
-	var $min_length;
+	public $min_length;
 
 	/**
 	 * Maximum length for value
 	 * @var int
 	 */
-	var $max_length;
-	var $validator_string;
+	public $max_length;
+	public $validator_string;
 
 	/**
 	 * Query argument for validate
 	 * @var QueryArgument object
 	 */
-	var $argument;
+	public $argument;
 
 	/**
 	 * constructor
@@ -59,7 +59,7 @@ class QueryArgumentValidator
 	 * @param QueryArgument $argument
 	 * @return void
 	 */
-	function __construct($tag, $argument)
+	public function __construct($tag, $argument)
 	{
 		$this->argument = $argument;
 		$this->argument_name = $this->argument->getArgumentName();
@@ -71,7 +71,7 @@ class QueryArgumentValidator
 		$this->max_length = $tag->attrs->max_length;
 	}
 
-	function isIgnorable()
+	public function isIgnorable()
 	{
 		if(isset($this->default_value) || isset($this->notnull))
 		{
@@ -80,7 +80,7 @@ class QueryArgumentValidator
 		return TRUE;
 	}
 
-	function getDefaultValueString()
+	public function getDefaultValueString()
 	{
 		if(!isset($this->default_value))
 		{
@@ -91,7 +91,7 @@ class QueryArgumentValidator
 		return $default_value->toString();
 	}
 
-	function toString()
+	public function toString()
 	{
 		$validator = '';
 		if($this->filter)

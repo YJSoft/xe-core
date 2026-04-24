@@ -12,8 +12,8 @@ class CacheMemcache extends CacheBase
 	 * instance of Memcahe
 	 * @var Memcahe
 	 */
-	var $Memcache;
-	var $SelectedExtension;
+	public $Memcache;
+	public $SelectedExtension;
 
 	/**
 	 * Get instance of CacheMemcache
@@ -21,7 +21,7 @@ class CacheMemcache extends CacheBase
 	 * @param string $url url of memcache
 	 * @return CacheMemcache instance of CacheMemcache
 	 */
-	function getInstance($url)
+	public function getInstance($url)
 	{
 		if(!$GLOBALS['__CacheMemcache__'])
 		{
@@ -37,7 +37,7 @@ class CacheMemcache extends CacheBase
 	 * @param string $url url of memcache
 	 * @return void
 	 */
-	function __construct($url)
+	public function __construct($url)
 	{
 		//$config['url'] = array('memcache://localhost:11211');
 		$config['url'] = is_array($url) ? $url : array($url);
@@ -68,7 +68,7 @@ class CacheMemcache extends CacheBase
 	 *
 	 * @return bool Return true on support or false on not support
 	 */
-	function isSupport()
+	public function isSupport()
 	{
 		if(isset($GLOBALS['XE_MEMCACHE_SUPPORT']))
 		{
@@ -94,7 +94,7 @@ class CacheMemcache extends CacheBase
 	 * @param string $key Cache key
 	 * @return string Return unique key
 	 */
-	function getKey($key)
+	public function getKey($key)
 	{
 		return md5(_XE_PATH_ . $key);
 	}
@@ -116,7 +116,7 @@ class CacheMemcache extends CacheBase
 	 * 							If it's equal to zero, use the default valid time CacheMemcache::valid_time.
 	 * @return bool Returns true on success or false on failure.
 	 */
-	function put($key, $buff, $valid_time = 0)
+	public function put($key, $buff, $valid_time = 0)
 	{
 		if($valid_time == 0)
 		{
@@ -140,7 +140,7 @@ class CacheMemcache extends CacheBase
 	 * 								If stored time is older then modified time, the data is invalid.
 	 * @return bool Return true on valid or false on invalid.
 	 */
-	function isValid($key, $modified_time = 0)
+	public function isValid($key, $modified_time = 0)
 	{
 		$_key = $this->getKey($key);
 
@@ -170,7 +170,7 @@ class CacheMemcache extends CacheBase
 	 * 								If stored time is older then modified time, return false.
 	 * @return false|mixed Return false on failure or older then modified time. Return the string associated with the $key on success.
 	 */
-	function get($key, $modified_time = 0)
+	public function get($key, $modified_time = 0)
 	{
 		$_key = $this->getKey($key);
 		$obj = $this->Memcache->get($_key);
@@ -198,7 +198,7 @@ class CacheMemcache extends CacheBase
 	 * @param string $key The key associated with the item to delete.
 	 * @return void
 	 */
-	function delete($key)
+	public function delete($key)
 	{
 		$_key = $this->getKey($key);
 		$this->_delete($_key);
@@ -211,7 +211,7 @@ class CacheMemcache extends CacheBase
 	 * @param string $_key The key associated with the item to delete.
 	 * @return void
 	 */
-	function _delete($_key)
+	public function _delete($_key)
 	{
 		$this->Memcache->delete($_key);
 	}
@@ -225,7 +225,7 @@ class CacheMemcache extends CacheBase
 	 *
 	 * @return bool Returns true on success or false on failure.
 	 */
-	function truncate()
+	public function truncate()
 	{
 		return $this->Memcache->flush();
 	}

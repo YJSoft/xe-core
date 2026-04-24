@@ -17,7 +17,7 @@ class ttimport
 	 * Xml Parse
 	 * @var XmlParser
 	 */
-	var $oXmlParser = null;
+	public $oXmlParser = null;
 
 	/**
 	 * Import data in module.xml format
@@ -31,7 +31,7 @@ class ttimport
 	 * @param string $module_name
 	 * @return int
 	 */
-	function importModule($key, $cur, $index_file, $unit_count, $module_srl, $guestbook_module_srl, $user_id, $module_name=null)
+	public function importModule($key, $cur, $index_file, $unit_count, $module_srl, $guestbook_module_srl, $user_id, $module_name=null)
 	{
 		// Pre-create the objects needed
 		$this->oXmlParser = new XmlParser();
@@ -393,7 +393,7 @@ class ttimport
 	 * @param int $author_xml_id
 	 * @return int|bool
 	 */
-	function insertTextyleGuestbookItem($val, $module_srl, $member_info, $textyle_guestbook_srl,$parent_srl = 0, $author_xml_id=null)
+	public function insertTextyleGuestbookItem($val, $module_srl, $member_info, $textyle_guestbook_srl,$parent_srl = 0, $author_xml_id=null)
 	{
 		$tobj = null;
 		if($textyle_guestbook_srl>0)
@@ -452,7 +452,7 @@ class ttimport
 	 * @param string $buff
 	 * @return bool
 	 */
-	function importAttaches($fp, $module_srl, $upload_target_srl, &$files, $buff)
+	public function importAttaches($fp, $module_srl, $upload_target_srl, &$files, $buff)
 	{
 		$uploaded_count = 0;
 
@@ -529,7 +529,7 @@ class ttimport
 	 * Return a filename to temporarily use
 	 * @return string
 	 */
-	function getTmpFilename()
+	public function getTmpFilename()
 	{
 		$path = "./files/cache/importer";
 		if(!is_dir($path)) FileHandler::makeDir($path);
@@ -544,7 +544,7 @@ class ttimport
 	 * @param string $buff
 	 * @return string
 	 */
-	function saveTemporaryFile($fp, $buff)
+	public function saveTemporaryFile($fp, $buff)
 	{
 		$temp_filename = $this->getTmpFilename();
 		$buff = substr($buff, 9);
@@ -569,7 +569,7 @@ class ttimport
 	 * @param array $matches
 	 * @return string
 	 */
-	function _replaceTTAttach($matches)
+	public function _replaceTTAttach($matches)
 	{
 		$name = $matches[2];
 		if(!$name) return $matches[0];
@@ -600,7 +600,7 @@ class ttimport
 	 * Convert the video file
 	 * @return string
 	 */
-	function _replaceTTMovie($matches)
+	public function _replaceTTMovie($matches)
 	{
 		$key = $matches[1];
 		if(!$key) return $matches[0];
@@ -625,7 +625,7 @@ class ttimport
 	 * @param int $author_xml_id
 	 * @return bool|int|object
 	 */
-	function insertComment($val, $module_srl, $document_srl, $member_info, $parent_srl = 0, $author_xml_id)
+	public function insertComment($val, $module_srl, $document_srl, $member_info, $parent_srl = 0, $author_xml_id)
 	{
 		$tobj = null;
 		$tobj->comment_srl = getNextSequence();
@@ -708,7 +708,7 @@ class ttimport
 	 * @param int $parent
 	 * @return void
 	 */
-	function arrangeCategory($obj, &$category, &$idx, $parent = 0)
+	public function arrangeCategory($obj, &$category, &$idx, $parent = 0)
 	{
 		if(!$obj->category) return;
 		if(!is_array($obj->category)) $c = array($obj->category);

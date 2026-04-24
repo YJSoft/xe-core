@@ -15,7 +15,7 @@ class boardAdminModel extends board
 	 * Initialization
 	 * @return void
 	 */
-	function init()
+	public function init()
 	{
 	}
 
@@ -62,7 +62,7 @@ class boardAdminModel extends board
 		$admin_member = $oModuleModel->getAdminId($moduleSrl);
 		Context::set('admin_member', $admin_member);
 
-		$oTemplate = &TemplateHandler::getInstance();
+		$oTemplate = TemplateHandler::getInstance();
 		$html = $oTemplate->compile($this->module_path.'tpl/', 'board_setup_basic');
 
 		return $html;

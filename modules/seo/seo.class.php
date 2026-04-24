@@ -129,12 +129,12 @@ NASCRIPT;
 		}
 	}
 
-	function moduleInstall()
+	public function moduleInstall()
 	{
 		return $this->makeObject();
 	}
 
-	function checkUpdate()
+	public function checkUpdate()
 	{
 		$oModuleModel = getModel('module');
 
@@ -149,7 +149,7 @@ NASCRIPT;
 		return FALSE;
 	}
 
-	function moduleUpdate()
+	public function moduleUpdate()
 	{
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -167,7 +167,7 @@ NASCRIPT;
 		return $this->makeObject(0, 'success_updated');
 	}
 
-	function moduleUninstall()
+	public function moduleUninstall()
 	{
 		$oModuleController = getController('module');
 
