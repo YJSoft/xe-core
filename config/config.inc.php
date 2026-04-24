@@ -24,7 +24,7 @@ if(!defined('__XE__'))
 /**
  * Display XE's full version.
  */
-define('__XE_VERSION__', '1.11.17');
+define('__XE_VERSION__', '1.11.18');
 define('__XE_VERSION_ALPHA__', (stripos(__XE_VERSION__, 'alpha') !== false));
 define('__XE_VERSION_BETA__', (stripos(__XE_VERSION__, 'beta') !== false));
 define('__XE_VERSION_RC__', (stripos(__XE_VERSION__, 'rc') !== false));
@@ -66,7 +66,7 @@ else
 	/**
 	 * Location site
 	 */
-	define('_XE_LOCATION_SITE_', 'http://www.xpressengine.com/');
+	define('_XE_LOCATION_SITE_', 'https://xe1.xpressengine.com/');
 
 	/**
 	 * Download server
