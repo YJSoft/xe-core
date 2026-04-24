@@ -1303,7 +1303,7 @@ if(!function_exists('hexrgb'))
 	 * @param string $hexstr
 	 * @return array
 	 */
-	public function hexrgb($hexstr)
+	function hexrgb($hexstr)
 	{
 		$int = hexdec($hexstr);
 

@@ -22,7 +22,7 @@ JavaScript 코드는 수정하지 않는다.
 
 ## 작업 목록
 
-### Task 1. non-static 메서드를 `static`으로 선언
+### Task 1. non-static 메서드를 `static`으로 선언 ✅ 완료
 
 #### 배경
 
@@ -69,6 +69,20 @@ PHP 5.x에서는 non-static 메서드를 `ClassName::method()` 형태로 호출�
 - 서브클래스에서 오버라이드하는 메서드는 부모/자식 모두 일관성 있게 수정
 - 각 클래스가 `interface`를 구현하는 경우, 인터페이스 메서드도 동일하게 수정 필요
 
+#### 수정 완료 내용
+
+| 파일 | 추가된 `static` 메서드 수 |
+|---|---|
+| `classes/file/FileHandler.class.php` | 28개 (전체 메서드) |
+| `classes/context/Context.class.php` | 76개 |
+| `classes/mobile/Mobile.class.php` | 5개 (`isFromMobilePhone`, `isMobileCheckByAgent`, `isMobilePadCheckByAgent`, `setMobile`, `isMobileEnabled`) |
+| `classes/cache/CacheHandler.class.php` | 1개 (`getCacheKey`) |
+| `classes/template/TemplateHandler.class.php` | 1개 |
+| `classes/module/ModuleHandler.class.php` | 6개 (`_clearErrorSession`, `_setInputValueToSession`, `getModulePath`, `_getModuleFilePath`, `triggerCall`, `getModuleInstance`) |
+| `classes/db/DB.class.php` | 18개 |
+
+총 **135개** 메서드에 `static` 추가.
+
 ---
 
 ### Task 2. `$args->` 초기화 누락 수정
@@ -106,7 +120,7 @@ PHP 5.x에서는 non-static 메서드를 `ClassName::method()` 형태로 호출�
 
 ---
 
-### Task 3. `var $` → `public $` (프로퍼티 가시성)
+### Task 3. `var $` → `public $` (프로퍼티 가시성) ✅ 완료
 
 #### 배경
 
@@ -118,14 +132,13 @@ PHP 5.x에서는 non-static 메서드를 `ClassName::method()` 형태로 호출�
 - 예외: 서브클래스에서 override하거나 외부 접근을 막아야 하는 명백한 경우만 `protected`/`private` 사용  
   (범위가 크므로 우선 `public`으로 일괄 변경 후 보수적으로 접근)
 
-#### 규모
+#### 수정 완료 내용
 
-- 450개소, 119개 파일
-- `libs/`, `classes/security/htmlpurifier/` 내부는 외부 라이브러리이므로 제외
+- **440개소**, **116개 파일** 치환 (`libs/`, `classes/security/htmlpurifier/` 제외)
 
 ---
 
-### Task 4. 메서드 가시성 선언 추가
+### Task 4. 메서드 가시성 선언 추가 ✅ 완료
 
 #### 배경
 
@@ -138,10 +151,10 @@ PHP 5.x에서는 non-static 메서드를 `ClassName::method()` 형태로 호출�
 - **예외**: `__construct()`, `__destruct()`, `__get()`, `__set()` 등 magic method는 이미 처리된 것이 많으므로 중복 추가하지 않음
 - **예외**: `abstract`, `private`, `protected` 키워드가 이미 있는 메서드는 건드리지 않음
 
-#### 규모
+#### 수정 완료 내용
 
-- 2,586개소, 289개 파일
-- Task 1(static 추가)과 병행 처리 가능: `function` → `public static function` 또는 `public function`
+- **2,600개소**, **285개 파일**에 `public` 가시성 추가 (PSR-12 수정자 순서 준수)
+- `config/func.inc.php` 내 전역 함수(`iconv`, `hexrgb`)는 클래스 외부 함수이므로 수정 대상 제외 (스크립트 오적용 즉시 복구)
 
 ---
 
