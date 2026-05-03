@@ -154,11 +154,14 @@ class ModuleObject extends BaseObject
 		$this->origin_module_info = $module_info;
 		$this->xml_info = $xml_info;
 		$this->skin_vars = $module_info->skin_vars;
+
 		// validate certificate info and permission settings necessary in Web-services
 		$is_logged = Context::get('is_logged');
 		$logged_info = Context::get('logged_info');
+
 		// module model create an object
 		$oModuleModel = getModel('module');
+
 		// permission settings. access, manager(== is_admin) are fixed and privilege name in XE
 		$module_srl = Context::get('module_srl');
 		if(!$module_info->mid && !is_array($module_srl) && preg_match('/^([0-9]+)$/', $module_srl))
@@ -178,6 +181,7 @@ class ModuleObject extends BaseObject
 				$grant->access = 1;
 			}
 		}
+
 		// display no permission if the current module doesn't have an access privilege
 		//if(!$grant->access) return $this->stop("msg_not_permitted");
 		// checks permission and action if you don't have an admin privilege
@@ -185,11 +189,13 @@ class ModuleObject extends BaseObject
 		{
 			// get permission types(guest, member, manager, root) of the currently requested action
 			$permission_target = $xml_info->permission->{$this->act};
+
 			// check manager if a permission in module.xml otherwise action if no permission
 			if(!$permission_target && substr_count($this->act, 'Admin'))
 			{
 				$permission_target = 'manager';
 			}
+
 			// Check permissions
 			switch($permission_target)
 			{
@@ -206,9 +212,9 @@ class ModuleObject extends BaseObject
 					break;
 			}
 		}
+
 		// permission variable settings
 		$this->grant = $grant;
-
 		Context::set('grant', $grant);
 
 		$this->module_config = $oModuleModel->getModuleConfig($this->module, $module_info->site_srl);
@@ -228,9 +234,11 @@ class ModuleObject extends BaseObject
 	{
 		// flag setting to stop the proc processing
 		$this->stop_proc = TRUE;
+
 		// Error handling
 		$this->setError(-1);
 		$this->setMessage($msg_code);
+		
 		// Error message display by message module
 		$type = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
 		$oMessageObject = ModuleHandler::getModuleInstance('message', $type);
