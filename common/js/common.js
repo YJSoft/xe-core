@@ -358,6 +358,22 @@ if(typeof window.XE == "undefined") {
 				.filename(filename)
 				.normalizePort();
 		}
+		/**
+		 * @brief 문자열의 HTML 특수문자를 이스케이프
+		 **/
+		String.prototype.escape = function() {
+			return this
+				.replace(/&amp;(amp|lt|gt|quot|#39);/g, '&$1;')
+				.replace(/&(?!amp;|lt;|gt;|quot;|#39;)/g, '&amp;')
+				.replace(/[<>"']/g, function(match) {
+					switch (match) {
+						case '<': return '&lt;';
+						case '>': return '&gt;';
+						case '"': return '&quot;';
+						case "'": return '&#39;';
+					}
+				});
+		};
 	})(window || global);
 
 	/**
