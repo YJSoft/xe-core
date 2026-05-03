@@ -3,836 +3,3032 @@
  * @concat modernizr.js + common.js + js_app.js + xml2json.js + xml_handler.js + xml_js_filter.js
  * @brief XE Common JavaScript
  **/
-;
+/*!
+ * modernizr v3.6.0
+ * Build https://modernizr.com/download?-applicationcache-audio-backgroundsize-borderimage-borderradius-boxshadow-canvas-canvastext-cssanimations-csscolumns-cssgradients-cssreflections-csstransforms-csstransforms3d-csstransitions-flexbox-flexboxlegacy-fontface-generatedcontent-geolocation-hashchange-history-hsla-indexeddb-inlinesvg-input-inputtypes-localstorage-multiplebgs-opacity-postmessage-rgba-sessionstorage-smil-svg-svgclippaths-textshadow-video-webgl-websockets-websqldatabase-webworkers-domprefixes-hasevent-prefixes-setclasses-shiv-testallprops-testprop-teststyles-dontmin
+ *
+ * Copyright (c)
+ *  Faruk Ates
+ *  Paul Irish
+ *  Alex Sexton
+ *  Ryan Seddon
+ *  Patrick Kettner
+ *  Stu Cox
+ *  Richard Herrera
 
+ * MIT License
+ */
 
+/*
+ * Modernizr tests which native CSS3 and HTML5 features are available in the
+ * current UA and makes the results available to you in two ways: as properties on
+ * a global `Modernizr` object, and as classes on the `<html>` element. This
+ * information allows you to progressively enhance your pages with a granular level
+ * of control over the experience.
+*/
 
-window.Modernizr = (function( window, document, undefined ) {
+;(function(window, document, undefined){
+  var classes = [];
+  
 
-    var version = '2.8.3',
+  /**
+   * docElement is a convenience wrapper to grab the root element of the document
+   *
+   * @access private
+   * @returns {HTMLElement|SVGElement} The root element of the document
+   */
 
-    Modernizr = {},
+  var docElement = document.documentElement;
+  
 
-    enableClasses = true,
+  var tests = [];
+  
 
-    docElement = document.documentElement,
+  /**
+   *
+   * ModernizrProto is the constructor for Modernizr
+   *
+   * @class
+   * @access public
+   */
 
-    mod = 'modernizr',
-    modElem = document.createElement(mod),
-    mStyle = modElem.style,
+  var ModernizrProto = {
+    // The current version, dummy
+    _version: '3.6.0',
 
-    inputElem  = document.createElement('input')  ,
-
-    smile = ':)',
-
-    toString = {}.toString,
-
-    prefixes = ' -webkit- -moz- -o- -ms- '.split(' '),
-
-
-
-    omPrefixes = 'Webkit Moz O ms',
-
-    cssomPrefixes = omPrefixes.split(' '),
-
-    domPrefixes = omPrefixes.toLowerCase().split(' '),
-
-    ns = {'svg': 'http://www.w3.org/2000/svg'},
-
-    tests = {},
-    inputs = {},
-    attrs = {},
-
-    classes = [],
-
-    slice = classes.slice,
-
-    featureName, 
-
-
-    injectElementWithStyles = function( rule, callback, nodes, testnames ) {
-
-      var style, ret, node, docOverflow,
-          div = document.createElement('div'),
-                body = document.body,
-                fakeBody = body || document.createElement('body');
-
-      if ( parseInt(nodes, 10) ) {
-                      while ( nodes-- ) {
-              node = document.createElement('div');
-              node.id = testnames ? testnames[nodes] : mod + (nodes + 1);
-              div.appendChild(node);
-          }
-      }
-
-                style = ['&#173;','<style id="s', mod, '">', rule, '</style>'].join('');
-      div.id = mod;
-          (body ? div : fakeBody).innerHTML += style;
-      fakeBody.appendChild(div);
-      if ( !body ) {
-                fakeBody.style.background = '';
-                fakeBody.style.overflow = 'hidden';
-          docOverflow = docElement.style.overflow;
-          docElement.style.overflow = 'hidden';
-          docElement.appendChild(fakeBody);
-      }
-
-      ret = callback(div, rule);
-        if ( !body ) {
-          fakeBody.parentNode.removeChild(fakeBody);
-          docElement.style.overflow = docOverflow;
-      } else {
-          div.parentNode.removeChild(div);
-      }
-
-      return !!ret;
-
+    // Any settings that don't work as separate modules
+    // can go in here as configuration.
+    _config: {
+      'classPrefix': '',
+      'enableClasses': true,
+      'enableJSClass': true,
+      'usePrefixes': true
     },
 
+    // Queue of tests
+    _q: [],
+
+    // Stub these for people who are listening
+    on: function(test, cb) {
+      // I don't really think people should do this, but we can
+      // safe guard it a bit.
+      // -- NOTE:: this gets WAY overridden in src/addTest for actual async tests.
+      // This is in case people listen to synchronous tests. I would leave it out,
+      // but the code to *disallow* sync tests in the real version of this
+      // function is actually larger than this.
+      var self = this;
+      setTimeout(function() {
+        cb(self[test]);
+      }, 0);
+    },
+
+    addTest: function(name, fn, options) {
+      tests.push({name: name, fn: fn, options: options});
+    },
+
+    addAsyncTest: function(fn) {
+      tests.push({name: null, fn: fn});
+    }
+  };
+
+  
+
+  // Fake some of Object.create so we can force non test results to be non "own" properties.
+  var Modernizr = function() {};
+  Modernizr.prototype = ModernizrProto;
+
+  // Leak modernizr globally when you `require` it rather than force it here.
+  // Overwrite name so constructor name is nicer :D
+  Modernizr = new Modernizr();
+
+  
+/*!
+{
+  "name": "History API",
+  "property": "history",
+  "caniuse": "history",
+  "tags": ["history"],
+  "authors": ["Hay Kranen", "Alexander Farkas"],
+  "notes": [{
+    "name": "W3C Spec",
+    "href": "https://www.w3.org/TR/html51/browsers.html#the-history-interface"
+  }, {
+    "name": "MDN documentation",
+    "href": "https://developer.mozilla.org/en-US/docs/Web/API/window.history"
+  }],
+  "polyfills": ["historyjs", "html5historyapi"]
+}
+!*/
+/* DOC
+Detects support for the History API for manipulating the browser session history.
+*/
+
+  Modernizr.addTest('history', function() {
+    // Issue #733
+    // The stock browser on Android 2.2 & 2.3, and 4.0.x returns positive on history support
+    // Unfortunately support is really buggy and there is no clean way to detect
+    // these bugs, so we fall back to a user agent sniff :(
+    var ua = navigator.userAgent;
+
+    // We only want Android 2 and 4.0, stock browser, and not Chrome which identifies
+    // itself as 'Mobile Safari' as well, nor Windows Phone (issue #1471).
+    if ((ua.indexOf('Android 2.') !== -1 ||
+        (ua.indexOf('Android 4.0') !== -1)) &&
+        ua.indexOf('Mobile Safari') !== -1 &&
+        ua.indexOf('Chrome') === -1 &&
+        ua.indexOf('Windows Phone') === -1 &&
+    // Since all documents on file:// share an origin, the History apis are
+    // blocked there as well
+        location.protocol !== 'file:'
+    ) {
+      return false;
+    }
+
+    // Return the regular check
+    return (window.history && 'pushState' in window.history);
+  });
+
+/*!
+{
+  "name": "Geolocation API",
+  "property": "geolocation",
+  "caniuse": "geolocation",
+  "tags": ["media"],
+  "notes": [{
+    "name": "MDN documentation",
+    "href": "https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation"
+  }],
+  "polyfills": [
+    "joshuabell-polyfill",
+    "webshims",
+    "geo-location-javascript",
+    "geolocation-api-polyfill"
+  ]
+}
+!*/
+/* DOC
+Detects support for the Geolocation API for users to provide their location to web applications.
+*/
+
+  // geolocation is often considered a trivial feature detect...
+  // Turns out, it's quite tricky to get right:
+  //
+  // Using !!navigator.geolocation does two things we don't want. It:
+  //   1. Leaks memory in IE9: github.com/Modernizr/Modernizr/issues/513
+  //   2. Disables page caching in WebKit: webk.it/43956
+  //
+  // Meanwhile, in Firefox < 8, an about:config setting could expose
+  // a false positive that would throw an exception: bugzil.la/688158
+
+  Modernizr.addTest('geolocation', 'geolocation' in navigator);
+
+/*!
+{
+  "name": "Application Cache",
+  "property": "applicationcache",
+  "caniuse": "offline-apps",
+  "tags": ["storage", "offline"],
+  "notes": [{
+    "name": "MDN documentation",
+    "href": "https://developer.mozilla.org/en/docs/HTML/Using_the_application_cache"
+  }],
+  "polyfills": ["html5gears"]
+}
+!*/
+/* DOC
+Detects support for the Application Cache, for storing data to enable web-based applications run offline.
+
+The API has been [heavily criticized](http://alistapart.com/article/application-cache-is-a-douchebag) and discussions are underway to address this.
+*/
+
+  Modernizr.addTest('applicationcache', 'applicationCache' in window);
+
+/*!
+{
+  "name": "Session Storage",
+  "property": "sessionstorage",
+  "tags": ["storage"],
+  "polyfills": ["joshuabell-polyfill", "cupcake", "sessionstorage"]
+}
+!*/
+
+  // Because we are forced to try/catch this, we'll go aggressive.
+
+  // Just FWIW: IE8 Compat mode supports these features completely:
+  //   www.quirksmode.org/dom/html5.html
+  // But IE8 doesn't support either with local files
+  Modernizr.addTest('sessionstorage', function() {
+    var mod = 'modernizr';
+    try {
+      sessionStorage.setItem(mod, mod);
+      sessionStorage.removeItem(mod);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  });
+
+/*!
+{
+  "name": "Local Storage",
+  "property": "localstorage",
+  "caniuse": "namevalue-storage",
+  "tags": ["storage"],
+  "knownBugs": [],
+  "notes": [],
+  "warnings": [],
+  "polyfills": [
+    "joshuabell-polyfill",
+    "cupcake",
+    "storagepolyfill",
+    "amplifyjs",
+    "yui-cacheoffline"
+  ]
+}
+!*/
+
+  // In FF4, if disabled, window.localStorage should === null.
+
+  // Normally, we could not test that directly and need to do a
+  //   `('localStorage' in window)` test first because otherwise Firefox will
+  //   throw bugzil.la/365772 if cookies are disabled
+
+  // Similarly, in Chrome with "Block third-party cookies and site data" enabled,
+  // attempting to access `window.sessionStorage` will throw an exception. crbug.com/357625
+
+  // Also in iOS5 Private Browsing mode, attempting to use localStorage.setItem
+  // will throw the exception:
+  //   QUOTA_EXCEEDED_ERROR DOM Exception 22.
+  // Peculiarly, getItem and removeItem calls do not throw.
+
+  // Because we are forced to try/catch this, we'll go aggressive.
+
+  // Just FWIW: IE8 Compat mode supports these features completely:
+  //   www.quirksmode.org/dom/html5.html
+  // But IE8 doesn't support either with local files
+
+  Modernizr.addTest('localstorage', function() {
+    var mod = 'modernizr';
+    try {
+      localStorage.setItem(mod, mod);
+      localStorage.removeItem(mod);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  });
+
+/*!
+{
+  "name": "Web Workers",
+  "property": "webworkers",
+  "caniuse" : "webworkers",
+  "tags": ["performance", "workers"],
+  "notes": [{
+    "name": "W3C Reference",
+    "href": "https://www.w3.org/TR/workers/"
+  }, {
+    "name": "HTML5 Rocks article",
+    "href": "http://www.html5rocks.com/en/tutorials/workers/basics/"
+  }, {
+    "name": "MDN documentation",
+    "href": "https://developer.mozilla.org/en-US/docs/Web/Guide/Performance/Using_web_workers"
+  }],
+  "polyfills": ["fakeworker", "html5shims"]
+}
+!*/
+/* DOC
+Detects support for the basic `Worker` API from the Web Workers spec. Web Workers provide a simple means for web content to run scripts in background threads.
+*/
+
+  Modernizr.addTest('webworkers', 'Worker' in window);
+
+/*!
+{
+  "name": "WebSockets Support",
+  "property": "websockets",
+  "authors": ["Phread [fearphage]", "Mike Sherov [mikesherov]", "Burak Yigit Kaya [BYK]"],
+  "caniuse": "websockets",
+  "tags": ["html5"],
+  "warnings": [
+    "This test will reject any old version of WebSockets even if it is not prefixed such as in Safari 5.1"
+  ],
+  "notes": [{
+    "name": "CLOSING State and Spec",
+    "href": "https://www.w3.org/TR/websockets/#the-websocket-interface"
+  }],
+  "polyfills": [
+    "sockjs",
+    "socketio",
+    "kaazing-websocket-gateway",
+    "websocketjs",
+    "atmosphere",
+    "graceful-websocket",
+    "portal",
+    "datachannel"
+  ]
+}
+!*/
+
+  var supports = false;
+  try {
+    supports = 'WebSocket' in window && window.WebSocket.CLOSING === 2;
+  } catch (e) {}
+  Modernizr.addTest('websockets', supports);
+
+/*!
+{
+  "name": "Web SQL Database",
+  "property": "websqldatabase",
+  "caniuse": "sql-storage",
+  "tags": ["storage"]
+}
+!*/
+
+  // Chrome incognito mode used to throw an exception when using openDatabase
+  // It doesn't anymore.
+  Modernizr.addTest('websqldatabase', 'openDatabase' in window);
+
+/*!
+{
+  "name": "SVG",
+  "property": "svg",
+  "caniuse": "svg",
+  "tags": ["svg"],
+  "authors": ["Erik Dahlstrom"],
+  "polyfills": [
+    "svgweb",
+    "raphael",
+    "amplesdk",
+    "canvg",
+    "svg-boilerplate",
+    "sie",
+    "dojogfx",
+    "fabricjs"
+  ]
+}
+!*/
+/* DOC
+Detects support for SVG in `<embed>` or `<object>` elements.
+*/
+
+  Modernizr.addTest('svg', !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect);
+
+/*!
+{
+  "name": "postMessage",
+  "property": "postmessage",
+  "caniuse": "x-doc-messaging",
+  "notes": [{
+    "name": "W3C Spec",
+    "href": "http://www.w3.org/TR/html5/comms.html#posting-messages"
+  }],
+  "polyfills": ["easyxdm", "postmessage-jquery"]
+}
+!*/
+/* DOC
+Detects support for the `window.postMessage` protocol for cross-document messaging.
+*/
+
+  Modernizr.addTest('postmessage', 'postMessage' in window);
 
 
-    isEventSupported = (function() {
+  /**
+   * List of property values to set for css tests. See ticket #21
+   * http://git.io/vUGl4
+   *
+   * @memberof Modernizr
+   * @name Modernizr._prefixes
+   * @optionName Modernizr._prefixes
+   * @optionProp prefixes
+   * @access public
+   * @example
+   *
+   * Modernizr._prefixes is the internal list of prefixes that we test against
+   * inside of things like [prefixed](#modernizr-prefixed) and [prefixedCSS](#-code-modernizr-prefixedcss). It is simply
+   * an array of kebab-case vendor prefixes you can use within your code.
+   *
+   * Some common use cases include
+   *
+   * Generating all possible prefixed version of a CSS property
+   * ```js
+   * var rule = Modernizr._prefixes.join('transform: rotate(20deg); ');
+   *
+   * rule === 'transform: rotate(20deg); webkit-transform: rotate(20deg); moz-transform: rotate(20deg); o-transform: rotate(20deg); ms-transform: rotate(20deg);'
+   * ```
+   *
+   * Generating all possible prefixed version of a CSS value
+   * ```js
+   * rule = 'display:' +  Modernizr._prefixes.join('flex; display:') + 'flex';
+   *
+   * rule === 'display:flex; display:-webkit-flex; display:-moz-flex; display:-o-flex; display:-ms-flex; display:flex'
+   * ```
+   */
 
-      var TAGNAMES = {
-        'select': 'input', 'change': 'input',
-        'submit': 'form', 'reset': 'form',
-        'error': 'img', 'load': 'img', 'abort': 'img'
+  // we use ['',''] rather than an empty array in order to allow a pattern of .`join()`ing prefixes to test
+  // values in feature detects to continue to work
+  var prefixes = (ModernizrProto._config.usePrefixes ? ' -webkit- -moz- -o- -ms- '.split(' ') : ['','']);
+
+  // expose these for the plugin API. Look in the source for how to join() them against your input
+  ModernizrProto._prefixes = prefixes;
+
+  
+
+  /**
+   * Object.prototype.toString can be used with every object and allows you to
+   * get its class easily. Abstracting it off of an object prevents situations
+   * where the toString property has been overridden
+   *
+   * @access private
+   * @function toStringFn
+   * @returns {function} An abstracted toString function
+   */
+
+  var toStringFn = ({}).toString;
+  
+/*!
+{
+  "name": "SVG clip paths",
+  "property": "svgclippaths",
+  "tags": ["svg"],
+  "notes": [{
+    "name": "Demo",
+    "href": "http://srufaculty.sru.edu/david.dailey/svg/newstuff/clipPath4.svg"
+  }]
+}
+!*/
+/* DOC
+Detects support for clip paths in SVG (only, not on HTML content).
+
+See [this discussion](https://github.com/Modernizr/Modernizr/issues/213) regarding applying SVG clip paths to HTML content.
+*/
+
+  Modernizr.addTest('svgclippaths', function() {
+    return !!document.createElementNS &&
+      /SVGClipPath/.test(toStringFn.call(document.createElementNS('http://www.w3.org/2000/svg', 'clipPath')));
+  });
+
+/*!
+{
+  "name": "SVG SMIL animation",
+  "property": "smil",
+  "caniuse": "svg-smil",
+  "tags": ["svg"],
+  "notes": [{
+  "name": "W3C Synchronised Multimedia spec",
+  "href": "https://www.w3.org/AudioVideo/"
+  }]
+}
+!*/
+
+  // SVG SMIL animation
+  Modernizr.addTest('smil', function() {
+    return !!document.createElementNS &&
+      /SVGAnimate/.test(toStringFn.call(document.createElementNS('http://www.w3.org/2000/svg', 'animate')));
+  });
+
+
+  /**
+   * A convenience helper to check if the document we are running in is an SVG document
+   *
+   * @access private
+   * @returns {boolean}
+   */
+
+  var isSVG = docElement.nodeName.toLowerCase() === 'svg';
+  
+
+  /**
+   * setClasses takes an array of class names and adds them to the root element
+   *
+   * @access private
+   * @function setClasses
+   * @param {string[]} classes - Array of class names
+   */
+
+  // Pass in an and array of class names, e.g.:
+  //  ['no-webp', 'borderradius', ...]
+  function setClasses(classes) {
+    var className = docElement.className;
+    var classPrefix = Modernizr._config.classPrefix || '';
+
+    if (isSVG) {
+      className = className.baseVal;
+    }
+
+    // Change `no-js` to `js` (independently of the `enableClasses` option)
+    // Handle classPrefix on this too
+    if (Modernizr._config.enableJSClass) {
+      var reJS = new RegExp('(^|\\s)' + classPrefix + 'no-js(\\s|$)');
+      className = className.replace(reJS, '$1' + classPrefix + 'js$2');
+    }
+
+    if (Modernizr._config.enableClasses) {
+      // Add the new classes
+      className += ' ' + classPrefix + classes.join(' ' + classPrefix);
+      if (isSVG) {
+        docElement.className.baseVal = className;
+      } else {
+        docElement.className = className;
+      }
+    }
+
+  }
+
+  ;
+
+/**
+  * @optionName html5shiv
+  * @optionProp html5shiv
+  */
+
+  // Take the html5 variable out of the html5shiv scope so we can return it.
+  var html5;
+  if (!isSVG) {
+    /**
+     * @preserve HTML5 Shiv 3.7.3 | @afarkas @jdalton @jon_neal @rem | MIT/GPL2 Licensed
+     */
+    ;(function(window, document) {
+      /** version */
+      var version = '3.7.3';
+
+      /** Preset options */
+      var options = window.html5 || {};
+
+      /** Used to skip problem elements */
+      var reSkip = /^<|^(?:button|map|select|textarea|object|iframe|option|optgroup)$/i;
+
+      /** Not all elements can be cloned in IE **/
+      var saveClones = /^(?:a|b|code|div|fieldset|h1|h2|h3|h4|h5|h6|i|label|li|ol|p|q|span|strong|style|table|tbody|td|th|tr|ul)$/i;
+
+      /** Detect whether the browser supports default html5 styles */
+      var supportsHtml5Styles;
+
+      /** Name of the expando, to work with multiple documents or to re-shiv one document */
+      var expando = '_html5shiv';
+
+      /** The id for the the documents expando */
+      var expanID = 0;
+
+      /** Cached data for each document */
+      var expandoData = {};
+
+      /** Detect whether the browser supports unknown elements */
+      var supportsUnknownElements;
+
+      (function() {
+        try {
+          var a = document.createElement('a');
+          a.innerHTML = '<xyz></xyz>';
+          //if the hidden property is implemented we can assume, that the browser supports basic HTML5 Styles
+          supportsHtml5Styles = ('hidden' in a);
+
+          supportsUnknownElements = a.childNodes.length == 1 || (function() {
+            // assign a false positive if unable to shiv
+            (document.createElement)('a');
+            var frag = document.createDocumentFragment();
+            return (
+              typeof frag.cloneNode == 'undefined' ||
+                typeof frag.createDocumentFragment == 'undefined' ||
+                typeof frag.createElement == 'undefined'
+            );
+          }());
+        } catch(e) {
+          // assign a false positive if detection fails => unable to shiv
+          supportsHtml5Styles = true;
+          supportsUnknownElements = true;
+        }
+
+      }());
+
+      /*--------------------------------------------------------------------------*/
+
+      /**
+       * Creates a style sheet with the given CSS text and adds it to the document.
+       * @private
+       * @param {Document} ownerDocument The document.
+       * @param {String} cssText The CSS text.
+       * @returns {StyleSheet} The style element.
+       */
+      function addStyleSheet(ownerDocument, cssText) {
+        var p = ownerDocument.createElement('p'),
+          parent = ownerDocument.getElementsByTagName('head')[0] || ownerDocument.documentElement;
+
+        p.innerHTML = 'x<style>' + cssText + '</style>';
+        return parent.insertBefore(p.lastChild, parent.firstChild);
+      }
+
+      /**
+       * Returns the value of `html5.elements` as an array.
+       * @private
+       * @returns {Array} An array of shived element node names.
+       */
+      function getElements() {
+        var elements = html5.elements;
+        return typeof elements == 'string' ? elements.split(' ') : elements;
+      }
+
+      /**
+       * Extends the built-in list of html5 elements
+       * @memberOf html5
+       * @param {String|Array} newElements whitespace separated list or array of new element names to shiv
+       * @param {Document} ownerDocument The context document.
+       */
+      function addElements(newElements, ownerDocument) {
+        var elements = html5.elements;
+        if(typeof elements != 'string'){
+          elements = elements.join(' ');
+        }
+        if(typeof newElements != 'string'){
+          newElements = newElements.join(' ');
+        }
+        html5.elements = elements +' '+ newElements;
+        shivDocument(ownerDocument);
+      }
+
+      /**
+       * Returns the data associated to the given document
+       * @private
+       * @param {Document} ownerDocument The document.
+       * @returns {Object} An object of data.
+       */
+      function getExpandoData(ownerDocument) {
+        var data = expandoData[ownerDocument[expando]];
+        if (!data) {
+          data = {};
+          expanID++;
+          ownerDocument[expando] = expanID;
+          expandoData[expanID] = data;
+        }
+        return data;
+      }
+
+      /**
+       * returns a shived element for the given nodeName and document
+       * @memberOf html5
+       * @param {String} nodeName name of the element
+       * @param {Document|DocumentFragment} ownerDocument The context document.
+       * @returns {Object} The shived element.
+       */
+      function createElement(nodeName, ownerDocument, data){
+        if (!ownerDocument) {
+          ownerDocument = document;
+        }
+        if(supportsUnknownElements){
+          return ownerDocument.createElement(nodeName);
+        }
+        if (!data) {
+          data = getExpandoData(ownerDocument);
+        }
+        var node;
+
+        if (data.cache[nodeName]) {
+          node = data.cache[nodeName].cloneNode();
+        } else if (saveClones.test(nodeName)) {
+          node = (data.cache[nodeName] = data.createElem(nodeName)).cloneNode();
+        } else {
+          node = data.createElem(nodeName);
+        }
+
+        // Avoid adding some elements to fragments in IE < 9 because
+        // * Attributes like `name` or `type` cannot be set/changed once an element
+        //   is inserted into a document/fragment
+        // * Link elements with `src` attributes that are inaccessible, as with
+        //   a 403 response, will cause the tab/window to crash
+        // * Script elements appended to fragments will execute when their `src`
+        //   or `text` property is set
+        return node.canHaveChildren && !reSkip.test(nodeName) && !node.tagUrn ? data.frag.appendChild(node) : node;
+      }
+
+      /**
+       * returns a shived DocumentFragment for the given document
+       * @memberOf html5
+       * @param {Document} ownerDocument The context document.
+       * @returns {Object} The shived DocumentFragment.
+       */
+      function createDocumentFragment(ownerDocument, data){
+        if (!ownerDocument) {
+          ownerDocument = document;
+        }
+        if(supportsUnknownElements){
+          return ownerDocument.createDocumentFragment();
+        }
+        data = data || getExpandoData(ownerDocument);
+        var clone = data.frag.cloneNode(),
+          i = 0,
+          elems = getElements(),
+          l = elems.length;
+        for(;i<l;i++){
+          clone.createElement(elems[i]);
+        }
+        return clone;
+      }
+
+      /**
+       * Shivs the `createElement` and `createDocumentFragment` methods of the document.
+       * @private
+       * @param {Document|DocumentFragment} ownerDocument The document.
+       * @param {Object} data of the document.
+       */
+      function shivMethods(ownerDocument, data) {
+        if (!data.cache) {
+          data.cache = {};
+          data.createElem = ownerDocument.createElement;
+          data.createFrag = ownerDocument.createDocumentFragment;
+          data.frag = data.createFrag();
+        }
+
+
+        ownerDocument.createElement = function(nodeName) {
+          //abort shiv
+          if (!html5.shivMethods) {
+            return data.createElem(nodeName);
+          }
+          return createElement(nodeName, ownerDocument, data);
+        };
+
+        ownerDocument.createDocumentFragment = Function('h,f', 'return function(){' +
+                                                        'var n=f.cloneNode(),c=n.createElement;' +
+                                                        'h.shivMethods&&(' +
+                                                        // unroll the `createElement` calls
+                                                        getElements().join().replace(/[\w\-:]+/g, function(nodeName) {
+                                                          data.createElem(nodeName);
+                                                          data.frag.createElement(nodeName);
+                                                          return 'c("' + nodeName + '")';
+                                                        }) +
+          ');return n}'
+                                                       )(html5, data.frag);
+      }
+
+      /*--------------------------------------------------------------------------*/
+
+      /**
+       * Shivs the given document.
+       * @memberOf html5
+       * @param {Document} ownerDocument The document to shiv.
+       * @returns {Document} The shived document.
+       */
+      function shivDocument(ownerDocument) {
+        if (!ownerDocument) {
+          ownerDocument = document;
+        }
+        var data = getExpandoData(ownerDocument);
+
+        if (html5.shivCSS && !supportsHtml5Styles && !data.hasCSS) {
+          data.hasCSS = !!addStyleSheet(ownerDocument,
+                                        // corrects block display not defined in IE6/7/8/9
+                                        'article,aside,dialog,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}' +
+                                        // adds styling not present in IE6/7/8/9
+                                        'mark{background:#FF0;color:#000}' +
+                                        // hides non-rendered elements
+                                        'template{display:none}'
+                                       );
+        }
+        if (!supportsUnknownElements) {
+          shivMethods(ownerDocument, data);
+        }
+        return ownerDocument;
+      }
+
+      /*--------------------------------------------------------------------------*/
+
+      /**
+       * The `html5` object is exposed so that more elements can be shived and
+       * existing shiving can be detected on iframes.
+       * @type Object
+       * @example
+       *
+       * // options can be changed before the script is included
+       * html5 = { 'elements': 'mark section', 'shivCSS': false, 'shivMethods': false };
+       */
+      var html5 = {
+
+        /**
+         * An array or space separated string of node names of the elements to shiv.
+         * @memberOf html5
+         * @type Array|String
+         */
+        'elements': options.elements || 'abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output picture progress section summary template time video',
+
+        /**
+         * current version of html5shiv
+         */
+        'version': version,
+
+        /**
+         * A flag to indicate that the HTML5 style sheet should be inserted.
+         * @memberOf html5
+         * @type Boolean
+         */
+        'shivCSS': (options.shivCSS !== false),
+
+        /**
+         * Is equal to true if a browser supports creating unknown/HTML5 elements
+         * @memberOf html5
+         * @type boolean
+         */
+        'supportsUnknownElements': supportsUnknownElements,
+
+        /**
+         * A flag to indicate that the document's `createElement` and `createDocumentFragment`
+         * methods should be overwritten.
+         * @memberOf html5
+         * @type Boolean
+         */
+        'shivMethods': (options.shivMethods !== false),
+
+        /**
+         * A string to describe the type of `html5` object ("default" or "default print").
+         * @memberOf html5
+         * @type String
+         */
+        'type': 'default',
+
+        // shivs the document according to the specified `html5` object options
+        'shivDocument': shivDocument,
+
+        //creates a shived element
+        createElement: createElement,
+
+        //creates a shived documentFragment
+        createDocumentFragment: createDocumentFragment,
+
+        //extends list of elements
+        addElements: addElements
       };
 
-      function isEventSupported( eventName, element ) {
+      /*--------------------------------------------------------------------------*/
 
-        element = element || document.createElement(TAGNAMES[eventName] || 'div');
-        eventName = 'on' + eventName;
+      // expose html5
+      window.html5 = html5;
 
-            var isSupported = eventName in element;
+      // shiv the document
+      shivDocument(document);
 
-        if ( !isSupported ) {
-                if ( !element.setAttribute ) {
-            element = document.createElement('div');
-          }
-          if ( element.setAttribute && element.removeAttribute ) {
-            element.setAttribute(eventName, '');
-            isSupported = is(element[eventName], 'function');
+      if(typeof module == 'object' && module.exports){
+        module.exports = html5;
+      }
 
-                    if ( !is(element[eventName], 'undefined') ) {
-              element[eventName] = undefined;
+    }(typeof window !== 'undefined' ? window : this, document));
+  }
+  ;
+
+  /**
+   * createElement is a convenience wrapper around document.createElement. Since we
+   * use createElement all over the place, this allows for (slightly) smaller code
+   * as well as abstracting away issues with creating elements in contexts other than
+   * HTML documents (e.g. SVG documents).
+   *
+   * @access private
+   * @function createElement
+   * @returns {HTMLElement|SVGElement} An HTML or SVG element
+   */
+
+  function createElement() {
+    if (typeof document.createElement !== 'function') {
+      // This is the case in IE7, where the type of createElement is "object".
+      // For this reason, we cannot call apply() as Object is not a Function.
+      return document.createElement(arguments[0]);
+    } else if (isSVG) {
+      return document.createElementNS.call(document, 'http://www.w3.org/2000/svg', arguments[0]);
+    } else {
+      return document.createElement.apply(document, arguments);
+    }
+  }
+
+  ;
+
+  /**
+   * Modernizr.hasEvent() detects support for a given event
+   *
+   * @memberof Modernizr
+   * @name Modernizr.hasEvent
+   * @optionName Modernizr.hasEvent()
+   * @optionProp hasEvent
+   * @access public
+   * @function hasEvent
+   * @param  {string|*} eventName - the name of an event to test for (e.g. "resize")
+   * @param  {Element|string} [element=HTMLDivElement] - is the element|document|window|tagName to test on
+   * @returns {boolean}
+   * @example
+   *  `Modernizr.hasEvent` lets you determine if the browser supports a supplied event.
+   *  By default, it does this detection on a div element
+   *
+   * ```js
+   *  hasEvent('blur') // true;
+   * ```
+   *
+   * However, you are able to give an object as a second argument to hasEvent to
+   * detect an event on something other than a div.
+   *
+   * ```js
+   *  hasEvent('devicelight', window) // true;
+   * ```
+   *
+   */
+
+  var hasEvent = (function() {
+
+    // Detect whether event support can be detected via `in`. Test on a DOM element
+    // using the "blur" event b/c it should always exist. bit.ly/event-detection
+    var needsFallback = !('onblur' in document.documentElement);
+
+    function inner(eventName, element) {
+
+      var isSupported;
+      if (!eventName) { return false; }
+      if (!element || typeof element === 'string') {
+        element = createElement(element || 'div');
+      }
+
+      // Testing via the `in` operator is sufficient for modern browsers and IE.
+      // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and
+      // "resize", whereas `in` "catches" those.
+      eventName = 'on' + eventName;
+      isSupported = eventName in element;
+
+      // Fallback technique for old Firefox - bit.ly/event-detection
+      if (!isSupported && needsFallback) {
+        if (!element.setAttribute) {
+          // Switch to generic element if it lacks `setAttribute`.
+          // It could be the `document`, `window`, or something else.
+          element = createElement('div');
+        }
+
+        element.setAttribute(eventName, '');
+        isSupported = typeof element[eventName] === 'function';
+
+        if (element[eventName] !== undefined) {
+          // If property was created, "remove it" by setting value to `undefined`.
+          element[eventName] = undefined;
+        }
+        element.removeAttribute(eventName);
+      }
+
+      return isSupported;
+    }
+    return inner;
+  })();
+
+
+  ModernizrProto.hasEvent = hasEvent;
+  
+/*!
+{
+  "name": "Hashchange event",
+  "property": "hashchange",
+  "caniuse": "hashchange",
+  "tags": ["history"],
+  "notes": [{
+    "name": "MDN documentation",
+    "href": "https://developer.mozilla.org/en-US/docs/Web/API/window.onhashchange"
+  }],
+  "polyfills": [
+    "jquery-hashchange",
+    "moo-historymanager",
+    "jquery-ajaxy",
+    "hasher",
+    "shistory"
+  ]
+}
+!*/
+/* DOC
+Detects support for the `hashchange` event, fired when the current location fragment changes.
+*/
+
+  Modernizr.addTest('hashchange', function() {
+    if (hasEvent('hashchange', window) === false) {
+      return false;
+    }
+
+    // documentMode logic from YUI to filter out IE8 Compat Mode
+    //   which false positives.
+    return (document.documentMode === undefined || document.documentMode > 7);
+  });
+
+/*!
+{
+  "name": "Inline SVG",
+  "property": "inlinesvg",
+  "caniuse": "svg-html5",
+  "tags": ["svg"],
+  "notes": [{
+    "name": "Test page",
+    "href": "https://paulirish.com/demo/inline-svg"
+  }, {
+    "name": "Test page and results",
+    "href": "https://codepen.io/eltonmesquita/full/GgXbvo/"
+  }],
+  "polyfills": ["inline-svg-polyfill"],
+  "knownBugs": ["False negative on some Chromia browsers."]
+}
+!*/
+/* DOC
+Detects support for inline SVG in HTML (not within XHTML).
+*/
+
+  Modernizr.addTest('inlinesvg', function() {
+    var div = createElement('div');
+    div.innerHTML = '<svg/>';
+    return (typeof SVGRect != 'undefined' && div.firstChild && div.firstChild.namespaceURI) == 'http://www.w3.org/2000/svg';
+  });
+
+/*!
+{
+  "name": "HTML5 Video",
+  "property": "video",
+  "caniuse": "video",
+  "tags": ["html5"],
+  "knownBugs": [
+    "Without QuickTime, `Modernizr.video.h264` will be `undefined`; https://github.com/Modernizr/Modernizr/issues/546"
+  ],
+  "polyfills": [
+    "html5media",
+    "mediaelementjs",
+    "sublimevideo",
+    "videojs",
+    "leanbackplayer",
+    "videoforeverybody"
+  ]
+}
+!*/
+/* DOC
+Detects support for the video element, as well as testing what types of content it supports.
+
+Subproperties are provided to describe support for `ogg`, `h264` and `webm` formats, e.g.:
+
+```javascript
+Modernizr.video         // true
+Modernizr.video.ogg     // 'probably'
+```
+*/
+
+  // Codec values from : github.com/NielsLeenheer/html5test/blob/9106a8/index.html#L845
+  //                     thx to NielsLeenheer and zcorpan
+
+  // Note: in some older browsers, "no" was a return value instead of empty string.
+  //   It was live in FF3.5.0 and 3.5.1, but fixed in 3.5.2
+  //   It was also live in Safari 4.0.0 - 4.0.4, but fixed in 4.0.5
+
+  Modernizr.addTest('video', function() {
+    var elem = createElement('video');
+    var bool = false;
+
+    // IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
+    try {
+      bool = !!elem.canPlayType
+      if (bool) {
+        bool = new Boolean(bool);
+        bool.ogg = elem.canPlayType('video/ogg; codecs="theora"').replace(/^no$/, '');
+
+        // Without QuickTime, this value will be `undefined`. github.com/Modernizr/Modernizr/issues/546
+        bool.h264 = elem.canPlayType('video/mp4; codecs="avc1.42E01E"').replace(/^no$/, '');
+
+        bool.webm = elem.canPlayType('video/webm; codecs="vp8, vorbis"').replace(/^no$/, '');
+
+        bool.vp9 = elem.canPlayType('video/webm; codecs="vp9"').replace(/^no$/, '');
+
+        bool.hls = elem.canPlayType('application/x-mpegURL; codecs="avc1.42E01E"').replace(/^no$/, '');
+      }
+    } catch (e) {}
+
+    return bool;
+  });
+
+/*!
+{
+  "name": "CSS Opacity",
+  "caniuse": "css-opacity",
+  "property": "opacity",
+  "tags": ["css"]
+}
+!*/
+
+  // Browsers that actually have CSS Opacity implemented have done so
+  // according to spec, which means their return values are within the
+  // range of [0.0,1.0] - including the leading zero.
+
+  Modernizr.addTest('opacity', function() {
+    var style = createElement('a').style;
+    style.cssText = prefixes.join('opacity:.55;');
+
+    // The non-literal . in this regex is intentional:
+    // German Chrome returns this value as 0,55
+    // github.com/Modernizr/Modernizr/issues/#issue/59/comment/516632
+    return (/^0.55$/).test(style.opacity);
+  });
+
+/*!
+{
+  "name": "Canvas",
+  "property": "canvas",
+  "caniuse": "canvas",
+  "tags": ["canvas", "graphics"],
+  "polyfills": ["flashcanvas", "excanvas", "slcanvas", "fxcanvas"]
+}
+!*/
+/* DOC
+Detects support for the `<canvas>` element for 2D drawing.
+*/
+
+  // On the S60 and BB Storm, getContext exists, but always returns undefined
+  // so we actually have to call getContext() to verify
+  // github.com/Modernizr/Modernizr/issues/issue/97/
+  Modernizr.addTest('canvas', function() {
+    var elem = createElement('canvas');
+    return !!(elem.getContext && elem.getContext('2d'));
+  });
+
+/*!
+{
+  "name" : "HTML5 Audio Element",
+  "property": "audio",
+  "tags" : ["html5", "audio", "media"]
+}
+!*/
+/* DOC
+Detects the audio element
+*/
+
+  // This tests evaluates support of the audio element, as well as
+  // testing what types of content it supports.
+  //
+  // We're using the Boolean constructor here, so that we can extend the value
+  // e.g.  Modernizr.audio     // true
+  //       Modernizr.audio.ogg // 'probably'
+  //
+  // Codec values from : github.com/NielsLeenheer/html5test/blob/9106a8/index.html#L845
+  //                     thx to NielsLeenheer and zcorpan
+
+  // Note: in some older browsers, "no" was a return value instead of empty string.
+  //   It was live in FF3.5.0 and 3.5.1, but fixed in 3.5.2
+  //   It was also live in Safari 4.0.0 - 4.0.4, but fixed in 4.0.5
+  Modernizr.addTest('audio', function() {
+    var elem = createElement('audio');
+    var bool = false;
+
+    try {
+      bool = !!elem.canPlayType
+      if (bool) {
+        bool      = new Boolean(bool);
+        bool.ogg  = elem.canPlayType('audio/ogg; codecs="vorbis"') .replace(/^no$/, '');
+        bool.mp3  = elem.canPlayType('audio/mpeg; codecs="mp3"')   .replace(/^no$/, '');
+        bool.opus  = elem.canPlayType('audio/ogg; codecs="opus"')  ||
+                     elem.canPlayType('audio/webm; codecs="opus"') .replace(/^no$/, '');
+
+        // Mimetypes accepted:
+        //   developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements
+        //   bit.ly/iphoneoscodecs
+        bool.wav  = elem.canPlayType('audio/wav; codecs="1"')     .replace(/^no$/, '');
+        bool.m4a  = (elem.canPlayType('audio/x-m4a;')            ||
+                     elem.canPlayType('audio/aac;'))             .replace(/^no$/, '');
+      }
+    } catch (e) { }
+
+    return bool;
+  });
+
+/*!
+{
+  "name": "WebGL",
+  "property": "webgl",
+  "caniuse": "webgl",
+  "tags": ["webgl", "graphics"],
+  "polyfills": ["jebgl", "cwebgl", "iewebgl"]
+}
+!*/
+
+  Modernizr.addTest('webgl', function() {
+    var canvas = createElement('canvas');
+    var supports = 'probablySupportsContext' in canvas ? 'probablySupportsContext' :  'supportsContext';
+    if (supports in canvas) {
+      return canvas[supports]('webgl') || canvas[supports]('experimental-webgl');
+    }
+    return 'WebGLRenderingContext' in window;
+  });
+
+/*!
+{
+  "name": "CSS Gradients",
+  "caniuse": "css-gradients",
+  "property": "cssgradients",
+  "tags": ["css"],
+  "knownBugs": ["False-positives on webOS (https://github.com/Modernizr/Modernizr/issues/202)"],
+  "notes": [{
+    "name": "Webkit Gradient Syntax",
+    "href": "https://webkit.org/blog/175/introducing-css-gradients/"
+  },{
+    "name": "Linear Gradient Syntax",
+    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient"
+  },{
+    "name": "W3C Gradient Spec",
+    "href": "https://drafts.csswg.org/css-images-3/#gradients"
+  }]
+}
+!*/
+
+
+  Modernizr.addTest('cssgradients', function() {
+
+    var str1 = 'background-image:';
+    var str2 = 'gradient(linear,left top,right bottom,from(#9f9),to(white));';
+    var css = '';
+    var angle;
+
+    for (var i = 0, len = prefixes.length - 1; i < len; i++) {
+      angle = (i === 0 ? 'to ' : '');
+      css += str1 + prefixes[i] + 'linear-gradient(' + angle + 'left top, #9f9, white);';
+    }
+
+    if (Modernizr._config.usePrefixes) {
+    // legacy webkit syntax (FIXME: remove when syntax not in use anymore)
+      css += str1 + '-webkit-' + str2;
+    }
+
+    var elem = createElement('a');
+    var style = elem.style;
+    style.cssText = css;
+
+    // IE6 returns undefined so cast to string
+    return ('' + style.backgroundImage).indexOf('gradient') > -1;
+  });
+
+/*!
+{
+  "name": "Canvas text",
+  "property": "canvastext",
+  "caniuse": "canvas-text",
+  "tags": ["canvas", "graphics"],
+  "polyfills": ["canvastext"]
+}
+!*/
+/* DOC
+Detects support for the text APIs for `<canvas>` elements.
+*/
+
+  Modernizr.addTest('canvastext',  function() {
+    if (Modernizr.canvas  === false) {
+      return false;
+    }
+    return typeof createElement('canvas').getContext('2d').fillText == 'function';
+  });
+
+/*!
+{
+  "name": "CSS rgba",
+  "caniuse": "css3-colors",
+  "property": "rgba",
+  "tags": ["css"],
+  "notes": [{
+    "name": "CSSTricks Tutorial",
+    "href": "https://css-tricks.com/rgba-browser-support/"
+  }]
+}
+!*/
+
+  Modernizr.addTest('rgba', function() {
+    var style = createElement('a').style;
+    style.cssText = 'background-color:rgba(150,255,150,.5)';
+
+    return ('' + style.backgroundColor).indexOf('rgba') > -1;
+  });
+
+/*!
+{
+  "name": "CSS Multiple Backgrounds",
+  "caniuse": "multibackgrounds",
+  "property": "multiplebgs",
+  "tags": ["css"]
+}
+!*/
+
+  // Setting multiple images AND a color on the background shorthand property
+  // and then querying the style.background property value for the number of
+  // occurrences of "url(" is a reliable method for detecting ACTUAL support for this!
+
+  Modernizr.addTest('multiplebgs', function() {
+    var style = createElement('a').style;
+    style.cssText = 'background:url(https://),url(https://),red url(https://)';
+
+    // If the UA supports multiple backgrounds, there should be three occurrences
+    // of the string "url(" in the return value for elemStyle.background
+    return (/(url\s*\(.*?){3}/).test(style.background);
+  });
+
+
+  /**
+   * since we have a fairly large number of input tests that don't mutate the input
+   * we create a single element that can be shared with all of those tests for a
+   * minor perf boost
+   *
+   * @access private
+   * @returns {HTMLInputElement}
+   */
+  var inputElem = createElement('input');
+  
+/*!
+{
+  "name": "Form input types",
+  "property": "inputtypes",
+  "caniuse": "forms",
+  "tags": ["forms"],
+  "authors": ["Mike Taylor"],
+  "polyfills": [
+    "jquerytools",
+    "webshims",
+    "h5f",
+    "webforms2",
+    "nwxforms",
+    "fdslider",
+    "html5slider",
+    "galleryhtml5forms",
+    "jscolor",
+    "html5formshim",
+    "selectedoptionsjs",
+    "formvalidationjs"
+  ]
+}
+!*/
+/* DOC
+Detects support for HTML5 form input types and exposes Boolean subproperties with the results:
+
+```javascript
+Modernizr.inputtypes.color
+Modernizr.inputtypes.date
+Modernizr.inputtypes.datetime
+Modernizr.inputtypes['datetime-local']
+Modernizr.inputtypes.email
+Modernizr.inputtypes.month
+Modernizr.inputtypes.number
+Modernizr.inputtypes.range
+Modernizr.inputtypes.search
+Modernizr.inputtypes.tel
+Modernizr.inputtypes.time
+Modernizr.inputtypes.url
+Modernizr.inputtypes.week
+```
+*/
+
+  // Run through HTML5's new input types to see if the UA understands any.
+  //   This is put behind the tests runloop because it doesn't return a
+  //   true/false like all the other tests; instead, it returns an object
+  //   containing each input type with its corresponding true/false value
+
+  // Big thanks to @miketaylr for the html5 forms expertise. miketaylr.com/
+  var inputtypes = 'search tel url email datetime date month week time datetime-local number range color'.split(' ');
+  var inputs = {};
+
+  Modernizr.inputtypes = (function(props) {
+    var len = props.length;
+    var smile = '1)';
+    var inputElemType;
+    var defaultView;
+    var bool;
+
+    for (var i = 0; i < len; i++) {
+
+      inputElem.setAttribute('type', inputElemType = props[i]);
+      bool = inputElem.type !== 'text' && 'style' in inputElem;
+
+      // We first check to see if the type we give it sticks..
+      // If the type does, we feed it a textual value, which shouldn't be valid.
+      // If the value doesn't stick, we know there's input sanitization which infers a custom UI
+      if (bool) {
+
+        inputElem.value         = smile;
+        inputElem.style.cssText = 'position:absolute;visibility:hidden;';
+
+        if (/^range$/.test(inputElemType) && inputElem.style.WebkitAppearance !== undefined) {
+
+          docElement.appendChild(inputElem);
+          defaultView = document.defaultView;
+
+          // Safari 2-4 allows the smiley as a value, despite making a slider
+          bool =  defaultView.getComputedStyle &&
+            defaultView.getComputedStyle(inputElem, null).WebkitAppearance !== 'textfield' &&
+            // Mobile android web browser has false positive, so must
+            // check the height to see if the widget is actually there.
+            (inputElem.offsetHeight !== 0);
+
+          docElement.removeChild(inputElem);
+
+        } else if (/^(search|tel)$/.test(inputElemType)) {
+          // Spec doesn't define any special parsing or detectable UI
+          //   behaviors so we pass these through as true
+
+          // Interestingly, opera fails the earlier test, so it doesn't
+          //  even make it here.
+
+        } else if (/^(url|email)$/.test(inputElemType)) {
+          // Real url and email support comes with prebaked validation.
+          bool = inputElem.checkValidity && inputElem.checkValidity() === false;
+
+        } else {
+          // If the upgraded input compontent rejects the :) text, we got a winner
+          bool = inputElem.value != smile;
+        }
+      }
+
+      inputs[ props[i] ] = !!bool;
+    }
+    return inputs;
+  })(inputtypes);
+
+/*!
+{
+  "name": "Input attributes",
+  "property": "input",
+  "tags": ["forms"],
+  "authors": ["Mike Taylor"],
+  "notes": [{
+    "name": "WHATWG spec",
+    "href": "https://html.spec.whatwg.org/multipage/forms.html#input-type-attr-summary"
+  }],
+  "knownBugs": ["Some blackberry devices report false positive for input.multiple"]
+}
+!*/
+/* DOC
+Detects support for HTML5 `<input>` element attributes and exposes Boolean subproperties with the results:
+
+```javascript
+Modernizr.input.autocomplete
+Modernizr.input.autofocus
+Modernizr.input.list
+Modernizr.input.max
+Modernizr.input.min
+Modernizr.input.multiple
+Modernizr.input.pattern
+Modernizr.input.placeholder
+Modernizr.input.required
+Modernizr.input.step
+```
+*/
+
+  // Run through HTML5's new input attributes to see if the UA understands any.
+  // Mike Taylr has created a comprehensive resource for testing these attributes
+  //   when applied to all input types:
+  //   miketaylr.com/code/input-type-attr.html
+
+  // Only input placeholder is tested while textarea's placeholder is not.
+  // Currently Safari 4 and Opera 11 have support only for the input placeholder
+  // Both tests are available in feature-detects/forms-placeholder.js
+
+  var inputattrs = 'autocomplete autofocus list placeholder max min multiple pattern required step'.split(' ');
+  var attrs = {};
+
+  Modernizr.input = (function(props) {
+    for (var i = 0, len = props.length; i < len; i++) {
+      attrs[ props[i] ] = !!(props[i] in inputElem);
+    }
+    if (attrs.list) {
+      // safari false positive's on datalist: webk.it/74252
+      // see also github.com/Modernizr/Modernizr/issues/146
+      attrs.list = !!(createElement('datalist') && window.HTMLDataListElement);
+    }
+    return attrs;
+  })(inputattrs);
+
+
+
+  /**
+   * contains checks to see if a string contains another string
+   *
+   * @access private
+   * @function contains
+   * @param {string} str - The string we want to check for substrings
+   * @param {string} substr - The substring we want to search the first string for
+   * @returns {boolean}
+   */
+
+  function contains(str, substr) {
+    return !!~('' + str).indexOf(substr);
+  }
+
+  ;
+/*!
+{
+  "name": "CSS HSLA Colors",
+  "caniuse": "css3-colors",
+  "property": "hsla",
+  "tags": ["css"]
+}
+!*/
+
+  Modernizr.addTest('hsla', function() {
+    var style = createElement('a').style;
+    style.cssText = 'background-color:hsla(120,40%,100%,.5)';
+    return contains(style.backgroundColor, 'rgba') || contains(style.backgroundColor, 'hsla');
+  });
+
+/*!
+{
+  "name": "CSS Supports",
+  "property": "supports",
+  "caniuse": "css-featurequeries",
+  "tags": ["css"],
+  "builderAliases": ["css_supports"],
+  "notes": [{
+    "name": "W3 Spec",
+    "href": "http://dev.w3.org/csswg/css3-conditional/#at-supports"
+  },{
+    "name": "Related Github Issue",
+    "href": "https://github.com/Modernizr/Modernizr/issues/648"
+  },{
+    "name": "W3 Info",
+    "href": "http://dev.w3.org/csswg/css3-conditional/#the-csssupportsrule-interface"
+  }]
+}
+!*/
+
+  var newSyntax = 'CSS' in window && 'supports' in window.CSS;
+  var oldSyntax = 'supportsCSS' in window;
+  Modernizr.addTest('supports', newSyntax || oldSyntax);
+
+
+  /**
+   * is returns a boolean if the typeof an obj is exactly type.
+   *
+   * @access private
+   * @function is
+   * @param {*} obj - A thing we want to check the type of
+   * @param {string} type - A string to compare the typeof against
+   * @returns {boolean}
+   */
+
+  function is(obj, type) {
+    return typeof obj === type;
+  }
+  ;
+
+  /**
+   * Run through all tests and detect their support in the current UA.
+   *
+   * @access private
+   */
+
+  function testRunner() {
+    var featureNames;
+    var feature;
+    var aliasIdx;
+    var result;
+    var nameIdx;
+    var featureName;
+    var featureNameSplit;
+
+    for (var featureIdx in tests) {
+      if (tests.hasOwnProperty(featureIdx)) {
+        featureNames = [];
+        feature = tests[featureIdx];
+        // run the test, throw the return value into the Modernizr,
+        // then based on that boolean, define an appropriate className
+        // and push it into an array of classes we'll join later.
+        //
+        // If there is no name, it's an 'async' test that is run,
+        // but not directly added to the object. That should
+        // be done with a post-run addTest call.
+        if (feature.name) {
+          featureNames.push(feature.name.toLowerCase());
+
+          if (feature.options && feature.options.aliases && feature.options.aliases.length) {
+            // Add all the aliases into the names list
+            for (aliasIdx = 0; aliasIdx < feature.options.aliases.length; aliasIdx++) {
+              featureNames.push(feature.options.aliases[aliasIdx].toLowerCase());
             }
-            element.removeAttribute(eventName);
           }
         }
 
-        element = null;
-        return isSupported;
+        // Run the test, or use the raw value if it's not a function
+        result = is(feature.fn, 'function') ? feature.fn() : feature.fn;
+
+
+        // Set each of the names on the Modernizr object
+        for (nameIdx = 0; nameIdx < featureNames.length; nameIdx++) {
+          featureName = featureNames[nameIdx];
+          // Support dot properties as sub tests. We don't do checking to make sure
+          // that the implied parent tests have been added. You must call them in
+          // order (either in the test, or make the parent test a dependency).
+          //
+          // Cap it to TWO to make the logic simple and because who needs that kind of subtesting
+          // hashtag famous last words
+          featureNameSplit = featureName.split('.');
+
+          if (featureNameSplit.length === 1) {
+            Modernizr[featureNameSplit[0]] = result;
+          } else {
+            // cast to a Boolean, if not one already
+            if (Modernizr[featureNameSplit[0]] && !(Modernizr[featureNameSplit[0]] instanceof Boolean)) {
+              Modernizr[featureNameSplit[0]] = new Boolean(Modernizr[featureNameSplit[0]]);
+            }
+
+            Modernizr[featureNameSplit[0]][featureNameSplit[1]] = result;
+          }
+
+          classes.push((result ? '' : 'no-') + featureNameSplit.join('-'));
+        }
       }
-      return isEventSupported;
-    })(),
+    }
+  }
+  ;
 
+  /**
+   * If the browsers follow the spec, then they would expose vendor-specific styles as:
+   *   elem.style.WebkitBorderRadius
+   * instead of something like the following (which is technically incorrect):
+   *   elem.style.webkitBorderRadius
 
-    _hasOwnProperty = ({}).hasOwnProperty, hasOwnProp;
+   * WebKit ghosts their properties in lowercase but Opera & Moz do not.
+   * Microsoft uses a lowercase `ms` instead of the correct `Ms` in IE8+
+   *   erik.eae.net/archives/2008/03/10/21.48.10/
 
-    if ( !is(_hasOwnProperty, 'undefined') && !is(_hasOwnProperty.call, 'undefined') ) {
-      hasOwnProp = function (object, property) {
+   * More here: github.com/Modernizr/Modernizr/issues/issue/21
+   *
+   * @access private
+   * @returns {string} The string representing the vendor-specific style properties
+   */
+
+  var omPrefixes = 'Moz O ms Webkit';
+  
+
+  /**
+   * List of JavaScript DOM values used for tests
+   *
+   * @memberof Modernizr
+   * @name Modernizr._domPrefixes
+   * @optionName Modernizr._domPrefixes
+   * @optionProp domPrefixes
+   * @access public
+   * @example
+   *
+   * Modernizr._domPrefixes is exactly the same as [_prefixes](#modernizr-_prefixes), but rather
+   * than kebab-case properties, all properties are their Capitalized variant
+   *
+   * ```js
+   * Modernizr._domPrefixes === [ "Moz", "O", "ms", "Webkit" ];
+   * ```
+   */
+
+  var domPrefixes = (ModernizrProto._config.usePrefixes ? omPrefixes.toLowerCase().split(' ') : []);
+  ModernizrProto._domPrefixes = domPrefixes;
+  
+
+  /**
+   * hasOwnProp is a shim for hasOwnProperty that is needed for Safari 2.0 support
+   *
+   * @author kangax
+   * @access private
+   * @function hasOwnProp
+   * @param {object} object - The object to check for a property
+   * @param {string} property - The property to check for
+   * @returns {boolean}
+   */
+
+  // hasOwnProperty shim by kangax needed for Safari 2.0 support
+  var hasOwnProp;
+
+  (function() {
+    var _hasOwnProperty = ({}).hasOwnProperty;
+    /* istanbul ignore else */
+    /* we have no way of testing IE 5.5 or safari 2,
+     * so just assume the else gets hit */
+    if (!is(_hasOwnProperty, 'undefined') && !is(_hasOwnProperty.call, 'undefined')) {
+      hasOwnProp = function(object, property) {
         return _hasOwnProperty.call(object, property);
       };
     }
     else {
-      hasOwnProp = function (object, property) { 
+      hasOwnProp = function(object, property) { /* yes, this can give false positives/negatives, but most of the time we don't care about those */
         return ((property in object) && is(object.constructor.prototype[property], 'undefined'));
       };
     }
+  })();
+
+  
 
 
-    if (!Function.prototype.bind) {
-      Function.prototype.bind = function bind(that) {
+   // _l tracks listeners for async tests, as well as tests that execute after the initial run
+  ModernizrProto._l = {};
 
-        var target = this;
+  /**
+   * Modernizr.on is a way to listen for the completion of async tests. Being
+   * asynchronous, they may not finish before your scripts run. As a result you
+   * will get a possibly false negative `undefined` value.
+   *
+   * @memberof Modernizr
+   * @name Modernizr.on
+   * @access public
+   * @function on
+   * @param {string} feature - String name of the feature detect
+   * @param {function} cb - Callback function returning a Boolean - true if feature is supported, false if not
+   * @example
+   *
+   * ```js
+   * Modernizr.on('flash', function( result ) {
+   *   if (result) {
+   *    // the browser has flash
+   *   } else {
+   *     // the browser does not have flash
+   *   }
+   * });
+   * ```
+   */
 
-        if (typeof target != "function") {
-            throw new TypeError();
-        }
-
-        var args = slice.call(arguments, 1),
-            bound = function () {
-
-            if (this instanceof bound) {
-
-              var F = function(){};
-              F.prototype = target.prototype;
-              var self = new F();
-
-              var result = target.apply(
-                  self,
-                  args.concat(slice.call(arguments))
-              );
-              if (Object(result) === result) {
-                  return result;
-              }
-              return self;
-
-            } else {
-
-              return target.apply(
-                  that,
-                  args.concat(slice.call(arguments))
-              );
-
-            }
-
-        };
-
-        return bound;
-      };
+  ModernizrProto.on = function(feature, cb) {
+    // Create the list of listeners if it doesn't exist
+    if (!this._l[feature]) {
+      this._l[feature] = [];
     }
 
-    function setCss( str ) {
-        mStyle.cssText = str;
+    // Push this test on to the listener list
+    this._l[feature].push(cb);
+
+    // If it's already been resolved, trigger it on next tick
+    if (Modernizr.hasOwnProperty(feature)) {
+      // Next Tick
+      setTimeout(function() {
+        Modernizr._trigger(feature, Modernizr[feature]);
+      }, 0);
+    }
+  };
+
+  /**
+   * _trigger is the private function used to signal test completion and run any
+   * callbacks registered through [Modernizr.on](#modernizr-on)
+   *
+   * @memberof Modernizr
+   * @name Modernizr._trigger
+   * @access private
+   * @function _trigger
+   * @param {string} feature - string name of the feature detect
+   * @param {function|boolean} [res] - A feature detection function, or the boolean =
+   * result of a feature detection function
+   */
+
+  ModernizrProto._trigger = function(feature, res) {
+    if (!this._l[feature]) {
+      return;
     }
 
-    function setCssAll( str1, str2 ) {
-        return setCss(prefixes.join(str1 + ';') + ( str2 || '' ));
+    var cbs = this._l[feature];
+
+    // Force async
+    setTimeout(function() {
+      var i, cb;
+      for (i = 0; i < cbs.length; i++) {
+        cb = cbs[i];
+        cb(res);
+      }
+    }, 0);
+
+    // Don't trigger these again
+    delete this._l[feature];
+  };
+
+  /**
+   * addTest allows you to define your own feature detects that are not currently
+   * included in Modernizr (under the covers it's the exact same code Modernizr
+   * uses for its own [feature detections](https://github.com/Modernizr/Modernizr/tree/master/feature-detects)). Just like the offical detects, the result
+   * will be added onto the Modernizr object, as well as an appropriate className set on
+   * the html element when configured to do so
+   *
+   * @memberof Modernizr
+   * @name Modernizr.addTest
+   * @optionName Modernizr.addTest()
+   * @optionProp addTest
+   * @access public
+   * @function addTest
+   * @param {string|object} feature - The string name of the feature detect, or an
+   * object of feature detect names and test
+   * @param {function|boolean} test - Function returning true if feature is supported,
+   * false if not. Otherwise a boolean representing the results of a feature detection
+   * @example
+   *
+   * The most common way of creating your own feature detects is by calling
+   * `Modernizr.addTest` with a string (preferably just lowercase, without any
+   * punctuation), and a function you want executed that will return a boolean result
+   *
+   * ```js
+   * Modernizr.addTest('itsTuesday', function() {
+   *  var d = new Date();
+   *  return d.getDay() === 2;
+   * });
+   * ```
+   *
+   * When the above is run, it will set Modernizr.itstuesday to `true` when it is tuesday,
+   * and to `false` every other day of the week. One thing to notice is that the names of
+   * feature detect functions are always lowercased when added to the Modernizr object. That
+   * means that `Modernizr.itsTuesday` will not exist, but `Modernizr.itstuesday` will.
+   *
+   *
+   *  Since we only look at the returned value from any feature detection function,
+   *  you do not need to actually use a function. For simple detections, just passing
+   *  in a statement that will return a boolean value works just fine.
+   *
+   * ```js
+   * Modernizr.addTest('hasJquery', 'jQuery' in window);
+   * ```
+   *
+   * Just like before, when the above runs `Modernizr.hasjquery` will be true if
+   * jQuery has been included on the page. Not using a function saves a small amount
+   * of overhead for the browser, as well as making your code much more readable.
+   *
+   * Finally, you also have the ability to pass in an object of feature names and
+   * their tests. This is handy if you want to add multiple detections in one go.
+   * The keys should always be a string, and the value can be either a boolean or
+   * function that returns a boolean.
+   *
+   * ```js
+   * var detects = {
+   *  'hasjquery': 'jQuery' in window,
+   *  'itstuesday': function() {
+   *    var d = new Date();
+   *    return d.getDay() === 2;
+   *  }
+   * }
+   *
+   * Modernizr.addTest(detects);
+   * ```
+   *
+   * There is really no difference between the first methods and this one, it is
+   * just a convenience to let you write more readable code.
+   */
+
+  function addTest(feature, test) {
+
+    if (typeof feature == 'object') {
+      for (var key in feature) {
+        if (hasOwnProp(feature, key)) {
+          addTest(key, feature[ key ]);
+        }
+      }
+    } else {
+
+      feature = feature.toLowerCase();
+      var featureNameSplit = feature.split('.');
+      var last = Modernizr[featureNameSplit[0]];
+
+      // Again, we don't check for parent test existence. Get that right, though.
+      if (featureNameSplit.length == 2) {
+        last = last[featureNameSplit[1]];
+      }
+
+      if (typeof last != 'undefined') {
+        // we're going to quit if you're trying to overwrite an existing test
+        // if we were to allow it, we'd do this:
+        //   var re = new RegExp("\\b(no-)?" + feature + "\\b");
+        //   docElement.className = docElement.className.replace( re, '' );
+        // but, no rly, stuff 'em.
+        return Modernizr;
+      }
+
+      test = typeof test == 'function' ? test() : test;
+
+      // Set the value (this is the magic, right here).
+      if (featureNameSplit.length == 1) {
+        Modernizr[featureNameSplit[0]] = test;
+      } else {
+        // cast to a Boolean, if not one already
+        if (Modernizr[featureNameSplit[0]] && !(Modernizr[featureNameSplit[0]] instanceof Boolean)) {
+          Modernizr[featureNameSplit[0]] = new Boolean(Modernizr[featureNameSplit[0]]);
+        }
+
+        Modernizr[featureNameSplit[0]][featureNameSplit[1]] = test;
+      }
+
+      // Set a single class (either `feature` or `no-feature`)
+      setClasses([(!!test && test != false ? '' : 'no-') + featureNameSplit.join('-')]);
+
+      // Trigger the event
+      Modernizr._trigger(feature, test);
     }
 
-    function is( obj, type ) {
-        return typeof obj === type;
+    return Modernizr; // allow chaining.
+  }
+
+  // After all the tests are run, add self to the Modernizr prototype
+  Modernizr._q.push(function() {
+    ModernizrProto.addTest = addTest;
+  });
+
+  
+
+
+  /**
+   * cssToDOM takes a kebab-case string and converts it to camelCase
+   * e.g. box-sizing -> boxSizing
+   *
+   * @access private
+   * @function cssToDOM
+   * @param {string} name - String name of kebab-case prop we want to convert
+   * @returns {string} The camelCase version of the supplied name
+   */
+
+  function cssToDOM(name) {
+    return name.replace(/([a-z])-([a-z])/g, function(str, m1, m2) {
+      return m1 + m2.toUpperCase();
+    }).replace(/^-/, '');
+  }
+  ;
+
+  var cssomPrefixes = (ModernizrProto._config.usePrefixes ? omPrefixes.split(' ') : []);
+  ModernizrProto._cssomPrefixes = cssomPrefixes;
+  
+
+  /**
+   * atRule returns a given CSS property at-rule (eg @keyframes), possibly in
+   * some prefixed form, or false, in the case of an unsupported rule
+   *
+   * @memberof Modernizr
+   * @name Modernizr.atRule
+   * @optionName Modernizr.atRule()
+   * @optionProp atRule
+   * @access public
+   * @function atRule
+   * @param {string} prop - String name of the @-rule to test for
+   * @returns {string|boolean} The string representing the (possibly prefixed)
+   * valid version of the @-rule, or `false` when it is unsupported.
+   * @example
+   * ```js
+   *  var keyframes = Modernizr.atRule('@keyframes');
+   *
+   *  if (keyframes) {
+   *    // keyframes are supported
+   *    // could be `@-webkit-keyframes` or `@keyframes`
+   *  } else {
+   *    // keyframes === `false`
+   *  }
+   * ```
+   *
+   */
+
+  var atRule = function(prop) {
+    var length = prefixes.length;
+    var cssrule = window.CSSRule;
+    var rule;
+
+    if (typeof cssrule === 'undefined') {
+      return undefined;
     }
 
-    function contains( str, substr ) {
-        return !!~('' + str).indexOf(substr);
+    if (!prop) {
+      return false;
     }
 
-    function testProps( props, prefixed ) {
-        for ( var i in props ) {
-            var prop = props[i];
-            if ( !contains(prop, "-") && mStyle[prop] !== undefined ) {
-                return prefixed == 'pfx' ? prop : true;
-            }
-        }
-        return false;
+    // remove literal @ from beginning of provided property
+    prop = prop.replace(/^@/, '');
+
+    // CSSRules use underscores instead of dashes
+    rule = prop.replace(/-/g, '_').toUpperCase() + '_RULE';
+
+    if (rule in cssrule) {
+      return '@' + prop;
     }
 
-    function testDOMProps( props, obj, elem ) {
-        for ( var i in props ) {
-            var item = obj[props[i]];
-            if ( item !== undefined) {
+    for (var i = 0; i < length; i++) {
+      // prefixes gives us something like -o-, and we want O_
+      var prefix = prefixes[i];
+      var thisRule = prefix.toUpperCase() + '_' + rule;
 
-                            if (elem === false) return props[i];
-
-                            if (is(item, 'function')){
-                                return item.bind(elem || obj);
-                }
-
-                            return item;
-            }
-        }
-        return false;
+      if (thisRule in cssrule) {
+        return '@-' + prefix.toLowerCase() + '-' + prop;
+      }
     }
 
-    function testPropsAll( prop, prefixed, elem ) {
-
-        var ucProp  = prop.charAt(0).toUpperCase() + prop.slice(1),
-            props   = (prop + ' ' + cssomPrefixes.join(ucProp + ' ') + ucProp).split(' ');
-
-            if(is(prefixed, "string") || is(prefixed, "undefined")) {
-          return testProps(props, prefixed);
-
-            } else {
-          props = (prop + ' ' + (domPrefixes).join(ucProp + ' ') + ucProp).split(' ');
-          return testDOMProps(props, prefixed, elem);
-        }
-    }    tests['flexbox'] = function() {
-      return testPropsAll('flexWrap');
-    };
-
-
-    tests['flexboxlegacy'] = function() {
-        return testPropsAll('boxDirection');
-    };
-
-
-    tests['canvas'] = function() {
-        var elem = document.createElement('canvas');
-        return !!(elem.getContext && elem.getContext('2d'));
-    };
-
-    tests['canvastext'] = function() {
-        return !!(Modernizr['canvas'] && is(document.createElement('canvas').getContext('2d').fillText, 'function'));
-    };
-
-
-
-    tests['webgl'] = function() {
-        return !!window.WebGLRenderingContext;
-    };
-
-
-    tests['touch'] = function() {
-        var bool;
-
-        if(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
-          bool = true;
-        } else {
-          injectElementWithStyles(['@media (',prefixes.join('touch-enabled),('),mod,')','{#modernizr{top:9px;position:absolute}}'].join(''), function( node ) {
-            bool = node.offsetTop === 9;
-          });
-        }
-
-        return bool;
-    };
-
-
-
-    tests['geolocation'] = function() {
-        return 'geolocation' in navigator;
-    };
-
-
-    tests['postmessage'] = function() {
-      return !!window.postMessage;
-    };
-
-
-    tests['websqldatabase'] = function() {
-      return !!window.openDatabase;
-    };
-
-    tests['indexedDB'] = function() {
-      return !!testPropsAll("indexedDB", window);
-    };
-
-    tests['hashchange'] = function() {
-      return isEventSupported('hashchange', window) && (document.documentMode === undefined || document.documentMode > 7);
-    };
-
-    tests['history'] = function() {
-      return !!(window.history && history.pushState);
-    };
-
-    tests['draganddrop'] = function() {
-        var div = document.createElement('div');
-        return ('draggable' in div) || ('ondragstart' in div && 'ondrop' in div);
-    };
-
-    tests['websockets'] = function() {
-        return 'WebSocket' in window || 'MozWebSocket' in window;
-    };
-
-
-    tests['rgba'] = function() {
-        setCss('background-color:rgba(150,255,150,.5)');
-
-        return contains(mStyle.backgroundColor, 'rgba');
-    };
-
-    tests['hsla'] = function() {
-            setCss('background-color:hsla(120,40%,100%,.5)');
-
-        return contains(mStyle.backgroundColor, 'rgba') || contains(mStyle.backgroundColor, 'hsla');
-    };
-
-    tests['multiplebgs'] = function() {
-                setCss('background:url(https://),url(https://),red url(https://)');
-
-            return (/(url\s*\(.*?){3}/).test(mStyle.background);
-    };    tests['backgroundsize'] = function() {
-        return testPropsAll('backgroundSize');
-    };
-
-    tests['borderimage'] = function() {
-        return testPropsAll('borderImage');
-    };
-
-
-
-    tests['borderradius'] = function() {
-        return testPropsAll('borderRadius');
-    };
-
-    tests['boxshadow'] = function() {
-        return testPropsAll('boxShadow');
-    };
-
-    tests['textshadow'] = function() {
-        return document.createElement('div').style.textShadow === '';
-    };
-
-
-    tests['opacity'] = function() {
-                setCssAll('opacity:.55');
-
-                    return (/^0.55$/).test(mStyle.opacity);
-    };
-
-
-    tests['cssanimations'] = function() {
-        return testPropsAll('animationName');
-    };
-
-
-    tests['csscolumns'] = function() {
-        return testPropsAll('columnCount');
-    };
-
-
-    tests['cssgradients'] = function() {
-        var str1 = 'background-image:',
-            str2 = 'gradient(linear,left top,right bottom,from(#9f9),to(white));',
-            str3 = 'linear-gradient(left top,#9f9, white);';
-
-        setCss(
-                       (str1 + '-webkit- '.split(' ').join(str2 + str1) +
-                       prefixes.join(str3 + str1)).slice(0, -str1.length)
-        );
-
-        return contains(mStyle.backgroundImage, 'gradient');
-    };
-
-
-    tests['cssreflections'] = function() {
-        return testPropsAll('boxReflect');
-    };
-
-
-    tests['csstransforms'] = function() {
-        return !!testPropsAll('transform');
-    };
-
-
-    tests['csstransforms3d'] = function() {
-
-        var ret = !!testPropsAll('perspective');
-
-                        if ( ret && 'webkitPerspective' in docElement.style ) {
-
-                      injectElementWithStyles('@media (transform-3d),(-webkit-transform-3d){#modernizr{left:9px;position:absolute;height:3px;}}', function( node, rule ) {
-            ret = node.offsetLeft === 9 && node.offsetHeight === 3;
-          });
-        }
-        return ret;
-    };
-
-
-    tests['csstransitions'] = function() {
-        return testPropsAll('transition');
-    };
-
-
-
-    tests['fontface'] = function() {
-        var bool;
-
-        injectElementWithStyles('@font-face {font-family:"font";src:url("https://")}', function( node, rule ) {
-          var style = document.getElementById('smodernizr'),
-              sheet = style.sheet || style.styleSheet,
-              cssText = sheet ? (sheet.cssRules && sheet.cssRules[0] ? sheet.cssRules[0].cssText : sheet.cssText || '') : '';
-
-          bool = /src/i.test(cssText) && cssText.indexOf(rule.split(' ')[0]) === 0;
-        });
-
-        return bool;
-    };
-
-    tests['generatedcontent'] = function() {
-        var bool;
-
-        injectElementWithStyles(['#',mod,'{font:0/0 a}#',mod,':after{content:"',smile,'";visibility:hidden;font:3px/1 a}'].join(''), function( node ) {
-          bool = node.offsetHeight >= 3;
-        });
-
-        return bool;
-    };
-    tests['video'] = function() {
-        var elem = document.createElement('video'),
-            bool = false;
-
-            try {
-            if ( bool = !!elem.canPlayType ) {
-                bool      = new Boolean(bool);
-                bool.ogg  = elem.canPlayType('video/ogg; codecs="theora"')      .replace(/^no$/,'');
-
-                            bool.h264 = elem.canPlayType('video/mp4; codecs="avc1.42E01E"') .replace(/^no$/,'');
-
-                bool.webm = elem.canPlayType('video/webm; codecs="vp8, vorbis"').replace(/^no$/,'');
-            }
-
-        } catch(e) { }
-
-        return bool;
-    };
-
-    tests['audio'] = function() {
-        var elem = document.createElement('audio'),
-            bool = false;
-
-        try {
-            if ( bool = !!elem.canPlayType ) {
-                bool      = new Boolean(bool);
-                bool.ogg  = elem.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/,'');
-                bool.mp3  = elem.canPlayType('audio/mpeg;')               .replace(/^no$/,'');
-
-                                                    bool.wav  = elem.canPlayType('audio/wav; codecs="1"')     .replace(/^no$/,'');
-                bool.m4a  = ( elem.canPlayType('audio/x-m4a;')            ||
-                              elem.canPlayType('audio/aac;'))             .replace(/^no$/,'');
-            }
-        } catch(e) { }
-
-        return bool;
-    };
-
-
-    tests['localstorage'] = function() {
-        try {
-            localStorage.setItem(mod, mod);
-            localStorage.removeItem(mod);
-            return true;
-        } catch(e) {
-            return false;
-        }
-    };
-
-    tests['sessionstorage'] = function() {
-        try {
-            sessionStorage.setItem(mod, mod);
-            sessionStorage.removeItem(mod);
-            return true;
-        } catch(e) {
-            return false;
-        }
-    };
-
-
-    tests['webworkers'] = function() {
-        return !!window.Worker;
-    };
-
-
-    tests['applicationcache'] = function() {
-        return !!window.applicationCache;
-    };
-
-
-    tests['svg'] = function() {
-        return !!document.createElementNS && !!document.createElementNS(ns.svg, 'svg').createSVGRect;
-    };
-
-    tests['inlinesvg'] = function() {
-      var div = document.createElement('div');
-      div.innerHTML = '<svg/>';
-      return (div.firstChild && div.firstChild.namespaceURI) == ns.svg;
-    };
-
-    tests['smil'] = function() {
-        return !!document.createElementNS && /SVGAnimate/.test(toString.call(document.createElementNS(ns.svg, 'animate')));
-    };
-
-
-    tests['svgclippaths'] = function() {
-        return !!document.createElementNS && /SVGClipPath/.test(toString.call(document.createElementNS(ns.svg, 'clipPath')));
-    };
-
-    function webforms() {
-                                            Modernizr['input'] = (function( props ) {
-            for ( var i = 0, len = props.length; i < len; i++ ) {
-                attrs[ props[i] ] = !!(props[i] in inputElem);
-            }
-            if (attrs.list){
-                                  attrs.list = !!(document.createElement('datalist') && window.HTMLDataListElement);
-            }
-            return attrs;
-        })('autocomplete autofocus list placeholder max min multiple pattern required step'.split(' '));
-                            Modernizr['inputtypes'] = (function(props) {
-
-            for ( var i = 0, bool, inputElemType, defaultView, len = props.length; i < len; i++ ) {
-
-                inputElem.setAttribute('type', inputElemType = props[i]);
-                bool = inputElem.type !== 'text';
-
-                                                    if ( bool ) {
-
-                    inputElem.value         = smile;
-                    inputElem.style.cssText = 'position:absolute;visibility:hidden;';
-
-                    if ( /^range$/.test(inputElemType) && inputElem.style.WebkitAppearance !== undefined ) {
-
-                      docElement.appendChild(inputElem);
-                      defaultView = document.defaultView;
-
-                                        bool =  defaultView.getComputedStyle &&
-                              defaultView.getComputedStyle(inputElem, null).WebkitAppearance !== 'textfield' &&
-                                                                                  (inputElem.offsetHeight !== 0);
-
-                      docElement.removeChild(inputElem);
-
-                    } else if ( /^(search|tel)$/.test(inputElemType) ){
-                                                                                    } else if ( /^(url|email)$/.test(inputElemType) ) {
-                                        bool = inputElem.checkValidity && inputElem.checkValidity() === false;
-
-                    } else {
-                                        bool = inputElem.value != smile;
-                    }
-                }
-
-                inputs[ props[i] ] = !!bool;
-            }
-            return inputs;
-        })('search tel url email datetime date month week time datetime-local number range color'.split(' '));
-        }
-    for ( var feature in tests ) {
-        if ( hasOwnProp(tests, feature) ) {
-                                    featureName  = feature.toLowerCase();
-            Modernizr[featureName] = tests[feature]();
-
-            classes.push((Modernizr[featureName] ? '' : 'no-') + featureName);
-        }
+    return false;
+  };
+
+  ModernizrProto.atRule = atRule;
+
+  
+
+  /**
+   * getBody returns the body of a document, or an element that can stand in for
+   * the body if a real body does not exist
+   *
+   * @access private
+   * @function getBody
+   * @returns {HTMLElement|SVGElement} Returns the real body of a document, or an
+   * artificially created element that stands in for the body
+   */
+
+  function getBody() {
+    // After page load injecting a fake body doesn't work so check if body exists
+    var body = document.body;
+
+    if (!body) {
+      // Can't use the real body create a fake one.
+      body = createElement(isSVG ? 'svg' : 'body');
+      body.fake = true;
     }
 
-    Modernizr.input || webforms();
+    return body;
+  }
 
+  ;
 
-     Modernizr.addTest = function ( feature, test ) {
-       if ( typeof feature == 'object' ) {
-         for ( var key in feature ) {
-           if ( hasOwnProp( feature, key ) ) {
-             Modernizr.addTest( key, feature[ key ] );
-           }
-         }
-       } else {
+  /**
+   * injectElementWithStyles injects an element with style element and some CSS rules
+   *
+   * @access private
+   * @function injectElementWithStyles
+   * @param {string} rule - String representing a css rule
+   * @param {function} callback - A function that is used to test the injected element
+   * @param {number} [nodes] - An integer representing the number of additional nodes you want injected
+   * @param {string[]} [testnames] - An array of strings that are used as ids for the additional nodes
+   * @returns {boolean}
+   */
 
-         feature = feature.toLowerCase();
+  function injectElementWithStyles(rule, callback, nodes, testnames) {
+    var mod = 'modernizr';
+    var style;
+    var ret;
+    var node;
+    var docOverflow;
+    var div = createElement('div');
+    var body = getBody();
 
-         if ( Modernizr[feature] !== undefined ) {
-                                              return Modernizr;
-         }
+    if (parseInt(nodes, 10)) {
+      // In order not to give false positives we create a node for each test
+      // This also allows the method to scale for unspecified uses
+      while (nodes--) {
+        node = createElement('div');
+        node.id = testnames ? testnames[nodes] : mod + (nodes + 1);
+        div.appendChild(node);
+      }
+    }
 
-         test = typeof test == 'function' ? test() : test;
+    style = createElement('style');
+    style.type = 'text/css';
+    style.id = 's' + mod;
 
-         if (typeof enableClasses !== "undefined" && enableClasses) {
-           docElement.className+=" modernizr-" + (test ? '' : 'no-') + feature;
-         }
-         Modernizr[feature] = test;
+    // IE6 will false positive on some tests due to the style element inside the test div somehow interfering offsetHeight, so insert it into body or fakebody.
+    // Opera will act all quirky when injecting elements in documentElement when page is served as xml, needs fakebody too. #270
+    (!body.fake ? div : body).appendChild(style);
+    body.appendChild(div);
 
-       }
+    if (style.styleSheet) {
+      style.styleSheet.cssText = rule;
+    } else {
+      style.appendChild(document.createTextNode(rule));
+    }
+    div.id = mod;
 
-       return Modernizr; 
-     };
+    if (body.fake) {
+      //avoid crashing IE8, if background image is used
+      body.style.background = '';
+      //Safari 5.13/5.1.4 OSX stops loading if ::-webkit-scrollbar is used and scrollbars are visible
+      body.style.overflow = 'hidden';
+      docOverflow = docElement.style.overflow;
+      docElement.style.overflow = 'hidden';
+      docElement.appendChild(body);
+    }
 
+    ret = callback(div, rule);
+    // If this is done after page load we don't want to remove the body so check if body exists
+    if (body.fake) {
+      body.parentNode.removeChild(body);
+      docElement.style.overflow = docOverflow;
+      // Trigger layout so kinetic scrolling isn't disabled in iOS6+
+      // eslint-disable-next-line
+      docElement.offsetHeight;
+    } else {
+      div.parentNode.removeChild(div);
+    }
 
-    setCss('');
-    modElem = inputElem = null;
+    return !!ret;
 
-    ;(function(window, document) {
-                var version = '3.7.0';
+  }
 
-            var options = window.html5 || {};
+  ;
 
-            var reSkip = /^<|^(?:button|map|select|textarea|object|iframe|option|optgroup)$/i;
+  /**
+   * testStyles injects an element with style element and some CSS rules
+   *
+   * @memberof Modernizr
+   * @name Modernizr.testStyles
+   * @optionName Modernizr.testStyles()
+   * @optionProp testStyles
+   * @access public
+   * @function testStyles
+   * @param {string} rule - String representing a css rule
+   * @param {function} callback - A function that is used to test the injected element
+   * @param {number} [nodes] - An integer representing the number of additional nodes you want injected
+   * @param {string[]} [testnames] - An array of strings that are used as ids for the additional nodes
+   * @returns {boolean}
+   * @example
+   *
+   * `Modernizr.testStyles` takes a CSS rule and injects it onto the current page
+   * along with (possibly multiple) DOM elements. This lets you check for features
+   * that can not be detected by simply checking the [IDL](https://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Interface_development_guide/IDL_interface_rules).
+   *
+   * ```js
+   * Modernizr.testStyles('#modernizr { width: 9px; color: papayawhip; }', function(elem, rule) {
+   *   // elem is the first DOM node in the page (by default #modernizr)
+   *   // rule is the first argument you supplied - the CSS rule in string form
+   *
+   *   addTest('widthworks', elem.style.width === '9px')
+   * });
+   * ```
+   *
+   * If your test requires multiple nodes, you can include a third argument
+   * indicating how many additional div elements to include on the page. The
+   * additional nodes are injected as children of the `elem` that is returned as
+   * the first argument to the callback.
+   *
+   * ```js
+   * Modernizr.testStyles('#modernizr {width: 1px}; #modernizr2 {width: 2px}', function(elem) {
+   *   document.getElementById('modernizr').style.width === '1px'; // true
+   *   document.getElementById('modernizr2').style.width === '2px'; // true
+   *   elem.firstChild === document.getElementById('modernizr2'); // true
+   * }, 1);
+   * ```
+   *
+   * By default, all of the additional elements have an ID of `modernizr[n]`, where
+   * `n` is its index (e.g. the first additional, second overall is `#modernizr2`,
+   * the second additional is `#modernizr3`, etc.).
+   * If you want to have more meaningful IDs for your function, you can provide
+   * them as the fourth argument, as an array of strings
+   *
+   * ```js
+   * Modernizr.testStyles('#foo {width: 10px}; #bar {height: 20px}', function(elem) {
+   *   elem.firstChild === document.getElementById('foo'); // true
+   *   elem.lastChild === document.getElementById('bar'); // true
+   * }, 2, ['foo', 'bar']);
+   * ```
+   *
+   */
 
-            var saveClones = /^(?:a|b|code|div|fieldset|h1|h2|h3|h4|h5|h6|i|label|li|ol|p|q|span|strong|style|table|tbody|td|th|tr|ul)$/i;
+  var testStyles = ModernizrProto.testStyles = injectElementWithStyles;
+  
+/*!
+{
+  "name": "@font-face",
+  "property": "fontface",
+  "authors": ["Diego Perini", "Mat Marquis"],
+  "tags": ["css"],
+  "knownBugs": [
+    "False Positive: WebOS https://github.com/Modernizr/Modernizr/issues/342",
+    "False Postive: WP7 https://github.com/Modernizr/Modernizr/issues/538"
+  ],
+  "notes": [{
+    "name": "@font-face detection routine by Diego Perini",
+    "href": "http://javascript.nwbox.com/CSSSupport/"
+  },{
+    "name": "Filament Group @font-face compatibility research",
+    "href": "https://docs.google.com/presentation/d/1n4NyG4uPRjAA8zn_pSQ_Ket0RhcWC6QlZ6LMjKeECo0/edit#slide=id.p"
+  },{
+    "name": "Filament Grunticon/@font-face device testing results",
+    "href": "https://docs.google.com/spreadsheet/ccc?key=0Ag5_yGvxpINRdHFYeUJPNnZMWUZKR2ItMEpRTXZPdUE#gid=0"
+  },{
+    "name": "CSS fonts on Android",
+    "href": "https://stackoverflow.com/questions/3200069/css-fonts-on-android"
+  },{
+    "name": "@font-face and Android",
+    "href": "http://archivist.incutio.com/viewlist/css-discuss/115960"
+  }]
+}
+!*/
 
-            var supportsHtml5Styles;
-
-            var expando = '_html5shiv';
-
-            var expanID = 0;
-
-            var expandoData = {};
-
-            var supportsUnknownElements;
-
-        (function() {
-          try {
-            var a = document.createElement('a');
-            a.innerHTML = '<xyz></xyz>';
-                    supportsHtml5Styles = ('hidden' in a);
-
-            supportsUnknownElements = a.childNodes.length == 1 || (function() {
-                        (document.createElement)('a');
-              var frag = document.createDocumentFragment();
-              return (
-                typeof frag.cloneNode == 'undefined' ||
-                typeof frag.createDocumentFragment == 'undefined' ||
-                typeof frag.createElement == 'undefined'
-              );
-            }());
-          } catch(e) {
-                    supportsHtml5Styles = true;
-            supportsUnknownElements = true;
-          }
-
-        }());
-
-            function addStyleSheet(ownerDocument, cssText) {
-          var p = ownerDocument.createElement('p'),
-          parent = ownerDocument.getElementsByTagName('head')[0] || ownerDocument.documentElement;
-
-          p.innerHTML = 'x<style>' + cssText + '</style>';
-          return parent.insertBefore(p.lastChild, parent.firstChild);
-        }
-
-            function getElements() {
-          var elements = html5.elements;
-          return typeof elements == 'string' ? elements.split(' ') : elements;
-        }
-
-            function getExpandoData(ownerDocument) {
-          var data = expandoData[ownerDocument[expando]];
-          if (!data) {
-            data = {};
-            expanID++;
-            ownerDocument[expando] = expanID;
-            expandoData[expanID] = data;
-          }
-          return data;
-        }
-
-            function createElement(nodeName, ownerDocument, data){
-          if (!ownerDocument) {
-            ownerDocument = document;
-          }
-          if(supportsUnknownElements){
-            return ownerDocument.createElement(nodeName);
-          }
-          if (!data) {
-            data = getExpandoData(ownerDocument);
-          }
-          var node;
-
-          if (data.cache[nodeName]) {
-            node = data.cache[nodeName].cloneNode();
-          } else if (saveClones.test(nodeName)) {
-            node = (data.cache[nodeName] = data.createElem(nodeName)).cloneNode();
-          } else {
-            node = data.createElem(nodeName);
-          }
-
-                                                    return node.canHaveChildren && !reSkip.test(nodeName) && !node.tagUrn ? data.frag.appendChild(node) : node;
-        }
-
-            function createDocumentFragment(ownerDocument, data){
-          if (!ownerDocument) {
-            ownerDocument = document;
-          }
-          if(supportsUnknownElements){
-            return ownerDocument.createDocumentFragment();
-          }
-          data = data || getExpandoData(ownerDocument);
-          var clone = data.frag.cloneNode(),
-          i = 0,
-          elems = getElements(),
-          l = elems.length;
-          for(;i<l;i++){
-            clone.createElement(elems[i]);
-          }
-          return clone;
-        }
-
-            function shivMethods(ownerDocument, data) {
-          if (!data.cache) {
-            data.cache = {};
-            data.createElem = ownerDocument.createElement;
-            data.createFrag = ownerDocument.createDocumentFragment;
-            data.frag = data.createFrag();
-          }
-
-
-          ownerDocument.createElement = function(nodeName) {
-                    if (!html5.shivMethods) {
-              return data.createElem(nodeName);
-            }
-            return createElement(nodeName, ownerDocument, data);
-          };
-
-          ownerDocument.createDocumentFragment = Function('h,f', 'return function(){' +
-                                                          'var n=f.cloneNode(),c=n.createElement;' +
-                                                          'h.shivMethods&&(' +
-                                                                                                                getElements().join().replace(/[\w\-]+/g, function(nodeName) {
-            data.createElem(nodeName);
-            data.frag.createElement(nodeName);
-            return 'c("' + nodeName + '")';
-          }) +
-            ');return n}'
-                                                         )(html5, data.frag);
-        }
-
-            function shivDocument(ownerDocument) {
-          if (!ownerDocument) {
-            ownerDocument = document;
-          }
-          var data = getExpandoData(ownerDocument);
-
-          if (html5.shivCSS && !supportsHtml5Styles && !data.hasCSS) {
-            data.hasCSS = !!addStyleSheet(ownerDocument,
-                                                                                'article,aside,dialog,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}' +
-                                                                                    'mark{background:#FF0;color:#000}' +
-                                                                                    'template{display:none}'
-                                         );
-          }
-          if (!supportsUnknownElements) {
-            shivMethods(ownerDocument, data);
-          }
-          return ownerDocument;
-        }
-
-            var html5 = {
-
-                'elements': options.elements || 'abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video',
-
-                'version': version,
-
-                'shivCSS': (options.shivCSS !== false),
-
-                'supportsUnknownElements': supportsUnknownElements,
-
-                'shivMethods': (options.shivMethods !== false),
-
-                'type': 'default',
-
-                'shivDocument': shivDocument,
-
-                createElement: createElement,
-
-                createDocumentFragment: createDocumentFragment
-        };
-
-            window.html5 = html5;
-
-            shivDocument(document);
-
-    }(this, document));
-
-    Modernizr._version      = version;
-
-    Modernizr._prefixes     = prefixes;
-    Modernizr._domPrefixes  = domPrefixes;
-    Modernizr._cssomPrefixes  = cssomPrefixes;
-
-
-    Modernizr.hasEvent      = isEventSupported;
-
-    Modernizr.testProp      = function(prop){
-        return testProps([prop]);
-    };
-
-    Modernizr.testAllProps  = testPropsAll;
-
-
-    Modernizr.testStyles    = injectElementWithStyles;    docElement.className = docElement.className.replace(/(^|\s)no-js(\s|$)/, '$1$2') +
-
-                                                    (enableClasses ? " modernizr-js modernizr-"+classes.join(" modernizr-") : '');
-
-    return Modernizr;
-
-})(this, this.document);
-/*yepnope1.5.4|WTFPL*/
-(function(a,b,c){function d(a){return"[object Function]"==o.call(a)}function e(a){return"string"==typeof a}function f(){}function g(a){return!a||"loaded"==a||"complete"==a||"uninitialized"==a}function h(){var a=p.shift();q=1,a?a.t?m(function(){("c"==a.t?B.injectCss:B.injectJs)(a.s,0,a.a,a.x,a.e,1)},0):(a(),h()):q=0}function i(a,c,d,e,f,i,j){function k(b){if(!o&&g(l.readyState)&&(u.r=o=1,!q&&h(),l.onload=l.onreadystatechange=null,b)){"img"!=a&&m(function(){t.removeChild(l)},50);for(var d in y[c])y[c].hasOwnProperty(d)&&y[c][d].onload()}}var j=j||B.errorTimeout,l=b.createElement(a),o=0,r=0,u={t:d,s:c,e:f,a:i,x:j};1===y[c]&&(r=1,y[c]=[]),"object"==a?l.data=c:(l.src=c,l.type=a),l.width=l.height="0",l.onerror=l.onload=l.onreadystatechange=function(){k.call(this,r)},p.splice(e,0,u),"img"!=a&&(r||2===y[c]?(t.insertBefore(l,s?null:n),m(k,j)):y[c].push(l))}function j(a,b,c,d,f){return q=0,b=b||"j",e(a)?i("c"==b?v:u,a,b,this.i++,c,d,f):(p.splice(this.i++,0,a),1==p.length&&h()),this}function k(){var a=B;return a.loader={load:j,i:0},a}var l=b.documentElement,m=a.setTimeout,n=b.getElementsByTagName("script")[0],o={}.toString,p=[],q=0,r="MozAppearance"in l.style,s=r&&!!b.createRange().compareNode,t=s?l:n.parentNode,l=a.opera&&"[object Opera]"==o.call(a.opera),l=!!b.attachEvent&&!l,u=r?"object":l?"script":"img",v=l?"script":u,w=Array.isArray||function(a){return"[object Array]"==o.call(a)},x=[],y={},z={timeout:function(a,b){return b.length&&(a.timeout=b[0]),a}},A,B;B=function(a){function b(a){var a=a.split("!"),b=x.length,c=a.pop(),d=a.length,c={url:c,origUrl:c,prefixes:a},e,f,g;for(f=0;f<d;f++)g=a[f].split("="),(e=z[g.shift()])&&(c=e(c,g));for(f=0;f<b;f++)c=x[f](c);return c}function g(a,e,f,g,h){var i=b(a),j=i.autoCallback;i.url.split(".").pop().split("?").shift(),i.bypass||(e&&(e=d(e)?e:e[a]||e[g]||e[a.split("/").pop().split("?")[0]]),i.instead?i.instead(a,e,f,g,h):(y[i.url]?i.noexec=!0:y[i.url]=1,f.load(i.url,i.forceCSS||!i.forceJS&&"css"==i.url.split(".").pop().split("?").shift()?"c":c,i.noexec,i.attrs,i.timeout),(d(e)||d(j))&&f.load(function(){k(),e&&e(i.origUrl,h,g),j&&j(i.origUrl,h,g),y[i.url]=2})))}function h(a,b){function c(a,c){if(a){if(e(a))c||(j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}),g(a,j,b,0,h);else if(Object(a)===a)for(n in m=function(){var b=0,c;for(c in a)a.hasOwnProperty(c)&&b++;return b}(),a)a.hasOwnProperty(n)&&(!c&&!--m&&(d(j)?j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}:j[n]=function(a){return function(){var b=[].slice.call(arguments);a&&a.apply(this,b),l()}}(k[n])),g(a[n],j,b,n,h))}else!c&&l()}var h=!!a.test,i=a.load||a.both,j=a.callback||f,k=j,l=a.complete||f,m,n;c(h?a.yep:a.nope,!!i),i&&c(i)}var i,j,l=this.yepnope.loader;if(e(a))g(a,0,l,0);else if(w(a))for(i=0;i<a.length;i++)j=a[i],e(j)?g(j,0,l,0):w(j)?B(j):Object(j)===j&&h(j,l);else Object(a)===a&&h(a,l)},B.addPrefix=function(a,b){z[a]=b},B.addFilter=function(a){x.push(a)},B.errorTimeout=1e4,null==b.readyState&&b.addEventListener&&(b.readyState="loading",b.addEventListener("DOMContentLoaded",A=function(){b.removeEventListener("DOMContentLoaded",A,0),b.readyState="complete"},0)),a.yepnope=k(),a.yepnope.executeStack=h,a.yepnope.injectJs=function(a,c,d,e,i,j){var k=b.createElement("script"),l,o,e=e||B.errorTimeout;k.src=a;for(o in d)k.setAttribute(o,d[o]);c=j?h:c||f,k.onreadystatechange=k.onload=function(){!l&&g(k.readyState)&&(l=1,c(),k.onload=k.onreadystatechange=null)},m(function(){l||(l=1,c(1))},e),i?k.onload():n.parentNode.insertBefore(k,n)},a.yepnope.injectCss=function(a,c,d,e,g,i){var e=b.createElement("link"),j,c=i?h:c||f;e.href=a,e.rel="stylesheet",e.type="text/css";for(j in d)e.setAttribute(j,d[j]);g||(n.parentNode.insertBefore(e,n),m(c,0))}})(this,document);
-Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0));};
+  var blacklist = (function() {
+    var ua = navigator.userAgent;
+    var webos = ua.match(/w(eb)?osbrowser/gi);
+    var wppre8 = ua.match(/windows phone/gi) && ua.match(/iemobile\/([0-9])+/gi) && parseFloat(RegExp.$1) >= 9;
+    return webos || wppre8;
+  }());
+  if (blacklist) {
+    Modernizr.addTest('fontface', false);
+  } else {
+    testStyles('@font-face {font-family:"font";src:url("https://")}', function(node, rule) {
+      var style = document.getElementById('smodernizr');
+      var sheet = style.sheet || style.styleSheet;
+      var cssText = sheet ? (sheet.cssRules && sheet.cssRules[0] ? sheet.cssRules[0].cssText : sheet.cssText || '') : '';
+      var bool = /src/i.test(cssText) && cssText.indexOf(rule.split(' ')[0]) === 0;
+      Modernizr.addTest('fontface', bool);
+    });
+  }
 ;
-/*! URI.js v1.19.0 http://medialize.github.io/URI.js/ */
+/*!
+{
+  "name": "CSS Generated Content",
+  "property": "generatedcontent",
+  "tags": ["css"],
+  "warnings": ["Android won't return correct height for anything below 7px #738"],
+  "notes": [{
+    "name": "W3C CSS Selectors Level 3 spec",
+    "href": "https://www.w3.org/TR/css3-selectors/#gen-content"
+  },{
+    "name": "MDN article on :before",
+    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/::before"
+  },{
+    "name": "MDN article on :after",
+    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/::before"
+  }]
+}
+!*/
+
+  testStyles('#modernizr{font:0/0 a}#modernizr:after{content:":)";visibility:hidden;font:7px/1 a}', function(node) {
+    // See bug report on why this value is 6 crbug.com/608142
+    Modernizr.addTest('generatedcontent', node.offsetHeight >= 6);
+  });
+
+
+  /**
+   * Create our "modernizr" element that we do most feature tests on.
+   *
+   * @access private
+   */
+
+  var modElem = {
+    elem: createElement('modernizr')
+  };
+
+  // Clean up this element
+  Modernizr._q.push(function() {
+    delete modElem.elem;
+  });
+
+  
+
+  var mStyle = {
+    style: modElem.elem.style
+  };
+
+  // kill ref for gc, must happen before mod.elem is removed, so we unshift on to
+  // the front of the queue.
+  Modernizr._q.unshift(function() {
+    delete mStyle.style;
+  });
+
+  
+
+  /**
+   * domToCSS takes a camelCase string and converts it to kebab-case
+   * e.g. boxSizing -> box-sizing
+   *
+   * @access private
+   * @function domToCSS
+   * @param {string} name - String name of camelCase prop we want to convert
+   * @returns {string} The kebab-case version of the supplied name
+   */
+
+  function domToCSS(name) {
+    return name.replace(/([A-Z])/g, function(str, m1) {
+      return '-' + m1.toLowerCase();
+    }).replace(/^ms-/, '-ms-');
+  }
+  ;
+
+
+  /**
+   * wrapper around getComputedStyle, to fix issues with Firefox returning null when
+   * called inside of a hidden iframe
+   *
+   * @access private
+   * @function computedStyle
+   * @param {HTMLElement|SVGElement} - The element we want to find the computed styles of
+   * @param {string|null} [pseudoSelector]- An optional pseudo element selector (e.g. :before), of null if none
+   * @returns {CSSStyleDeclaration}
+   */
+
+  function computedStyle(elem, pseudo, prop) {
+    var result;
+
+    if ('getComputedStyle' in window) {
+      result = getComputedStyle.call(window, elem, pseudo);
+      var console = window.console;
+
+      if (result !== null) {
+        if (prop) {
+          result = result.getPropertyValue(prop);
+        }
+      } else {
+        if (console) {
+          var method = console.error ? 'error' : 'log';
+          console[method].call(console, 'getComputedStyle returning null, its possible modernizr test results are inaccurate');
+        }
+      }
+    } else {
+      result = !pseudo && elem.currentStyle && elem.currentStyle[prop];
+    }
+
+    return result;
+  }
+
+  ;
+
+  /**
+   * nativeTestProps allows for us to use native feature detection functionality if available.
+   * some prefixed form, or false, in the case of an unsupported rule
+   *
+   * @access private
+   * @function nativeTestProps
+   * @param {array} props - An array of property names
+   * @param {string} value - A string representing the value we want to check via @supports
+   * @returns {boolean|undefined} A boolean when @supports exists, undefined otherwise
+   */
+
+  // Accepts a list of property names and a single value
+  // Returns `undefined` if native detection not available
+  function nativeTestProps(props, value) {
+    var i = props.length;
+    // Start with the JS API: http://www.w3.org/TR/css3-conditional/#the-css-interface
+    if ('CSS' in window && 'supports' in window.CSS) {
+      // Try every prefixed variant of the property
+      while (i--) {
+        if (window.CSS.supports(domToCSS(props[i]), value)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    // Otherwise fall back to at-rule (for Opera 12.x)
+    else if ('CSSSupportsRule' in window) {
+      // Build a condition string for every prefixed variant
+      var conditionText = [];
+      while (i--) {
+        conditionText.push('(' + domToCSS(props[i]) + ':' + value + ')');
+      }
+      conditionText = conditionText.join(' or ');
+      return injectElementWithStyles('@supports (' + conditionText + ') { #modernizr { position: absolute; } }', function(node) {
+        return computedStyle(node, null, 'position') == 'absolute';
+      });
+    }
+    return undefined;
+  }
+  ;
+
+  // testProps is a generic CSS / DOM property test.
+
+  // In testing support for a given CSS property, it's legit to test:
+  //    `elem.style[styleName] !== undefined`
+  // If the property is supported it will return an empty string,
+  // if unsupported it will return undefined.
+
+  // We'll take advantage of this quick test and skip setting a style
+  // on our modernizr element, but instead just testing undefined vs
+  // empty string.
+
+  // Property names can be provided in either camelCase or kebab-case.
+
+  function testProps(props, prefixed, value, skipValueTest) {
+    skipValueTest = is(skipValueTest, 'undefined') ? false : skipValueTest;
+
+    // Try native detect first
+    if (!is(value, 'undefined')) {
+      var result = nativeTestProps(props, value);
+      if (!is(result, 'undefined')) {
+        return result;
+      }
+    }
+
+    // Otherwise do it properly
+    var afterInit, i, propsLength, prop, before;
+
+    // If we don't have a style element, that means we're running async or after
+    // the core tests, so we'll need to create our own elements to use
+
+    // inside of an SVG element, in certain browsers, the `style` element is only
+    // defined for valid tags. Therefore, if `modernizr` does not have one, we
+    // fall back to a less used element and hope for the best.
+    // for strict XHTML browsers the hardly used samp element is used
+    var elems = ['modernizr', 'tspan', 'samp'];
+    while (!mStyle.style && elems.length) {
+      afterInit = true;
+      mStyle.modElem = createElement(elems.shift());
+      mStyle.style = mStyle.modElem.style;
+    }
+
+    // Delete the objects if we created them.
+    function cleanElems() {
+      if (afterInit) {
+        delete mStyle.style;
+        delete mStyle.modElem;
+      }
+    }
+
+    propsLength = props.length;
+    for (i = 0; i < propsLength; i++) {
+      prop = props[i];
+      before = mStyle.style[prop];
+
+      if (contains(prop, '-')) {
+        prop = cssToDOM(prop);
+      }
+
+      if (mStyle.style[prop] !== undefined) {
+
+        // If value to test has been passed in, do a set-and-check test.
+        // 0 (integer) is a valid property value, so check that `value` isn't
+        // undefined, rather than just checking it's truthy.
+        if (!skipValueTest && !is(value, 'undefined')) {
+
+          // Needs a try catch block because of old IE. This is slow, but will
+          // be avoided in most cases because `skipValueTest` will be used.
+          try {
+            mStyle.style[prop] = value;
+          } catch (e) {}
+
+          // If the property value has changed, we assume the value used is
+          // supported. If `value` is empty string, it'll fail here (because
+          // it hasn't changed), which matches how browsers have implemented
+          // CSS.supports()
+          if (mStyle.style[prop] != before) {
+            cleanElems();
+            return prefixed == 'pfx' ? prop : true;
+          }
+        }
+        // Otherwise just return true, or the property name if this is a
+        // `prefixed()` call
+        else {
+          cleanElems();
+          return prefixed == 'pfx' ? prop : true;
+        }
+      }
+    }
+    cleanElems();
+    return false;
+  }
+
+  ;
+
+  /**
+   * testProp() investigates whether a given style property is recognized
+   * Property names can be provided in either camelCase or kebab-case.
+   *
+   * @memberof Modernizr
+   * @name Modernizr.testProp
+   * @access public
+   * @optionName Modernizr.testProp()
+   * @optionProp testProp
+   * @function testProp
+   * @param {string} prop - Name of the CSS property to check
+   * @param {string} [value] - Name of the CSS value to check
+   * @param {boolean} [useValue] - Whether or not to check the value if @supports isn't supported
+   * @returns {boolean}
+   * @example
+   *
+   * Just like [testAllProps](#modernizr-testallprops), only it does not check any vendor prefixed
+   * version of the string.
+   *
+   * Note that the property name must be provided in camelCase (e.g. boxSizing not box-sizing)
+   *
+   * ```js
+   * Modernizr.testProp('pointerEvents')  // true
+   * ```
+   *
+   * You can also provide a value as an optional second argument to check if a
+   * specific value is supported
+   *
+   * ```js
+   * Modernizr.testProp('pointerEvents', 'none') // true
+   * Modernizr.testProp('pointerEvents', 'penguin') // false
+   * ```
+   */
+
+  var testProp = ModernizrProto.testProp = function(prop, value, useValue) {
+    return testProps([prop], undefined, value, useValue);
+  };
+  
+/*!
+{
+  "name": "CSS textshadow",
+  "property": "textshadow",
+  "caniuse": "css-textshadow",
+  "tags": ["css"],
+  "knownBugs": ["FF3.0 will false positive on this test"]
+}
+!*/
+
+  Modernizr.addTest('textshadow', testProp('textShadow', '1px 1px'));
+
+
+  /**
+   * fnBind is a super small [bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind) polyfill.
+   *
+   * @access private
+   * @function fnBind
+   * @param {function} fn - a function you want to change `this` reference to
+   * @param {object} that - the `this` you want to call the function with
+   * @returns {function} The wrapped version of the supplied function
+   */
+
+  function fnBind(fn, that) {
+    return function() {
+      return fn.apply(that, arguments);
+    };
+  }
+
+  ;
+
+  /**
+   * testDOMProps is a generic DOM property test; if a browser supports
+   *   a certain property, it won't return undefined for it.
+   *
+   * @access private
+   * @function testDOMProps
+   * @param {array.<string>} props - An array of properties to test for
+   * @param {object} obj - An object or Element you want to use to test the parameters again
+   * @param {boolean|object} elem - An Element to bind the property lookup again. Use `false` to prevent the check
+   * @returns {false|*} returns false if the prop is unsupported, otherwise the value that is supported
+   */
+  function testDOMProps(props, obj, elem) {
+    var item;
+
+    for (var i in props) {
+      if (props[i] in obj) {
+
+        // return the property name as a string
+        if (elem === false) {
+          return props[i];
+        }
+
+        item = obj[props[i]];
+
+        // let's bind a function
+        if (is(item, 'function')) {
+          // bind to obj unless overriden
+          return fnBind(item, elem || obj);
+        }
+
+        // return the unbound function or obj or value
+        return item;
+      }
+    }
+    return false;
+  }
+
+  ;
+
+  /**
+   * testPropsAll tests a list of DOM properties we want to check against.
+   * We specify literally ALL possible (known and/or likely) properties on
+   * the element including the non-vendor prefixed one, for forward-
+   * compatibility.
+   *
+   * @access private
+   * @function testPropsAll
+   * @param {string} prop - A string of the property to test for
+   * @param {string|object} [prefixed] - An object to check the prefixed properties on. Use a string to skip
+   * @param {HTMLElement|SVGElement} [elem] - An element used to test the property and value against
+   * @param {string} [value] - A string of a css value
+   * @param {boolean} [skipValueTest] - An boolean representing if you want to test if value sticks when set
+   * @returns {false|string} returns the string version of the property, or false if it is unsupported
+   */
+  function testPropsAll(prop, prefixed, elem, value, skipValueTest) {
+
+    var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1),
+      props = (prop + ' ' + cssomPrefixes.join(ucProp + ' ') + ucProp).split(' ');
+
+    // did they call .prefixed('boxSizing') or are we just testing a prop?
+    if (is(prefixed, 'string') || is(prefixed, 'undefined')) {
+      return testProps(props, prefixed, value, skipValueTest);
+
+      // otherwise, they called .prefixed('requestAnimationFrame', window[, elem])
+    } else {
+      props = (prop + ' ' + (domPrefixes).join(ucProp + ' ') + ucProp).split(' ');
+      return testDOMProps(props, prefixed, elem);
+    }
+  }
+
+  // Modernizr.testAllProps() investigates whether a given style property,
+  // or any of its vendor-prefixed variants, is recognized
+  //
+  // Note that the property names must be provided in the camelCase variant.
+  // Modernizr.testAllProps('boxSizing')
+  ModernizrProto.testAllProps = testPropsAll;
+
+  
+
+  /**
+   * testAllProps determines whether a given CSS property is supported in the browser
+   *
+   * @memberof Modernizr
+   * @name Modernizr.testAllProps
+   * @optionName Modernizr.testAllProps()
+   * @optionProp testAllProps
+   * @access public
+   * @function testAllProps
+   * @param {string} prop - String naming the property to test (either camelCase or kebab-case)
+   * @param {string} [value] - String of the value to test
+   * @param {boolean} [skipValueTest=false] - Whether to skip testing that the value is supported when using non-native detection
+   * @example
+   *
+   * testAllProps determines whether a given CSS property, in some prefixed form,
+   * is supported by the browser.
+   *
+   * ```js
+   * testAllProps('boxSizing')  // true
+   * ```
+   *
+   * It can optionally be given a CSS value in string form to test if a property
+   * value is valid
+   *
+   * ```js
+   * testAllProps('display', 'block') // true
+   * testAllProps('display', 'penguin') // false
+   * ```
+   *
+   * A boolean can be passed as a third parameter to skip the value check when
+   * native detection (@supports) isn't available.
+   *
+   * ```js
+   * testAllProps('shapeOutside', 'content-box', true);
+   * ```
+   */
+
+  function testAllProps(prop, value, skipValueTest) {
+    return testPropsAll(prop, undefined, undefined, value, skipValueTest);
+  }
+  ModernizrProto.testAllProps = testAllProps;
+  
+/*!
+{
+  "name": "Background Size",
+  "property": "backgroundsize",
+  "tags": ["css"],
+  "knownBugs": ["This will false positive in Opera Mini - https://github.com/Modernizr/Modernizr/issues/396"],
+  "notes": [{
+    "name": "Related Issue",
+    "href": "https://github.com/Modernizr/Modernizr/issues/396"
+  }]
+}
+!*/
+
+  Modernizr.addTest('backgroundsize', testAllProps('backgroundSize', '100%', true));
+
+/*!
+{
+  "name": "Flexbox (legacy)",
+  "property": "flexboxlegacy",
+  "tags": ["css"],
+  "polyfills": ["flexie"],
+  "notes": [{
+    "name": "The _old_ flexbox",
+    "href": "https://www.w3.org/TR/2009/WD-css3-flexbox-20090723/"
+  }]
+}
+!*/
+
+  Modernizr.addTest('flexboxlegacy', testAllProps('boxDirection', 'reverse', true));
+
+/*!
+{
+  "name": "Box Shadow",
+  "property": "boxshadow",
+  "caniuse": "css-boxshadow",
+  "tags": ["css"],
+  "knownBugs": [
+    "WebOS false positives on this test.",
+    "The Kindle Silk browser false positives"
+  ]
+}
+!*/
+
+  Modernizr.addTest('boxshadow', testAllProps('boxShadow', '1px 1px', true));
+
+/*!
+{
+  "name": "CSS Transforms",
+  "property": "csstransforms",
+  "caniuse": "transforms2d",
+  "tags": ["css"]
+}
+!*/
+
+  Modernizr.addTest('csstransforms', function() {
+    // Android < 3.0 is buggy, so we sniff and blacklist
+    // http://git.io/hHzL7w
+    return navigator.userAgent.indexOf('Android 2.') === -1 &&
+           testAllProps('transform', 'scale(1)', true);
+  });
+
+/*!
+{
+  "name": "CSS Columns",
+  "property": "csscolumns",
+  "caniuse": "multicolumn",
+  "polyfills": ["css3multicolumnjs"],
+  "tags": ["css"]
+}
+!*/
+
+
+  (function() {
+
+    Modernizr.addTest('csscolumns', function() {
+      var bool = false;
+      var test = testAllProps('columnCount');
+      try {
+        bool = !!test
+        if (bool) {
+          bool = new Boolean(bool);
+        }
+      } catch (e) {}
+
+      return bool;
+    });
+
+    var props = ['Width', 'Span', 'Fill', 'Gap', 'Rule', 'RuleColor', 'RuleStyle', 'RuleWidth', 'BreakBefore', 'BreakAfter', 'BreakInside'];
+    var name, test;
+
+    for (var i = 0; i < props.length; i++) {
+      name = props[i].toLowerCase();
+      test = testAllProps('column' + props[i]);
+
+      // break-before, break-after & break-inside are not "column"-prefixed in spec
+      if (name === 'breakbefore' || name === 'breakafter' || name == 'breakinside') {
+        test = test || testAllProps(props[i]);
+      }
+
+      Modernizr.addTest('csscolumns.' + name, test);
+    }
+
+
+  })();
+
+
+/*!
+{
+  "name": "CSS Transitions",
+  "property": "csstransitions",
+  "caniuse": "css-transitions",
+  "tags": ["css"]
+}
+!*/
+
+  Modernizr.addTest('csstransitions', testAllProps('transition', 'all', true));
+
+/*!
+{
+  "name": "CSS Animations",
+  "property": "cssanimations",
+  "caniuse": "css-animation",
+  "polyfills": ["transformie", "csssandpaper"],
+  "tags": ["css"],
+  "warnings": ["Android < 4 will pass this test, but can only animate a single property at a time"],
+  "notes": [{
+    "name" : "Article: 'Dispelling the Android CSS animation myths'",
+    "href": "https://goo.gl/OGw5Gm"
+  }]
+}
+!*/
+/* DOC
+Detects whether or not elements can be animated using CSS
+*/
+
+  Modernizr.addTest('cssanimations', testAllProps('animationName', 'a', true));
+
+/*!
+{
+  "name": "Flexbox",
+  "property": "flexbox",
+  "caniuse": "flexbox",
+  "tags": ["css"],
+  "notes": [{
+    "name": "The _new_ flexbox",
+    "href": "http://dev.w3.org/csswg/css3-flexbox"
+  }],
+  "warnings": [
+    "A `true` result for this detect does not imply that the `flex-wrap` property is supported; see the `flexwrap` detect."
+  ]
+}
+!*/
+/* DOC
+Detects support for the Flexible Box Layout model, a.k.a. Flexbox, which allows easy manipulation of layout order and sizing within a container.
+*/
+
+  Modernizr.addTest('flexbox', testAllProps('flexBasis', '1px', true));
+
+/*!
+{
+  "name": "CSS Reflections",
+  "caniuse": "css-reflections",
+  "property": "cssreflections",
+  "tags": ["css"]
+}
+!*/
+
+  Modernizr.addTest('cssreflections', testAllProps('boxReflect', 'above', true));
+
+/*!
+{
+  "name": "CSS Transforms 3D",
+  "property": "csstransforms3d",
+  "caniuse": "transforms3d",
+  "tags": ["css"],
+  "warnings": [
+    "Chrome may occassionally fail this test on some systems; more info: https://code.google.com/p/chromium/issues/detail?id=129004"
+  ]
+}
+!*/
+
+  Modernizr.addTest('csstransforms3d', function() {
+    return !!testAllProps('perspective', '1px', true);
+  });
+
+/*!
+{
+  "name": "Border Radius",
+  "property": "borderradius",
+  "caniuse": "border-radius",
+  "polyfills": ["css3pie"],
+  "tags": ["css"],
+  "notes": [{
+    "name": "Comprehensive Compat Chart",
+    "href": "https://muddledramblings.com/table-of-css3-border-radius-compliance"
+  }]
+}
+!*/
+
+  Modernizr.addTest('borderradius', testAllProps('borderRadius', '0px', true));
+
+/*!
+{
+  "name": "Border Image",
+  "property": "borderimage",
+  "caniuse": "border-image",
+  "polyfills": ["css3pie"],
+   "knownBugs": ["Android < 2.0 is true, but has a broken implementation"],
+  "tags": ["css"]
+}
+!*/
+
+  Modernizr.addTest('borderimage', testAllProps('borderImage', 'url() 1', true));
+
+
+  /**
+   * prefixed returns the prefixed or nonprefixed property name variant of your input
+   *
+   * @memberof Modernizr
+   * @name Modernizr.prefixed
+   * @optionName Modernizr.prefixed()
+   * @optionProp prefixed
+   * @access public
+   * @function prefixed
+   * @param {string} prop - String name of the property to test for
+   * @param {object} [obj] - An object to test for the prefixed properties on
+   * @param {HTMLElement} [elem] - An element used to test specific properties against
+   * @returns {string|false} The string representing the (possibly prefixed) valid
+   * version of the property, or `false` when it is unsupported.
+   * @example
+   *
+   * Modernizr.prefixed takes a string css value in the DOM style camelCase (as
+   * opposed to the css style kebab-case) form and returns the (possibly prefixed)
+   * version of that property that the browser actually supports.
+   *
+   * For example, in older Firefox...
+   * ```js
+   * prefixed('boxSizing')
+   * ```
+   * returns 'MozBoxSizing'
+   *
+   * In newer Firefox, as well as any other browser that support the unprefixed
+   * version would simply return `boxSizing`. Any browser that does not support
+   * the property at all, it will return `false`.
+   *
+   * By default, prefixed is checked against a DOM element. If you want to check
+   * for a property on another object, just pass it as a second argument
+   *
+   * ```js
+   * var rAF = prefixed('requestAnimationFrame', window);
+   *
+   * raf(function() {
+   *  renderFunction();
+   * })
+   * ```
+   *
+   * Note that this will return _the actual function_ - not the name of the function.
+   * If you need the actual name of the property, pass in `false` as a third argument
+   *
+   * ```js
+   * var rAFProp = prefixed('requestAnimationFrame', window, false);
+   *
+   * rafProp === 'WebkitRequestAnimationFrame' // in older webkit
+   * ```
+   *
+   * One common use case for prefixed is if you're trying to determine which transition
+   * end event to bind to, you might do something like...
+   * ```js
+   * var transEndEventNames = {
+   *     'WebkitTransition' : 'webkitTransitionEnd', * Saf 6, Android Browser
+   *     'MozTransition'    : 'transitionend',       * only for FF < 15
+   *     'transition'       : 'transitionend'        * IE10, Opera, Chrome, FF 15+, Saf 7+
+   * };
+   *
+   * var transEndEventName = transEndEventNames[ Modernizr.prefixed('transition') ];
+   * ```
+   *
+   * If you want a similar lookup, but in kebab-case, you can use [prefixedCSS](#modernizr-prefixedcss).
+   */
+
+  var prefixed = ModernizrProto.prefixed = function(prop, obj, elem) {
+    if (prop.indexOf('@') === 0) {
+      return atRule(prop);
+    }
+
+    if (prop.indexOf('-') != -1) {
+      // Convert kebab-case to camelCase
+      prop = cssToDOM(prop);
+    }
+    if (!obj) {
+      return testPropsAll(prop, 'pfx');
+    } else {
+      // Testing DOM property e.g. Modernizr.prefixed('requestAnimationFrame', window) // 'mozRequestAnimationFrame'
+      return testPropsAll(prop, obj, elem);
+    }
+  };
+
+  
+/*!
+{
+  "name": "IndexedDB",
+  "property": "indexeddb",
+  "caniuse": "indexeddb",
+  "tags": ["storage"],
+  "polyfills": ["indexeddb"],
+  "async": true
+}
+!*/
+/* DOC
+Detects support for the IndexedDB client-side storage API (final spec).
+*/
+
+  // Vendors had inconsistent prefixing with the experimental Indexed DB:
+  // - Webkit's implementation is accessible through webkitIndexedDB
+  // - Firefox shipped moz_indexedDB before FF4b9, but since then has been mozIndexedDB
+  // For speed, we don't test the legacy (and beta-only) indexedDB
+
+  Modernizr.addAsyncTest(function() {
+
+    var indexeddb;
+
+    try {
+      // Firefox throws a Security Error when cookies are disabled
+      indexeddb = prefixed('indexedDB', window);
+    } catch (e) {
+    }
+
+    if (!!indexeddb) {
+      var testDBName = 'modernizr-' + Math.random();
+      var req = indexeddb.open(testDBName);
+
+      req.onerror = function() {
+        if (req.error && req.error.name === 'InvalidStateError') {
+          addTest('indexeddb', false);
+        } else {
+          addTest('indexeddb', true);
+          detectDeleteDatabase(indexeddb, testDBName);
+        }
+      };
+
+      req.onsuccess = function() {
+        addTest('indexeddb', true);
+        detectDeleteDatabase(indexeddb, testDBName);
+      };
+    } else {
+      addTest('indexeddb', false);
+    }
+  });
+
+  function detectDeleteDatabase(indexeddb, testDBName) {
+    var deleteReq = indexeddb.deleteDatabase(testDBName);
+    deleteReq.onsuccess = function() {
+      addTest('indexeddb.deletedatabase', true);
+    };
+    deleteReq.onerror = function() {
+      addTest('indexeddb.deletedatabase', false);
+    };
+  }
+
+;
+
+  // Run each test
+  testRunner();
+
+  // Remove the "no-js" class if it exists
+  setClasses(classes);
+
+  delete ModernizrProto.addTest;
+  delete ModernizrProto.addAsyncTest;
+
+  // Run the things that are supposed to run after the tests
+  for (var i = 0; i < Modernizr._q.length; i++) {
+    Modernizr._q[i]();
+  }
+
+  // Leak Modernizr namespace
+  window.Modernizr = Modernizr;
+
+
+;
+
+})(window, document);
+/*! URI.js v1.19.11 http://medialize.github.io/URI.js/ */
 /* build contains: IPv6.js, punycode.js, SecondLevelDomains.js, URI.js, URITemplate.js, jquery.URI.js */
 /*
  URI.js - Mutating URLs
  IPv6 Support
 
- Version: 1.19.0
+ Version: 1.19.11
 
  Author: Rodney Rehm
  Web: http://medialize.github.io/URI.js/
@@ -843,7 +3039,7 @@ Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0));};
  https://mths.be/punycode v1.4.0 by @mathias  URI.js - Mutating URLs
  Second Level Domain (SLD) Support
 
- Version: 1.19.0
+ Version: 1.19.11
 
  Author: Rodney Rehm
  Web: http://medialize.github.io/URI.js/
@@ -853,7 +3049,7 @@ Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0));};
 
  URI.js - Mutating URLs
 
- Version: 1.19.0
+ Version: 1.19.11
 
  Author: Rodney Rehm
  Web: http://medialize.github.io/URI.js/
@@ -864,7 +3060,7 @@ Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0));};
  URI.js - Mutating URLs
  URI Template Support - http://tools.ietf.org/html/rfc6570
 
- Version: 1.19.0
+ Version: 1.19.11
 
  Author: Rodney Rehm
  Web: http://medialize.github.io/URI.js/
@@ -875,7 +3071,7 @@ Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0));};
  URI.js - Mutating URLs
  jQuery Plugin
 
- Version: 1.19.0
+ Version: 1.19.11
 
  Author: Rodney Rehm
  Web: http://medialize.github.io/URI.js/jquery-uri-plugin.html
@@ -884,103 +3080,136 @@ Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0));};
    MIT License http://www.opensource.org/licenses/mit-license
 
 */
-(function(d,k){"object"===typeof module&&module.exports?module.exports=k():"function"===typeof define&&define.amd?define(k):d.IPv6=k(d)})(this,function(d){var k=d&&d.IPv6;return{best:function(g){g=g.toLowerCase().split(":");var d=g.length,b=8;""===g[0]&&""===g[1]&&""===g[2]?(g.shift(),g.shift()):""===g[0]&&""===g[1]?g.shift():""===g[d-1]&&""===g[d-2]&&g.pop();d=g.length;-1!==g[d-1].indexOf(".")&&(b=7);var p;for(p=0;p<d&&""!==g[p];p++);if(p<b)for(g.splice(p,1,"0000");g.length<b;)g.splice(p,0,"0000");
-for(p=0;p<b;p++){d=g[p].split("");for(var k=0;3>k;k++)if("0"===d[0]&&1<d.length)d.splice(0,1);else break;g[p]=d.join("")}d=-1;var t=k=0,n=-1,q=!1;for(p=0;p<b;p++)q?"0"===g[p]?t+=1:(q=!1,t>k&&(d=n,k=t)):"0"===g[p]&&(q=!0,n=p,t=1);t>k&&(d=n,k=t);1<k&&g.splice(d,k,"");d=g.length;b="";""===g[0]&&(b=":");for(p=0;p<d;p++){b+=g[p];if(p===d-1)break;b+=":"}""===g[d-1]&&(b+=":");return b},noConflict:function(){d.IPv6===this&&(d.IPv6=k);return this}}});
-(function(d){function k(b){throw new RangeError(A[b]);}function g(b,f){for(var h=b.length,d=[];h--;)d[h]=f(b[h]);return d}function u(b,f){var h=b.split("@"),d="";1<h.length&&(d=h[0]+"@",b=h[1]);b=b.replace(E,".");h=b.split(".");h=g(h,f).join(".");return d+h}function b(b){for(var f=[],h=0,d=b.length,g,a;h<d;)g=b.charCodeAt(h++),55296<=g&&56319>=g&&h<d?(a=b.charCodeAt(h++),56320==(a&64512)?f.push(((g&1023)<<10)+(a&1023)+65536):(f.push(g),h--)):f.push(g);return f}function p(b){return g(b,function(b){var f=
-"";65535<b&&(b-=65536,f+=y(b>>>10&1023|55296),b=56320|b&1023);return f+=y(b)}).join("")}function B(b,f){return b+22+75*(26>b)-((0!=f)<<5)}function t(b,h,d){var g=0;b=d?f(b/700):b>>1;for(b+=f(b/h);455<b;g+=36)b=f(b/35);return f(g+36*b/(b+38))}function n(b){var h=[],d=b.length,g=0,n=128,a=72,c,e;var m=b.lastIndexOf("-");0>m&&(m=0);for(c=0;c<m;++c)128<=b.charCodeAt(c)&&k("not-basic"),h.push(b.charCodeAt(c));for(m=0<m?m+1:0;m<d;){c=g;var l=1;for(e=36;;e+=36){m>=d&&k("invalid-input");var x=b.charCodeAt(m++);
-x=10>x-48?x-22:26>x-65?x-65:26>x-97?x-97:36;(36<=x||x>f((2147483647-g)/l))&&k("overflow");g+=x*l;var r=e<=a?1:e>=a+26?26:e-a;if(x<r)break;x=36-r;l>f(2147483647/x)&&k("overflow");l*=x}l=h.length+1;a=t(g-c,l,0==c);f(g/l)>2147483647-n&&k("overflow");n+=f(g/l);g%=l;h.splice(g++,0,n)}return p(h)}function q(h){var d,g,n,r=[];h=b(h);var a=h.length;var c=128;var e=0;var m=72;for(n=0;n<a;++n){var l=h[n];128>l&&r.push(y(l))}for((d=g=r.length)&&r.push("-");d<a;){var x=2147483647;for(n=0;n<a;++n)l=h[n],l>=c&&
-l<x&&(x=l);var q=d+1;x-c>f((2147483647-e)/q)&&k("overflow");e+=(x-c)*q;c=x;for(n=0;n<a;++n)if(l=h[n],l<c&&2147483647<++e&&k("overflow"),l==c){var v=e;for(x=36;;x+=36){l=x<=m?1:x>=m+26?26:x-m;if(v<l)break;var p=v-l;v=36-l;r.push(y(B(l+p%v,0)));v=f(p/v)}r.push(y(B(v,0)));m=t(e,q,d==g);e=0;++d}++e;++c}return r.join("")}var w="object"==typeof exports&&exports&&!exports.nodeType&&exports,h="object"==typeof module&&module&&!module.nodeType&&module,r="object"==typeof global&&global;if(r.global===r||r.window===
-r||r.self===r)d=r;var v=/^xn--/,D=/[^\x20-\x7E]/,E=/[\x2E\u3002\uFF0E\uFF61]/g,A={overflow:"Overflow: input needs wider integers to process","not-basic":"Illegal input >= 0x80 (not a basic code point)","invalid-input":"Invalid input"},f=Math.floor,y=String.fromCharCode,C;var z={version:"1.3.2",ucs2:{decode:b,encode:p},decode:n,encode:q,toASCII:function(b){return u(b,function(b){return D.test(b)?"xn--"+q(b):b})},toUnicode:function(b){return u(b,function(b){return v.test(b)?n(b.slice(4).toLowerCase()):
-b})}};if("function"==typeof define&&"object"==typeof define.amd&&define.amd)define("punycode",function(){return z});else if(w&&h)if(module.exports==w)h.exports=z;else for(C in z)z.hasOwnProperty(C)&&(w[C]=z[C]);else d.punycode=z})(this);
-(function(d,k){"object"===typeof module&&module.exports?module.exports=k():"function"===typeof define&&define.amd?define(k):d.SecondLevelDomains=k(d)})(this,function(d){var k=d&&d.SecondLevelDomains,g={list:{ac:" com gov mil net org ",ae:" ac co gov mil name net org pro sch ",af:" com edu gov net org ",al:" com edu gov mil net org ",ao:" co ed gv it og pb ",ar:" com edu gob gov int mil net org tur ",at:" ac co gv or ",au:" asn com csiro edu gov id net org ",ba:" co com edu gov mil net org rs unbi unmo unsa untz unze ",
-bb:" biz co com edu gov info net org store tv ",bh:" biz cc com edu gov info net org ",bn:" com edu gov net org ",bo:" com edu gob gov int mil net org tv ",br:" adm adv agr am arq art ato b bio blog bmd cim cng cnt com coop ecn edu eng esp etc eti far flog fm fnd fot fst g12 ggf gov imb ind inf jor jus lel mat med mil mus net nom not ntr odo org ppg pro psc psi qsl rec slg srv tmp trd tur tv vet vlog wiki zlg ",bs:" com edu gov net org ",bz:" du et om ov rg ",ca:" ab bc mb nb nf nl ns nt nu on pe qc sk yk ",
-ck:" biz co edu gen gov info net org ",cn:" ac ah bj com cq edu fj gd gov gs gx gz ha hb he hi hl hn jl js jx ln mil net nm nx org qh sc sd sh sn sx tj tw xj xz yn zj ",co:" com edu gov mil net nom org ",cr:" ac c co ed fi go or sa ",cy:" ac biz com ekloges gov ltd name net org parliament press pro tm ","do":" art com edu gob gov mil net org sld web ",dz:" art asso com edu gov net org pol ",ec:" com edu fin gov info med mil net org pro ",eg:" com edu eun gov mil name net org sci ",er:" com edu gov ind mil net org rochest w ",
-es:" com edu gob nom org ",et:" biz com edu gov info name net org ",fj:" ac biz com info mil name net org pro ",fk:" ac co gov net nom org ",fr:" asso com f gouv nom prd presse tm ",gg:" co net org ",gh:" com edu gov mil org ",gn:" ac com gov net org ",gr:" com edu gov mil net org ",gt:" com edu gob ind mil net org ",gu:" com edu gov net org ",hk:" com edu gov idv net org ",hu:" 2000 agrar bolt casino city co erotica erotika film forum games hotel info ingatlan jogasz konyvelo lakas media news org priv reklam sex shop sport suli szex tm tozsde utazas video ",
-id:" ac co go mil net or sch web ",il:" ac co gov idf k12 muni net org ","in":" ac co edu ernet firm gen gov i ind mil net nic org res ",iq:" com edu gov i mil net org ",ir:" ac co dnssec gov i id net org sch ",it:" edu gov ",je:" co net org ",jo:" com edu gov mil name net org sch ",jp:" ac ad co ed go gr lg ne or ",ke:" ac co go info me mobi ne or sc ",kh:" com edu gov mil net org per ",ki:" biz com de edu gov info mob net org tel ",km:" asso com coop edu gouv k medecin mil nom notaires pharmaciens presse tm veterinaire ",
-kn:" edu gov net org ",kr:" ac busan chungbuk chungnam co daegu daejeon es gangwon go gwangju gyeongbuk gyeonggi gyeongnam hs incheon jeju jeonbuk jeonnam k kg mil ms ne or pe re sc seoul ulsan ",kw:" com edu gov net org ",ky:" com edu gov net org ",kz:" com edu gov mil net org ",lb:" com edu gov net org ",lk:" assn com edu gov grp hotel int ltd net ngo org sch soc web ",lr:" com edu gov net org ",lv:" asn com conf edu gov id mil net org ",ly:" com edu gov id med net org plc sch ",ma:" ac co gov m net org press ",
-mc:" asso tm ",me:" ac co edu gov its net org priv ",mg:" com edu gov mil nom org prd tm ",mk:" com edu gov inf name net org pro ",ml:" com edu gov net org presse ",mn:" edu gov org ",mo:" com edu gov net org ",mt:" com edu gov net org ",mv:" aero biz com coop edu gov info int mil museum name net org pro ",mw:" ac co com coop edu gov int museum net org ",mx:" com edu gob net org ",my:" com edu gov mil name net org sch ",nf:" arts com firm info net other per rec store web ",ng:" biz com edu gov mil mobi name net org sch ",
-ni:" ac co com edu gob mil net nom org ",np:" com edu gov mil net org ",nr:" biz com edu gov info net org ",om:" ac biz co com edu gov med mil museum net org pro sch ",pe:" com edu gob mil net nom org sld ",ph:" com edu gov i mil net ngo org ",pk:" biz com edu fam gob gok gon gop gos gov net org web ",pl:" art bialystok biz com edu gda gdansk gorzow gov info katowice krakow lodz lublin mil net ngo olsztyn org poznan pwr radom slupsk szczecin torun warszawa waw wroc wroclaw zgora ",pr:" ac biz com edu est gov info isla name net org pro prof ",
-ps:" com edu gov net org plo sec ",pw:" belau co ed go ne or ",ro:" arts com firm info nom nt org rec store tm www ",rs:" ac co edu gov in org ",sb:" com edu gov net org ",sc:" com edu gov net org ",sh:" co com edu gov net nom org ",sl:" com edu gov net org ",st:" co com consulado edu embaixada gov mil net org principe saotome store ",sv:" com edu gob org red ",sz:" ac co org ",tr:" av bbs bel biz com dr edu gen gov info k12 name net org pol tel tsk tv web ",tt:" aero biz cat co com coop edu gov info int jobs mil mobi museum name net org pro tel travel ",
-tw:" club com ebiz edu game gov idv mil net org ",mu:" ac co com gov net or org ",mz:" ac co edu gov org ",na:" co com ",nz:" ac co cri geek gen govt health iwi maori mil net org parliament school ",pa:" abo ac com edu gob ing med net nom org sld ",pt:" com edu gov int net nome org publ ",py:" com edu gov mil net org ",qa:" com edu gov mil net org ",re:" asso com nom ",ru:" ac adygeya altai amur arkhangelsk astrakhan bashkiria belgorod bir bryansk buryatia cbg chel chelyabinsk chita chukotka chuvashia com dagestan e-burg edu gov grozny int irkutsk ivanovo izhevsk jar joshkar-ola kalmykia kaluga kamchatka karelia kazan kchr kemerovo khabarovsk khakassia khv kirov koenig komi kostroma kranoyarsk kuban kurgan kursk lipetsk magadan mari mari-el marine mil mordovia mosreg msk murmansk nalchik net nnov nov novosibirsk nsk omsk orenburg org oryol penza perm pp pskov ptz rnd ryazan sakhalin samara saratov simbirsk smolensk spb stavropol stv surgut tambov tatarstan tom tomsk tsaritsyn tsk tula tuva tver tyumen udm udmurtia ulan-ude vladikavkaz vladimir vladivostok volgograd vologda voronezh vrn vyatka yakutia yamal yekaterinburg yuzhno-sakhalinsk ",
-rw:" ac co com edu gouv gov int mil net ",sa:" com edu gov med net org pub sch ",sd:" com edu gov info med net org tv ",se:" a ac b bd c d e f g h i k l m n o org p parti pp press r s t tm u w x y z ",sg:" com edu gov idn net org per ",sn:" art com edu gouv org perso univ ",sy:" com edu gov mil net news org ",th:" ac co go in mi net or ",tj:" ac biz co com edu go gov info int mil name net nic org test web ",tn:" agrinet com defense edunet ens fin gov ind info intl mincom nat net org perso rnrt rns rnu tourism ",
-tz:" ac co go ne or ",ua:" biz cherkassy chernigov chernovtsy ck cn co com crimea cv dn dnepropetrovsk donetsk dp edu gov if in ivano-frankivsk kh kharkov kherson khmelnitskiy kiev kirovograd km kr ks kv lg lugansk lutsk lviv me mk net nikolaev od odessa org pl poltava pp rovno rv sebastopol sumy te ternopil uzhgorod vinnica vn zaporizhzhe zhitomir zp zt ",ug:" ac co go ne or org sc ",uk:" ac bl british-library co cym gov govt icnet jet lea ltd me mil mod national-library-scotland nel net nhs nic nls org orgn parliament plc police sch scot soc ",
-us:" dni fed isa kids nsn ",uy:" com edu gub mil net org ",ve:" co com edu gob info mil net org web ",vi:" co com k12 net org ",vn:" ac biz com edu gov health info int name net org pro ",ye:" co com gov ltd me net org plc ",yu:" ac co edu gov org ",za:" ac agric alt bourse city co cybernet db edu gov grondar iaccess imt inca landesign law mil net ngo nis nom olivetti org pix school tm web ",zm:" ac co com edu gov net org sch ",com:"ar br cn de eu gb gr hu jpn kr no qc ru sa se uk us uy za ",net:"gb jp se uk ",
-org:"ae",de:"com "},has:function(d){var b=d.lastIndexOf(".");if(0>=b||b>=d.length-1)return!1;var k=d.lastIndexOf(".",b-1);if(0>=k||k>=b-1)return!1;var u=g.list[d.slice(b+1)];return u?0<=u.indexOf(" "+d.slice(k+1,b)+" "):!1},is:function(d){var b=d.lastIndexOf(".");if(0>=b||b>=d.length-1||0<=d.lastIndexOf(".",b-1))return!1;var k=g.list[d.slice(b+1)];return k?0<=k.indexOf(" "+d.slice(0,b)+" "):!1},get:function(d){var b=d.lastIndexOf(".");if(0>=b||b>=d.length-1)return null;var k=d.lastIndexOf(".",b-1);
-if(0>=k||k>=b-1)return null;var u=g.list[d.slice(b+1)];return!u||0>u.indexOf(" "+d.slice(k+1,b)+" ")?null:d.slice(k+1)},noConflict:function(){d.SecondLevelDomains===this&&(d.SecondLevelDomains=k);return this}};return g});
-(function(d,k){"object"===typeof module&&module.exports?module.exports=k(require("./punycode"),require("./IPv6"),require("./SecondLevelDomains")):"function"===typeof define&&define.amd?define(["./punycode","./IPv6","./SecondLevelDomains"],k):d.URI=k(d.punycode,d.IPv6,d.SecondLevelDomains,d)})(this,function(d,k,g,u){function b(a,c){var e=1<=arguments.length,m=2<=arguments.length;if(!(this instanceof b))return e?m?new b(a,c):new b(a):new b;if(void 0===a){if(e)throw new TypeError("undefined is not a valid argument for URI");
-a="undefined"!==typeof location?location.href+"":""}if(null===a&&e)throw new TypeError("null is not a valid argument for URI");this.href(a);return void 0!==c?this.absoluteTo(c):this}function p(a){return a.replace(/([.*+?^=!:${}()|[\]\/\\])/g,"\\$1")}function B(a){return void 0===a?"Undefined":String(Object.prototype.toString.call(a)).slice(8,-1)}function t(a){return"Array"===B(a)}function n(a,c){var e={},b;if("RegExp"===B(c))e=null;else if(t(c)){var l=0;for(b=c.length;l<b;l++)e[c[l]]=!0}else e[c]=
-!0;l=0;for(b=a.length;l<b;l++)if(e&&void 0!==e[a[l]]||!e&&c.test(a[l]))a.splice(l,1),b--,l--;return a}function q(a,c){var e;if(t(c)){var b=0;for(e=c.length;b<e;b++)if(!q(a,c[b]))return!1;return!0}var l=B(c);b=0;for(e=a.length;b<e;b++)if("RegExp"===l){if("string"===typeof a[b]&&a[b].match(c))return!0}else if(a[b]===c)return!0;return!1}function w(a,c){if(!t(a)||!t(c)||a.length!==c.length)return!1;a.sort();c.sort();for(var e=0,b=a.length;e<b;e++)if(a[e]!==c[e])return!1;return!0}function h(a){return a.replace(/^\/+|\/+$/g,
-"")}function r(a){return escape(a)}function v(a){return encodeURIComponent(a).replace(/[!'()*]/g,r).replace(/\*/g,"%2A")}function D(a){return function(c,e){if(void 0===c)return this._parts[a]||"";this._parts[a]=c||null;this.build(!e);return this}}function E(a,c){return function(e,b){if(void 0===e)return this._parts[a]||"";null!==e&&(e+="",e.charAt(0)===c&&(e=e.substring(1)));this._parts[a]=e;this.build(!b);return this}}var A=u&&u.URI;b.version="1.19.0";var f=b.prototype,y=Object.prototype.hasOwnProperty;
-b._parts=function(){return{protocol:null,username:null,password:null,hostname:null,urn:null,port:null,path:null,query:null,fragment:null,preventInvalidHostname:b.preventInvalidHostname,duplicateQueryParameters:b.duplicateQueryParameters,escapeQuerySpace:b.escapeQuerySpace}};b.preventInvalidHostname=!1;b.duplicateQueryParameters=!1;b.escapeQuerySpace=!0;b.protocol_expression=/^[a-z][a-z0-9.+-]*$/i;b.idn_expression=/[^a-z0-9\._-]/i;b.punycode_expression=/(xn--)/i;b.ip4_expression=/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
-b.ip6_expression=/^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
-b.find_uri_expression=/\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?\u00ab\u00bb\u201c\u201d\u2018\u2019]))/ig;b.findUri={start:/\b(?:([a-z][a-z0-9.+-]*:\/\/)|www\.)/gi,end:/[\s\r\n]|$/,trim:/[`!()\[\]{};:'".,<>?\u00ab\u00bb\u201c\u201d\u201e\u2018\u2019]+$/,parens:/(\([^\)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>)/g};b.defaultPorts={http:"80",https:"443",ftp:"21",
-gopher:"70",ws:"80",wss:"443"};b.hostProtocols=["http","https"];b.invalid_hostname_characters=/[^a-zA-Z0-9\.\-:_]/;b.domAttributes={a:"href",blockquote:"cite",link:"href",base:"href",script:"src",form:"action",img:"src",area:"href",iframe:"src",embed:"src",source:"src",track:"src",input:"src",audio:"src",video:"src"};b.getDomAttribute=function(a){if(a&&a.nodeName){var c=a.nodeName.toLowerCase();if("input"!==c||"image"===a.type)return b.domAttributes[c]}};b.encode=v;b.decode=decodeURIComponent;b.iso8859=
-function(){b.encode=escape;b.decode=unescape};b.unicode=function(){b.encode=v;b.decode=decodeURIComponent};b.characters={pathname:{encode:{expression:/%(24|26|2B|2C|3B|3D|3A|40)/ig,map:{"%24":"$","%26":"&","%2B":"+","%2C":",","%3B":";","%3D":"=","%3A":":","%40":"@"}},decode:{expression:/[\/\?#]/g,map:{"/":"%2F","?":"%3F","#":"%23"}}},reserved:{encode:{expression:/%(21|23|24|26|27|28|29|2A|2B|2C|2F|3A|3B|3D|3F|40|5B|5D)/ig,map:{"%3A":":","%2F":"/","%3F":"?","%23":"#","%5B":"[","%5D":"]","%40":"@",
-"%21":"!","%24":"$","%26":"&","%27":"'","%28":"(","%29":")","%2A":"*","%2B":"+","%2C":",","%3B":";","%3D":"="}}},urnpath:{encode:{expression:/%(21|24|27|28|29|2A|2B|2C|3B|3D|40)/ig,map:{"%21":"!","%24":"$","%27":"'","%28":"(","%29":")","%2A":"*","%2B":"+","%2C":",","%3B":";","%3D":"=","%40":"@"}},decode:{expression:/[\/\?#:]/g,map:{"/":"%2F","?":"%3F","#":"%23",":":"%3A"}}}};b.encodeQuery=function(a,c){var e=b.encode(a+"");void 0===c&&(c=b.escapeQuerySpace);return c?e.replace(/%20/g,"+"):e};b.decodeQuery=
-function(a,c){a+="";void 0===c&&(c=b.escapeQuerySpace);try{return b.decode(c?a.replace(/\+/g,"%20"):a)}catch(e){return a}};var C={encode:"encode",decode:"decode"},z,F=function(a,c){return function(e){try{return b[c](e+"").replace(b.characters[a][c].expression,function(e){return b.characters[a][c].map[e]})}catch(m){return e}}};for(z in C)b[z+"PathSegment"]=F("pathname",C[z]),b[z+"UrnPathSegment"]=F("urnpath",C[z]);C=function(a,c,e){return function(m){var l=e?function(a){return b[c](b[e](a))}:b[c];
-m=(m+"").split(a);for(var d=0,f=m.length;d<f;d++)m[d]=l(m[d]);return m.join(a)}};b.decodePath=C("/","decodePathSegment");b.decodeUrnPath=C(":","decodeUrnPathSegment");b.recodePath=C("/","encodePathSegment","decode");b.recodeUrnPath=C(":","encodeUrnPathSegment","decode");b.encodeReserved=F("reserved","encode");b.parse=function(a,c){c||(c={preventInvalidHostname:b.preventInvalidHostname});var e=a.indexOf("#");-1<e&&(c.fragment=a.substring(e+1)||null,a=a.substring(0,e));e=a.indexOf("?");-1<e&&(c.query=
-a.substring(e+1)||null,a=a.substring(0,e));"//"===a.substring(0,2)?(c.protocol=null,a=a.substring(2),a=b.parseAuthority(a,c)):(e=a.indexOf(":"),-1<e&&(c.protocol=a.substring(0,e)||null,c.protocol&&!c.protocol.match(b.protocol_expression)?c.protocol=void 0:"//"===a.substring(e+1,e+3)?(a=a.substring(e+3),a=b.parseAuthority(a,c)):(a=a.substring(e+1),c.urn=!0)));c.path=a;return c};b.parseHost=function(a,c){a||(a="");a=a.replace(/\\/g,"/");var e=a.indexOf("/");-1===e&&(e=a.length);if("["===a.charAt(0)){var m=
-a.indexOf("]");c.hostname=a.substring(1,m)||null;c.port=a.substring(m+2,e)||null;"/"===c.port&&(c.port=null)}else{var l=a.indexOf(":");m=a.indexOf("/");l=a.indexOf(":",l+1);-1!==l&&(-1===m||l<m)?(c.hostname=a.substring(0,e)||null,c.port=null):(m=a.substring(0,e).split(":"),c.hostname=m[0]||null,c.port=m[1]||null)}c.hostname&&"/"!==a.substring(e).charAt(0)&&(e++,a="/"+a);c.preventInvalidHostname&&b.ensureValidHostname(c.hostname,c.protocol);c.port&&b.ensureValidPort(c.port);return a.substring(e)||
-"/"};b.parseAuthority=function(a,c){a=b.parseUserinfo(a,c);return b.parseHost(a,c)};b.parseUserinfo=function(a,c){var e=a.indexOf("/"),m=a.lastIndexOf("@",-1<e?e:a.length-1);-1<m&&(-1===e||m<e)?(e=a.substring(0,m).split(":"),c.username=e[0]?b.decode(e[0]):null,e.shift(),c.password=e[0]?b.decode(e.join(":")):null,a=a.substring(m+1)):(c.username=null,c.password=null);return a};b.parseQuery=function(a,c){if(!a)return{};a=a.replace(/&+/g,"&").replace(/^\?*&*|&+$/g,"");if(!a)return{};for(var e={},m=a.split("&"),
-l=m.length,d,f,h=0;h<l;h++)if(d=m[h].split("="),f=b.decodeQuery(d.shift(),c),d=d.length?b.decodeQuery(d.join("="),c):null,y.call(e,f)){if("string"===typeof e[f]||null===e[f])e[f]=[e[f]];e[f].push(d)}else e[f]=d;return e};b.build=function(a){var c="";a.protocol&&(c+=a.protocol+":");a.urn||!c&&!a.hostname||(c+="//");c+=b.buildAuthority(a)||"";"string"===typeof a.path&&("/"!==a.path.charAt(0)&&"string"===typeof a.hostname&&(c+="/"),c+=a.path);"string"===typeof a.query&&a.query&&(c+="?"+a.query);"string"===
-typeof a.fragment&&a.fragment&&(c+="#"+a.fragment);return c};b.buildHost=function(a){var c="";if(a.hostname)c=b.ip6_expression.test(a.hostname)?c+("["+a.hostname+"]"):c+a.hostname;else return"";a.port&&(c+=":"+a.port);return c};b.buildAuthority=function(a){return b.buildUserinfo(a)+b.buildHost(a)};b.buildUserinfo=function(a){var c="";a.username&&(c+=b.encode(a.username));a.password&&(c+=":"+b.encode(a.password));c&&(c+="@");return c};b.buildQuery=function(a,c,e){var m="",l,d;for(l in a)if(y.call(a,
-l)&&l)if(t(a[l])){var f={};var h=0;for(d=a[l].length;h<d;h++)void 0!==a[l][h]&&void 0===f[a[l][h]+""]&&(m+="&"+b.buildQueryParameter(l,a[l][h],e),!0!==c&&(f[a[l][h]+""]=!0))}else void 0!==a[l]&&(m+="&"+b.buildQueryParameter(l,a[l],e));return m.substring(1)};b.buildQueryParameter=function(a,c,e){return b.encodeQuery(a,e)+(null!==c?"="+b.encodeQuery(c,e):"")};b.addQuery=function(a,c,e){if("object"===typeof c)for(var m in c)y.call(c,m)&&b.addQuery(a,m,c[m]);else if("string"===typeof c)void 0===a[c]?
-a[c]=e:("string"===typeof a[c]&&(a[c]=[a[c]]),t(e)||(e=[e]),a[c]=(a[c]||[]).concat(e));else throw new TypeError("URI.addQuery() accepts an object, string as the name parameter");};b.setQuery=function(a,c,e){if("object"===typeof c)for(var m in c)y.call(c,m)&&b.setQuery(a,m,c[m]);else if("string"===typeof c)a[c]=void 0===e?null:e;else throw new TypeError("URI.setQuery() accepts an object, string as the name parameter");};b.removeQuery=function(a,c,e){var m;if(t(c))for(e=0,m=c.length;e<m;e++)a[c[e]]=
-void 0;else if("RegExp"===B(c))for(m in a)c.test(m)&&(a[m]=void 0);else if("object"===typeof c)for(m in c)y.call(c,m)&&b.removeQuery(a,m,c[m]);else if("string"===typeof c)void 0!==e?"RegExp"===B(e)?!t(a[c])&&e.test(a[c])?a[c]=void 0:a[c]=n(a[c],e):a[c]!==String(e)||t(e)&&1!==e.length?t(a[c])&&(a[c]=n(a[c],e)):a[c]=void 0:a[c]=void 0;else throw new TypeError("URI.removeQuery() accepts an object, string, RegExp as the first parameter");};b.hasQuery=function(a,c,e,m){switch(B(c)){case "String":break;
-case "RegExp":for(var l in a)if(y.call(a,l)&&c.test(l)&&(void 0===e||b.hasQuery(a,l,e)))return!0;return!1;case "Object":for(var d in c)if(y.call(c,d)&&!b.hasQuery(a,d,c[d]))return!1;return!0;default:throw new TypeError("URI.hasQuery() accepts a string, regular expression or object as the name parameter");}switch(B(e)){case "Undefined":return c in a;case "Boolean":return a=!(t(a[c])?!a[c].length:!a[c]),e===a;case "Function":return!!e(a[c],c,a);case "Array":return t(a[c])?(m?q:w)(a[c],e):!1;case "RegExp":return t(a[c])?
-m?q(a[c],e):!1:!(!a[c]||!a[c].match(e));case "Number":e=String(e);case "String":return t(a[c])?m?q(a[c],e):!1:a[c]===e;default:throw new TypeError("URI.hasQuery() accepts undefined, boolean, string, number, RegExp, Function as the value parameter");}};b.joinPaths=function(){for(var a=[],c=[],e=0,m=0;m<arguments.length;m++){var l=new b(arguments[m]);a.push(l);l=l.segment();for(var d=0;d<l.length;d++)"string"===typeof l[d]&&c.push(l[d]),l[d]&&e++}if(!c.length||!e)return new b("");c=(new b("")).segment(c);
-""!==a[0].path()&&"/"!==a[0].path().slice(0,1)||c.path("/"+c.path());return c.normalize()};b.commonPath=function(a,c){var e=Math.min(a.length,c.length),b;for(b=0;b<e;b++)if(a.charAt(b)!==c.charAt(b)){b--;break}if(1>b)return a.charAt(0)===c.charAt(0)&&"/"===a.charAt(0)?"/":"";if("/"!==a.charAt(b)||"/"!==c.charAt(b))b=a.substring(0,b).lastIndexOf("/");return a.substring(0,b+1)};b.withinString=function(a,c,e){e||(e={});var m=e.start||b.findUri.start,d=e.end||b.findUri.end,f=e.trim||b.findUri.trim,h=
-e.parens||b.findUri.parens,g=/[a-z0-9-]=["']?$/i;for(m.lastIndex=0;;){var n=m.exec(a);if(!n)break;var r=n.index;if(e.ignoreHtml){var k=a.slice(Math.max(r-3,0),r);if(k&&g.test(k))continue}var v=r+a.slice(r).search(d);k=a.slice(r,v);for(v=-1;;){var q=h.exec(k);if(!q)break;v=Math.max(v,q.index+q[0].length)}k=-1<v?k.slice(0,v)+k.slice(v).replace(f,""):k.replace(f,"");k.length<=n[0].length||e.ignore&&e.ignore.test(k)||(v=r+k.length,n=c(k,r,v,a),void 0===n?m.lastIndex=v:(n=String(n),a=a.slice(0,r)+n+a.slice(v),
-m.lastIndex=r+n.length))}m.lastIndex=0;return a};b.ensureValidHostname=function(a,c){var e=!!a,m=!1;c&&(m=q(b.hostProtocols,c));if(m&&!e)throw new TypeError("Hostname cannot be empty, if protocol is "+c);if(a&&a.match(b.invalid_hostname_characters)){if(!d)throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-:_] and Punycode.js is not available');if(d.toASCII(a).match(b.invalid_hostname_characters))throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-:_]');
-}};b.ensureValidPort=function(a){if(a){var c=Number(a);if(!(/^[0-9]+$/.test(c)&&0<c&&65536>c))throw new TypeError('Port "'+a+'" is not a valid port');}};b.noConflict=function(a){if(a)return a={URI:this.noConflict()},u.URITemplate&&"function"===typeof u.URITemplate.noConflict&&(a.URITemplate=u.URITemplate.noConflict()),u.IPv6&&"function"===typeof u.IPv6.noConflict&&(a.IPv6=u.IPv6.noConflict()),u.SecondLevelDomains&&"function"===typeof u.SecondLevelDomains.noConflict&&(a.SecondLevelDomains=u.SecondLevelDomains.noConflict()),
-a;u.URI===this&&(u.URI=A);return this};f.build=function(a){if(!0===a)this._deferred_build=!0;else if(void 0===a||this._deferred_build)this._string=b.build(this._parts),this._deferred_build=!1;return this};f.clone=function(){return new b(this)};f.valueOf=f.toString=function(){return this.build(!1)._string};f.protocol=D("protocol");f.username=D("username");f.password=D("password");f.hostname=D("hostname");f.port=D("port");f.query=E("query","?");f.fragment=E("fragment","#");f.search=function(a,c){var b=
-this.query(a,c);return"string"===typeof b&&b.length?"?"+b:b};f.hash=function(a,c){var b=this.fragment(a,c);return"string"===typeof b&&b.length?"#"+b:b};f.pathname=function(a,c){if(void 0===a||!0===a){var e=this._parts.path||(this._parts.hostname?"/":"");return a?(this._parts.urn?b.decodeUrnPath:b.decodePath)(e):e}this._parts.path=this._parts.urn?a?b.recodeUrnPath(a):"":a?b.recodePath(a):"/";this.build(!c);return this};f.path=f.pathname;f.href=function(a,c){var e;if(void 0===a)return this.toString();
-this._string="";this._parts=b._parts();var d=a instanceof b,l="object"===typeof a&&(a.hostname||a.path||a.pathname);a.nodeName&&(l=b.getDomAttribute(a),a=a[l]||"",l=!1);!d&&l&&void 0!==a.pathname&&(a=a.toString());if("string"===typeof a||a instanceof String)this._parts=b.parse(String(a),this._parts);else if(d||l)for(e in d=d?a._parts:a,d)y.call(this._parts,e)&&(this._parts[e]=d[e]);else throw new TypeError("invalid input");this.build(!c);return this};f.is=function(a){var c=!1,e=!1,d=!1,l=!1,f=!1,
-h=!1,n=!1,r=!this._parts.urn;this._parts.hostname&&(r=!1,e=b.ip4_expression.test(this._parts.hostname),d=b.ip6_expression.test(this._parts.hostname),c=e||d,f=(l=!c)&&g&&g.has(this._parts.hostname),h=l&&b.idn_expression.test(this._parts.hostname),n=l&&b.punycode_expression.test(this._parts.hostname));switch(a.toLowerCase()){case "relative":return r;case "absolute":return!r;case "domain":case "name":return l;case "sld":return f;case "ip":return c;case "ip4":case "ipv4":case "inet4":return e;case "ip6":case "ipv6":case "inet6":return d;
-case "idn":return h;case "url":return!this._parts.urn;case "urn":return!!this._parts.urn;case "punycode":return n}return null};var G=f.protocol,H=f.port,I=f.hostname;f.protocol=function(a,c){if(a&&(a=a.replace(/:(\/\/)?$/,""),!a.match(b.protocol_expression)))throw new TypeError('Protocol "'+a+"\" contains characters other than [A-Z0-9.+-] or doesn't start with [A-Z]");return G.call(this,a,c)};f.scheme=f.protocol;f.port=function(a,c){if(this._parts.urn)return void 0===a?"":this;void 0!==a&&(0===a&&
-(a=null),a&&(a+="",":"===a.charAt(0)&&(a=a.substring(1)),b.ensureValidPort(a)));return H.call(this,a,c)};f.hostname=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0!==a){var e={preventInvalidHostname:this._parts.preventInvalidHostname};if("/"!==b.parseHost(a,e))throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-]');a=e.hostname;this._parts.preventInvalidHostname&&b.ensureValidHostname(a,this._parts.protocol)}return I.call(this,a,c)};f.origin=function(a,
-c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a){var e=this.protocol();return this.authority()?(e?e+"://":"")+this.authority():""}e=b(a);this.protocol(e.protocol()).authority(e.authority()).build(!c);return this};f.host=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a)return this._parts.hostname?b.buildHost(this._parts):"";if("/"!==b.parseHost(a,this._parts))throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-]');this.build(!c);return this};
-f.authority=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a)return this._parts.hostname?b.buildAuthority(this._parts):"";if("/"!==b.parseAuthority(a,this._parts))throw new TypeError('Hostname "'+a+'" contains characters other than [A-Z0-9.-]');this.build(!c);return this};f.userinfo=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a){var e=b.buildUserinfo(this._parts);return e?e.substring(0,e.length-1):e}"@"!==a[a.length-1]&&(a+="@");b.parseUserinfo(a,
-this._parts);this.build(!c);return this};f.resource=function(a,c){if(void 0===a)return this.path()+this.search()+this.hash();var e=b.parse(a);this._parts.path=e.path;this._parts.query=e.query;this._parts.fragment=e.fragment;this.build(!c);return this};f.subdomain=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a){if(!this._parts.hostname||this.is("IP"))return"";var e=this._parts.hostname.length-this.domain().length-1;return this._parts.hostname.substring(0,e)||""}e=this._parts.hostname.length-
-this.domain().length;e=this._parts.hostname.substring(0,e);e=new RegExp("^"+p(e));a&&"."!==a.charAt(a.length-1)&&(a+=".");if(-1!==a.indexOf(":"))throw new TypeError("Domains cannot contain colons");a&&b.ensureValidHostname(a,this._parts.protocol);this._parts.hostname=this._parts.hostname.replace(e,a);this.build(!c);return this};f.domain=function(a,c){if(this._parts.urn)return void 0===a?"":this;"boolean"===typeof a&&(c=a,a=void 0);if(void 0===a){if(!this._parts.hostname||this.is("IP"))return"";var e=
-this._parts.hostname.match(/\./g);if(e&&2>e.length)return this._parts.hostname;e=this._parts.hostname.length-this.tld(c).length-1;e=this._parts.hostname.lastIndexOf(".",e-1)+1;return this._parts.hostname.substring(e)||""}if(!a)throw new TypeError("cannot set domain empty");if(-1!==a.indexOf(":"))throw new TypeError("Domains cannot contain colons");b.ensureValidHostname(a,this._parts.protocol);!this._parts.hostname||this.is("IP")?this._parts.hostname=a:(e=new RegExp(p(this.domain())+"$"),this._parts.hostname=
-this._parts.hostname.replace(e,a));this.build(!c);return this};f.tld=function(a,c){if(this._parts.urn)return void 0===a?"":this;"boolean"===typeof a&&(c=a,a=void 0);if(void 0===a){if(!this._parts.hostname||this.is("IP"))return"";var b=this._parts.hostname.lastIndexOf(".");b=this._parts.hostname.substring(b+1);return!0!==c&&g&&g.list[b.toLowerCase()]?g.get(this._parts.hostname)||b:b}if(a)if(a.match(/[^a-zA-Z0-9-]/))if(g&&g.is(a))b=new RegExp(p(this.tld())+"$"),this._parts.hostname=this._parts.hostname.replace(b,
-a);else throw new TypeError('TLD "'+a+'" contains characters other than [A-Z0-9]');else{if(!this._parts.hostname||this.is("IP"))throw new ReferenceError("cannot set TLD on non-domain host");b=new RegExp(p(this.tld())+"$");this._parts.hostname=this._parts.hostname.replace(b,a)}else throw new TypeError("cannot set TLD empty");this.build(!c);return this};f.directory=function(a,c){if(this._parts.urn)return void 0===a?"":this;if(void 0===a||!0===a){if(!this._parts.path&&!this._parts.hostname)return"";
-if("/"===this._parts.path)return"/";var e=this._parts.path.length-this.filename().length-1;e=this._parts.path.substring(0,e)||(this._parts.hostname?"/":"");return a?b.decodePath(e):e}e=this._parts.path.length-this.filename().length;e=this._parts.path.substring(0,e);e=new RegExp("^"+p(e));this.is("relative")||(a||(a="/"),"/"!==a.charAt(0)&&(a="/"+a));a&&"/"!==a.charAt(a.length-1)&&(a+="/");a=b.recodePath(a);this._parts.path=this._parts.path.replace(e,a);this.build(!c);return this};f.filename=function(a,
-c){if(this._parts.urn)return void 0===a?"":this;if("string"!==typeof a){if(!this._parts.path||"/"===this._parts.path)return"";var e=this._parts.path.lastIndexOf("/");e=this._parts.path.substring(e+1);return a?b.decodePathSegment(e):e}e=!1;"/"===a.charAt(0)&&(a=a.substring(1));a.match(/\.?\//)&&(e=!0);var d=new RegExp(p(this.filename())+"$");a=b.recodePath(a);this._parts.path=this._parts.path.replace(d,a);e?this.normalizePath(c):this.build(!c);return this};f.suffix=function(a,c){if(this._parts.urn)return void 0===
-a?"":this;if(void 0===a||!0===a){if(!this._parts.path||"/"===this._parts.path)return"";var e=this.filename(),d=e.lastIndexOf(".");if(-1===d)return"";e=e.substring(d+1);e=/^[a-z0-9%]+$/i.test(e)?e:"";return a?b.decodePathSegment(e):e}"."===a.charAt(0)&&(a=a.substring(1));if(e=this.suffix())d=a?new RegExp(p(e)+"$"):new RegExp(p("."+e)+"$");else{if(!a)return this;this._parts.path+="."+b.recodePath(a)}d&&(a=b.recodePath(a),this._parts.path=this._parts.path.replace(d,a));this.build(!c);return this};f.segment=
-function(a,c,b){var e=this._parts.urn?":":"/",d=this.path(),f="/"===d.substring(0,1);d=d.split(e);void 0!==a&&"number"!==typeof a&&(b=c,c=a,a=void 0);if(void 0!==a&&"number"!==typeof a)throw Error('Bad segment "'+a+'", must be 0-based integer');f&&d.shift();0>a&&(a=Math.max(d.length+a,0));if(void 0===c)return void 0===a?d:d[a];if(null===a||void 0===d[a])if(t(c)){d=[];a=0;for(var n=c.length;a<n;a++)if(c[a].length||d.length&&d[d.length-1].length)d.length&&!d[d.length-1].length&&d.pop(),d.push(h(c[a]))}else{if(c||
-"string"===typeof c)c=h(c),""===d[d.length-1]?d[d.length-1]=c:d.push(c)}else c?d[a]=h(c):d.splice(a,1);f&&d.unshift("");return this.path(d.join(e),b)};f.segmentCoded=function(a,c,e){var d;"number"!==typeof a&&(e=c,c=a,a=void 0);if(void 0===c){a=this.segment(a,c,e);if(t(a)){var f=0;for(d=a.length;f<d;f++)a[f]=b.decode(a[f])}else a=void 0!==a?b.decode(a):void 0;return a}if(t(c))for(f=0,d=c.length;f<d;f++)c[f]=b.encode(c[f]);else c="string"===typeof c||c instanceof String?b.encode(c):c;return this.segment(a,
-c,e)};var J=f.query;f.query=function(a,c){if(!0===a)return b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);if("function"===typeof a){var e=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace),d=a.call(this,e);this._parts.query=b.buildQuery(d||e,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);this.build(!c);return this}return void 0!==a&&"string"!==typeof a?(this._parts.query=b.buildQuery(a,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace),this.build(!c),
-this):J.call(this,a,c)};f.setQuery=function(a,c,e){var d=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);if("string"===typeof a||a instanceof String)d[a]=void 0!==c?c:null;else if("object"===typeof a)for(var f in a)y.call(a,f)&&(d[f]=a[f]);else throw new TypeError("URI.addQuery() accepts an object, string as the name parameter");this._parts.query=b.buildQuery(d,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);"string"!==typeof a&&(e=c);this.build(!e);return this};f.addQuery=
-function(a,c,e){var d=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);b.addQuery(d,a,void 0===c?null:c);this._parts.query=b.buildQuery(d,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);"string"!==typeof a&&(e=c);this.build(!e);return this};f.removeQuery=function(a,c,e){var d=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);b.removeQuery(d,a,c);this._parts.query=b.buildQuery(d,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);"string"!==
-typeof a&&(e=c);this.build(!e);return this};f.hasQuery=function(a,c,e){var d=b.parseQuery(this._parts.query,this._parts.escapeQuerySpace);return b.hasQuery(d,a,c,e)};f.setSearch=f.setQuery;f.addSearch=f.addQuery;f.removeSearch=f.removeQuery;f.hasSearch=f.hasQuery;f.normalize=function(){return this._parts.urn?this.normalizeProtocol(!1).normalizePath(!1).normalizeQuery(!1).normalizeFragment(!1).build():this.normalizeProtocol(!1).normalizeHostname(!1).normalizePort(!1).normalizePath(!1).normalizeQuery(!1).normalizeFragment(!1).build()};
-f.normalizeProtocol=function(a){"string"===typeof this._parts.protocol&&(this._parts.protocol=this._parts.protocol.toLowerCase(),this.build(!a));return this};f.normalizeHostname=function(a){this._parts.hostname&&(this.is("IDN")&&d?this._parts.hostname=d.toASCII(this._parts.hostname):this.is("IPv6")&&k&&(this._parts.hostname=k.best(this._parts.hostname)),this._parts.hostname=this._parts.hostname.toLowerCase(),this.build(!a));return this};f.normalizePort=function(a){"string"===typeof this._parts.protocol&&
-this._parts.port===b.defaultPorts[this._parts.protocol]&&(this._parts.port=null,this.build(!a));return this};f.normalizePath=function(a){var c=this._parts.path;if(!c)return this;if(this._parts.urn)return this._parts.path=b.recodeUrnPath(this._parts.path),this.build(!a),this;if("/"===this._parts.path)return this;c=b.recodePath(c);var e="";if("/"!==c.charAt(0)){var d=!0;c="/"+c}if("/.."===c.slice(-3)||"/."===c.slice(-2))c+="/";c=c.replace(/(\/(\.\/)+)|(\/\.$)/g,"/").replace(/\/{2,}/g,"/");d&&(e=c.substring(1).match(/^(\.\.\/)+/)||
-"")&&(e=e[0]);for(;;){var f=c.search(/\/\.\.(\/|$)/);if(-1===f)break;else if(0===f){c=c.substring(3);continue}var h=c.substring(0,f).lastIndexOf("/");-1===h&&(h=f);c=c.substring(0,h)+c.substring(f+3)}d&&this.is("relative")&&(c=e+c.substring(1));this._parts.path=c;this.build(!a);return this};f.normalizePathname=f.normalizePath;f.normalizeQuery=function(a){"string"===typeof this._parts.query&&(this._parts.query.length?this.query(b.parseQuery(this._parts.query,this._parts.escapeQuerySpace)):this._parts.query=
-null,this.build(!a));return this};f.normalizeFragment=function(a){this._parts.fragment||(this._parts.fragment=null,this.build(!a));return this};f.normalizeSearch=f.normalizeQuery;f.normalizeHash=f.normalizeFragment;f.iso8859=function(){var a=b.encode,c=b.decode;b.encode=escape;b.decode=decodeURIComponent;try{this.normalize()}finally{b.encode=a,b.decode=c}return this};f.unicode=function(){var a=b.encode,c=b.decode;b.encode=v;b.decode=unescape;try{this.normalize()}finally{b.encode=a,b.decode=c}return this};
-f.readable=function(){var a=this.clone();a.username("").password("").normalize();var c="";a._parts.protocol&&(c+=a._parts.protocol+"://");a._parts.hostname&&(a.is("punycode")&&d?(c+=d.toUnicode(a._parts.hostname),a._parts.port&&(c+=":"+a._parts.port)):c+=a.host());a._parts.hostname&&a._parts.path&&"/"!==a._parts.path.charAt(0)&&(c+="/");c+=a.path(!0);if(a._parts.query){for(var e="",f=0,h=a._parts.query.split("&"),n=h.length;f<n;f++){var g=(h[f]||"").split("=");e+="&"+b.decodeQuery(g[0],this._parts.escapeQuerySpace).replace(/&/g,
-"%26");void 0!==g[1]&&(e+="="+b.decodeQuery(g[1],this._parts.escapeQuerySpace).replace(/&/g,"%26"))}c+="?"+e.substring(1)}return c+=b.decodeQuery(a.hash(),!0)};f.absoluteTo=function(a){var c=this.clone(),e=["protocol","username","password","hostname","port"],d,f;if(this._parts.urn)throw Error("URNs do not have any generally defined hierarchical components");a instanceof b||(a=new b(a));if(c._parts.protocol)return c;c._parts.protocol=a._parts.protocol;if(this._parts.hostname)return c;for(d=0;f=e[d];d++)c._parts[f]=
-a._parts[f];c._parts.path?(".."===c._parts.path.substring(-2)&&(c._parts.path+="/"),"/"!==c.path().charAt(0)&&(e=(e=a.directory())?e:0===a.path().indexOf("/")?"/":"",c._parts.path=(e?e+"/":"")+c._parts.path,c.normalizePath())):(c._parts.path=a._parts.path,c._parts.query||(c._parts.query=a._parts.query));c.build();return c};f.relativeTo=function(a){var c=this.clone().normalize();if(c._parts.urn)throw Error("URNs do not have any generally defined hierarchical components");a=(new b(a)).normalize();var e=
-c._parts;var d=a._parts;var f=c.path();a=a.path();if("/"!==f.charAt(0))throw Error("URI is already relative");if("/"!==a.charAt(0))throw Error("Cannot calculate a URI relative to another relative URI");e.protocol===d.protocol&&(e.protocol=null);if(e.username===d.username&&e.password===d.password&&null===e.protocol&&null===e.username&&null===e.password&&e.hostname===d.hostname&&e.port===d.port)e.hostname=null,e.port=null;else return c.build();if(f===a)return e.path="",c.build();f=b.commonPath(f,a);
-if(!f)return c.build();d=d.path.substring(f.length).replace(/[^\/]*$/,"").replace(/.*?\//g,"../");e.path=d+e.path.substring(f.length)||"./";return c.build()};f.equals=function(a){var c=this.clone(),e=new b(a);a={};var d;c.normalize();e.normalize();if(c.toString()===e.toString())return!0;var f=c.query();var h=e.query();c.query("");e.query("");if(c.toString()!==e.toString()||f.length!==h.length)return!1;c=b.parseQuery(f,this._parts.escapeQuerySpace);h=b.parseQuery(h,this._parts.escapeQuerySpace);for(d in c)if(y.call(c,
-d)){if(!t(c[d])){if(c[d]!==h[d])return!1}else if(!w(c[d],h[d]))return!1;a[d]=!0}for(d in h)if(y.call(h,d)&&!a[d])return!1;return!0};f.preventInvalidHostname=function(a){this._parts.preventInvalidHostname=!!a;return this};f.duplicateQueryParameters=function(a){this._parts.duplicateQueryParameters=!!a;return this};f.escapeQuerySpace=function(a){this._parts.escapeQuerySpace=!!a;return this};return b});
-(function(d,k){"object"===typeof module&&module.exports?module.exports=k(require("./URI")):"function"===typeof define&&define.amd?define(["./URI"],k):d.URITemplate=k(d.URI,d)})(this,function(d,k){function g(b){if(g._cache[b])return g._cache[b];if(!(this instanceof g))return new g(b);this.expression=b;g._cache[b]=this;return this}function u(b){this.data=b;this.cache={}}var b=k&&k.URITemplate,p=Object.prototype.hasOwnProperty,B=g.prototype,t={"":{prefix:"",separator:",",named:!1,empty_name_separator:!1,
-encode:"encode"},"+":{prefix:"",separator:",",named:!1,empty_name_separator:!1,encode:"encodeReserved"},"#":{prefix:"#",separator:",",named:!1,empty_name_separator:!1,encode:"encodeReserved"},".":{prefix:".",separator:".",named:!1,empty_name_separator:!1,encode:"encode"},"/":{prefix:"/",separator:"/",named:!1,empty_name_separator:!1,encode:"encode"},";":{prefix:";",separator:";",named:!0,empty_name_separator:!1,encode:"encode"},"?":{prefix:"?",separator:"&",named:!0,empty_name_separator:!0,encode:"encode"},
-"&":{prefix:"&",separator:"&",named:!0,empty_name_separator:!0,encode:"encode"}};g._cache={};g.EXPRESSION_PATTERN=/\{([^a-zA-Z0-9%_]?)([^\}]+)(\}|$)/g;g.VARIABLE_PATTERN=/^([^*:.](?:\.?[^*:.])*)((\*)|:(\d+))?$/;g.VARIABLE_NAME_PATTERN=/[^a-zA-Z0-9%_.]/;g.LITERAL_PATTERN=/[<>{}"`^| \\]/;g.expand=function(b,d,k){var h=t[b.operator],n=h.named?"Named":"Unnamed";b=b.variables;var v=[],q,p;for(p=0;q=b[p];p++){var w=d.get(q.name);if(0===w.type&&k&&k.strict)throw Error('Missing expansion value for variable "'+
-q.name+'"');if(w.val.length){if(1<w.type&&q.maxlength)throw Error('Invalid expression: Prefix modifier not applicable to variable "'+q.name+'"');v.push(g["expand"+n](w,h,q.explode,q.explode&&h.separator||",",q.maxlength,q.name))}else w.type&&v.push("")}return v.length?h.prefix+v.join(h.separator):""};g.expandNamed=function(b,g,k,h,r,v){var n="",q=g.encode;g=g.empty_name_separator;var p=!b[q].length,f=2===b.type?"":d[q](v),t;var w=0;for(t=b.val.length;w<t;w++){if(r){var u=d[q](b.val[w][1].substring(0,
-r));2===b.type&&(f=d[q](b.val[w][0].substring(0,r)))}else p?(u=d[q](b.val[w][1]),2===b.type?(f=d[q](b.val[w][0]),b[q].push([f,u])):b[q].push([void 0,u])):(u=b[q][w][1],2===b.type&&(f=b[q][w][0]));n&&(n+=h);k?n+=f+(g||u?"=":"")+u:(w||(n+=d[q](v)+(g||u?"=":"")),2===b.type&&(n+=f+","),n+=u)}return n};g.expandUnnamed=function(b,g,k,h,r){var n="",q=g.encode;g=g.empty_name_separator;var p=!b[q].length,w;var f=0;for(w=b.val.length;f<w;f++){if(r)var t=d[q](b.val[f][1].substring(0,r));else p?(t=d[q](b.val[f][1]),
-b[q].push([2===b.type?d[q](b.val[f][0]):void 0,t])):t=b[q][f][1];n&&(n+=h);if(2===b.type){var u=r?d[q](b.val[f][0].substring(0,r)):b[q][f][0];n+=u;n=k?n+(g||t?"=":""):n+","}n+=t}return n};g.noConflict=function(){k.URITemplate===g&&(k.URITemplate=b);return g};B.expand=function(b,d){var k="";this.parts&&this.parts.length||this.parse();b instanceof u||(b=new u(b));for(var h=0,r=this.parts.length;h<r;h++)k+="string"===typeof this.parts[h]?this.parts[h]:g.expand(this.parts[h],b,d);return k};B.parse=function(){var b=
-this.expression,d=g.EXPRESSION_PATTERN,k=g.VARIABLE_PATTERN,h=g.VARIABLE_NAME_PATTERN,r=g.LITERAL_PATTERN,v=[],p=0,u=function(b){if(b.match(r))throw Error('Invalid Literal "'+b+'"');return b};for(d.lastIndex=0;;){var A=d.exec(b);if(null===A){v.push(u(b.substring(p)));break}else v.push(u(b.substring(p,A.index))),p=A.index+A[0].length;if(!t[A[1]])throw Error('Unknown Operator "'+A[1]+'" in "'+A[0]+'"');if(!A[3])throw Error('Unclosed Expression "'+A[0]+'"');var f=A[2].split(",");for(var y=0,B=f.length;y<
-B;y++){var z=f[y].match(k);if(null===z)throw Error('Invalid Variable "'+f[y]+'" in "'+A[0]+'"');if(z[1].match(h))throw Error('Invalid Variable Name "'+z[1]+'" in "'+A[0]+'"');f[y]={name:z[1],explode:!!z[3],maxlength:z[4]&&parseInt(z[4],10)}}if(!f.length)throw Error('Expression Missing Variable(s) "'+A[0]+'"');v.push({expression:A[0],operator:A[1],variables:f})}v.length||v.push(u(b));this.parts=v;return this};u.prototype.get=function(b){var d=this.data,g={type:0,val:[],encode:[],encodeReserved:[]};
-if(void 0!==this.cache[b])return this.cache[b];this.cache[b]=g;d="[object Function]"===String(Object.prototype.toString.call(d))?d(b):"[object Function]"===String(Object.prototype.toString.call(d[b]))?d[b](b):d[b];if(void 0!==d&&null!==d)if("[object Array]"===String(Object.prototype.toString.call(d))){var h=0;for(b=d.length;h<b;h++)void 0!==d[h]&&null!==d[h]&&g.val.push([void 0,String(d[h])]);g.val.length&&(g.type=3)}else if("[object Object]"===String(Object.prototype.toString.call(d))){for(h in d)p.call(d,
-h)&&void 0!==d[h]&&null!==d[h]&&g.val.push([h,String(d[h])]);g.val.length&&(g.type=2)}else g.type=1,g.val.push([void 0,String(d)]);return g};d.expand=function(b,k){var n=(new g(b)).expand(k);return new d(n)};return g});
-(function(d,k){"object"===typeof module&&module.exports?module.exports=k(require("jquery"),require("./URI")):"function"===typeof define&&define.amd?define(["jquery","./URI"],k):k(d.jQuery,d.URI)})(this,function(d,k){function g(b){return b.replace(/([.*+?^=!:${}()|[\]\/\\])/g,"\\$1")}function u(b){var d=b.nodeName.toLowerCase();if("input"!==d||"image"===b.type)return k.domAttributes[d]}function b(b){return{get:function(h){return d(h).uri()[b]()},set:function(h,g){d(h).uri()[b](g);return g}}}function p(b,
-g){if(!u(b)||!g)return!1;var h=g.match(q);if(!h||!h[5]&&":"!==h[2]&&!t[h[2]])return!1;var k=d(b).uri();if(h[5])return k.is(h[5]);if(":"===h[2]){var r=h[1].toLowerCase()+":";return t[r]?t[r](k,h[4]):!1}r=h[1].toLowerCase();return B[r]?t[h[2]](k[r](),h[4],r):!1}var B={},t={"=":function(b,d){return b===d},"^=":function(b,d){return!!(b+"").match(new RegExp("^"+g(d),"i"))},"$=":function(b,d){return!!(b+"").match(new RegExp(g(d)+"$","i"))},"*=":function(b,d,k){"directory"===k&&(b+="/");return!!(b+"").match(new RegExp(g(d),
-"i"))},"equals:":function(b,d){return b.equals(d)},"is:":function(b,d){return b.is(d)}};d.each("origin authority directory domain filename fragment hash host hostname href password path pathname port protocol query resource scheme search subdomain suffix tld username".split(" "),function(h,g){B[g]=!0;d.attrHooks["uri:"+g]=b(g)});var n=function(b,g){return d(b).uri().href(g).toString()};d.each(["src","href","action","uri","cite"],function(b,g){d.attrHooks[g]={set:n}});d.attrHooks.uri.get=function(b){return d(b).uri()};
-d.fn.uri=function(b){var d=this.first(),g=d.get(0),h=u(g);if(!h)throw Error('Element "'+g.nodeName+'" does not have either property: href, src, action, cite');if(void 0!==b){var n=d.data("uri");if(n)return n.href(b);b instanceof k||(b=k(b||""))}else{if(b=d.data("uri"))return b;b=k(d.attr(h)||"")}b._dom_element=g;b._dom_attribute=h;b.normalize();d.data("uri",b);return b};k.prototype.build=function(b){if(this._dom_element)this._string=k.build(this._parts),this._deferred_build=!1,this._dom_element.setAttribute(this._dom_attribute,
-this._string),this._dom_element[this._dom_attribute]=this._string;else if(!0===b)this._deferred_build=!0;else if(void 0===b||this._deferred_build)this._string=k.build(this._parts),this._deferred_build=!1;return this};var q=/^([a-zA-Z]+)\s*([\^\$*]?=|:)\s*(['"]?)(.+)\3|^\s*([a-zA-Z0-9]+)\s*$/;var w=d.expr.createPseudo?d.expr.createPseudo(function(b){return function(d){return p(d,b)}}):function(b,d,g){return p(b,g[3])};d.expr[":"].uri=w;return d});
-
+(function(root,factory){if(typeof module==="object"&&module.exports)module.exports=factory();else if(typeof define==="function"&&define.amd)define(factory);else root.IPv6=factory(root)})(this,function(root){var _IPv6=root&&root.IPv6;function bestPresentation(address){var _address=address.toLowerCase();var segments=_address.split(":");var length=segments.length;var total=8;if(segments[0]===""&&segments[1]===""&&segments[2]===""){segments.shift();segments.shift()}else if(segments[0]===""&&segments[1]===
+"")segments.shift();else if(segments[length-1]===""&&segments[length-2]==="")segments.pop();length=segments.length;if(segments[length-1].indexOf(".")!==-1)total=7;var pos;for(pos=0;pos<length;pos++)if(segments[pos]==="")break;if(pos<total){segments.splice(pos,1,"0000");while(segments.length<total)segments.splice(pos,0,"0000")}var _segments;for(var i=0;i<total;i++){_segments=segments[i].split("");for(var j=0;j<3;j++)if(_segments[0]==="0"&&_segments.length>1)_segments.splice(0,1);else break;segments[i]=
+_segments.join("")}var best=-1;var _best=0;var _current=0;var current=-1;var inzeroes=false;for(i=0;i<total;i++)if(inzeroes)if(segments[i]==="0")_current+=1;else{inzeroes=false;if(_current>_best){best=current;_best=_current}}else if(segments[i]==="0"){inzeroes=true;current=i;_current=1}if(_current>_best){best=current;_best=_current}if(_best>1)segments.splice(best,_best,"");length=segments.length;var result="";if(segments[0]==="")result=":";for(i=0;i<length;i++){result+=segments[i];if(i===length-1)break;
+result+=":"}if(segments[length-1]==="")result+=":";return result}function noConflict(){if(root.IPv6===this)root.IPv6=_IPv6;return this}return{best:bestPresentation,noConflict:noConflict}});
+(function(root){var freeExports=typeof exports=="object"&&exports&&!exports.nodeType&&exports;var freeModule=typeof module=="object"&&module&&!module.nodeType&&module;var freeGlobal=typeof global=="object"&&global;if(freeGlobal.global===freeGlobal||freeGlobal.window===freeGlobal||freeGlobal.self===freeGlobal)root=freeGlobal;var punycode,maxInt=2147483647,base=36,tMin=1,tMax=26,skew=38,damp=700,initialBias=72,initialN=128,delimiter="-",regexPunycode=/^xn--/,regexNonASCII=/[^\x20-\x7E]/,regexSeparators=
+/[\x2E\u3002\uFF0E\uFF61]/g,errors={"overflow":"Overflow: input needs wider integers to process","not-basic":"Illegal input \x3e\x3d 0x80 (not a basic code point)","invalid-input":"Invalid input"},baseMinusTMin=base-tMin,floor=Math.floor,stringFromCharCode=String.fromCharCode,key;function error(type){throw new RangeError(errors[type]);}function map(array,fn){var length=array.length;var result=[];while(length--)result[length]=fn(array[length]);return result}function mapDomain(string,fn){var parts=
+string.split("@");var result="";if(parts.length>1){result=parts[0]+"@";string=parts[1]}string=string.replace(regexSeparators,".");var labels=string.split(".");var encoded=map(labels,fn).join(".");return result+encoded}function ucs2decode(string){var output=[],counter=0,length=string.length,value,extra;while(counter<length){value=string.charCodeAt(counter++);if(value>=55296&&value<=56319&&counter<length){extra=string.charCodeAt(counter++);if((extra&64512)==56320)output.push(((value&1023)<<10)+(extra&
+1023)+65536);else{output.push(value);counter--}}else output.push(value)}return output}function ucs2encode(array){return map(array,function(value){var output="";if(value>65535){value-=65536;output+=stringFromCharCode(value>>>10&1023|55296);value=56320|value&1023}output+=stringFromCharCode(value);return output}).join("")}function basicToDigit(codePoint){if(codePoint-48<10)return codePoint-22;if(codePoint-65<26)return codePoint-65;if(codePoint-97<26)return codePoint-97;return base}function digitToBasic(digit,
+flag){return digit+22+75*(digit<26)-((flag!=0)<<5)}function adapt(delta,numPoints,firstTime){var k=0;delta=firstTime?floor(delta/damp):delta>>1;delta+=floor(delta/numPoints);for(;delta>baseMinusTMin*tMax>>1;k+=base)delta=floor(delta/baseMinusTMin);return floor(k+(baseMinusTMin+1)*delta/(delta+skew))}function decode(input){var output=[],inputLength=input.length,out,i=0,n=initialN,bias=initialBias,basic,j,index,oldi,w,k,digit,t,baseMinusT;basic=input.lastIndexOf(delimiter);if(basic<0)basic=0;for(j=
+0;j<basic;++j){if(input.charCodeAt(j)>=128)error("not-basic");output.push(input.charCodeAt(j))}for(index=basic>0?basic+1:0;index<inputLength;){for(oldi=i,w=1,k=base;;k+=base){if(index>=inputLength)error("invalid-input");digit=basicToDigit(input.charCodeAt(index++));if(digit>=base||digit>floor((maxInt-i)/w))error("overflow");i+=digit*w;t=k<=bias?tMin:k>=bias+tMax?tMax:k-bias;if(digit<t)break;baseMinusT=base-t;if(w>floor(maxInt/baseMinusT))error("overflow");w*=baseMinusT}out=output.length+1;bias=adapt(i-
+oldi,out,oldi==0);if(floor(i/out)>maxInt-n)error("overflow");n+=floor(i/out);i%=out;output.splice(i++,0,n)}return ucs2encode(output)}function encode(input){var n,delta,handledCPCount,basicLength,bias,j,m,q,k,t,currentValue,output=[],inputLength,handledCPCountPlusOne,baseMinusT,qMinusT;input=ucs2decode(input);inputLength=input.length;n=initialN;delta=0;bias=initialBias;for(j=0;j<inputLength;++j){currentValue=input[j];if(currentValue<128)output.push(stringFromCharCode(currentValue))}handledCPCount=
+basicLength=output.length;if(basicLength)output.push(delimiter);while(handledCPCount<inputLength){for(m=maxInt,j=0;j<inputLength;++j){currentValue=input[j];if(currentValue>=n&&currentValue<m)m=currentValue}handledCPCountPlusOne=handledCPCount+1;if(m-n>floor((maxInt-delta)/handledCPCountPlusOne))error("overflow");delta+=(m-n)*handledCPCountPlusOne;n=m;for(j=0;j<inputLength;++j){currentValue=input[j];if(currentValue<n&&++delta>maxInt)error("overflow");if(currentValue==n){for(q=delta,k=base;;k+=base){t=
+k<=bias?tMin:k>=bias+tMax?tMax:k-bias;if(q<t)break;qMinusT=q-t;baseMinusT=base-t;output.push(stringFromCharCode(digitToBasic(t+qMinusT%baseMinusT,0)));q=floor(qMinusT/baseMinusT)}output.push(stringFromCharCode(digitToBasic(q,0)));bias=adapt(delta,handledCPCountPlusOne,handledCPCount==basicLength);delta=0;++handledCPCount}}++delta;++n}return output.join("")}function toUnicode(input){return mapDomain(input,function(string){return regexPunycode.test(string)?decode(string.slice(4).toLowerCase()):string})}
+function toASCII(input){return mapDomain(input,function(string){return regexNonASCII.test(string)?"xn--"+encode(string):string})}punycode={"version":"1.3.2","ucs2":{"decode":ucs2decode,"encode":ucs2encode},"decode":decode,"encode":encode,"toASCII":toASCII,"toUnicode":toUnicode};if(typeof define=="function"&&typeof define.amd=="object"&&define.amd)define("punycode",function(){return punycode});else if(freeExports&&freeModule)if(module.exports==freeExports)freeModule.exports=punycode;else for(key in punycode)punycode.hasOwnProperty(key)&&
+(freeExports[key]=punycode[key]);else root.punycode=punycode})(this);
+(function(root,factory){if(typeof module==="object"&&module.exports)module.exports=factory();else if(typeof define==="function"&&define.amd)define(factory);else root.SecondLevelDomains=factory(root)})(this,function(root){var _SecondLevelDomains=root&&root.SecondLevelDomains;var SLD={list:{"ac":" com gov mil net org ","ae":" ac co gov mil name net org pro sch ","af":" com edu gov net org ","al":" com edu gov mil net org ","ao":" co ed gv it og pb ","ar":" com edu gob gov int mil net org tur ","at":" ac co gv or ",
+"au":" asn com csiro edu gov id net org ","ba":" co com edu gov mil net org rs unbi unmo unsa untz unze ","bb":" biz co com edu gov info net org store tv ","bh":" biz cc com edu gov info net org ","bn":" com edu gov net org ","bo":" com edu gob gov int mil net org tv ","br":" adm adv agr am arq art ato b bio blog bmd cim cng cnt com coop ecn edu eng esp etc eti far flog fm fnd fot fst g12 ggf gov imb ind inf jor jus lel mat med mil mus net nom not ntr odo org ppg pro psc psi qsl rec slg srv tmp trd tur tv vet vlog wiki zlg ",
+"bs":" com edu gov net org ","bz":" du et om ov rg ","ca":" ab bc mb nb nf nl ns nt nu on pe qc sk yk ","ck":" biz co edu gen gov info net org ","cn":" ac ah bj com cq edu fj gd gov gs gx gz ha hb he hi hl hn jl js jx ln mil net nm nx org qh sc sd sh sn sx tj tw xj xz yn zj ","co":" com edu gov mil net nom org ","cr":" ac c co ed fi go or sa ","cy":" ac biz com ekloges gov ltd name net org parliament press pro tm ","do":" art com edu gob gov mil net org sld web ","dz":" art asso com edu gov net org pol ",
+"ec":" com edu fin gov info med mil net org pro ","eg":" com edu eun gov mil name net org sci ","er":" com edu gov ind mil net org rochest w ","es":" com edu gob nom org ","et":" biz com edu gov info name net org ","fj":" ac biz com info mil name net org pro ","fk":" ac co gov net nom org ","fr":" asso com f gouv nom prd presse tm ","gg":" co net org ","gh":" com edu gov mil org ","gn":" ac com gov net org ","gr":" com edu gov mil net org ","gt":" com edu gob ind mil net org ","gu":" com edu gov net org ",
+"hk":" com edu gov idv net org ","hu":" 2000 agrar bolt casino city co erotica erotika film forum games hotel info ingatlan jogasz konyvelo lakas media news org priv reklam sex shop sport suli szex tm tozsde utazas video ","id":" ac co go mil net or sch web ","il":" ac co gov idf k12 muni net org ","in":" ac co edu ernet firm gen gov i ind mil net nic org res ","iq":" com edu gov i mil net org ","ir":" ac co dnssec gov i id net org sch ","it":" edu gov ","je":" co net org ","jo":" com edu gov mil name net org sch ",
+"jp":" ac ad co ed go gr lg ne or ","ke":" ac co go info me mobi ne or sc ","kh":" com edu gov mil net org per ","ki":" biz com de edu gov info mob net org tel ","km":" asso com coop edu gouv k medecin mil nom notaires pharmaciens presse tm veterinaire ","kn":" edu gov net org ","kr":" ac busan chungbuk chungnam co daegu daejeon es gangwon go gwangju gyeongbuk gyeonggi gyeongnam hs incheon jeju jeonbuk jeonnam k kg mil ms ne or pe re sc seoul ulsan ","kw":" com edu gov net org ","ky":" com edu gov net org ",
+"kz":" com edu gov mil net org ","lb":" com edu gov net org ","lk":" assn com edu gov grp hotel int ltd net ngo org sch soc web ","lr":" com edu gov net org ","lv":" asn com conf edu gov id mil net org ","ly":" com edu gov id med net org plc sch ","ma":" ac co gov m net org press ","mc":" asso tm ","me":" ac co edu gov its net org priv ","mg":" com edu gov mil nom org prd tm ","mk":" com edu gov inf name net org pro ","ml":" com edu gov net org presse ","mn":" edu gov org ","mo":" com edu gov net org ",
+"mt":" com edu gov net org ","mv":" aero biz com coop edu gov info int mil museum name net org pro ","mw":" ac co com coop edu gov int museum net org ","mx":" com edu gob net org ","my":" com edu gov mil name net org sch ","nf":" arts com firm info net other per rec store web ","ng":" biz com edu gov mil mobi name net org sch ","ni":" ac co com edu gob mil net nom org ","np":" com edu gov mil net org ","nr":" biz com edu gov info net org ","om":" ac biz co com edu gov med mil museum net org pro sch ",
+"pe":" com edu gob mil net nom org sld ","ph":" com edu gov i mil net ngo org ","pk":" biz com edu fam gob gok gon gop gos gov net org web ","pl":" art bialystok biz com edu gda gdansk gorzow gov info katowice krakow lodz lublin mil net ngo olsztyn org poznan pwr radom slupsk szczecin torun warszawa waw wroc wroclaw zgora ","pr":" ac biz com edu est gov info isla name net org pro prof ","ps":" com edu gov net org plo sec ","pw":" belau co ed go ne or ","ro":" arts com firm info nom nt org rec store tm www ",
+"rs":" ac co edu gov in org ","sb":" com edu gov net org ","sc":" com edu gov net org ","sh":" co com edu gov net nom org ","sl":" com edu gov net org ","st":" co com consulado edu embaixada gov mil net org principe saotome store ","sv":" com edu gob org red ","sz":" ac co org ","tr":" av bbs bel biz com dr edu gen gov info k12 name net org pol tel tsk tv web ","tt":" aero biz cat co com coop edu gov info int jobs mil mobi museum name net org pro tel travel ","tw":" club com ebiz edu game gov idv mil net org ",
+"mu":" ac co com gov net or org ","mz":" ac co edu gov org ","na":" co com ","nz":" ac co cri geek gen govt health iwi maori mil net org parliament school ","pa":" abo ac com edu gob ing med net nom org sld ","pt":" com edu gov int net nome org publ ","py":" com edu gov mil net org ","qa":" com edu gov mil net org ","re":" asso com nom ","ru":" ac adygeya altai amur arkhangelsk astrakhan bashkiria belgorod bir bryansk buryatia cbg chel chelyabinsk chita chukotka chuvashia com dagestan e-burg edu gov grozny int irkutsk ivanovo izhevsk jar joshkar-ola kalmykia kaluga kamchatka karelia kazan kchr kemerovo khabarovsk khakassia khv kirov koenig komi kostroma kranoyarsk kuban kurgan kursk lipetsk magadan mari mari-el marine mil mordovia mosreg msk murmansk nalchik net nnov nov novosibirsk nsk omsk orenburg org oryol penza perm pp pskov ptz rnd ryazan sakhalin samara saratov simbirsk smolensk spb stavropol stv surgut tambov tatarstan tom tomsk tsaritsyn tsk tula tuva tver tyumen udm udmurtia ulan-ude vladikavkaz vladimir vladivostok volgograd vologda voronezh vrn vyatka yakutia yamal yekaterinburg yuzhno-sakhalinsk ",
+"rw":" ac co com edu gouv gov int mil net ","sa":" com edu gov med net org pub sch ","sd":" com edu gov info med net org tv ","se":" a ac b bd c d e f g h i k l m n o org p parti pp press r s t tm u w x y z ","sg":" com edu gov idn net org per ","sn":" art com edu gouv org perso univ ","sy":" com edu gov mil net news org ","th":" ac co go in mi net or ","tj":" ac biz co com edu go gov info int mil name net nic org test web ","tn":" agrinet com defense edunet ens fin gov ind info intl mincom nat net org perso rnrt rns rnu tourism ",
+"tz":" ac co go ne or ","ua":" biz cherkassy chernigov chernovtsy ck cn co com crimea cv dn dnepropetrovsk donetsk dp edu gov if in ivano-frankivsk kh kharkov kherson khmelnitskiy kiev kirovograd km kr ks kv lg lugansk lutsk lviv me mk net nikolaev od odessa org pl poltava pp rovno rv sebastopol sumy te ternopil uzhgorod vinnica vn zaporizhzhe zhitomir zp zt ","ug":" ac co go ne or org sc ","uk":" ac bl british-library co cym gov govt icnet jet lea ltd me mil mod national-library-scotland nel net nhs nic nls org orgn parliament plc police sch scot soc ",
+"us":" dni fed isa kids nsn ","uy":" com edu gub mil net org ","ve":" co com edu gob info mil net org web ","vi":" co com k12 net org ","vn":" ac biz com edu gov health info int name net org pro ","ye":" co com gov ltd me net org plc ","yu":" ac co edu gov org ","za":" ac agric alt bourse city co cybernet db edu gov grondar iaccess imt inca landesign law mil net ngo nis nom olivetti org pix school tm web ","zm":" ac co com edu gov net org sch ","com":"ar br cn de eu gb gr hu jpn kr no qc ru sa se uk us uy za ",
+"net":"gb jp se uk ","org":"ae","de":"com "},has:function(domain){var tldOffset=domain.lastIndexOf(".");if(tldOffset<=0||tldOffset>=domain.length-1)return false;var sldOffset=domain.lastIndexOf(".",tldOffset-1);if(sldOffset<=0||sldOffset>=tldOffset-1)return false;var sldList=SLD.list[domain.slice(tldOffset+1)];if(!sldList)return false;return sldList.indexOf(" "+domain.slice(sldOffset+1,tldOffset)+" ")>=0},is:function(domain){var tldOffset=domain.lastIndexOf(".");if(tldOffset<=0||tldOffset>=domain.length-
+1)return false;var sldOffset=domain.lastIndexOf(".",tldOffset-1);if(sldOffset>=0)return false;var sldList=SLD.list[domain.slice(tldOffset+1)];if(!sldList)return false;return sldList.indexOf(" "+domain.slice(0,tldOffset)+" ")>=0},get:function(domain){var tldOffset=domain.lastIndexOf(".");if(tldOffset<=0||tldOffset>=domain.length-1)return null;var sldOffset=domain.lastIndexOf(".",tldOffset-1);if(sldOffset<=0||sldOffset>=tldOffset-1)return null;var sldList=SLD.list[domain.slice(tldOffset+1)];if(!sldList)return null;
+if(sldList.indexOf(" "+domain.slice(sldOffset+1,tldOffset)+" ")<0)return null;return domain.slice(sldOffset+1)},noConflict:function(){if(root.SecondLevelDomains===this)root.SecondLevelDomains=_SecondLevelDomains;return this}};return SLD});
+(function(root,factory){if(typeof module==="object"&&module.exports)module.exports=factory(require("./punycode"),require("./IPv6"),require("./SecondLevelDomains"));else if(typeof define==="function"&&define.amd)define(["./punycode","./IPv6","./SecondLevelDomains"],factory);else root.URI=factory(root.punycode,root.IPv6,root.SecondLevelDomains,root)})(this,function(punycode,IPv6,SLD,root){var _URI=root&&root.URI;function URI(url,base){var _urlSupplied=arguments.length>=1;var _baseSupplied=arguments.length>=
+2;if(!(this instanceof URI)){if(_urlSupplied){if(_baseSupplied)return new URI(url,base);return new URI(url)}return new URI}if(url===undefined){if(_urlSupplied)throw new TypeError("undefined is not a valid argument for URI");if(typeof location!=="undefined")url=location.href+"";else url=""}if(url===null)if(_urlSupplied)throw new TypeError("null is not a valid argument for URI");this.href(url);if(base!==undefined)return this.absoluteTo(base);return this}function isInteger(value){return/^[0-9]+$/.test(value)}
+URI.version="1.19.11";var p=URI.prototype;var hasOwn=Object.prototype.hasOwnProperty;function escapeRegEx(string){return string.replace(/([.*+?^=!:${}()|[\]\/\\])/g,"\\$1")}function getType(value){if(value===undefined)return"Undefined";return String(Object.prototype.toString.call(value)).slice(8,-1)}function isArray(obj){return getType(obj)==="Array"}function filterArrayValues(data,value){var lookup={};var i,length;if(getType(value)==="RegExp")lookup=null;else if(isArray(value))for(i=0,length=value.length;i<
+length;i++)lookup[value[i]]=true;else lookup[value]=true;for(i=0,length=data.length;i<length;i++){var _match=lookup&&lookup[data[i]]!==undefined||!lookup&&value.test(data[i]);if(_match){data.splice(i,1);length--;i--}}return data}function arrayContains(list,value){var i,length;if(isArray(value)){for(i=0,length=value.length;i<length;i++)if(!arrayContains(list,value[i]))return false;return true}var _type=getType(value);for(i=0,length=list.length;i<length;i++)if(_type==="RegExp"){if(typeof list[i]===
+"string"&&list[i].match(value))return true}else if(list[i]===value)return true;return false}function arraysEqual(one,two){if(!isArray(one)||!isArray(two))return false;if(one.length!==two.length)return false;one.sort();two.sort();for(var i=0,l=one.length;i<l;i++)if(one[i]!==two[i])return false;return true}function trimSlashes(text){var trim_expression=/^\/+|\/+$/g;return text.replace(trim_expression,"")}URI._parts=function(){return{protocol:null,username:null,password:null,hostname:null,urn:null,port:null,
+path:null,query:null,fragment:null,preventInvalidHostname:URI.preventInvalidHostname,duplicateQueryParameters:URI.duplicateQueryParameters,escapeQuerySpace:URI.escapeQuerySpace}};URI.preventInvalidHostname=false;URI.duplicateQueryParameters=false;URI.escapeQuerySpace=true;URI.protocol_expression=/^[a-z][a-z0-9.+-]*$/i;URI.idn_expression=/[^a-z0-9\._-]/i;URI.punycode_expression=/(xn--)/i;URI.ip4_expression=/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;URI.ip6_expression=/^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
+URI.find_uri_expression=/\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?\u00ab\u00bb\u201c\u201d\u2018\u2019]))/ig;URI.findUri={start:/\b(?:([a-z][a-z0-9.+-]*:\/\/)|www\.)/gi,end:/[\s\r\n]|$/,trim:/[`!()\[\]{};:'".,<>?\u00ab\u00bb\u201c\u201d\u201e\u2018\u2019]+$/,parens:/(\([^\)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>)/g};URI.leading_whitespace_expression=/^[\x00-\x20\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/;
+URI.ascii_tab_whitespace=/[\u0009\u000A\u000D]+/g;URI.defaultPorts={http:"80",https:"443",ftp:"21",gopher:"70",ws:"80",wss:"443"};URI.hostProtocols=["http","https"];URI.invalid_hostname_characters=/[^a-zA-Z0-9\.\-:_]/;URI.domAttributes={"a":"href","blockquote":"cite","link":"href","base":"href","script":"src","form":"action","img":"src","area":"href","iframe":"src","embed":"src","source":"src","track":"src","input":"src","audio":"src","video":"src"};URI.getDomAttribute=function(node){if(!node||!node.nodeName)return undefined;
+var nodeName=node.nodeName.toLowerCase();if(nodeName==="input"&&node.type!=="image")return undefined;return URI.domAttributes[nodeName]};function escapeForDumbFirefox36(value){return escape(value)}function strictEncodeURIComponent(string){return encodeURIComponent(string).replace(/[!'()*]/g,escapeForDumbFirefox36).replace(/\*/g,"%2A")}URI.encode=strictEncodeURIComponent;URI.decode=decodeURIComponent;URI.iso8859=function(){URI.encode=escape;URI.decode=unescape};URI.unicode=function(){URI.encode=strictEncodeURIComponent;
+URI.decode=decodeURIComponent};URI.characters={pathname:{encode:{expression:/%(24|26|2B|2C|3B|3D|3A|40)/ig,map:{"%24":"$","%26":"\x26","%2B":"+","%2C":",","%3B":";","%3D":"\x3d","%3A":":","%40":"@"}},decode:{expression:/[\/\?#]/g,map:{"/":"%2F","?":"%3F","#":"%23"}}},reserved:{encode:{expression:/%(21|23|24|26|27|28|29|2A|2B|2C|2F|3A|3B|3D|3F|40|5B|5D)/ig,map:{"%3A":":","%2F":"/","%3F":"?","%23":"#","%5B":"[","%5D":"]","%40":"@","%21":"!","%24":"$","%26":"\x26","%27":"'","%28":"(","%29":")","%2A":"*",
+"%2B":"+","%2C":",","%3B":";","%3D":"\x3d"}}},urnpath:{encode:{expression:/%(21|24|27|28|29|2A|2B|2C|3B|3D|40)/ig,map:{"%21":"!","%24":"$","%27":"'","%28":"(","%29":")","%2A":"*","%2B":"+","%2C":",","%3B":";","%3D":"\x3d","%40":"@"}},decode:{expression:/[\/\?#:]/g,map:{"/":"%2F","?":"%3F","#":"%23",":":"%3A"}}}};URI.encodeQuery=function(string,escapeQuerySpace){var escaped=URI.encode(string+"");if(escapeQuerySpace===undefined)escapeQuerySpace=URI.escapeQuerySpace;return escapeQuerySpace?escaped.replace(/%20/g,
+"+"):escaped};URI.decodeQuery=function(string,escapeQuerySpace){string+="";if(escapeQuerySpace===undefined)escapeQuerySpace=URI.escapeQuerySpace;try{return URI.decode(escapeQuerySpace?string.replace(/\+/g,"%20"):string)}catch(e){return string}};var _parts={"encode":"encode","decode":"decode"};var _part;var generateAccessor=function(_group,_part){return function(string){try{return URI[_part](string+"").replace(URI.characters[_group][_part].expression,function(c){return URI.characters[_group][_part].map[c]})}catch(e){return string}}};
+for(_part in _parts){URI[_part+"PathSegment"]=generateAccessor("pathname",_parts[_part]);URI[_part+"UrnPathSegment"]=generateAccessor("urnpath",_parts[_part])}var generateSegmentedPathFunction=function(_sep,_codingFuncName,_innerCodingFuncName){return function(string){var actualCodingFunc;if(!_innerCodingFuncName)actualCodingFunc=URI[_codingFuncName];else actualCodingFunc=function(string){return URI[_codingFuncName](URI[_innerCodingFuncName](string))};var segments=(string+"").split(_sep);for(var i=
+0,length=segments.length;i<length;i++)segments[i]=actualCodingFunc(segments[i]);return segments.join(_sep)}};URI.decodePath=generateSegmentedPathFunction("/","decodePathSegment");URI.decodeUrnPath=generateSegmentedPathFunction(":","decodeUrnPathSegment");URI.recodePath=generateSegmentedPathFunction("/","encodePathSegment","decode");URI.recodeUrnPath=generateSegmentedPathFunction(":","encodeUrnPathSegment","decode");URI.encodeReserved=generateAccessor("reserved","encode");URI.parse=function(string,
+parts){var pos;if(!parts)parts={preventInvalidHostname:URI.preventInvalidHostname};string=string.replace(URI.leading_whitespace_expression,"");string=string.replace(URI.ascii_tab_whitespace,"");pos=string.indexOf("#");if(pos>-1){parts.fragment=string.substring(pos+1)||null;string=string.substring(0,pos)}pos=string.indexOf("?");if(pos>-1){parts.query=string.substring(pos+1)||null;string=string.substring(0,pos)}string=string.replace(/^(https?|ftp|wss?)?:+[/\\]*/i,"$1://");string=string.replace(/^[/\\]{2,}/i,
+"//");if(string.substring(0,2)==="//"){parts.protocol=null;string=string.substring(2);string=URI.parseAuthority(string,parts)}else{pos=string.indexOf(":");if(pos>-1){parts.protocol=string.substring(0,pos)||null;if(parts.protocol&&!parts.protocol.match(URI.protocol_expression))parts.protocol=undefined;else if(string.substring(pos+1,pos+3).replace(/\\/g,"/")==="//"){string=string.substring(pos+3);string=URI.parseAuthority(string,parts)}else{string=string.substring(pos+1);parts.urn=true}}}parts.path=
+string;return parts};URI.parseHost=function(string,parts){if(!string)string="";string=string.replace(/\\/g,"/");var pos=string.indexOf("/");var bracketPos;var t;if(pos===-1)pos=string.length;if(string.charAt(0)==="["){bracketPos=string.indexOf("]");parts.hostname=string.substring(1,bracketPos)||null;parts.port=string.substring(bracketPos+2,pos)||null;if(parts.port==="/")parts.port=null}else{var firstColon=string.indexOf(":");var firstSlash=string.indexOf("/");var nextColon=string.indexOf(":",firstColon+
+1);if(nextColon!==-1&&(firstSlash===-1||nextColon<firstSlash)){parts.hostname=string.substring(0,pos)||null;parts.port=null}else{t=string.substring(0,pos).split(":");parts.hostname=t[0]||null;parts.port=t[1]||null}}if(parts.hostname&&string.substring(pos).charAt(0)!=="/"){pos++;string="/"+string}if(parts.preventInvalidHostname)URI.ensureValidHostname(parts.hostname,parts.protocol);if(parts.port)URI.ensureValidPort(parts.port);return string.substring(pos)||"/"};URI.parseAuthority=function(string,parts){string=
+URI.parseUserinfo(string,parts);return URI.parseHost(string,parts)};URI.parseUserinfo=function(string,parts){var _string=string;var firstBackSlash=string.indexOf("\\");if(firstBackSlash!==-1)string=string.replace(/\\/g,"/");var firstSlash=string.indexOf("/");var pos=string.lastIndexOf("@",firstSlash>-1?firstSlash:string.length-1);var t;if(pos>-1&&(firstSlash===-1||pos<firstSlash)){t=string.substring(0,pos).split(":");parts.username=t[0]?URI.decode(t[0]):null;t.shift();parts.password=t[0]?URI.decode(t.join(":")):
+null;string=_string.substring(pos+1)}else{parts.username=null;parts.password=null}return string};URI.parseQuery=function(string,escapeQuerySpace){if(!string)return{};string=string.replace(/&+/g,"\x26").replace(/^\?*&*|&+$/g,"");if(!string)return{};var items={};var splits=string.split("\x26");var length=splits.length;var v,name,value;for(var i=0;i<length;i++){v=splits[i].split("\x3d");name=URI.decodeQuery(v.shift(),escapeQuerySpace);value=v.length?URI.decodeQuery(v.join("\x3d"),escapeQuerySpace):null;
+if(name==="__proto__")continue;else if(hasOwn.call(items,name)){if(typeof items[name]==="string"||items[name]===null)items[name]=[items[name]];items[name].push(value)}else items[name]=value}return items};URI.build=function(parts){var t="";var requireAbsolutePath=false;if(parts.protocol)t+=parts.protocol+":";if(!parts.urn&&(t||parts.hostname)){t+="//";requireAbsolutePath=true}t+=URI.buildAuthority(parts)||"";if(typeof parts.path==="string"){if(parts.path.charAt(0)!=="/"&&requireAbsolutePath)t+="/";
+t+=parts.path}if(typeof parts.query==="string"&&parts.query)t+="?"+parts.query;if(typeof parts.fragment==="string"&&parts.fragment)t+="#"+parts.fragment;return t};URI.buildHost=function(parts){var t="";if(!parts.hostname)return"";else if(URI.ip6_expression.test(parts.hostname))t+="["+parts.hostname+"]";else t+=parts.hostname;if(parts.port)t+=":"+parts.port;return t};URI.buildAuthority=function(parts){return URI.buildUserinfo(parts)+URI.buildHost(parts)};URI.buildUserinfo=function(parts){var t="";
+if(parts.username)t+=URI.encode(parts.username);if(parts.password)t+=":"+URI.encode(parts.password);if(t)t+="@";return t};URI.buildQuery=function(data,duplicateQueryParameters,escapeQuerySpace){var t="";var unique,key,i,length;for(key in data)if(key==="__proto__")continue;else if(hasOwn.call(data,key))if(isArray(data[key])){unique={};for(i=0,length=data[key].length;i<length;i++)if(data[key][i]!==undefined&&unique[data[key][i]+""]===undefined){t+="\x26"+URI.buildQueryParameter(key,data[key][i],escapeQuerySpace);
+if(duplicateQueryParameters!==true)unique[data[key][i]+""]=true}}else if(data[key]!==undefined)t+="\x26"+URI.buildQueryParameter(key,data[key],escapeQuerySpace);return t.substring(1)};URI.buildQueryParameter=function(name,value,escapeQuerySpace){return URI.encodeQuery(name,escapeQuerySpace)+(value!==null?"\x3d"+URI.encodeQuery(value,escapeQuerySpace):"")};URI.addQuery=function(data,name,value){if(typeof name==="object")for(var key in name){if(hasOwn.call(name,key))URI.addQuery(data,key,name[key])}else if(typeof name===
+"string"){if(data[name]===undefined){data[name]=value;return}else if(typeof data[name]==="string")data[name]=[data[name]];if(!isArray(value))value=[value];data[name]=(data[name]||[]).concat(value)}else throw new TypeError("URI.addQuery() accepts an object, string as the name parameter");};URI.setQuery=function(data,name,value){if(typeof name==="object")for(var key in name){if(hasOwn.call(name,key))URI.setQuery(data,key,name[key])}else if(typeof name==="string")data[name]=value===undefined?null:value;
+else throw new TypeError("URI.setQuery() accepts an object, string as the name parameter");};URI.removeQuery=function(data,name,value){var i,length,key;if(isArray(name))for(i=0,length=name.length;i<length;i++)data[name[i]]=undefined;else if(getType(name)==="RegExp")for(key in data){if(name.test(key))data[key]=undefined}else if(typeof name==="object")for(key in name){if(hasOwn.call(name,key))URI.removeQuery(data,key,name[key])}else if(typeof name==="string")if(value!==undefined)if(getType(value)===
+"RegExp")if(!isArray(data[name])&&value.test(data[name]))data[name]=undefined;else data[name]=filterArrayValues(data[name],value);else if(data[name]===String(value)&&(!isArray(value)||value.length===1))data[name]=undefined;else{if(isArray(data[name]))data[name]=filterArrayValues(data[name],value)}else data[name]=undefined;else throw new TypeError("URI.removeQuery() accepts an object, string, RegExp as the first parameter");};URI.hasQuery=function(data,name,value,withinArray){switch(getType(name)){case "String":break;
+case "RegExp":for(var key in data)if(hasOwn.call(data,key))if(name.test(key)&&(value===undefined||URI.hasQuery(data,key,value)))return true;return false;case "Object":for(var _key in name)if(hasOwn.call(name,_key))if(!URI.hasQuery(data,_key,name[_key]))return false;return true;default:throw new TypeError("URI.hasQuery() accepts a string, regular expression or object as the name parameter");}switch(getType(value)){case "Undefined":return name in data;case "Boolean":var _booly=Boolean(isArray(data[name])?
+data[name].length:data[name]);return value===_booly;case "Function":return!!value(data[name],name,data);case "Array":if(!isArray(data[name]))return false;var op=withinArray?arrayContains:arraysEqual;return op(data[name],value);case "RegExp":if(!isArray(data[name]))return Boolean(data[name]&&data[name].match(value));if(!withinArray)return false;return arrayContains(data[name],value);case "Number":value=String(value);case "String":if(!isArray(data[name]))return data[name]===value;if(!withinArray)return false;
+return arrayContains(data[name],value);default:throw new TypeError("URI.hasQuery() accepts undefined, boolean, string, number, RegExp, Function as the value parameter");}};URI.joinPaths=function(){var input=[];var segments=[];var nonEmptySegments=0;for(var i=0;i<arguments.length;i++){var url=new URI(arguments[i]);input.push(url);var _segments=url.segment();for(var s=0;s<_segments.length;s++){if(typeof _segments[s]==="string")segments.push(_segments[s]);if(_segments[s])nonEmptySegments++}}if(!segments.length||
+!nonEmptySegments)return new URI("");var uri=(new URI("")).segment(segments);if(input[0].path()===""||input[0].path().slice(0,1)==="/")uri.path("/"+uri.path());return uri.normalize()};URI.commonPath=function(one,two){var length=Math.min(one.length,two.length);var pos;for(pos=0;pos<length;pos++)if(one.charAt(pos)!==two.charAt(pos)){pos--;break}if(pos<1)return one.charAt(0)===two.charAt(0)&&one.charAt(0)==="/"?"/":"";if(one.charAt(pos)!=="/"||two.charAt(pos)!=="/")pos=one.substring(0,pos).lastIndexOf("/");
+return one.substring(0,pos+1)};URI.withinString=function(string,callback,options){options||(options={});var _start=options.start||URI.findUri.start;var _end=options.end||URI.findUri.end;var _trim=options.trim||URI.findUri.trim;var _parens=options.parens||URI.findUri.parens;var _attributeOpen=/[a-z0-9-]=["']?$/i;_start.lastIndex=0;while(true){var match=_start.exec(string);if(!match)break;var start=match.index;if(options.ignoreHtml){var attributeOpen=string.slice(Math.max(start-3,0),start);if(attributeOpen&&
+_attributeOpen.test(attributeOpen))continue}var end=start+string.slice(start).search(_end);var slice=string.slice(start,end);var parensEnd=-1;while(true){var parensMatch=_parens.exec(slice);if(!parensMatch)break;var parensMatchEnd=parensMatch.index+parensMatch[0].length;parensEnd=Math.max(parensEnd,parensMatchEnd)}if(parensEnd>-1)slice=slice.slice(0,parensEnd)+slice.slice(parensEnd).replace(_trim,"");else slice=slice.replace(_trim,"");if(slice.length<=match[0].length)continue;if(options.ignore&&options.ignore.test(slice))continue;
+end=start+slice.length;var result=callback(slice,start,end,string);if(result===undefined){_start.lastIndex=end;continue}result=String(result);string=string.slice(0,start)+result+string.slice(end);_start.lastIndex=start+result.length}_start.lastIndex=0;return string};URI.ensureValidHostname=function(v,protocol){var hasHostname=!!v;var hasProtocol=!!protocol;var rejectEmptyHostname=false;if(hasProtocol)rejectEmptyHostname=arrayContains(URI.hostProtocols,protocol);if(rejectEmptyHostname&&!hasHostname)throw new TypeError("Hostname cannot be empty, if protocol is "+
+protocol);else if(v&&v.match(URI.invalid_hostname_characters)){if(!punycode)throw new TypeError('Hostname "'+v+'" contains characters other than [A-Z0-9.-:_] and Punycode.js is not available');if(punycode.toASCII(v).match(URI.invalid_hostname_characters))throw new TypeError('Hostname "'+v+'" contains characters other than [A-Z0-9.-:_]');}};URI.ensureValidPort=function(v){if(!v)return;var port=Number(v);if(isInteger(port)&&port>0&&port<65536)return;throw new TypeError('Port "'+v+'" is not a valid port');
+};URI.noConflict=function(removeAll){if(removeAll){var unconflicted={URI:this.noConflict()};if(root.URITemplate&&typeof root.URITemplate.noConflict==="function")unconflicted.URITemplate=root.URITemplate.noConflict();if(root.IPv6&&typeof root.IPv6.noConflict==="function")unconflicted.IPv6=root.IPv6.noConflict();if(root.SecondLevelDomains&&typeof root.SecondLevelDomains.noConflict==="function")unconflicted.SecondLevelDomains=root.SecondLevelDomains.noConflict();return unconflicted}else if(root.URI===
+this)root.URI=_URI;return this};p.build=function(deferBuild){if(deferBuild===true)this._deferred_build=true;else if(deferBuild===undefined||this._deferred_build){this._string=URI.build(this._parts);this._deferred_build=false}return this};p.clone=function(){return new URI(this)};p.valueOf=p.toString=function(){return this.build(false)._string};function generateSimpleAccessor(_part){return function(v,build){if(v===undefined)return this._parts[_part]||"";else{this._parts[_part]=v||null;this.build(!build);
+return this}}}function generatePrefixAccessor(_part,_key){return function(v,build){if(v===undefined)return this._parts[_part]||"";else{if(v!==null){v=v+"";if(v.charAt(0)===_key)v=v.substring(1)}this._parts[_part]=v;this.build(!build);return this}}}p.protocol=generateSimpleAccessor("protocol");p.username=generateSimpleAccessor("username");p.password=generateSimpleAccessor("password");p.hostname=generateSimpleAccessor("hostname");p.port=generateSimpleAccessor("port");p.query=generatePrefixAccessor("query",
+"?");p.fragment=generatePrefixAccessor("fragment","#");p.search=function(v,build){var t=this.query(v,build);return typeof t==="string"&&t.length?"?"+t:t};p.hash=function(v,build){var t=this.fragment(v,build);return typeof t==="string"&&t.length?"#"+t:t};p.pathname=function(v,build){if(v===undefined||v===true){var res=this._parts.path||(this._parts.hostname?"/":"");return v?(this._parts.urn?URI.decodeUrnPath:URI.decodePath)(res):res}else{if(this._parts.urn)this._parts.path=v?URI.recodeUrnPath(v):"";
+else this._parts.path=v?URI.recodePath(v):"/";this.build(!build);return this}};p.path=p.pathname;p.href=function(href,build){var key;if(href===undefined)return this.toString();this._string="";this._parts=URI._parts();var _URI=href instanceof URI;var _object=typeof href==="object"&&(href.hostname||href.path||href.pathname);if(href.nodeName){var attribute=URI.getDomAttribute(href);href=href[attribute]||"";_object=false}if(!_URI&&_object&&href.pathname!==undefined)href=href.toString();if(typeof href===
+"string"||href instanceof String)this._parts=URI.parse(String(href),this._parts);else if(_URI||_object){var src=_URI?href._parts:href;for(key in src){if(key==="query")continue;if(hasOwn.call(this._parts,key))this._parts[key]=src[key]}if(src.query)this.query(src.query,false)}else throw new TypeError("invalid input");this.build(!build);return this};p.is=function(what){var ip=false;var ip4=false;var ip6=false;var name=false;var sld=false;var idn=false;var punycode=false;var relative=!this._parts.urn;
+if(this._parts.hostname){relative=false;ip4=URI.ip4_expression.test(this._parts.hostname);ip6=URI.ip6_expression.test(this._parts.hostname);ip=ip4||ip6;name=!ip;sld=name&&SLD&&SLD.has(this._parts.hostname);idn=name&&URI.idn_expression.test(this._parts.hostname);punycode=name&&URI.punycode_expression.test(this._parts.hostname)}switch(what.toLowerCase()){case "relative":return relative;case "absolute":return!relative;case "domain":case "name":return name;case "sld":return sld;case "ip":return ip;case "ip4":case "ipv4":case "inet4":return ip4;
+case "ip6":case "ipv6":case "inet6":return ip6;case "idn":return idn;case "url":return!this._parts.urn;case "urn":return!!this._parts.urn;case "punycode":return punycode}return null};var _protocol=p.protocol;var _port=p.port;var _hostname=p.hostname;p.protocol=function(v,build){if(v){v=v.replace(/:(\/\/)?$/,"");if(!v.match(URI.protocol_expression))throw new TypeError('Protocol "'+v+"\" contains characters other than [A-Z0-9.+-] or doesn't start with [A-Z]");}return _protocol.call(this,v,build)};p.scheme=
+p.protocol;p.port=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(v!==undefined){if(v===0)v=null;if(v){v+="";if(v.charAt(0)===":")v=v.substring(1);URI.ensureValidPort(v)}}return _port.call(this,v,build)};p.hostname=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(v!==undefined){var x={preventInvalidHostname:this._parts.preventInvalidHostname};var res=URI.parseHost(v,x);if(res!=="/")throw new TypeError('Hostname "'+v+'" contains characters other than [A-Z0-9.-]');
+v=x.hostname;if(this._parts.preventInvalidHostname)URI.ensureValidHostname(v,this._parts.protocol)}return _hostname.call(this,v,build)};p.origin=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(v===undefined){var protocol=this.protocol();var authority=this.authority();if(!authority)return"";return(protocol?protocol+"://":"")+this.authority()}else{var origin=URI(v);this.protocol(origin.protocol()).authority(origin.authority()).build(!build);return this}};p.host=function(v,build){if(this._parts.urn)return v===
+undefined?"":this;if(v===undefined)return this._parts.hostname?URI.buildHost(this._parts):"";else{var res=URI.parseHost(v,this._parts);if(res!=="/")throw new TypeError('Hostname "'+v+'" contains characters other than [A-Z0-9.-]');this.build(!build);return this}};p.authority=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(v===undefined)return this._parts.hostname?URI.buildAuthority(this._parts):"";else{var res=URI.parseAuthority(v,this._parts);if(res!=="/")throw new TypeError('Hostname "'+
+v+'" contains characters other than [A-Z0-9.-]');this.build(!build);return this}};p.userinfo=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(v===undefined){var t=URI.buildUserinfo(this._parts);return t?t.substring(0,t.length-1):t}else{if(v[v.length-1]!=="@")v+="@";URI.parseUserinfo(v,this._parts);this.build(!build);return this}};p.resource=function(v,build){var parts;if(v===undefined)return this.path()+this.search()+this.hash();parts=URI.parse(v);this._parts.path=parts.path;this._parts.query=
+parts.query;this._parts.fragment=parts.fragment;this.build(!build);return this};p.subdomain=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(v===undefined){if(!this._parts.hostname||this.is("IP"))return"";var end=this._parts.hostname.length-this.domain().length-1;return this._parts.hostname.substring(0,end)||""}else{var e=this._parts.hostname.length-this.domain().length;var sub=this._parts.hostname.substring(0,e);var replace=new RegExp("^"+escapeRegEx(sub));if(v&&v.charAt(v.length-
+1)!==".")v+=".";if(v.indexOf(":")!==-1)throw new TypeError("Domains cannot contain colons");if(v)URI.ensureValidHostname(v,this._parts.protocol);this._parts.hostname=this._parts.hostname.replace(replace,v);this.build(!build);return this}};p.domain=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(typeof v==="boolean"){build=v;v=undefined}if(v===undefined){if(!this._parts.hostname||this.is("IP"))return"";var t=this._parts.hostname.match(/\./g);if(t&&t.length<2)return this._parts.hostname;
+var end=this._parts.hostname.length-this.tld(build).length-1;end=this._parts.hostname.lastIndexOf(".",end-1)+1;return this._parts.hostname.substring(end)||""}else{if(!v)throw new TypeError("cannot set domain empty");if(v.indexOf(":")!==-1)throw new TypeError("Domains cannot contain colons");URI.ensureValidHostname(v,this._parts.protocol);if(!this._parts.hostname||this.is("IP"))this._parts.hostname=v;else{var replace=new RegExp(escapeRegEx(this.domain())+"$");this._parts.hostname=this._parts.hostname.replace(replace,
+v)}this.build(!build);return this}};p.tld=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(typeof v==="boolean"){build=v;v=undefined}if(v===undefined){if(!this._parts.hostname||this.is("IP"))return"";var pos=this._parts.hostname.lastIndexOf(".");var tld=this._parts.hostname.substring(pos+1);if(build!==true&&SLD&&SLD.list[tld.toLowerCase()])return SLD.get(this._parts.hostname)||tld;return tld}else{var replace;if(!v)throw new TypeError("cannot set TLD empty");else if(v.match(/[^a-zA-Z0-9-]/))if(SLD&&
+SLD.is(v)){replace=new RegExp(escapeRegEx(this.tld())+"$");this._parts.hostname=this._parts.hostname.replace(replace,v)}else throw new TypeError('TLD "'+v+'" contains characters other than [A-Z0-9]');else if(!this._parts.hostname||this.is("IP"))throw new ReferenceError("cannot set TLD on non-domain host");else{replace=new RegExp(escapeRegEx(this.tld())+"$");this._parts.hostname=this._parts.hostname.replace(replace,v)}this.build(!build);return this}};p.directory=function(v,build){if(this._parts.urn)return v===
+undefined?"":this;if(v===undefined||v===true){if(!this._parts.path&&!this._parts.hostname)return"";if(this._parts.path==="/")return"/";var end=this._parts.path.length-this.filename().length-1;var res=this._parts.path.substring(0,end)||(this._parts.hostname?"/":"");return v?URI.decodePath(res):res}else{var e=this._parts.path.length-this.filename().length;var directory=this._parts.path.substring(0,e);var replace=new RegExp("^"+escapeRegEx(directory));if(!this.is("relative")){if(!v)v="/";if(v.charAt(0)!==
+"/")v="/"+v}if(v&&v.charAt(v.length-1)!=="/")v+="/";v=URI.recodePath(v);this._parts.path=this._parts.path.replace(replace,v);this.build(!build);return this}};p.filename=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(typeof v!=="string"){if(!this._parts.path||this._parts.path==="/")return"";var pos=this._parts.path.lastIndexOf("/");var res=this._parts.path.substring(pos+1);return v?URI.decodePathSegment(res):res}else{var mutatedDirectory=false;if(v.charAt(0)==="/")v=v.substring(1);
+if(v.match(/\.?\//))mutatedDirectory=true;var replace=new RegExp(escapeRegEx(this.filename())+"$");v=URI.recodePath(v);this._parts.path=this._parts.path.replace(replace,v);if(mutatedDirectory)this.normalizePath(build);else this.build(!build);return this}};p.suffix=function(v,build){if(this._parts.urn)return v===undefined?"":this;if(v===undefined||v===true){if(!this._parts.path||this._parts.path==="/")return"";var filename=this.filename();var pos=filename.lastIndexOf(".");var s,res;if(pos===-1)return"";
+s=filename.substring(pos+1);res=/^[a-z0-9%]+$/i.test(s)?s:"";return v?URI.decodePathSegment(res):res}else{if(v.charAt(0)===".")v=v.substring(1);var suffix=this.suffix();var replace;if(!suffix){if(!v)return this;this._parts.path+="."+URI.recodePath(v)}else if(!v)replace=new RegExp(escapeRegEx("."+suffix)+"$");else replace=new RegExp(escapeRegEx(suffix)+"$");if(replace){v=URI.recodePath(v);this._parts.path=this._parts.path.replace(replace,v)}this.build(!build);return this}};p.segment=function(segment,
+v,build){var separator=this._parts.urn?":":"/";var path=this.path();var absolute=path.substring(0,1)==="/";var segments=path.split(separator);if(segment!==undefined&&typeof segment!=="number"){build=v;v=segment;segment=undefined}if(segment!==undefined&&typeof segment!=="number")throw new Error('Bad segment "'+segment+'", must be 0-based integer');if(absolute)segments.shift();if(segment<0)segment=Math.max(segments.length+segment,0);if(v===undefined)return segment===undefined?segments:segments[segment];
+else if(segment===null||segments[segment]===undefined)if(isArray(v)){segments=[];for(var i=0,l=v.length;i<l;i++){if(!v[i].length&&(!segments.length||!segments[segments.length-1].length))continue;if(segments.length&&!segments[segments.length-1].length)segments.pop();segments.push(trimSlashes(v[i]))}}else{if(v||typeof v==="string"){v=trimSlashes(v);if(segments[segments.length-1]==="")segments[segments.length-1]=v;else segments.push(v)}}else if(v)segments[segment]=trimSlashes(v);else segments.splice(segment,
+1);if(absolute)segments.unshift("");return this.path(segments.join(separator),build)};p.segmentCoded=function(segment,v,build){var segments,i,l;if(typeof segment!=="number"){build=v;v=segment;segment=undefined}if(v===undefined){segments=this.segment(segment,v,build);if(!isArray(segments))segments=segments!==undefined?URI.decode(segments):undefined;else for(i=0,l=segments.length;i<l;i++)segments[i]=URI.decode(segments[i]);return segments}if(!isArray(v))v=typeof v==="string"||v instanceof String?URI.encode(v):
+v;else for(i=0,l=v.length;i<l;i++)v[i]=URI.encode(v[i]);return this.segment(segment,v,build)};var q=p.query;p.query=function(v,build){if(v===true)return URI.parseQuery(this._parts.query,this._parts.escapeQuerySpace);else if(typeof v==="function"){var data=URI.parseQuery(this._parts.query,this._parts.escapeQuerySpace);var result=v.call(this,data);this._parts.query=URI.buildQuery(result||data,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);this.build(!build);return this}else if(v!==
+undefined&&typeof v!=="string"){this._parts.query=URI.buildQuery(v,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);this.build(!build);return this}else return q.call(this,v,build)};p.setQuery=function(name,value,build){var data=URI.parseQuery(this._parts.query,this._parts.escapeQuerySpace);if(typeof name==="string"||name instanceof String)data[name]=value!==undefined?value:null;else if(typeof name==="object")for(var key in name){if(hasOwn.call(name,key))data[key]=name[key]}else throw new TypeError("URI.addQuery() accepts an object, string as the name parameter");
+this._parts.query=URI.buildQuery(data,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);if(typeof name!=="string")build=value;this.build(!build);return this};p.addQuery=function(name,value,build){var data=URI.parseQuery(this._parts.query,this._parts.escapeQuerySpace);URI.addQuery(data,name,value===undefined?null:value);this._parts.query=URI.buildQuery(data,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);if(typeof name!=="string")build=value;this.build(!build);return this};
+p.removeQuery=function(name,value,build){var data=URI.parseQuery(this._parts.query,this._parts.escapeQuerySpace);URI.removeQuery(data,name,value);this._parts.query=URI.buildQuery(data,this._parts.duplicateQueryParameters,this._parts.escapeQuerySpace);if(typeof name!=="string")build=value;this.build(!build);return this};p.hasQuery=function(name,value,withinArray){var data=URI.parseQuery(this._parts.query,this._parts.escapeQuerySpace);return URI.hasQuery(data,name,value,withinArray)};p.setSearch=p.setQuery;
+p.addSearch=p.addQuery;p.removeSearch=p.removeQuery;p.hasSearch=p.hasQuery;p.normalize=function(){if(this._parts.urn)return this.normalizeProtocol(false).normalizePath(false).normalizeQuery(false).normalizeFragment(false).build();return this.normalizeProtocol(false).normalizeHostname(false).normalizePort(false).normalizePath(false).normalizeQuery(false).normalizeFragment(false).build()};p.normalizeProtocol=function(build){if(typeof this._parts.protocol==="string"){this._parts.protocol=this._parts.protocol.toLowerCase();
+this.build(!build)}return this};p.normalizeHostname=function(build){if(this._parts.hostname){if(this.is("IDN")&&punycode)this._parts.hostname=punycode.toASCII(this._parts.hostname);else if(this.is("IPv6")&&IPv6)this._parts.hostname=IPv6.best(this._parts.hostname);this._parts.hostname=this._parts.hostname.toLowerCase();this.build(!build)}return this};p.normalizePort=function(build){if(typeof this._parts.protocol==="string"&&this._parts.port===URI.defaultPorts[this._parts.protocol]){this._parts.port=
+null;this.build(!build)}return this};p.normalizePath=function(build){var _path=this._parts.path;if(!_path)return this;if(this._parts.urn){this._parts.path=URI.recodeUrnPath(this._parts.path);this.build(!build);return this}if(this._parts.path==="/")return this;_path=URI.recodePath(_path);var _was_relative;var _leadingParents="";var _parent,_pos;if(_path.charAt(0)!=="/"){_was_relative=true;_path="/"+_path}if(_path.slice(-3)==="/.."||_path.slice(-2)==="/.")_path+="/";_path=_path.replace(/(\/(\.\/)+)|(\/\.$)/g,
+"/").replace(/\/{2,}/g,"/");if(_was_relative){_leadingParents=_path.substring(1).match(/^(\.\.\/)+/)||"";if(_leadingParents)_leadingParents=_leadingParents[0]}while(true){_parent=_path.search(/\/\.\.(\/|$)/);if(_parent===-1)break;else if(_parent===0){_path=_path.substring(3);continue}_pos=_path.substring(0,_parent).lastIndexOf("/");if(_pos===-1)_pos=_parent;_path=_path.substring(0,_pos)+_path.substring(_parent+3)}if(_was_relative&&this.is("relative"))_path=_leadingParents+_path.substring(1);this._parts.path=
+_path;this.build(!build);return this};p.normalizePathname=p.normalizePath;p.normalizeQuery=function(build){if(typeof this._parts.query==="string"){if(!this._parts.query.length)this._parts.query=null;else this.query(URI.parseQuery(this._parts.query,this._parts.escapeQuerySpace));this.build(!build)}return this};p.normalizeFragment=function(build){if(!this._parts.fragment){this._parts.fragment=null;this.build(!build)}return this};p.normalizeSearch=p.normalizeQuery;p.normalizeHash=p.normalizeFragment;
+p.iso8859=function(){var e=URI.encode;var d=URI.decode;URI.encode=escape;URI.decode=decodeURIComponent;try{this.normalize()}finally{URI.encode=e;URI.decode=d}return this};p.unicode=function(){var e=URI.encode;var d=URI.decode;URI.encode=strictEncodeURIComponent;URI.decode=unescape;try{this.normalize()}finally{URI.encode=e;URI.decode=d}return this};p.readable=function(){var uri=this.clone();uri.username("").password("").normalize();var t="";if(uri._parts.protocol)t+=uri._parts.protocol+"://";if(uri._parts.hostname)if(uri.is("punycode")&&
+punycode){t+=punycode.toUnicode(uri._parts.hostname);if(uri._parts.port)t+=":"+uri._parts.port}else t+=uri.host();if(uri._parts.hostname&&uri._parts.path&&uri._parts.path.charAt(0)!=="/")t+="/";t+=uri.path(true);if(uri._parts.query){var q="";for(var i=0,qp=uri._parts.query.split("\x26"),l=qp.length;i<l;i++){var kv=(qp[i]||"").split("\x3d");q+="\x26"+URI.decodeQuery(kv[0],this._parts.escapeQuerySpace).replace(/&/g,"%26");if(kv[1]!==undefined)q+="\x3d"+URI.decodeQuery(kv[1],this._parts.escapeQuerySpace).replace(/&/g,
+"%26")}t+="?"+q.substring(1)}t+=URI.decodeQuery(uri.hash(),true);return t};p.absoluteTo=function(base){var resolved=this.clone();var properties=["protocol","username","password","hostname","port"];var basedir,i,p;if(this._parts.urn)throw new Error("URNs do not have any generally defined hierarchical components");if(!(base instanceof URI))base=new URI(base);if(resolved._parts.protocol)return resolved;else resolved._parts.protocol=base._parts.protocol;if(this._parts.hostname)return resolved;for(i=0;p=
+properties[i];i++)resolved._parts[p]=base._parts[p];if(!resolved._parts.path){resolved._parts.path=base._parts.path;if(!resolved._parts.query)resolved._parts.query=base._parts.query}else{if(resolved._parts.path.substring(-2)==="..")resolved._parts.path+="/";if(resolved.path().charAt(0)!=="/"){basedir=base.directory();basedir=basedir?basedir:base.path().indexOf("/")===0?"/":"";resolved._parts.path=(basedir?basedir+"/":"")+resolved._parts.path;resolved.normalizePath()}}resolved.build();return resolved};
+p.relativeTo=function(base){var relative=this.clone().normalize();var relativeParts,baseParts,common,relativePath,basePath;if(relative._parts.urn)throw new Error("URNs do not have any generally defined hierarchical components");base=(new URI(base)).normalize();relativeParts=relative._parts;baseParts=base._parts;relativePath=relative.path();basePath=base.path();if(relativePath.charAt(0)!=="/")throw new Error("URI is already relative");if(basePath.charAt(0)!=="/")throw new Error("Cannot calculate a URI relative to another relative URI");
+if(relativeParts.protocol===baseParts.protocol)relativeParts.protocol=null;if(relativeParts.username!==baseParts.username||relativeParts.password!==baseParts.password)return relative.build();if(relativeParts.protocol!==null||relativeParts.username!==null||relativeParts.password!==null)return relative.build();if(relativeParts.hostname===baseParts.hostname&&relativeParts.port===baseParts.port){relativeParts.hostname=null;relativeParts.port=null}else return relative.build();if(relativePath===basePath){relativeParts.path=
+"";return relative.build()}common=URI.commonPath(relativePath,basePath);if(!common)return relative.build();var parents=baseParts.path.substring(common.length).replace(/[^\/]*$/,"").replace(/.*?\//g,"../");relativeParts.path=parents+relativeParts.path.substring(common.length)||"./";return relative.build()};p.equals=function(uri){var one=this.clone();var two=new URI(uri);var one_map={};var two_map={};var checked={};var one_query,two_query,key;one.normalize();two.normalize();if(one.toString()===two.toString())return true;
+one_query=one.query();two_query=two.query();one.query("");two.query("");if(one.toString()!==two.toString())return false;if(one_query.length!==two_query.length)return false;one_map=URI.parseQuery(one_query,this._parts.escapeQuerySpace);two_map=URI.parseQuery(two_query,this._parts.escapeQuerySpace);for(key in one_map)if(hasOwn.call(one_map,key)){if(!isArray(one_map[key])){if(one_map[key]!==two_map[key])return false}else if(!arraysEqual(one_map[key],two_map[key]))return false;checked[key]=true}for(key in two_map)if(hasOwn.call(two_map,
+key))if(!checked[key])return false;return true};p.preventInvalidHostname=function(v){this._parts.preventInvalidHostname=!!v;return this};p.duplicateQueryParameters=function(v){this._parts.duplicateQueryParameters=!!v;return this};p.escapeQuerySpace=function(v){this._parts.escapeQuerySpace=!!v;return this};return URI});
+(function(root,factory){if(typeof module==="object"&&module.exports)module.exports=factory(require("./URI"));else if(typeof define==="function"&&define.amd)define(["./URI"],factory);else root.URITemplate=factory(root.URI,root)})(this,function(URI,root){var _URITemplate=root&&root.URITemplate;var hasOwn=Object.prototype.hasOwnProperty;function URITemplate(expression){if(URITemplate._cache[expression])return URITemplate._cache[expression];if(!(this instanceof URITemplate))return new URITemplate(expression);
+this.expression=expression;URITemplate._cache[expression]=this;return this}function Data(data){this.data=data;this.cache={}}var p=URITemplate.prototype;var operators={"":{prefix:"",separator:",",named:false,empty_name_separator:false,encode:"encode"},"+":{prefix:"",separator:",",named:false,empty_name_separator:false,encode:"encodeReserved"},"#":{prefix:"#",separator:",",named:false,empty_name_separator:false,encode:"encodeReserved"},".":{prefix:".",separator:".",named:false,empty_name_separator:false,
+encode:"encode"},"/":{prefix:"/",separator:"/",named:false,empty_name_separator:false,encode:"encode"},";":{prefix:";",separator:";",named:true,empty_name_separator:false,encode:"encode"},"?":{prefix:"?",separator:"\x26",named:true,empty_name_separator:true,encode:"encode"},"\x26":{prefix:"\x26",separator:"\x26",named:true,empty_name_separator:true,encode:"encode"}};URITemplate._cache={};URITemplate.EXPRESSION_PATTERN=/\{([^a-zA-Z0-9%_]?)([^\}]+)(\}|$)/g;URITemplate.VARIABLE_PATTERN=/^([^*:.](?:\.?[^*:.])*)((\*)|:(\d+))?$/;
+URITemplate.VARIABLE_NAME_PATTERN=/[^a-zA-Z0-9%_.]/;URITemplate.LITERAL_PATTERN=/[<>{}"`^| \\]/;URITemplate.expand=function(expression,data,opts){var options=operators[expression.operator];var type=options.named?"Named":"Unnamed";var variables=expression.variables;var buffer=[];var d,variable,i;for(i=0;variable=variables[i];i++){d=data.get(variable.name);if(d.type===0&&opts&&opts.strict)throw new Error('Missing expansion value for variable "'+variable.name+'"');if(!d.val.length){if(d.type)buffer.push("");
+continue}if(d.type>1&&variable.maxlength)throw new Error('Invalid expression: Prefix modifier not applicable to variable "'+variable.name+'"');buffer.push(URITemplate["expand"+type](d,options,variable.explode,variable.explode&&options.separator||",",variable.maxlength,variable.name))}if(buffer.length)return options.prefix+buffer.join(options.separator);else return""};URITemplate.expandNamed=function(d,options,explode,separator,length,name){var result="";var encode=options.encode;var empty_name_separator=
+options.empty_name_separator;var _encode=!d[encode].length;var _name=d.type===2?"":URI[encode](name);var _value,i,l;for(i=0,l=d.val.length;i<l;i++){if(length){_value=URI[encode](d.val[i][1].substring(0,length));if(d.type===2)_name=URI[encode](d.val[i][0].substring(0,length))}else if(_encode){_value=URI[encode](d.val[i][1]);if(d.type===2){_name=URI[encode](d.val[i][0]);d[encode].push([_name,_value])}else d[encode].push([undefined,_value])}else{_value=d[encode][i][1];if(d.type===2)_name=d[encode][i][0]}if(result)result+=
+separator;if(!explode){if(!i)result+=URI[encode](name)+(empty_name_separator||_value?"\x3d":"");if(d.type===2)result+=_name+",";result+=_value}else result+=_name+(empty_name_separator||_value?"\x3d":"")+_value}return result};URITemplate.expandUnnamed=function(d,options,explode,separator,length){var result="";var encode=options.encode;var empty_name_separator=options.empty_name_separator;var _encode=!d[encode].length;var _name,_value,i,l;for(i=0,l=d.val.length;i<l;i++){if(length)_value=URI[encode](d.val[i][1].substring(0,
+length));else if(_encode){_value=URI[encode](d.val[i][1]);d[encode].push([d.type===2?URI[encode](d.val[i][0]):undefined,_value])}else _value=d[encode][i][1];if(result)result+=separator;if(d.type===2){if(length)_name=URI[encode](d.val[i][0].substring(0,length));else _name=d[encode][i][0];result+=_name;if(explode)result+=empty_name_separator||_value?"\x3d":"";else result+=","}result+=_value}return result};URITemplate.noConflict=function(){if(root.URITemplate===URITemplate)root.URITemplate=_URITemplate;
+return URITemplate};p.expand=function(data,opts){var result="";if(!this.parts||!this.parts.length)this.parse();if(!(data instanceof Data))data=new Data(data);for(var i=0,l=this.parts.length;i<l;i++)result+=typeof this.parts[i]==="string"?this.parts[i]:URITemplate.expand(this.parts[i],data,opts);return result};p.parse=function(){var expression=this.expression;var ePattern=URITemplate.EXPRESSION_PATTERN;var vPattern=URITemplate.VARIABLE_PATTERN;var nPattern=URITemplate.VARIABLE_NAME_PATTERN;var lPattern=
+URITemplate.LITERAL_PATTERN;var parts=[];var pos=0;var variables,eMatch,vMatch;var checkLiteral=function(literal){if(literal.match(lPattern))throw new Error('Invalid Literal "'+literal+'"');return literal};ePattern.lastIndex=0;while(true){eMatch=ePattern.exec(expression);if(eMatch===null){parts.push(checkLiteral(expression.substring(pos)));break}else{parts.push(checkLiteral(expression.substring(pos,eMatch.index)));pos=eMatch.index+eMatch[0].length}if(!operators[eMatch[1]])throw new Error('Unknown Operator "'+
+eMatch[1]+'" in "'+eMatch[0]+'"');else if(!eMatch[3])throw new Error('Unclosed Expression "'+eMatch[0]+'"');variables=eMatch[2].split(",");for(var i=0,l=variables.length;i<l;i++){vMatch=variables[i].match(vPattern);if(vMatch===null)throw new Error('Invalid Variable "'+variables[i]+'" in "'+eMatch[0]+'"');else if(vMatch[1].match(nPattern))throw new Error('Invalid Variable Name "'+vMatch[1]+'" in "'+eMatch[0]+'"');variables[i]={name:vMatch[1],explode:!!vMatch[3],maxlength:vMatch[4]&&parseInt(vMatch[4],
+10)}}if(!variables.length)throw new Error('Expression Missing Variable(s) "'+eMatch[0]+'"');parts.push({expression:eMatch[0],operator:eMatch[1],variables:variables})}if(!parts.length)parts.push(checkLiteral(expression));this.parts=parts;return this};Data.prototype.get=function(key){var data=this.data;var d={type:0,val:[],encode:[],encodeReserved:[]};var i,l,value;if(this.cache[key]!==undefined)return this.cache[key];this.cache[key]=d;if(String(Object.prototype.toString.call(data))==="[object Function]")value=
+data(key);else if(String(Object.prototype.toString.call(data[key]))==="[object Function]")value=data[key](key);else value=data[key];if(value===undefined||value===null)return d;else if(String(Object.prototype.toString.call(value))==="[object Array]"){for(i=0,l=value.length;i<l;i++)if(value[i]!==undefined&&value[i]!==null)d.val.push([undefined,String(value[i])]);if(d.val.length)d.type=3}else if(String(Object.prototype.toString.call(value))==="[object Object]"){for(i in value)if(hasOwn.call(value,i)&&
+value[i]!==undefined&&value[i]!==null)d.val.push([i,String(value[i])]);if(d.val.length)d.type=2}else{d.type=1;d.val.push([undefined,String(value)])}return d};URI.expand=function(expression,data){var template=new URITemplate(expression);var expansion=template.expand(data);return new URI(expansion)};return URITemplate});
+(function(root,factory){if(typeof module==="object"&&module.exports)module.exports=factory(require("jquery"),require("./URI"));else if(typeof define==="function"&&define.amd)define(["jquery","./URI"],factory);else factory(root.jQuery,root.URI)})(this,function($,URI){var comparable={};var compare={"\x3d":function(value,target){return value===target},"^\x3d":function(value,target){return!!(value+"").match(new RegExp("^"+escapeRegEx(target),"i"))},"$\x3d":function(value,target){return!!(value+"").match(new RegExp(escapeRegEx(target)+
+"$","i"))},"*\x3d":function(value,target,property){if(property==="directory")value+="/";return!!(value+"").match(new RegExp(escapeRegEx(target),"i"))},"equals:":function(uri,target){return uri.equals(target)},"is:":function(uri,target){return uri.is(target)}};function escapeRegEx(string){return string.replace(/([.*+?^=!:${}()|[\]\/\\])/g,"\\$1")}function getUriProperty(elem){var nodeName=elem.nodeName.toLowerCase();var property=URI.domAttributes[nodeName];if(nodeName==="input"&&elem.type!=="image")return undefined;
+return property}function generateAccessor(property){return{get:function(elem){return $(elem).uri()[property]()},set:function(elem,value){$(elem).uri()[property](value);return value}}}$.each("origin authority directory domain filename fragment hash host hostname href password path pathname port protocol query resource scheme search subdomain suffix tld username".split(" "),function(k,v){comparable[v]=true;$.attrHooks["uri:"+v]=generateAccessor(v)});var _attrHooks={get:function(elem){return $(elem).uri()},
+set:function(elem,value){return $(elem).uri().href(value).toString()}};$.each(["src","href","action","uri","cite"],function(k,v){$.attrHooks[v]={set:_attrHooks.set}});$.attrHooks.uri.get=_attrHooks.get;$.fn.uri=function(uri){var $this=this.first();var elem=$this.get(0);var property=getUriProperty(elem);if(!property)throw new Error('Element "'+elem.nodeName+'" does not have either property: href, src, action, cite');if(uri!==undefined){var old=$this.data("uri");if(old)return old.href(uri);if(!(uri instanceof
+URI))uri=URI(uri||"")}else{uri=$this.data("uri");if(uri)return uri;else uri=URI($this.attr(property)||"")}uri._dom_element=elem;uri._dom_attribute=property;uri.normalize();$this.data("uri",uri);return uri};URI.prototype.build=function(deferBuild){if(this._dom_element){this._string=URI.build(this._parts);this._deferred_build=false;this._dom_element.setAttribute(this._dom_attribute,this._string);this._dom_element[this._dom_attribute]=this._string}else if(deferBuild===true)this._deferred_build=true;
+else if(deferBuild===undefined||this._deferred_build){this._string=URI.build(this._parts);this._deferred_build=false}return this};var uriSizzle;var pseudoArgs=/^([a-zA-Z]+)\s*([\^\$*]?=|:)\s*(['"]?)(.+)\3|^\s*([a-zA-Z0-9]+)\s*$/;function uriPseudo(elem,text){var match,property,uri;if(!getUriProperty(elem)||!text)return false;match=text.match(pseudoArgs);if(!match||!match[5]&&match[2]!==":"&&!compare[match[2]])return false;uri=$(elem).uri();if(match[5])return uri.is(match[5]);else if(match[2]===":"){property=
+match[1].toLowerCase()+":";if(!compare[property])return false;return compare[property](uri,match[4])}else{property=match[1].toLowerCase();if(!comparable[property])return false;return compare[match[2]](uri[property](),match[4],property)}return false}if($.expr.createPseudo)uriSizzle=$.expr.createPseudo(function(text){return function(elem){return uriPseudo(elem,text)}});else uriSizzle=function(elem,i,match){return uriPseudo(elem,match[3])};$.expr[":"].uri=uriSizzle;return $});
 !function(e){"use strict";function n(e){if("undefined"==typeof e.length)o(e,"click",t);else if("string"!=typeof e&&!(e instanceof String))for(var n=0;n<e.length;n++)o(e[n],"click",t)}function t(e){var t,o,i,d;return e=e||window.event,t=e.currentTarget||e.srcElement,i=t.getAttribute("href"),i&&(d=e.ctrlKey||e.shiftKey||e.metaKey,o=t.getAttribute("target"),d||o&&!r(o))?(n.open(i),e.preventDefault?e.preventDefault():e.returnValue=!1,!1):void 0}function o(e,n,t){var o,i;return e.addEventListener?e.addEventListener(n,t,!1):(o="on"+n,e.attachEvent?e.attachEvent(o,t):e[o]?(i=e[o],e[o]=function(){t(),i()}):e[o]=t,void 0)}function i(e,n,t){var o,i,r,d,u;return o=document.createElement("iframe"),o.style.display="none",document.body.appendChild(o),i=o.contentDocument||o.contentWindow.document,d='"'+e+'"',n&&(d+=', "'+n+'"'),t&&(d+=', "'+t+'"'),r=i.createElement("script"),r.type="text/javascript",r.text="window.parent = null; window.top = null;window.frameElement = null; var child = window.open("+d+");if (child) { child.opener = null }",i.body.appendChild(r),u=o.contentWindow.child,document.body.removeChild(o),u}function r(e){return"_top"===e||"_self"===e||"_parent"===e}var d;"undefined"!=typeof window&&(d=-1!==window.navigator.userAgent.indexOf("MSIE"));var u;"undefined"!=typeof window&&(u=window.open),n.open=function(e,n,t){var o;return r(n)?u.apply(window,arguments):d?(o=u.apply(window,arguments),o&&(o.opener=null),o):i(e,n,t)},n.patch=function(){window.open=function(){return n.open.apply(this,arguments)}},"undefined"!=typeof exports&&("undefined"!=typeof module&&module.exports?module.exports=n:exports.blankshield=n),"function"==typeof define&&"object"==typeof define.amd&&define("blankshield",[],function(){return n}),e.blankshield=n}(this);
 if(typeof window.XE == "undefined") {
 	/*jshint -W082 */
@@ -1085,6 +3314,10 @@ if(typeof window.XE == "undefined") {
 
 								var styleText = "";
 								var click_str = "";
+								var normalizedUrl = String(url || '').replace(/^\s+|\s+$/g, '');
+								if(!/^(?:https?:|\/|#)/i.test(normalizedUrl) && target !== 'javascript') {
+									normalizedUrl = '#';
+								}
 								/* if(icon) styleText = " style=\"background-image:url('"+icon+"')\" "; */
 								switch(target) {
 									case "popup" :
@@ -1092,14 +3325,16 @@ if(typeof window.XE == "undefined") {
 										break;
 									case "javascript" :
 											click_str = 'onclick="'+url+'; return false; "';
-											url='#';
+											normalizedUrl='#';
 										break;
 									default :
 											click_str = 'target="_blank"';
 										break;
 								}
 
-								html += '<li '+styleText+'><a href="'+url+'" '+click_str+'>'+str+'</a></li> ';
+								var escapedUrl = $('<div/>').text(normalizedUrl).html();
+								var escapedStr = $('<div/>').text(str || '').html();
+								html += '<li '+styleText+'><a href="'+escapedUrl+'" '+click_str+'>'+escapedStr+'</a></li> ';
 							}
 						}
 					}
@@ -1336,6 +3571,22 @@ if(typeof window.XE == "undefined") {
 				.filename(filename)
 				.normalizePort();
 		}
+		/**
+		 * @brief 문자열의 HTML 특수문자를 이스케이프
+		 **/
+		String.prototype.escape = function() {
+			return this
+				.replace(/&amp;(amp|lt|gt|quot|#39);/g, '&$1;')
+				.replace(/&(?!amp;|lt;|gt;|quot;|#39;)/g, '&amp;')
+				.replace(/[<>"']/g, function(match) {
+					switch (match) {
+						case '<': return '&lt;';
+						case '>': return '&gt;';
+						case '"': return '&quot;';
+						case "'": return '&#39;';
+					}
+				});
+		};
 	})(window || global);
 
 	/**
@@ -2139,11 +4390,11 @@ if(typeof window.XE == "undefined") {
 			var sName  = oApp.getName().toLowerCase();
 			var nIndex = $.inArray(oApp, _apps);
 
-			if (nIndex >= 0) _apps = _apps.splice(nIndex, 1);
+			if (nIndex >= 0) _apps.splice(nIndex, 1);
 
 			if ($.isArray(_apps[sName])) {
 				nIndex = $.inArray(oApp, _apps[sName]);
-				if (nIndex >= 0) _apps[sName] = _apps[sName].splice(nIndex, 1);
+				if (nIndex >= 0) _apps[sName].splice(nIndex, 1);
 			}
 
 			// unregister event
@@ -2276,7 +4527,7 @@ if(typeof window.XE == "undefined") {
 
 		broadcast : function(msg, params) {
 			if (this.oApp && this.oApp.broadcast) {
-				this.oApp.broadcast(this, mag, params || []);
+				this.oApp.broadcast(this, msg, params || []);
 			}
 		}
 	};
@@ -2945,7 +5196,9 @@ var show_waiting_message = true;
 			}
 			else if ($.isPlainObject(params)) {
 				$.each(params, function(key, val) {
-					stack.push('<' + key + '>' + xmlHelper(val) + '</' + key + '>');
+					var safeKey = String(key).replace(/[^A-Za-z0-9_\-:.]/g, '');
+					if(!safeKey) return;
+					stack.push('<' + safeKey + '>' + xmlHelper(val) + '</' + safeKey + '>');
 				});
 			}
 			else if (!$.isFunction(params)) {
@@ -3263,6 +5516,7 @@ var show_waiting_message = true;
 	var filters   = {};
 	var callbacks = [];
 	var extras    = {};
+	var conditionFnCache = {};
 
 	var Validator = xe.createApp('Validator', {
 		init : function() {
@@ -3344,7 +5598,7 @@ var show_waiting_message = true;
 		},
 		API_VALIDATE : function(sender, params) {
 			var result = true, form = params[0], elems = form.elements, filter, filter_to_add, ruleset, callback;
-			var fields, names, name, el, val, mod, len, lenb, max, min, maxb, minb, rules, e_el, e_val, i, c, r, if_, fn;
+			var fields, names, name, el, val, mod, len, lenb, max, min, maxb, minb, rules, e_el, e_val, i, c, r, if_, fn, f;
 
 			if(elems.ruleset) {
 				filter = form.elements.ruleset.value;
@@ -3415,7 +5669,11 @@ var show_waiting_message = true;
 					for(i=0;i<f['if'].length;i++) {
 						/*jslint evil: true */
 						if_ = f['if'][i];
-						fn  = new Function('el', 'return !!(' + (if_.test.replace(/\$(\w+)/g, '(jQuery(\'[name=$1]\').is(\':radio, :checkbox\') ? jQuery(\'[name=$1]:checked\').val() : jQuery(\'[name=$1]\').val())')) +')');
+						var compiledTest = if_.test.replace(/\$(\w+)/g, '(jQuery(\'[name=$1]\').is(\':radio, :checkbox\') ? jQuery(\'[name=$1]:checked\').val() : jQuery(\'[name=$1]\').val())');
+						if(!conditionFnCache[compiledTest]) {
+							conditionFnCache[compiledTest] = new Function('el', 'return !!(' + compiledTest + ')');
+						}
+						fn  = conditionFnCache[compiledTest];
 						//fn  = new Function('el', 'return !!(' + (if_.test.replace(/\$(\w+)/g, 'el["$1"].value')) +')');
 						if(fn(elems)) f[if_.attr] = if_.value;
 						else delete f[if_.attr];
