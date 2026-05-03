@@ -107,6 +107,10 @@ if(typeof window.XE == "undefined") {
 
 								var styleText = "";
 								var click_str = "";
+								var normalizedUrl = String(url || '').replace(/^\s+|\s+$/g, '');
+								if(!/^(?:https?:|\/|#)/i.test(normalizedUrl) && target !== 'javascript') {
+									normalizedUrl = '#';
+								}
 								/* if(icon) styleText = " style=\"background-image:url('"+icon+"')\" "; */
 								switch(target) {
 									case "popup" :
@@ -114,14 +118,16 @@ if(typeof window.XE == "undefined") {
 										break;
 									case "javascript" :
 											click_str = 'onclick="'+url+'; return false; "';
-											url='#';
+											normalizedUrl='#';
 										break;
 									default :
 											click_str = 'target="_blank"';
 										break;
 								}
 
-								html += '<li '+styleText+'><a href="'+url+'" '+click_str+'>'+str+'</a></li> ';
+								var escapedUrl = $('<div/>').text(normalizedUrl).html();
+								var escapedStr = $('<div/>').text(str || '').html();
+								html += '<li '+styleText+'><a href="'+escapedUrl+'" '+click_str+'>'+escapedStr+'</a></li> ';
 							}
 						}
 					}

@@ -91,11 +91,11 @@
 			var sName  = oApp.getName().toLowerCase();
 			var nIndex = $.inArray(oApp, _apps);
 
-			if (nIndex >= 0) _apps = _apps.splice(nIndex, 1);
+			if (nIndex >= 0) _apps.splice(nIndex, 1);
 
 			if ($.isArray(_apps[sName])) {
 				nIndex = $.inArray(oApp, _apps[sName]);
-				if (nIndex >= 0) _apps[sName] = _apps[sName].splice(nIndex, 1);
+				if (nIndex >= 0) _apps[sName].splice(nIndex, 1);
 			}
 
 			// unregister event
@@ -228,7 +228,7 @@
 
 		broadcast : function(msg, params) {
 			if (this.oApp && this.oApp.broadcast) {
-				this.oApp.broadcast(this, mag, params || []);
+				this.oApp.broadcast(this, msg, params || []);
 			}
 		}
 	};

@@ -13,6 +13,7 @@
 	var filters   = {};
 	var callbacks = [];
 	var extras    = {};
+	var conditionFnCache = {};
 
 	var Validator = xe.createApp('Validator', {
 		init : function() {
@@ -94,7 +95,7 @@
 		},
 		API_VALIDATE : function(sender, params) {
 			var result = true, form = params[0], elems = form.elements, filter, filter_to_add, ruleset, callback;
-			var fields, names, name, el, val, mod, len, lenb, max, min, maxb, minb, rules, e_el, e_val, i, c, r, if_, fn;
+			var fields, names, name, el, val, mod, len, lenb, max, min, maxb, minb, rules, e_el, e_val, i, c, r, if_, fn, f;
 
 			if(elems.ruleset) {
 				filter = form.elements.ruleset.value;
@@ -165,7 +166,11 @@
 					for(i=0;i<f['if'].length;i++) {
 						/*jslint evil: true */
 						if_ = f['if'][i];
-						fn  = new Function('el', 'return !!(' + (if_.test.replace(/\$(\w+)/g, '(jQuery(\'[name=$1]\').is(\':radio, :checkbox\') ? jQuery(\'[name=$1]:checked\').val() : jQuery(\'[name=$1]\').val())')) +')');
+						var compiledTest = if_.test.replace(/\$(\w+)/g, '(jQuery(\'[name=$1]\').is(\':radio, :checkbox\') ? jQuery(\'[name=$1]:checked\').val() : jQuery(\'[name=$1]\').val())');
+						if(!conditionFnCache[compiledTest]) {
+							conditionFnCache[compiledTest] = new Function('el', 'return !!(' + compiledTest + ')');
+						}
+						fn  = conditionFnCache[compiledTest];
 						//fn  = new Function('el', 'return !!(' + (if_.test.replace(/\$(\w+)/g, 'el["$1"].value')) +')');
 						if(fn(elems)) f[if_.attr] = if_.value;
 						else delete f[if_.attr];
