@@ -122,7 +122,7 @@ class fileController extends file
 			$logged_info = Context::get('logged_info');
 			$file_info = $oFileModel->getFile($file_srl);
 			$file_grant = $oFileModel->getFileGrant($file_info, $logged_info);
-			if($file_info->file_srl == $file_srl && $file_info->upload_target_srl == $upload_target_srl && FileModel::isDeletable($file_info))
+			if($file_info->file_srl == $file_srl && $file_info->upload_target_srl == $upload_target_srl && $file_grant->is_deletable)
 			{
 				$this->deleteFile($file_srl);
 			}
@@ -433,9 +433,9 @@ class fileController extends file
 	{
 		// Basic variable setting(upload_target_srl and module_srl set)
 		$editor_sequence = Context::get('editor_sequence');
-		$file_srl = Context::get('file_srl');
 		$file_srls = Context::get('file_srls');
-		if($file_srls) $file_srl = $file_srls;
+		$file_srls = $file_srls ? $file_srls : Context::get('file_srl');
+		$file_srls = explode(',', $file_srls);
 
 		// Exit a session if there is neither upload permission nor information
 		if(!$_SESSION['upload_info'][$editor_sequence]->enabled)
@@ -453,29 +453,45 @@ class fileController extends file
 		$logged_info = Context::get('logged_info');
 		$oFileModel = getModel('file');
 
-		$srls = explode(',',$file_srl);
-		if(!count($srls)) return;
-
-		for($i=0;$i<count($srls);$i++)
+		$valid_file_srls = array();
+		foreach ($file_srls as $file_srl)
 		{
-			$srl = (int)$srls[$i];
-			if(!$srl) continue;
+			$file_srl = (int)$file_srl;
+			if (!$file_srl)
+			{
+				continue;
+			}
 
-			$args = new stdClass;
-			$args->file_srl = $srl;
+			$args = new stdClass();
+			$args->file_srl = $file_srl;
 			$output = executeQuery('file.getFile', $args);
-			if(!$output->toBool()) continue;
-
+			
+			if (!$output->toBool())
+			{
+				continue;
+			}
+			
 			$file_info = $output->data;
-			if(!$file_info || $file_info->upload_target_srl != $upload_target_srl) continue;
-			if($module_srl && $file_info->module_srl != $module_srl) continue;
-
+			if (!$file_info || $file_info->upload_target_srl != $upload_target_srl)
+			{
+				continue;
+			}
+			
 			$file_grant = $oFileModel->getFileGrant($file_info, $logged_info);
+			if (!$file_grant->is_deletable)
+			{
+				continue;
+			}
 
-			if(!$file_grant->is_deletable) continue;
-
-			$output = $this->deleteFile($file_srl);
+			$valid_file_srls[] = $file_srl;
 		}
+
+		if (!count($valid_file_srls))
+		{
+			return;
+		}
+
+		$output = $this->deleteFile($valid_file_srls);
 	}
 
 	/**
