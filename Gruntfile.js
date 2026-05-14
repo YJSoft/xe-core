@@ -115,6 +115,7 @@ module.exports = function(grunt) {
 					'modules/krzip/tpl/js/daumapi.min.js': ['modules/krzip/tpl/js/daumapi.js'],
 					'modules/krzip/tpl/js/epostapi.min.js': ['modules/krzip/tpl/js/epostapi.js'],
 					'modules/krzip/tpl/js/epostapi.search.min.js': ['modules/krzip/tpl/js/epostapi.search.js'],
+					'modules/krzip/tpl/js/postcodify.min.js': ['modules/krzip/tpl/js/postcodify.js'],
 				}
 			},
 			'layout': {

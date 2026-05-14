@@ -1,2 +1,3 @@
 <?php
 $_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : "localhost";
+$_SERVER['HTTPS'] = "on";

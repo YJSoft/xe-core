@@ -1,16 +1,16 @@
-<!--// 다음 우편번호 API -->
+<!--// Postcodify 우편번호 API -->
 <!--// HEADER -->
 <load target="./css/default.css" />
-<load target="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" />
-<load target="./js/daumapi.js" />
+<load target="//d1p7wdleee1q2z.cloudfront.net/post/search.min.js" />
+<load target="./js/postcodify.js" />
 
 <!--// BODY -->
 <div class="krZip" id="krzip-{$template_config->sequence_id}" data-postcode-format="{$template_config->postcode_format}">
-	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-postcode" value="{$template_config->values[0]}" />
-	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-roadAddress" value="{$template_config->values[1]}" />
-	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-jibunAddress" value="{$template_config->values[2]}" />
+	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-postcode postcodify_postcode5" value="{$template_config->values[0]}" />
+	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-roadAddress postcodify_address" value="{$template_config->values[1]}" />
+	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-jibunAddress postcodify_jibeon_address" value="{$template_config->values[2]}" />
 	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-detailAddress" value="{$template_config->values[3]}" />
-	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-extraAddress" value="{$template_config->values[4]}" />
+	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-extraAddress postcodify_extra_info" value="{$template_config->values[4]}" />
 	<div class="krzip-postcode-wrap">
 		<label>{$lang->cmd_krzip_postcode}</label>
 		<input type="text" class="krzip-postcode" value="{$template_config->values[0]}" disabled="disabled" />
@@ -24,7 +24,7 @@
 	</div>
 	<div class="krzip-detailAddress-wrap">
 		<label>{$lang->cmd_krzip_detail_address}</label>
-		<input type="text" class="krzip-detailAddress<!--@if($template_config->show_box == 'only_road')--> krzip-input-expand<!--@end-->" value="{$template_config->values[3]}" />
+		<input type="text" class="krzip-detailAddress postcodify_details<!--@if($template_config->show_box == 'only_road')--> krzip-input-expand<!--@end-->" value="{$template_config->values[3]}" />
 	</div>
 	<div class="krzip-guide"></div>
 </div>
@@ -32,8 +32,6 @@
 <!--// FOOTER -->
 <script>
 //<![CDATA[
-xe.lang.msg_krzip_road_address_expectation = "{$lang->msg_krzip_road_address_expectation}";
-xe.lang.msg_krzip_jibun_address_expectation = "{$lang->msg_krzip_jibun_address_expectation}";
 jQuery("#krzip-{$template_config->sequence_id}").Krzip();
 //]]>
 </script>

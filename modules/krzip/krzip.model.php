@@ -97,14 +97,14 @@ class krzipModel extends krzip
 	 * @param string $query
 	 * @return mixed
 	 */
-	function getKrzipCodeList($query)
+	function getKrzipCodeList($query = "")
 	{
 		$module_config = $this->getConfig();
 		if($module_config->api_handler != 1)
 		{
 			return $this->makeObject(-1, 'msg_invalid_request');
 		}
-		if(!isset($query))
+		if(!$query)
 		{
 			$query = Context::get('query');
 		}

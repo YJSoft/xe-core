@@ -7,10 +7,13 @@
 		<value xml:lang="ko"><![CDATA[API 선택]]></value>
 	</item>
 	<item name="cmd_krzip_daumapi">
-		<value xml:lang="ko"><![CDATA[다음 우편번호]]></value>
+		<value xml:lang="ko"><![CDATA[카카오 우편번호 API]]></value>
 	</item>
 	<item name="cmd_krzip_epostapi">
-		<value xml:lang="ko"><![CDATA[우체국 우편번호]]></value>
+		<value xml:lang="ko"><![CDATA[우체국 우편번호 API]]></value>
+	</item>
+	<item name="cmd_krzip_postcodify">
+		<value xml:lang="ko"><![CDATA[Postcodify 우편번호 API]]></value>
 	</item>
 	<item name="cmd_krzip_postcode_format">
 		<value xml:lang="ko"><![CDATA[우편번호 입력 형식]]></value>
@@ -49,7 +52,7 @@
 		<value xml:lang="ko"><![CDATA[우편번호 검색을 어떤 API를 통해 할 것인지 결정합니다.]]></value>
 	</item>
 	<item name="about_krzip_epostapi_regkey">
-		<value xml:lang="ko"><![CDATA[우체국 우편번호 API를 이용하기 위해 인터넷 우체국에서 발급 받은 등록키를 입력합니다.]]></value>
+		<value xml:lang="ko"><![CDATA[우체국 우편번호 API를 이용하기 위해 인터넷 우체국에서 발급 받은 등록키를 입력합니다.<br />등록키 발급은 <a href="https://biz.epost.go.kr/ui/index.jsp?sysType=PORTAL&menuId=PORTAL_2_1">우체국 계약고객전용시스템</a>에서 가능합니다.]]></value>
 	</item>
 	<item name="about_krzip_show_box">
 		<value xml:lang="ko"><![CDATA[사용자 화면에서 보여질 우편번호 박스를 선택합니다.]]></value>
