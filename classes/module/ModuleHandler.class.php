@@ -228,16 +228,22 @@ class ModuleHandler extends Handler
 				continue;
 			}
 
-			$urlInfo = parse_url(urldecode($url));
+			$decodedUrl = urldecode(str_replace('\\', '/', $url));
+			$urlInfo = parse_url($decodedUrl);
 			$host = $urlInfo['host'];
 
-			if($host && ($host !== $defaultHost && ($host !== $site_module_info->domain || $host !== $siteDomain)))
+			// 호스트가 있는 절대 URL인 경우: 허용된 도메인인지 확인
+			if($host)
 			{
-				throw new Exception('msg_default_url_is_null');
+				if($host !== $defaultHost && $host !== $siteDomain)
+				{
+					throw new Exception('msg_default_url_is_null');
+				}
 			}
-			else if((!$host || !$urlInfo || !$urlInfo['scheme']) && preg_match("/^(https?|[a-z0-9])+\:(\/)*/i", urldecode($url)))
+			// 호스트가 없지만 스킴이 있는 경우: javascript:, data: 등 차단
+			else if(preg_match("/^(https?|[a-z0-9])+\:(\/)*/i", $decodedUrl))
 			{
-				throw new exception('msg_invalid_request');
+				throw new Exception('msg_invalid_request');
 			}
 		}
 
