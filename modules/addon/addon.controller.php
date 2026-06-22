@@ -160,7 +160,7 @@ class addonController extends addon
 		}
 
 		$args = new stdClass();
-		$args->addon = $addon;
+		$args->addon = preg_replace('/[^\w]/', '', $addon);
 		$args->extra_vars = serialize($extra_vars);
 		if($gtype == 'global')
 		{

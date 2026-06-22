@@ -53,12 +53,19 @@ class addonAdminView extends addon
 	function dispAddonAdminSetup()
 	{
 		$site_module_info = Context::get('site_module_info');
-		// Wanted to add the requested
+
+		// Get the requested addon name
 		$selected_addon = Context::get('selected_addon');
-		// Wanted to add the requested information
+		if (!preg_match('/^\w+$/', $selected_addon))
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
+		// Retrieve addon configuration information
 		$oAddonModel = getAdminModel('addon');
 		$addon_info = $oAddonModel->getAddonInfoXml($selected_addon, $site_module_info->site_srl, 'site');
 		Context::set('addon_info', $addon_info);
+
 		// Get a mid list
 		$oModuleModel = getModel('module');
 		$oModuleAdminModel = getAdminModel('module');
@@ -70,7 +77,8 @@ class addonAdminView extends addon
 		}
 		$columnList = array('module_srl', 'module_category_srl', 'mid', 'browser_title');
 		$mid_list = $oModuleModel->getMidList($args, $columnList);
-		// module_category and module combination
+
+		// Organize modules by category
 		if(!$site_module_info->site_srl)
 		{
 			// Get a list of module categories
@@ -114,14 +122,22 @@ class addonAdminView extends addon
 	function dispAddonAdminInfo()
 	{
 		$site_module_info = Context::get('site_module_info');
-		// Wanted to add the requested
+
+		// Get the requested addon name
 		$selected_addon = Context::get('selected_addon');
-		// Wanted to add the requested information
+		if (!preg_match('/^\w+$/', $selected_addon))
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
+		// Retrieve addon configuration information
 		$oAddonModel = getAdminModel('addon');
 		$addon_info = $oAddonModel->getAddonInfoXml($selected_addon, $site_module_info->site_srl);
 		Context::set('addon_info', $addon_info);
+
 		// Set the layout to be pop-up
 		$this->setLayoutFile('popup_layout');
+		
 		// Template specifies the path and file
 		$this->setTemplateFile('addon_info');
 

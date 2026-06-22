@@ -161,28 +161,29 @@ class addonAdminController extends addonController
 	 */
 	function procAddonAdminToggleActivate()
 	{
-		$oAddonModel = getAdminModel('addon');
-
-		$site_module_info = Context::get('site_module_info');
-		// batahom addon values
 		$addon = Context::get('addon');
+		if (!preg_match('/^\w+$/', $addon))
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 		$type = Context::get('type');
-		if(!$type)
+		if(!$type || !in_array($type, array('pc', 'mobile'), true))
 		{
 			$type = "pc";
 		}
-		if($addon)
+
+		$oAddonModel = getAdminModel('addon');
+		$site_module_info = Context::get('site_module_info');
+
+		// Deactivate if the addon is currently enabled
+		if($oAddonModel->isActivatedAddon($addon, $site_module_info->site_srl, $type))
 		{
-			// If enabled Disables
-			if($oAddonModel->isActivatedAddon($addon, $site_module_info->site_srl, $type))
-			{
-				$this->doDeactivate($addon, $site_module_info->site_srl, $type);
-			}
-			// If it is disabled Activate
-			else
-			{
-				$this->doActivate($addon, $site_module_info->site_srl, $type);
-			}
+			$this->doDeactivate($addon, $site_module_info->site_srl, $type);
+		}
+		// Activate if the addon is currently disabled
+		else
+		{
+			$this->doActivate($addon, $site_module_info->site_srl, $type);
 		}
 
 		$this->makeCacheFile($site_module_info->site_srl, $type);
@@ -203,6 +204,11 @@ class addonAdminController extends addonController
 		unset($args->addon_name);
 		unset($args->body);
 		unset($args->error_return_url);
+
+		if (!preg_match('/^\w+$/', $addon_name))
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 
 		if (!isset($args->xe_run_method) || $args->xe_run_method !== 'no_run_selected') {
 			$args->xe_run_method = 'run_selected';
