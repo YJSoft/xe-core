@@ -328,7 +328,7 @@ class editorModel extends editor
 		}
 		else
 		{
-			Context::set('component_list', []);
+			Context::set('component_list', array());
 		}
 		Context::set('enable_component', $enable_component);
 		Context::set('enable_default_component', $enable_default_component);

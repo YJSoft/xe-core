@@ -63,7 +63,7 @@ class boardAPI extends board {
 		{
 			if ($oDocument->isGranted())
 			{
-				$extra_vars = $oDocument->getExtraVars() ?: [];
+				$extra_vars = $oDocument->getExtraVars() ?: array();
 				$oDocument->add('extra_vars', $this->arrangeExtraVars($extra_vars));
 			}
 			$oModule->add('oDocument',$this->arrangeContent($oDocument));
@@ -108,13 +108,13 @@ class boardAPI extends board {
 			$comment_list = Context::get('comment_list');
 			if (!is_array($comment_list))
 			{
-				$comment_list = [];
+				$comment_list = array();
 			}
 			$oModule->add('comment_list', $this->arrangeComment($comment_list));
 		}
 		else
 		{
-			$oModule->add('comment_list', []);
+			$oModule->add('comment_list', array());
 		}
 	}
 
