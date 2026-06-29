@@ -1207,8 +1207,8 @@ class DB
 
 		// DEBUG: log every query and error
 		$log_file = defined('_XE_PATH_') ? _XE_PATH_ . 'files/debug_sql.log' : dirname(__DIR__, 2) . '/files/debug_sql.log';
-		$errno = method_exists($this, 'getError') ? $this->getErrno() : 0;
-		$errmsg = $this->getError() ?: '';
+		$is_error = method_exists($this, 'isError') && $this->isError();
+		$errmsg = $is_error && method_exists($this, 'getError') ? $this->getError() : '';
 		$trace = array_map(function($f) {
 			return sprintf('  %s%s%s (%s:%s)',
 				$f['class'] ?? '', $f['type'] ?? '', $f['function'] ?? '?',
@@ -1216,7 +1216,7 @@ class DB
 		}, array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 0, 10));
 		$entry = sprintf("[%s] %s\nSQL: %s\nERROR: %s\nTRACE:\n%s\n\n",
 			date('H:i:s'),
-			$errno ? "FAIL(errno=$errno)" : 'OK',
+			$is_error ? 'FAIL' : 'OK',
 			$query,
 			$errmsg,
 			implode("\n", $trace));
