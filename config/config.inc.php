@@ -47,6 +47,37 @@ define('_XE_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '
 // Disable strict cookie requirement for sessions to support legacy file uploaders
 ini_set('session.use_only_cookies', 0);
 
+// DEBUG: catch all PHP errors/exceptions and log to files/debug_php.log
+(function() {
+	$log = _XE_PATH_ . 'files/debug_php.log';
+	set_error_handler(function($errno, $errstr, $errfile, $errline) use ($log) {
+		$trace = array_map(function($f) {
+			return sprintf('  %s%s%s (%s:%s)',
+				$f['class'] ?? '', $f['type'] ?? '', $f['function'] ?? '?',
+				basename($f['file'] ?? '?'), $f['line'] ?? '?');
+		}, array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 0, 10));
+		$entry = sprintf("[%s] PHP E%d: %s in %s:%d\nTRACE:\n%s\n\n",
+			date('H:i:s'), $errno, $errstr, $errfile, $errline,
+			implode("\n", $trace));
+		@file_put_contents($log, $entry, FILE_APPEND | LOCK_EX);
+		return false; // keep default handler too
+	});
+	set_exception_handler(function($e) use ($log) {
+		$entry = sprintf("[%s] EXCEPTION %s: %s in %s:%d\nTRACE:\n%s\n\n",
+			date('H:i:s'), get_class($e), $e->getMessage(),
+			$e->getFile(), $e->getLine(), $e->getTraceAsString());
+		@file_put_contents($log, $entry, FILE_APPEND | LOCK_EX);
+	});
+	register_shutdown_function(function() use ($log) {
+		$e = error_get_last();
+		if($e && in_array($e['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+			$entry = sprintf("[%s] FATAL E%d: %s in %s:%d\n\n",
+				date('H:i:s'), $e['type'], $e['message'], $e['file'], $e['line']);
+			@file_put_contents($log, $entry, FILE_APPEND | LOCK_EX);
+		}
+	});
+})();
+
 if(file_exists(_XE_PATH_ . 'config/package.inc.php'))
 {
 	require _XE_PATH_ . 'config/package.inc.php';
