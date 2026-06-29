@@ -342,7 +342,7 @@ class Validator
 				}
 
 				$func_body = preg_replace('/\\$(\w+)/', '$c[\'$1\']', $cond['test']);
-				$func = create_function('$c', "return !!({$func_body});");
+				$func = eval('return function($c) { return !!(' . $func_body . '); };');
 
 				if($func($fields))
 				{
@@ -623,7 +623,7 @@ class Validator
 			case 'expr':
 				if(!$rule['func_test'])
 				{
-					$rule['func_test'] = create_function('$a', 'return (' . preg_replace('/\$\$/', '$a', html_entity_decode($rule['test'])) . ');');
+					$rule['func_test'] = eval('return function($a) { return (' . preg_replace('/\$\$/', '$a', html_entity_decode($rule['test'])) . '); };');
 				}
 				return $rule['func_test']($value);
 		}

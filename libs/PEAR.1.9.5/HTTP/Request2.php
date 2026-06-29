@@ -925,7 +925,8 @@ class HTTP_Request2 implements SplSubject
         }
         // magic_quotes_runtime may break file uploads and chunked response
         // processing; see bug #4543. Don't use ini_get() here; see bug #16440.
-        if ($magicQuotes = get_magic_quotes_runtime()) {
+        $magicQuotes = false;
+        if (function_exists('get_magic_quotes_runtime') && ($magicQuotes = get_magic_quotes_runtime())) {
             set_magic_quotes_runtime(false);
         }
         // force using single byte encoding if mbstring extension overloads

@@ -132,13 +132,13 @@ class editorModel extends editor
 		$xml_doc = $oParser->loadXmlFile($xml_file);
 
 		$component_info->component_name = $drComponentName;
-		$component_info->title = $xml_doc->component->title->body;
-		$component_info->description = str_replace('\n', "\n", $xml_doc->component->description->body);
-		$component_info->version = $xml_doc->component->version->body;
-		$component_info->date = $xml_doc->component->date->body;
-		$component_info->homepage = $xml_doc->component->link->body;
-		$component_info->license = $xml_doc->component->license->body;
-		$component_info->license_link = $xml_doc->component->license->attrs->link;
+		$component_info->title = isset($xml_doc->component->title->body) ? (string)$xml_doc->component->title->body : '';
+		$component_info->description = str_replace('\n', "\n", isset($xml_doc->component->description->body) ? (string)$xml_doc->component->description->body : '');
+		$component_info->version = isset($xml_doc->component->version->body) ? (string)$xml_doc->component->version->body : '';
+		$component_info->date = isset($xml_doc->component->date->body) ? (string)$xml_doc->component->date->body : '';
+		$component_info->homepage = isset($xml_doc->component->link->body) ? (string)$xml_doc->component->link->body : '';
+		$component_info->license = isset($xml_doc->component->license->body) ? (string)$xml_doc->component->license->body : '';
+		$component_info->license_link = isset($xml_doc->component->license->attrs->link) ? (string)$xml_doc->component->license->attrs->link : '';
 
 		$buff = '<?php if(!defined("__XE__")) exit(); ';
 		$buff .= sprintf('$xml_info->component_name = %s;', var_export($component_info->component_name, true));
@@ -170,8 +170,8 @@ class editorModel extends editor
 			{
 				unset($obj);
 				$key = $val->attrs->name;
-				$title = $val->title->body;
-				$description = $val->description->body;
+				$title = isset($val->title->body) ? (string)$val->title->body : '';
+				$description = isset($val->description->body) ? (string)$val->description->body : '';
 				$xml_info->extra_vars->{$key}->title = $title;
 				$xml_info->extra_vars->{$key}->description = $description;
 
@@ -790,23 +790,23 @@ class editorModel extends editor
 		$component_info->author = array();
 		$component_info->extra_vars = new stdClass;
 		$component_info->component_name = $component;
-		$component_info->title = $xml_doc->component->title->body;
+		$component_info->title = isset($xml_doc->component->title->body) ? (string)$xml_doc->component->title->body : '';
 
 		if($xml_doc->component->version)
 		{
-			$component_info->description = str_replace('\n', "\n", $xml_doc->component->description->body);
-			$component_info->version = $xml_doc->component->version->body;
-			$component_info->date = $xml_doc->component->date->body;
-			$component_info->homepage = $xml_doc->component->link->body;
-			$component_info->license = $xml_doc->component->license->body;
-			$component_info->license_link = $xml_doc->component->license->attrs->link;
+			$component_info->description = str_replace('\n', "\n", isset($xml_doc->component->description->body) ? (string)$xml_doc->component->description->body : '');
+			$component_info->version = isset($xml_doc->component->version->body) ? (string)$xml_doc->component->version->body : '';
+			$component_info->date = isset($xml_doc->component->date->body) ? (string)$xml_doc->component->date->body : '';
+			$component_info->homepage = isset($xml_doc->component->link->body) ? (string)$xml_doc->component->link->body : '';
+			$component_info->license = isset($xml_doc->component->license->body) ? (string)$xml_doc->component->license->body : '';
+			$component_info->license_link = isset($xml_doc->component->license->attrs->link) ? (string)$xml_doc->component->license->attrs->link : '';
 		}
 		else
 		{
 			sscanf($xml_doc->component->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 
-			$component_info->description = str_replace('\n', "\n", $xml_doc->component->author->description->body);
+			$component_info->description = str_replace('\n', "\n", isset($xml_doc->component->author->description->body) ? (string)$xml_doc->component->author->description->body : '');
 			$component_info->version = $xml_doc->component->attrs->version;
 			$component_info->date = $date;
 

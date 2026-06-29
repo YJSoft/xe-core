@@ -30,6 +30,14 @@ class seo extends ModuleObject
 		if (!$config->use_optimize_title) $config->use_optimize_title = 'N';
 		if (!$config->ga_except_admin) $config->ga_except_admin = 'N';
 		if (!$config->ga_track_subdomain) $config->ga_track_subdomain = 'N';
+		if (!isset($config->site_name)) $config->site_name = '';
+		if (!isset($config->site_slogan)) $config->site_slogan = '';
+		if (!isset($config->site_keywords)) $config->site_keywords = '';
+		if (!isset($config->site_description)) $config->site_description = '';
+		if (!isset($config->fb_app_id)) $config->fb_app_id = '';
+		if (!isset($config->fb_admins)) $config->fb_admins = '';
+		if (!isset($config->ga_id)) $config->ga_id = '';
+		if (!isset($config->na_id)) $config->na_id = '';
 		if ($config->site_image) 
 		{
 			$config->site_image_url = $request_uri . 'files/attach/site_image/' . $config->site_image;

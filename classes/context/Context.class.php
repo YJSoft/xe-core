@@ -1998,7 +1998,7 @@ class Context
 
 		if(!isset($self->context->{$key}))
 		{
-			return null;
+			return '';
 		}
 		return $self->context->{$key};
 	}

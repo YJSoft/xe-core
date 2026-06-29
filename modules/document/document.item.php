@@ -390,7 +390,7 @@ class documentItem extends BaseObject
 		$title = $this->getTitleText($cut_size, $tail);
 
 		$attrs = array();
-		$this->add('title_color', trim($this->get('title_color')));
+		$this->add('title_color', trim((string)$this->get('title_color')));
 		if($this->get('title_bold')=='Y') $attrs[] = "font-weight:bold;";
 		if($this->get('title_color') && $this->get('title_color') != 'N') $attrs[] = "color:#".$this->get('title_color');
 

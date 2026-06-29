@@ -18,6 +18,7 @@ class ModuleHandler extends Handler
 	var $mid = NULL; ///< Module ID
 	var $document_srl = NULL; ///< Document Number
 	var $module_srl = NULL; ///< Module Number
+	var $entry = NULL; ///< Entry keyword
 	var $module_info = NULL; ///< Module Info. Object
 	var $error = NULL; ///< an error code.
 	var $httpStatusCode = NULL; ///< http status code.

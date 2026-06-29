@@ -466,6 +466,17 @@ class moduleModel extends module
 		// Process although one or more module informaion is requested
 		if(!is_array($module_info)) $target_module_info = array($module_info);
 		else $target_module_info = $module_info;
+
+		// Normalize nullable string columns to '' to prevent null-to-string deprecation in PHP 8.1+
+		static $str_fields = array('browser_title', 'header_text', 'footer_text', 'content', 'mcontent');
+		foreach($target_module_info as $val)
+		{
+			if(!$val) continue;
+			foreach($str_fields as $field)
+			{
+				if($val->{$field} === null) $val->{$field} = '';
+			}
+		}
 		// Get module_srl
 		$module_srls = array();
 		foreach($target_module_info as $key => $val)
@@ -758,16 +769,16 @@ class moduleModel extends module
 		if($xml_obj->version && $xml_obj->attrs->version == '0.2')
 		{
 			// module format 0.2
-			$module_info->title = $xml_obj->title->body;
-			$module_info->description = $xml_obj->description->body;
-			$module_info->version = $xml_obj->version->body;
-			$module_info->homepage = $xml_obj->link->body;
-			$module_info->category = $xml_obj->category->body;
+			$module_info->title = isset($xml_obj->title->body) ? (string)$xml_obj->title->body : '';
+			$module_info->description = isset($xml_obj->description->body) ? (string)$xml_obj->description->body : '';
+			$module_info->version = isset($xml_obj->version->body) ? (string)$xml_obj->version->body : '';
+			$module_info->homepage = isset($xml_obj->link->body) ? (string)$xml_obj->link->body : '';
+			$module_info->category = isset($xml_obj->category->body) ? (string)$xml_obj->category->body : '';
 			if(!$module_info->category) $module_info->category = 'service';
 			sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$module_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
-			$module_info->license = $xml_obj->license->body;
-			$module_info->license_link = $xml_obj->license->attrs->link;
+			$module_info->license = isset($xml_obj->license->body) ? (string)$xml_obj->license->body : '';
+			$module_info->license_link = isset($xml_obj->license->attrs->link) ? (string)$xml_obj->license->attrs->link : '';
 
 			if(!is_array($xml_obj->author)) $author_list[] = $xml_obj->author;
 			else $author_list = $xml_obj->author;
@@ -784,8 +795,8 @@ class moduleModel extends module
 		else
 		{
 			// module format 0.1
-			$module_info->title = $xml_obj->title->body;
-			$module_info->description = $xml_obj->author->description->body;
+			$module_info->title = isset($xml_obj->title->body) ? (string)$xml_obj->title->body : '';
+			$module_info->description = isset($xml_obj->author->description->body) ? (string)$xml_obj->author->description->body : '';
 			$module_info->version = $xml_obj->attrs->version;
 			$module_info->category = $xml_obj->attrs->category;
 			if(!$module_info->category) $module_info->category = 'service';
@@ -1155,18 +1166,18 @@ class moduleModel extends module
 		$xml_obj = $_xml_obj->skin;
 		// Skin Name
 		$skin_info = new stdClass();
-		$skin_info->title = $xml_obj->title->body;
+		$skin_info->title = isset($xml_obj->title->body) ? (string)$xml_obj->title->body : '';
 		// Author information
 		if($xml_obj->version && $xml_obj->attrs->version == '0.2')
 		{
 			// skin format v0.2
 			sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
-			$skin_info->version = $xml_obj->version->body;
+			$skin_info->version = isset($xml_obj->version->body) ? (string)$xml_obj->version->body : '';
 			$skin_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
-			$skin_info->homepage = $xml_obj->link->body;
-			$skin_info->license = $xml_obj->license->body;
-			$skin_info->license_link = $xml_obj->license->attrs->link;
-			$skin_info->description = $xml_obj->description->body;
+			$skin_info->homepage = isset($xml_obj->link->body) ? (string)$xml_obj->link->body : '';
+			$skin_info->license = isset($xml_obj->license->body) ? (string)$xml_obj->license->body : '';
+			$skin_info->license_link = isset($xml_obj->license->attrs->link) ? (string)$xml_obj->license->attrs->link : '';
+			$skin_info->description = isset($xml_obj->description->body) ? (string)$xml_obj->description->body : '';
 
 			if(!is_array($xml_obj->author)) $author_list[] = $xml_obj->author;
 			else $author_list = $xml_obj->author;
@@ -1200,14 +1211,14 @@ class moduleModel extends module
 						$obj = new stdClass();
 						if(!$val->attrs->type) { $val->attrs->type = 'text'; }
 
-						$obj->group = $group->title->body;
+						$obj->group = isset($group->title->body) ? (string)$group->title->body : '';
 						$obj->name = $val->attrs->name;
-						$obj->title = $val->title->body;
+						$obj->title = isset($val->title->body) ? (string)$val->title->body : '';
 						$obj->type = $val->attrs->type;
-						$obj->description = $val->description->body;
-						$obj->value = $extra_vals->{$obj->name};
+						$obj->description = isset($val->description->body) ? (string)$val->description->body : '';
+						$obj->value = isset($extra_vals->{$obj->name}) ? $extra_vals->{$obj->name} : '';
 						$obj->default = $val->attrs->default;
-						if(strpos($obj->value, '|@|') != false) { $obj->value = explode('|@|', $obj->value); }
+						if($obj->value !== '' && strpos($obj->value, '|@|') != false) { $obj->value = explode('|@|', $obj->value); }
 						if($obj->type == 'mid_list' && !is_array($obj->value)) { $obj->value = array($obj->value); }
 						// Get an option list from 'select'type
 						if(is_array($val->options))

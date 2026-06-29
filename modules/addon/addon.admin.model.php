@@ -206,12 +206,12 @@ class addonAdminModel extends addon
 			$addon_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 
 			$addon_info->addon_name = $addon;
-			$addon_info->title = $xml_obj->title->body;
-			$addon_info->description = trim($xml_obj->description->body);
-			$addon_info->version = $xml_obj->version->body;
-			$addon_info->homepage = $xml_obj->link->body;
-			$addon_info->license = $xml_obj->license->body;
-			$addon_info->license_link = $xml_obj->license->attrs->link;
+			$addon_info->title = isset($xml_obj->title->body) ? (string)$xml_obj->title->body : '';
+			$addon_info->description = isset($xml_obj->description->body) ? trim((string)$xml_obj->description->body) : '';
+			$addon_info->version = isset($xml_obj->version->body) ? (string)$xml_obj->version->body : '';
+			$addon_info->homepage = isset($xml_obj->link->body) ? (string)$xml_obj->link->body : '';
+			$addon_info->license = isset($xml_obj->license->body) ? (string)$xml_obj->license->body : '';
+			$addon_info->license_link = isset($xml_obj->license->attrs->link) ? (string)$xml_obj->license->attrs->link : '';
 
 			if(!is_array($xml_obj->author))
 			{

@@ -149,15 +149,15 @@ class widgetModel extends widget
 			// Title of the widget, version
 			$buff .= sprintf('$widget_info->widget = %s;', var_export($widget, true));
 			$buff .= sprintf('$widget_info->path = %s;', var_export($widget_path, true));
-			$buff .= sprintf('$widget_info->title = %s;', var_export($xml_obj->title->body, true));
-			$buff .= sprintf('$widget_info->description = %s;', var_export($xml_obj->description->body, true));
-			$buff .= sprintf('$widget_info->version = %s;', var_export($xml_obj->version->body, true));
+			$buff .= sprintf('$widget_info->title = %s;', var_export(isset($xml_obj->title->body) ? (string)$xml_obj->title->body : '', true));
+			$buff .= sprintf('$widget_info->description = %s;', var_export(isset($xml_obj->description->body) ? (string)$xml_obj->description->body : '', true));
+			$buff .= sprintf('$widget_info->version = %s;', var_export(isset($xml_obj->version->body) ? (string)$xml_obj->version->body : '', true));
 			sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$buff .= sprintf('$widget_info->date = %s;', var_export($date, true));
-			$buff .= sprintf('$widget_info->homepage = %s;', var_export($xml_obj->link->body, true));
-			$buff .= sprintf('$widget_info->license = %s;', var_export($xml_obj->license->body, true));
-			$buff .= sprintf('$widget_info->license_link = %s;', var_export($xml_obj->license->attrs->link, true));
+			$buff .= sprintf('$widget_info->homepage = %s;', var_export(isset($xml_obj->link->body) ? (string)$xml_obj->link->body : '', true));
+			$buff .= sprintf('$widget_info->license = %s;', var_export(isset($xml_obj->license->body) ? (string)$xml_obj->license->body : '', true));
+			$buff .= sprintf('$widget_info->license_link = %s;', var_export(isset($xml_obj->license->attrs->link) ? (string)$xml_obj->license->attrs->link : '', true));
 			$buff .= sprintf('$widget_info->widget_srl = $widget_srl;');
 			$buff .= sprintf('$widget_info->widget_title = $widget_title;');
 			// Author information
@@ -177,9 +177,9 @@ class widgetModel extends widget
 			// Title of the widget, version
 			$buff .= sprintf('$widget_info->widget = %s;', var_export($widget, true));
 			$buff .= sprintf('$widget_info->path = %s;', var_export($widget_path, true));
-			$buff .= sprintf('$widget_info->title = %s;', var_export($xml_obj->title->body, true));
-			$buff .= sprintf('$widget_info->description = %s;', var_export($xml_obj->author->description->body, true));
-			$buff .= sprintf('$widget_info->version = %s;', var_export($xml_obj->attrs->version, true));
+			$buff .= sprintf('$widget_info->title = %s;', var_export(isset($xml_obj->title->body) ? (string)$xml_obj->title->body : '', true));
+			$buff .= sprintf('$widget_info->description = %s;', var_export(isset($xml_obj->author->description->body) ? (string)$xml_obj->author->description->body : '', true));
+			$buff .= sprintf('$widget_info->version = %s;', var_export(isset($xml_obj->attrs->version) ? (string)$xml_obj->attrs->version : '', true));
 			sscanf($xml_obj->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$buff .= sprintf('$widget_info->date = %s;', var_export($date, true));
@@ -221,11 +221,11 @@ class widgetModel extends widget
 						$buff .= sprintf('$widget_info->extra_var->%s->allow_multiple = %s;', $id, var_export($var->type->attrs->allow_multiple, true));
 					}
 
-					$buff .= sprintf('$widget_info->extra_var->%s->group = %s;', $id, var_export($group->title->body, true));
+					$buff .= sprintf('$widget_info->extra_var->%s->group = %s;', $id, var_export(isset($group->title->body) ? (string)$group->title->body : '', true));
 					$buff .= sprintf('$widget_info->extra_var->%s->name = %s;', $id, var_export($name, true));
 					$buff .= sprintf('$widget_info->extra_var->%s->type = %s;', $id, var_export($type, true));
-					$buff .= sprintf('$widget_info->extra_var->%s->value = $vars->%s;', $id, $id);
-					$buff .= sprintf('$widget_info->extra_var->%s->description = %s;', $id, var_export($var->description->body, true));
+					$buff .= sprintf('$widget_info->extra_var->%s->value = isset($vars->%s) ? $vars->%s : \'\';', $id, $id, $id);
+					$buff .= sprintf('$widget_info->extra_var->%s->description = %s;', $id, var_export(isset($var->description->body) ? (string)$var->description->body : '', true));
 
 					$options = $var->options;
 					if(!$options) continue;

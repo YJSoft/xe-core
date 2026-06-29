@@ -53,7 +53,7 @@
         var $ftp_resp;
 
         /* Constractor */
-        function ftp()
+        function __construct()
         {
             $this->debug = false;
             $this->umask = 0022;
@@ -214,8 +214,7 @@
                 return -1;
             }
             
-            reset($remote_list);
-            while (list(,$value) = each($remote_list)) {
+            foreach ($remote_list as $value) {
                 if ($value == $pathname) {
                     $this->ftp_debug("Remote file ".$pathname." exists\n");
                     return 1;

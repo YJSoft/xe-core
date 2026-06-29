@@ -1798,6 +1798,7 @@ function isDefinedLangCode($str)
  */
 function escape($str, $double_escape = true, $escape_defined_lang_code = false)
 {
+	if($str === null) return '';
 	if(!$escape_defined_lang_code && isDefinedLangCode($str)) return $str;
 
 	$flags = ENT_QUOTES | ENT_SUBSTITUTE;
