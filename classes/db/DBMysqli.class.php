@@ -158,6 +158,17 @@ class DBMysqli extends DBMysql
 		if($error)
 		{
 			$this->setError(mysqli_errno($connection), $error);
+			// DEBUG LOG
+			$log_file = _XE_PATH_ . 'files/debug_sql.log';
+			$trace = array_map(function($f) {
+				return ($f['class'] ?? '') . ($f['type'] ?? '') . ($f['function'] ?? '') .
+					' (' . ($f['file'] ?? '?') . ':' . ($f['line'] ?? '?') . ')';
+			}, array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 0, 12));
+			$log = '[' . date('Y-m-d H:i:s') . '] ERRNO=' . mysqli_errno($connection) .
+				"\nSQL: " . $query .
+				"\nERROR: " . $error .
+				"\nTRACE:\n  " . implode("\n  ", $trace) . "\n\n";
+			file_put_contents($log_file, $log, FILE_APPEND | LOCK_EX);
 		}
 		// Return result
 		return $result;
