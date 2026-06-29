@@ -46,7 +46,7 @@ class XmlGenerater
 			return;
 		}
 
-		$xml = new XmlParser();
+		$xml = new XeXmlParser();
 		$xmlDoc = $xml->parse($buff);
 		return $xmlDoc;
 	}

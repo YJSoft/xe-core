@@ -128,7 +128,7 @@ class editorModel extends editor
 			return $xml_info;
 		}
 		// Return after parsing and caching if the cached file does not exist
-		$oParser = new XmlParser();
+		$oParser = new XeXmlParser();
 		$xml_doc = $oParser->loadXmlFile($xml_file);
 
 		$component_info->component_name = $drComponentName;
@@ -782,7 +782,7 @@ class editorModel extends editor
 			return $xml_info;
 		}
 
-		$oParser = new XmlParser();
+		$oParser = new XeXmlParser();
 		$xml_doc = $oParser->loadXmlFile($xml_file);
 
 		// Component information listed
@@ -803,6 +803,7 @@ class editorModel extends editor
 		}
 		else
 		{
+			$date_obj = new stdClass();
 			sscanf($xml_doc->component->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 

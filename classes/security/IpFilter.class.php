@@ -3,7 +3,7 @@
 
 class IpFilter
 {
-	public function filter($ip_list, $ip = NULL)
+	public static function filter($ip_list, $ip = NULL)
 	{
 		if(!$ip) $ip = $_SERVER['REMOTE_ADDR'];
 		$long_ip = ip2long($ip);

@@ -16,7 +16,7 @@ class Password
 	 * @brief Return the list of hashing algorithms supported by this server
 	 * @return array
 	 */
-	public function getSupportedAlgorithms()
+	public static function getSupportedAlgorithms()
 	{
 		$retval = array();
 		if(function_exists('hash_hmac') && in_array('sha256', hash_algos()))
@@ -45,7 +45,7 @@ class Password
 	 * @brief Return the currently selected hashing algorithm
 	 * @return string
 	 */
-	public function getCurrentlySelectedAlgorithm()
+	public static function getCurrentlySelectedAlgorithm()
 	{
 		if(function_exists('getModel'))
 		{
@@ -67,7 +67,7 @@ class Password
 	 * @brief Return the currently configured work factor for bcrypt and other adjustable algorithms
 	 * @return int
 	 */
-	public function getWorkFactor()
+	public static function getWorkFactor()
 	{
 		if(function_exists('getModel'))
 		{
@@ -171,7 +171,7 @@ class Password
 	 * @param string $hash The hash
 	 * @return string
 	 */
-	function checkAlgorithm($hash)
+	public static function checkAlgorithm($hash)
 	{
 		if(preg_match('/^\$2[axy]\$([0-9]{2})\$/', $hash, $matches))
 		{
@@ -204,7 +204,7 @@ class Password
 	 * @param string $hash The hash
 	 * @return int
 	 */
-	function checkWorkFactor($hash)
+	public static function checkWorkFactor($hash)
 	{
 		if(preg_match('/^\$2[axy]\$([0-9]{2})\$/', $hash, $matches))
 		{
@@ -226,7 +226,7 @@ class Password
 	 * @param string $format hex or alnum
 	 * @return string
 	 */
-	public function createSecureSalt($length, $format = 'hex')
+	public static function createSecureSalt($length, $format = 'hex')
 	{
 		// Find out how many bytes of entropy we really need
 		switch($format)
@@ -385,7 +385,7 @@ class Password
 	 * @param int $length The length of the hash (optional, default is 32)
 	 * @return string
 	 */
-	public function pbkdf2($password, $salt, $algorithm = 'sha256', $iterations = 8192, $length = 24)
+	public static function pbkdf2($password, $salt, $algorithm = 'sha256', $iterations = 8192, $length = 24)
 	{
 		if(function_exists('hash_pbkdf2'))
 		{
@@ -430,7 +430,7 @@ class Password
 	 * @param string $b The second string
 	 * @return bool
 	 */
-	function strcmpConstantTime($a, $b)
+	public static function strcmpConstantTime($a, $b)
 	{
 		$diff = strlen($a) ^ strlen($b);
 		$maxlen = min(strlen($a), strlen($b));

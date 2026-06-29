@@ -30,7 +30,7 @@ class DBMysqli extends DBMysql
 	 * Create an instance of this class
 	 * @return DBMysqli return DBMysqli object instance
 	 */
-	function create()
+	public static function create()
 	{
 		return new DBMysqli;
 	}

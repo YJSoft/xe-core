@@ -52,7 +52,7 @@ class DBMssql extends DB
 	 * Create an instance of this class
 	 * @return DBMssql return DBMssql object instance
 	 */
-	function create()
+	public static function create()
 	{
 		return new DBMssql;
 	}
@@ -553,7 +553,7 @@ class DBMssql extends DB
 	function _createTable($xml_doc)
 	{
 		// xml parsing
-		$oXml = new XmlParser();
+		$oXml = new XeXmlParser();
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;
@@ -586,6 +586,10 @@ class DBMssql extends DB
 			$index_list = array();
 
 			$typeList = array('number' => 1, 'text' => 1);
+			$primary_list = array();
+			$unique_list = array();
+			$index_list = array();
+			$column_schema = array();
 			foreach($columns as $column)
 			{
 				$name = $column->attrs->name;
@@ -614,19 +618,19 @@ class DBMssql extends DB
 				}
 			}
 
-			if(count($primary_list))
+			if(!empty($primary_list))
 			{
-				$column_schema[] = sprintf("primary key (%s)", '"' . implode($primary_list, '","') . '"');
+				$column_schema[] = sprintf("primary key (%s)", '"' . implode('","', $primary_list) . '"');
 			}
 
-			$schema = sprintf('create table [%s] (%s%s)', $this->addQuotes($table_name), "\n", implode($column_schema, ",\n"));
+			$schema = sprintf('create table [%s] (%s%s)', $this->addQuotes($table_name), "\n", implode(",\n", $column_schema));
 			$output = $this->_query($schema);
 			if(!$output)
 			{
 				return false;
 			}
 
-			if(count($unique_list))
+			if(!empty($unique_list))
 			{
 				foreach($unique_list as $key => $val)
 				{
@@ -635,7 +639,7 @@ class DBMssql extends DB
 				}
 			}
 
-			if(count($index_list))
+			if(!empty($index_list))
 			{
 				foreach($index_list as $key => $val)
 				{
@@ -871,9 +875,10 @@ class DBMssql extends DB
 	 * @param boolean $force
 	 * @return DBParser
 	 */
-	function getParser($force = FALSE)
+	public static function getParser($force = FALSE)
 	{
-		return new DBParser("[", "]", $this->prefix);
+		$oDB = DB::getInstance();
+		return new DBParser("[", "]", $oDB->prefix);
 	}
 
 	/**

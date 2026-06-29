@@ -3,8 +3,6 @@ namespace Codeception\Module;
 
 class DbDropTablesHelper extends \Codeception\Module\Db
 {
-    protected $requiredFields = [];
-
     public function cleanup()
     {
         $dbh = $this->driver->getDbh();

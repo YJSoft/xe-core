@@ -30,7 +30,7 @@ class DBMysql_innodb extends DBMysql
 	 * Create an instance of this class
 	 * @return DBMysql_innodb return DBMysql_innodb object instance
 	 */
-	function create()
+	public static function create()
 	{
 		return new DBMysql_innodb;
 	}
@@ -136,7 +136,7 @@ class DBMysql_innodb extends DBMysql
 	function _createTable($xml_doc)
 	{
 		// xml parsing
-		$oXml = new XmlParser();
+		$oXml = new XeXmlParser();
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;
@@ -155,6 +155,10 @@ class DBMysql_innodb extends DBMysql
 			$columns = $xml_obj->table->column;
 		}
 
+		$primary_list = array();
+		$unique_list = array();
+		$index_list = array();
+		$column_schema = array();
 		foreach($columns as $column)
 		{
 			$name = $column->attrs->name;
@@ -183,28 +187,28 @@ class DBMysql_innodb extends DBMysql
 			}
 		}
 
-		if(count($primary_list))
+		if(!empty($primary_list))
 		{
-			$column_schema[] = sprintf("primary key (%s)", '`' . implode($primary_list, '`,`') . '`');
+			$column_schema[] = sprintf("primary key (%s)", '`' . implode('`,`', $primary_list) . '`');
 		}
 
-		if(count($unique_list))
+		if(!empty($unique_list))
 		{
 			foreach($unique_list as $key => $val)
 			{
-				$column_schema[] = sprintf("unique %s (%s)", $key, '`' . implode($val, '`,`') . '`');
+				$column_schema[] = sprintf("unique %s (%s)", $key, '`' . implode('`,`', $val) . '`');
 			}
 		}
 
-		if(count($index_list))
+		if(!empty($index_list))
 		{
 			foreach($index_list as $key => $val)
 			{
-				$column_schema[] = sprintf("index %s (%s)", $key, '`' . implode($val, '`,`') . '`');
+				$column_schema[] = sprintf("index %s (%s)", $key, '`' . implode('`,`', $val) . '`');
 			}
 		}
 
-		$schema = sprintf('create table `%s` (%s%s) %s;', $this->addQuotes($table_name), "\n", implode($column_schema, ",\n"), "ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci");
+		$schema = sprintf('create table `%s` (%s%s) %s;', $this->addQuotes($table_name), "\n", implode(",\n", $column_schema), "ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci");
 
 		$output = $this->_query($schema);
 		if(!$output)

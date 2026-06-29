@@ -15,7 +15,7 @@ class Xml_Node_
 	 * for undeclared properties.
 	 * No effect in PHP4
 	 */
-	function __get($name)
+	public function __get($name)
 	{
 		return NULL;
 	}
@@ -23,7 +23,7 @@ class Xml_Node_
 }
 
 /**
- * XmlParser class
+ * XeXmlParser class
  * Class parsing a given xmlrpc request and creating a data object
  * @remarks <pre>{ 
  * This class may drops unsupported xml lanuage attributes when multiple language attributes are given.
@@ -35,7 +35,7 @@ class Xml_Node_
  * @package /classes/xml
  * @version 0.1
  */
-class XmlParser
+class XeXmlParser
 {
 
 	/**
@@ -67,7 +67,7 @@ class XmlParser
 	 * @param string $filename a file path of file
 	 * @return array Returns a data object containing data extracted from a xml file or NULL if a specified file does not exist
 	 */
-	function loadXmlFile($filename)
+	public static function loadXmlFile($filename)
 	{
 		if(!file_exists($filename))
 		{
@@ -75,7 +75,7 @@ class XmlParser
 		}
 		$buff = FileHandler::readFile($filename);
 
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		return $oXmlParser->parse($buff);
 	}
 
@@ -226,7 +226,7 @@ class XmlParser
 	 * @param array $arr data array 
 	 * @return Xml_Node_ object
 	 */
-	function _arrToAttrsObj($arr)
+	public static function _arrToAttrsObj($arr)
 	{
 		$output = new Xml_Node_();
 		foreach($arr as $key => $val)
@@ -238,5 +238,5 @@ class XmlParser
 	}
 
 }
-/* End of file XmlParser.class.php */
-/* Location: ./classes/xml/XmlParser.class.php */
+/* End of file XeXmlParser.class.php */
+/* Location: ./classes/xml/XeXmlParser.class.php */

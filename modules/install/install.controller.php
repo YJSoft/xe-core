@@ -528,7 +528,7 @@ class installController extends install
 		// Install all the remaining modules
 		foreach($install_step as $category)
 		{
-			if(count($modules[$category]))
+			if(!empty($modules[$category]))
 			{
 				foreach($modules[$category] as $module)
 				{
@@ -549,7 +549,7 @@ class installController extends install
 		{
 			foreach($modules as $category => $module_list)
 			{
-				if(count($module_list))
+				if(!empty($module_list))
 				{
 					foreach($module_list as $module)
 					{

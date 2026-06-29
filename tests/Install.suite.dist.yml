@@ -1,4 +1,5 @@
 class_name: InstallTester
+actor: InstallTester
 modules:
     enabled: [Db, PhpBrowser, DbDropTablesHelper, InstallHelper, Filesystem]
     config:

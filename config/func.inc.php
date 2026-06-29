@@ -220,7 +220,7 @@ function executeQueryArray($query_id, $args = NULL, $arg_columns = NULL)
 {
 	$oDB = DB::getInstance();
 	$output = $oDB->executeQuery($query_id, $args, $arg_columns);
-	if(!is_array($output->data) && count($output->data) > 0)
+	if(!is_array($output->data) && !empty($output->data))
 	{
 		$output->data = array($output->data);
 	}

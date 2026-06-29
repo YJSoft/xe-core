@@ -1,8 +1,16 @@
 <?php
 // This is global bootstrap for autoloading
+if(defined('_XE_BOOTSTRAP_LOADED_')) return;
+define('_XE_BOOTSTRAP_LOADED_', true);
+
 if(!defined('__XE__')) define('__XE__', true);
 if(!defined('_XE_PATH_')) define('_XE_PATH_', realpath(dirname(__FILE__).'/../').'/');
 require_once _XE_PATH_.'config/config.inc.php';
+
+// Codeception 5.x removed Codeception\TestCase\Test; map it to the replacement class.
+if (!class_exists('Codeception\TestCase\Test', false) && class_exists('Codeception\Test\Unit')) {
+    class_alias('Codeception\Test\Unit', 'Codeception\TestCase\Test');
+}
 
 function _debug() {
 	$args = func_get_args();

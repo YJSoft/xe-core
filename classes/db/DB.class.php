@@ -139,7 +139,7 @@ class DB
 	 * @param string $db_type type of db
 	 * @return DB return DB object instance
 	 */
-	function getInstance($db_type = NULL)
+	public static function getInstance($db_type = NULL)
 	{
 		if(!$db_type)
 		{
@@ -176,7 +176,7 @@ class DB
 	 * returns instance of db
 	 * @return DB return DB object instance
 	 */
-	function create()
+	public static function create()
 	{
 		return new DB;
 	}
@@ -197,7 +197,7 @@ class DB
 	 * check by instance can creatable
 	 * @return array return supported DBMS list
 	 */
-	function getSupportedList()
+	public static function getSupportedList()
 	{
 		$oDB = new DB();
 		return $oDB->_getSupportedList();
@@ -262,7 +262,7 @@ class DB
 	 * this method is private
 	 * @return array return supported DBMS list
 	 */
-	function _getSupportedList()
+	public function _getSupportedList()
 	{
 		static $get_supported_list = '';
 		if(is_array($get_supported_list))
@@ -346,7 +346,7 @@ class DB
 	 * The value is set in the child class
 	 * @return boolean true: is supported, false: is not supported
 	 */
-	function isSupported()
+	public static function isSupported()
 	{
 		return self::$isSupported;
 	}
@@ -462,7 +462,7 @@ class DB
 	 * @param array $log values set query debug
 	 * @return void
 	*/
-	function setQueryLog($log)
+	public static function setQueryLog($log)
 	{
 		$GLOBALS['__db_queries__'][] = $log;
 	}
@@ -813,7 +813,7 @@ class DB
 	 * @param boolean $with_values
 	 * @return string
 	 */
-	function getSelectSql($query, $with_values = TRUE)
+	public function getSelectSql($query, $with_values = TRUE)
 	{
 		$select = $query->getSelectString($with_values);
 		if($select == '')
@@ -882,7 +882,7 @@ class DB
 	 *
 	 * @param $queryObject
 	 */
-	function getClickCountQuery($queryObject)
+	public static function getClickCountQuery($queryObject)
 	{
 		$new_update_columns = array();
 		$click_count_columns = $queryObject->getClickCountColumns();
@@ -908,7 +908,7 @@ class DB
 	 * @param boolean $with_priority
 	 * @return string
 	 */
-	function getDeleteSql($query, $with_values = TRUE, $with_priority = FALSE)
+	public static function getDeleteSql($query, $with_values = TRUE, $with_priority = FALSE)
 	{
 		$sql = 'DELETE ';
 
@@ -940,7 +940,7 @@ class DB
 	 * @param boolean $with_priority
 	 * @return string
 	 */
-	function getUpdateSql($query, $with_values = TRUE, $with_priority = FALSE)
+	public function getUpdateSql($query, $with_values = TRUE, $with_priority = FALSE)
 	{
 		$columnsList = $query->getUpdateString($with_values);
 		if($columnsList == '')
@@ -972,7 +972,7 @@ class DB
 	 * @param boolean $with_priority
 	 * @return string
 	 */
-	function getInsertSql($query, $with_values = TRUE, $with_priority = FALSE)
+	public static function getInsertSql($query, $with_values = TRUE, $with_priority = FALSE)
 	{
 		$tableName = $query->getFirstTableName();
 		$values = $query->getInsertString($with_values);
@@ -1047,7 +1047,7 @@ class DB
 	 * @param resource $connection
 	 * @return void
 	 */
-	function _close($connection)
+	public function _close($connection)
 	{
 
 	}
@@ -1085,7 +1085,7 @@ class DB
 	 * this method is protected
 	 * @return boolean
 	 */
-	function _begin($transactionLevel = 0)
+	public function _begin($transactionLevel = 0)
 	{
 		return TRUE;
 	}
@@ -1113,7 +1113,7 @@ class DB
 	 * this method is protected
 	 * @return boolean
 	 */
-	function _rollback($transactionLevel = 0)
+	public function _rollback($transactionLevel = 0)
 	{
 		return TRUE;
 	}
@@ -1144,7 +1144,7 @@ class DB
 	 * this method is protected
 	 * @return boolean
 	 */
-	function _commit()
+	public function _commit()
 	{
 		return TRUE;
 	}
@@ -1178,7 +1178,7 @@ class DB
 	 * @param resource $connection
 	 * @return void
 	 */
-	function __query($query, $connection)
+	public function __query($query, $connection)
 	{
 
 	}
@@ -1240,7 +1240,7 @@ class DB
 	 * @param array $connection
 	 * @return void
 	 */
-	function __connect($connection)
+	public function __connect($connection)
 	{
 
 	}
@@ -1251,7 +1251,7 @@ class DB
 	 * @param resource $connection
 	 * @return void
 	 */
-	function _afterConnect($connection)
+	public function _afterConnect($connection)
 	{
 
 	}
@@ -1342,7 +1342,7 @@ class DB
 	 * @param boolean $force force load DBParser instance
 	 * @return DBParser
 	 */
-	function getParser($force = FALSE)
+	public static function getParser($force = FALSE)
 	{
 		static $dbParser = NULL;
 		if(!$dbParser || $force)

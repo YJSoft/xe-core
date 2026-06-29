@@ -104,7 +104,7 @@ class adminAdminView extends admin
 		$params["act"] = "getResourceapiLastupdate";
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
-		$xml_lUpdate = new XmlParser();
+		$xml_lUpdate = new XeXmlParser();
 		$lUpdateDoc = $xml_lUpdate->parse($buff);
 		$updateDate = $lUpdateDoc->response->updatedate->body;
 
@@ -221,7 +221,7 @@ class adminAdminView extends admin
 
 		if(file_exists($cache_file))
 		{
-			$oXml = new XmlParser();
+			$oXml = new XeXmlParser();
 			$buff = $oXml->parse(FileHandler::readFile($cache_file));
 
 			$item = $buff->zbxe_news->item;

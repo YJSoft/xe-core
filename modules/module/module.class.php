@@ -213,7 +213,7 @@ class module extends ModuleObject
 				$lang_code = Context::getLangType();
 				// Get module_info of all modules
 				$output = executeQueryArray('module.getModuleInfos');
-				if(count($output->data))
+				if(!empty($output->data))
 				{
 					foreach($output->data as $module_info)
 					{
@@ -230,7 +230,7 @@ class module extends ModuleObject
 						if($admin_id && $admin_id != 'Array')
 						{
 							$admin_ids = explode(',',$admin_id);
-							if(count($admin_id))
+							if(!empty($admin_ids))
 							{
 								foreach($admin_ids as $admin_id)
 								{
@@ -241,7 +241,7 @@ class module extends ModuleObject
 						// Save extra configurations for each module(column data which doesn't exist in the defaut modules)
 						$extra_vars = unserialize($module_info->extra_vars);
 						$document_extra_keys = null;
-						if($extra_vars->extra_vars && count($extra_vars->extra_vars))
+						if(!empty($extra_vars->extra_vars))
 						{
 							$document_extra_keys = $extra_vars->extra_vars;
 							unset($extra_vars->extra_vars);
@@ -264,7 +264,7 @@ class module extends ModuleObject
 							$document_extra_keys[20] = $planet_extra_keys;
 						}
 						// Register keys for document extra vars
-						if(count($document_extra_keys))
+						if(!empty($document_extra_keys))
 						{
 							foreach($document_extra_keys as $var_idx => $val)
 							{

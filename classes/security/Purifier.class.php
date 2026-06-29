@@ -20,7 +20,7 @@ class Purifier
 		$this->_setConfig();
 	}
 
-	public function getInstance()
+	public static function getInstance()
 	{
 		if(!isset($GLOBALS['__PURIFIER_INSTANCE__']))
 		{
@@ -88,7 +88,7 @@ class Purifier
 	 * @param string $content
 	 * @return array
 	 */
-	private function _searchEditComponent($content)
+	public static function _searchEditComponent($content)
 	{
 		preg_match_all('!<(?:(div)|img)([^>]*)editor_component=([^>]*)>(?(1)(.*?)</div>)!is', $content, $m);
 
@@ -123,7 +123,7 @@ class Purifier
 	 * @param string $content
 	 * @return array
 	 */
-	private function _searchWidget(&$content)
+	public static function _searchWidget(&$content)
 	{
 		preg_match_all('!<(?:(div)|img)([^>]*)class="zbxe_widget_output"([^>]*)>(?(1)(.*?)</div>)!is', $content, $m);
 
@@ -151,7 +151,7 @@ class Purifier
 		return array_unique($attributeList);
 	}
 
-	private function _getWhiteDomainRegx()
+	public static function _getWhiteDomainRegx()
 	{
 		$oEmbedFilter = EmbedFilter::getInstance();
 		$whiteIframeUrlList = $oEmbedFilter->getWhiteIframeUrlList();

@@ -152,7 +152,7 @@ class ModuleHandler extends Handler
 		return true;
 	}
 
-	function shutdownHandler()
+	public function shutdownHandler()
 	{
 		$errinfo = error_get_last();
 		if ($errinfo === null || ($errinfo['type'] != 1 && $errinfo['type'] != 4))
@@ -936,7 +936,7 @@ class ModuleHandler extends Handler
 		{
 			Context::set('XE_VALIDATOR_ID', $_SESSION['XE_VALIDATOR_ID']);
 		}
-		if(count($_SESSION['INPUT_ERROR']))
+		if(!empty($_SESSION['INPUT_ERROR']))
 		{
 			Context::set('INPUT_ERROR', $_SESSION['INPUT_ERROR']);
 		}
@@ -948,21 +948,21 @@ class ModuleHandler extends Handler
 	 * clear error message to Session.
 	 * @return void
 	 * */
-	function _clearErrorSession()
+	public static function _clearErrorSession()
 	{
 		$_SESSION['XE_VALIDATOR_ERROR'] = '';
 		$_SESSION['XE_VALIDATOR_MESSAGE'] = '';
 		$_SESSION['XE_VALIDATOR_MESSAGE_TYPE'] = '';
 		$_SESSION['XE_VALIDATOR_RETURN_URL'] = '';
 		$_SESSION['XE_VALIDATOR_ID'] = '';
-		$_SESSION['INPUT_ERROR'] = '';
+		$_SESSION['INPUT_ERROR'] = array();
 	}
 
 	/**
 	 * occured error when, set input values to session.
 	 * @return void
 	 * */
-	function _setInputValueToSession()
+	public static function _setInputValueToSession()
 	{
 		$requestVars = Context::getRequestVars();
 		unset($requestVars->act, $requestVars->mid, $requestVars->vid, $requestVars->success_return_url, $requestVars->error_return_url);
@@ -1165,7 +1165,7 @@ class ModuleHandler extends Handler
 	 * @param string $module module name
 	 * @return string path of the module
 	 * */
-	function getModulePath($module)
+	public static function getModulePath($module)
 	{
 		return sprintf('./modules/%s/', $module);
 	}
@@ -1178,7 +1178,7 @@ class ModuleHandler extends Handler
 	 * @return ModuleObject module instance (if failed it returns null)
 	 * @remarks if there exists a module instance created before, returns it.
 	 * */
-	function &getModuleInstance($module, $type = 'view', $kind = '')
+	public static function &getModuleInstance($module, $type = 'view', $kind = '')
 	{
 
 		if(__DEBUG__ == 3)
@@ -1265,7 +1265,7 @@ class ModuleHandler extends Handler
 		return $GLOBALS['_loaded_module'][$module][$type][$kind];
 	}
 
-	function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName)
+	public static function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName)
 	{
 		$classPath = ModuleHandler::getModulePath($module);
 
@@ -1304,7 +1304,7 @@ class ModuleHandler extends Handler
 	 * @param object $obj an object as a parameter to trigger
 	 * @return BaseObject
 	 * */
-	function triggerCall($trigger_name, $called_position, &$obj)
+	public static function triggerCall($trigger_name, $called_position, &$obj)
 	{
 		// skip if not installed
 		if(!Context::isInstalled())
@@ -1367,7 +1367,7 @@ class ModuleHandler extends Handler
 	 * @param string $code
 	 * @return string
 	 * */
-	function _setHttpStatusMessage($code)
+	public static function _setHttpStatusMessage($code)
 	{
 		$statusMessageList = array(
 			// 1×× Informational

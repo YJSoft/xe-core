@@ -231,7 +231,7 @@ class moduleAdminModel extends module
 		$grantList->access = new stdClass();
 		$grantList->access->title = Context::getLang('grant_access');
 		$grantList->access->default = 'guest';
-		if(count($xmlInfo->grant))
+		if(!empty($xmlInfo->grant))
 		{
 			foreach($xmlInfo->grant as $key => $val)
 			{
@@ -354,7 +354,7 @@ class moduleAdminModel extends module
 			$skin_vars = $oModuleModel->getModuleMobileSkinVars($module_srl);
 		}
 
-		if(count($skin_info->extra_vars)) 
+		if(!empty($skin_info->extra_vars))
 		{
 			foreach($skin_info->extra_vars as $key => $val) 
 			{

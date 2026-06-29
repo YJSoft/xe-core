@@ -21,7 +21,7 @@ class CacheMemcache extends CacheBase
 	 * @param string $url url of memcache
 	 * @return CacheMemcache instance of CacheMemcache
 	 */
-	function getInstance($url)
+	public static function getInstance($url)
 	{
 		if(!$GLOBALS['__CacheMemcache__'])
 		{
@@ -94,7 +94,7 @@ class CacheMemcache extends CacheBase
 	 * @param string $key Cache key
 	 * @return string Return unique key
 	 */
-	function getKey($key)
+	public static function getKey($key)
 	{
 		return md5(_XE_PATH_ . $key);
 	}

@@ -137,7 +137,7 @@ class widgetModel extends widget
 			return $widget_info;
 		}
 		// If no cache file exists, parse the xml and then return the variable.
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		$tmp_xml_obj = $oXmlParser->loadXmlFile($xml_file);
 		$xml_obj = $tmp_xml_obj->widget;
 		if(!$xml_obj) return;
@@ -152,6 +152,7 @@ class widgetModel extends widget
 			$buff .= sprintf('$widget_info->title = %s;', var_export(isset($xml_obj->title->body) ? (string)$xml_obj->title->body : '', true));
 			$buff .= sprintf('$widget_info->description = %s;', var_export(isset($xml_obj->description->body) ? (string)$xml_obj->description->body : '', true));
 			$buff .= sprintf('$widget_info->version = %s;', var_export(isset($xml_obj->version->body) ? (string)$xml_obj->version->body : '', true));
+			$date_obj = new stdClass();
 			sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$buff .= sprintf('$widget_info->date = %s;', var_export($date, true));
@@ -180,6 +181,7 @@ class widgetModel extends widget
 			$buff .= sprintf('$widget_info->title = %s;', var_export(isset($xml_obj->title->body) ? (string)$xml_obj->title->body : '', true));
 			$buff .= sprintf('$widget_info->description = %s;', var_export(isset($xml_obj->author->description->body) ? (string)$xml_obj->author->description->body : '', true));
 			$buff .= sprintf('$widget_info->version = %s;', var_export(isset($xml_obj->attrs->version) ? (string)$xml_obj->attrs->version : '', true));
+			$date_obj = new stdClass();
 			sscanf($xml_obj->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$buff .= sprintf('$widget_info->date = %s;', var_export($date, true));
@@ -277,7 +279,7 @@ class widgetModel extends widget
 			return $widgetStyle_info;
 		}
 		// If no cache file exists, parse the xml and then return the variable.
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		$tmp_xml_obj = $oXmlParser->loadXmlFile($xml_file);
 		$xml_obj = $tmp_xml_obj->widgetstyle;
 		if(!$xml_obj) return;
@@ -292,6 +294,7 @@ class widgetModel extends widget
 		$buff[] = sprintf('$widgetStyle_info->title = %s;', var_export($xml_obj->title->body, true));
 		$buff[] = sprintf('$widgetStyle_info->description = %s;', var_export($xml_obj->description->body, true));
 		$buff[] = sprintf('$widgetStyle_info->version = %s;', var_export($xml_obj->version->body, true));
+		$date_obj = new stdClass();
 		sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
 		$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 		$buff[] = sprintf('$widgetStyle_info->date = %s;', var_export($date, true));

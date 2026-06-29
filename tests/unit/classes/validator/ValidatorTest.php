@@ -1,6 +1,6 @@
 <?php
 require_once _XE_PATH_.'classes/context/Context.class.php';
-require_once _XE_PATH_.'classes/xml/XmlParser.class.php';
+require_once _XE_PATH_.'classes/xml/XeXmlParser.class.php';
 require_once _XE_PATH_.'classes/handler/Handler.class.php';
 require_once _XE_PATH_.'classes/file/FileHandler.class.php';
 require_once _XE_PATH_.'classes/validator/Validator.class.php';
@@ -190,7 +190,8 @@ class ValidatorTest extends \Codeception\TestCase\Test
         $this->assertFileEquals($js, dirname(__FILE__).'/condition.en.js');
     }
 
-    protected function tearDown()
+    /** @after */
+    protected function removeRulesetCache()
     {
         // remove cache directory
         $cache_dir = dirname(__FILE__).'/ruleset';

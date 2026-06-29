@@ -549,7 +549,7 @@ class adminAdminModel extends admin
 			return;
 		}
 
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		$_xml_obj = $oXmlParser->loadXmlFile($info_file);
 		if(!$_xml_obj->theme)
 		{
@@ -565,6 +565,7 @@ class adminAdminModel extends admin
 		$thumbnail = './themes/' . $theme_name . '/thumbnail.png';
 		$theme_info->thumbnail = (FileHandler::exists($thumbnail)) ? $thumbnail : NULL;
 		$theme_info->version = $xml_obj->version->body;
+		$date_obj = new stdClass();
 		$date_obj = new stdClass();
 		sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
 		$theme_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);

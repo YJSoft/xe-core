@@ -413,7 +413,7 @@ class Mail extends PHPMailer
 	 * @param array $matches Match info.
 	 * @return string
 	 */
-	function replaceResourceRealPath($matches)
+	public static function replaceResourceRealPath($matches)
 	{
 		return preg_replace('/src=(["\']?)files/i', 'src=$1' . Context::getRequestUri() . 'files', $matches[0]);
 	}
@@ -592,7 +592,7 @@ class Mail extends PHPMailer
 	 * @param string $email_address Email address
 	 * @return boolean TRUE if param is valid DNS otherwise FALSE
 	 */
-	function checkMailMX($email_address)
+	public static function checkMailMX($email_address)
 	{
 		if(!Mail::isVaildMailAddress($email_address))
 		{
@@ -619,7 +619,7 @@ class Mail extends PHPMailer
 	 * @param string $email_address Email address
 	 * @return string email address if param is valid email address otherwise blank string
 	 */
-	function isVaildMailAddress($email_address)
+	public static function isVaildMailAddress($email_address)
 	{
 		if(preg_match("/([a-z0-9\_\-\.]+)@([a-z0-9\_\-\.]+)/i", $email_address))
 		{
@@ -637,7 +637,7 @@ class Mail extends PHPMailer
 	 * @param string $filename filename
 	 * @return string MIME type of ext
 	 */
-	function returnMIMEType($filename)
+	public static function returnMIMEType($filename)
 	{
 		preg_match("|\.([a-z0-9]{2,4})$|i", $filename, $fileSuffix);
 		switch(strtolower($fileSuffix[1]))

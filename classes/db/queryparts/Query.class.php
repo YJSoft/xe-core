@@ -144,7 +144,7 @@ class Query extends BaseObject
 	function setColumnList($columnList)
 	{
 		$this->columnList = $columnList;
-		if(count($this->columnList) > 0)
+		if(!empty($this->columnList))
 		{
 			$selectColumns = array();
 			$dbParser = DB::getParser();
@@ -371,6 +371,7 @@ class Query extends BaseObject
 	 */
 	function getSelectString($with_values = TRUE)
 	{
+		$select = array();
 		foreach($this->columns as $column)
 		{
 			if($column->show())
@@ -385,7 +386,7 @@ class Query extends BaseObject
 				}
 			}
 		}
-		return trim(implode($select, ', '));
+		return trim(implode(', ', $select));
 	}
 
 	/**
@@ -404,7 +405,7 @@ class Query extends BaseObject
 		}
 
 		if(!$update) return;
-		return trim(implode($update, ', '));
+		return trim(implode(', ', $update));
 	}
 
 	/**
@@ -560,7 +561,7 @@ class Query extends BaseObject
 	{
 		if(!$this->_orderByString)
 		{
-			if(count($this->orderby) === 0)
+			if(empty($this->orderby))
 			{
 				return '';
 			}
@@ -587,7 +588,7 @@ class Query extends BaseObject
 	function getLimitString()
 	{
 		$limit = '';
-		if(count($this->limit) > 0)
+		if(!empty($this->limit))
 		{
 			$limit = '';
 			$limit .= $this->limit->toString();
@@ -611,7 +612,7 @@ class Query extends BaseObject
 			$this->arguments = array();
 
 			// Join table arguments
-			if(count($this->tables) > 0)
+			if(!empty($this->tables))
 			{
 				foreach($this->tables as $table)
 				{
@@ -628,7 +629,7 @@ class Query extends BaseObject
 
 			// Column arguments
 			// The if is for delete statements, all others must have columns
-			if(count($this->columns) > 0)
+			if(!empty($this->columns))
 			{
 				foreach($this->columns as $column)
 				{
@@ -644,12 +645,12 @@ class Query extends BaseObject
 			}
 
 			// Condition arguments
-			if(count($this->conditions) > 0)
+			if(!empty($this->conditions))
 			{
 				foreach($this->conditions as $conditionGroup)
 				{
 					$args = $conditionGroup->getArguments();
-					if(count($args) > 0)
+					if(!empty($args))
 					{
 						$this->arguments = array_merge($this->arguments, $args);
 					}
@@ -657,12 +658,12 @@ class Query extends BaseObject
 			}
 
 			// Navigation arguments
-			if(count($this->orderby) > 0)
+			if(!empty($this->orderby))
 			{
 				foreach($this->orderby as $order)
 				{
 					$args = $order->getArguments();
-					if(count($args) > 0)
+					if(!empty($args))
 					{
 						$this->arguments = array_merge($this->arguments, $args);
 					}

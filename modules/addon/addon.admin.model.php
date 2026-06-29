@@ -159,7 +159,7 @@ class addonAdminModel extends addon
 			return;
 		}
 
-		$oXmlParser = new XmlParser();
+		$oXmlParser = new XeXmlParser();
 		$tmp_xml_obj = $oXmlParser->loadXmlFile($xml_file);
 		$xml_obj = $tmp_xml_obj->addon;
 
@@ -201,6 +201,7 @@ class addonAdminModel extends addon
 		if($xml_obj->version && $xml_obj->attrs->version == '0.2')
 		{
 			// addon format v0.2
+			$date_obj = new stdClass();
 			$date_obj = new stdClass();
 			sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$addon_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
@@ -316,6 +317,7 @@ class addonAdminModel extends addon
 			$addon_info->description = trim($xml_obj->author->description->body);
 			$addon_info->version = $xml_obj->attrs->version;
 			
+			$date_obj = new stdClass();
 			$date_obj = new stdClass();
 			sscanf($xml_obj->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$addon_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
