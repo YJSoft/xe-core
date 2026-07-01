@@ -1208,7 +1208,7 @@ class DB
 		// DEBUG: log every query and error
 		$log_file = defined('_XE_PATH_') ? _XE_PATH_ . 'files/debug_sql.log' : dirname(__DIR__, 2) . '/files/debug_sql.log';
 		$is_error = method_exists($this, 'isError') && $this->isError();
-		$errmsg = $is_error && method_exists($this, 'getError') ? $this->getError() : '';
+		$errmsg = $is_error ? ($this->errstr ?? '') : '';
 		$trace = array_map(function($f) {
 			return sprintf('  %s%s%s (%s:%s)',
 				$f['class'] ?? '', $f['type'] ?? '', $f['function'] ?? '?',
