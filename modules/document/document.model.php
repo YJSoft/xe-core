@@ -775,7 +775,7 @@ class documentModel extends document
 	 */
 	function _arrangeCategory(&$document_category, $list, $depth)
 	{
-		if(!count($list)) return;
+		if(empty($list)) return;
 		$idx = 0;
 		$list_order = array();
 		foreach($list as $key => $val)
@@ -822,7 +822,7 @@ class documentModel extends document
 
 			$document_category[$key] = $obj;
 
-			if(count($val['list'])) $this->_arrangeCategory($document_category, $val['list'], $depth+1);
+			if(!empty($val['list'])) $this->_arrangeCategory($document_category, $val['list'], $depth+1);
 		}
 		$document_category[$list_order[0]]->first = true;
 		$document_category[$list_order[count($list_order)-1]]->last = true;
