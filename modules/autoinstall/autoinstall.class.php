@@ -37,7 +37,7 @@ class XmlGenerater
 	 * @param array $params Request data
 	 * @return object
 	 */
-	function getXmlDoc(&$params)
+	static function getXmlDoc(&$params)
 	{
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");

@@ -557,7 +557,7 @@ class TemplateHandler
 								{
 									$expr_m[2] .= '=>' . trim($expr_m[3]);
 								}
-								$nodes[$idx - 1] .= "<?php if({$expr_m[1]}&&count({$expr_m[1]}))foreach({$expr_m[1]} as {$expr_m[2]}){ ?>";
+								$nodes[$idx - 1] .= "<?php if({$expr_m[1]}&&count((array){$expr_m[1]}))foreach({$expr_m[1]} as {$expr_m[2]}){ ?>";
 							}
 							elseif($expr_m[4])
 							{
@@ -961,7 +961,7 @@ class TemplateHandler
 				elseif($mm[1] == 'foreach')
 				{
 					$var = preg_replace('/^\s*\(\s*(.+?) .*$/', '$1', $m[8]);
-					$precheck = "if({$var}&&count({$var}))";
+					$precheck = "if({$var}&&count((array){$var}))";
 				}
 				return '<?php ' . $this->_replaceVar($precheck . $m[7] . $m[8]) . '{ ?>' . $m[9];
 			}

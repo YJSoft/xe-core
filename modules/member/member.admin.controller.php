@@ -115,21 +115,21 @@ class memberAdminController extends member
 		$this->setMessage($msg_code);
 
 		$profile_image = Context::get('profile_image');
-		if(is_uploaded_file($profile_image['tmp_name']))
+		if(is_array($profile_image) && is_uploaded_file($profile_image['tmp_name']))
 		{
 			$output = $oMemberController->insertProfileImage($args->member_srl, $profile_image['tmp_name']);
 			if(!$output->toBool()) return $output;
 		}
 
 		$image_mark = Context::get('image_mark');
-		if(is_uploaded_file($image_mark['tmp_name']))
+		if(is_array($image_mark) && is_uploaded_file($image_mark['tmp_name']))
 		{
 			$output = $oMemberController->insertImageMark($args->member_srl, $image_mark['tmp_name']);
 			if(!$output->toBool()) return $output;
 		}
 
 		$image_name = Context::get('image_name');
-		if (is_uploaded_file($image_name['tmp_name']))
+		if (is_array($image_name) && is_uploaded_file($image_name['tmp_name']))
 		{
 			$output = $oMemberController->insertImageName($args->member_srl, $image_name['tmp_name']);
 			if(!$output->toBool()) return $output;

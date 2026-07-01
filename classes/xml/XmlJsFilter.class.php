@@ -309,7 +309,7 @@ class XmlJsFilter extends XeXmlParser
 
 		// generates parameter script to create dbata
 		$rename_params = array();
-		$parameter_count = count($parameter_param);
+		$parameter_count = $parameter_param ? count($parameter_param) : 0;
 		if($parameter_count)
 		{
 			// contains parameter of the default filter contents

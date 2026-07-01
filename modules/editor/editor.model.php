@@ -654,7 +654,7 @@ class editorModel extends editor
 			$group_list = array();
 		}
 
-		if(count($component_list))
+		if(is_array($component_list) && count($component_list))
 		{
 			foreach($component_list as $key => $val)
 			{

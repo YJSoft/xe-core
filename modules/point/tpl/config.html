@@ -113,7 +113,7 @@
 	</section>
 
 	<section class="section">
-{@$point_group = @array_flip($config->point_group)}
+{@$point_group = is_array($config->point_group) ? array_flip($config->point_group) : array()}
 		<h1>{$lang->level_point}</h1>
 		<div class="x_clearfix">
 			<p class="x_pull-left">{$lang->expression}</p>
