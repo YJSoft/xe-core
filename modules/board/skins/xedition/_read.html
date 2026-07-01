@@ -89,7 +89,7 @@
 		</div>
 		<div class="tns">
 			{@ $tag_list = $oDocument->get('tag_list') }
-			<span class="tags" cond="count($tag_list)">
+			<span class="tags" cond="!empty($tag_list)">
 				<i class="xi-tags"></i>
 				<!--@for($i=0;$i<count($tag_list);$i++)-->
 					{@ $tag = $tag_list[$i]; }
