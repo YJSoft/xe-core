@@ -352,7 +352,8 @@ class DBMysql extends DB
 		$result = $this->_query($query);
 		if($this->isError())
 		{
-			return;
+			$this->setError(0, 'success');
+			return false;
 		}
 		$output = $this->_fetch($result);
 		if($output)
@@ -417,12 +418,13 @@ class DBMysql extends DB
 		$result = $this->_query($query);
 		if($this->isError())
 		{
-			return;
+			$this->setError(0, 'success');
+			return false;
 		}
 		$output = $this->_fetch($result);
 		if(!$output)
 		{
-			return;
+			return false;
 		}
 		if(!is_array($output))
 		{
