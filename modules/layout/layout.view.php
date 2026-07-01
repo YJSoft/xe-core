@@ -180,6 +180,11 @@ class layoutView extends layout
 							}
 
 							$menu->php_file = FileHandler::getRealPath($menu->php_file);
+							if(!FileHandler::exists($menu->php_file) && $menu->menu_srl)
+							{
+								$oMenuAdminController = getAdminController('menu');
+								$oMenuAdminController->makeXmlFile($menu->menu_srl);
+							}
 							if(FileHandler::exists($menu->php_file))
 							{
 								include($menu->php_file);

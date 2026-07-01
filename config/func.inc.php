@@ -1107,7 +1107,7 @@ function purifierHtml(&$content)
 
 	// @see https://github.com/xpressengine/xe-core/issues/2278
 	$logged_info = Context::get('logged_info');
-	if($logged_info->is_admin !== 'Y') {
+	if(!$logged_info || $logged_info->is_admin !== 'Y') {
 		$oPurifier->setConfig('HTML.Nofollow', true);
 	}
 
