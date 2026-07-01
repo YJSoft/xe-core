@@ -379,6 +379,7 @@ class editorModel extends editor
 
 		$config = new stdClass();
 		$config->module_type = $type;
+		$option = new stdClass();
 		$option->module_srl = (int)$module_srl;
 
 		// Configurations listed according to a type
