@@ -107,7 +107,7 @@ class FrontEndFileHandler extends Handler
 			$map = &$this->cssMap;
 			$mapIndex = &$this->cssMapIndex;
 
-			$this->_arrangeCssIndex($pathInfo['dirname'], $file);
+			$this->_arrangeCssIndex($file->dirName, $file);
 		}
 		else if($file->fileExtension == 'js')
 		{
@@ -144,6 +144,7 @@ class FrontEndFileHandler extends Handler
 	{
 		static $existsInfo = array();
 
+		$existsKey = $fileName . '|' . $targetIe . '|' . $media;
 		if(isset($existsInfo[$existsKey]))
 		{
 			return $existsInfo[$existsKey];
@@ -151,7 +152,7 @@ class FrontEndFileHandler extends Handler
 
 		$fileName = preg_replace('/(?:[\/]{3,})(.*)/', '//$1', $fileName);
 		$url_info = parse_url($fileName);
-		$pathInfo = pathinfo(str_replace('?' . $url_info['query'], '', $fileName));
+		$pathInfo = pathinfo(str_replace('?' . ($url_info['query'] ?? ''), '', $fileName));
 
 		$file = new stdClass();
 		$file->fileName = basename($url_info['path']);
@@ -159,8 +160,9 @@ class FrontEndFileHandler extends Handler
 		$file->fileRealPath = FileHandler::getRealPath($pathInfo['dirname']);
 		$file->fileExtension = strtolower($pathInfo['extension']);
 		$file->fileNameNoExt = preg_replace('/\.min$/', '', $pathInfo['filename']);
-		$file->query = $url_info['query'];
-		$file->external = !!$url_info['host'];
+		$file->query = $url_info['query'] ?? '';
+		$file->external = !empty($url_info['host']);
+		$file->dirName = $pathInfo['dirname'];
 		$file->keyName = implode('.', array($file->fileNameNoExt, $file->fileExtension));
 		$file->cdnPath = $this->_normalizeFilePath($pathInfo['dirname']);
 
@@ -202,6 +204,7 @@ class FrontEndFileHandler extends Handler
 			$file->key = $file->filePath . $file->keyName . "\t" . $file->targetIe;
 		}
 
+		$existsInfo[$existsKey] = $file;
 		return $file;
 	}
 

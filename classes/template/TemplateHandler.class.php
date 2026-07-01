@@ -198,7 +198,7 @@ class TemplateHandler
 
 		$output = $this->_fetch($buff);
 
-		if($__templatehandler_root_tpl == $this->file)
+		if(($__templatehandler_root_tpl ?? null) == $this->file)
 		{
 			$__templatehandler_root_tpl = null;
 		}
@@ -405,7 +405,7 @@ class TemplateHandler
 		$__Context = &$GLOBALS['__Context__'];
 		$__Context->tpl_path = $this->path;
 
-		if($_SESSION['is_logged'])
+		if(!empty($_SESSION['is_logged']))
 		{
 			$__Context->logged_info = Context::get('logged_info');
 		}

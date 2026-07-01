@@ -575,7 +575,7 @@ class Context
 	public static function getSslStatus()
 	{
 		$dbInfo = self::getDBInfo();
-		return $dbInfo->use_ssl;
+		return $dbInfo ? $dbInfo->use_ssl : null;
 	}
 
 	/**
@@ -586,7 +586,7 @@ class Context
 	public static function getDefaultUrl()
 	{
 		$db_info = self::getDBInfo();
-		return $db_info->default_url;
+		return $db_info ? $db_info->default_url : null;
 	}
 
 	/**
@@ -1014,7 +1014,7 @@ class Context
 		{
 			return;
 		}
-		if($GLOBALS['lang']->{$code})
+		if(isset($GLOBALS['lang']->{$code}) && $GLOBALS['lang']->{$code})
 		{
 			return $GLOBALS['lang']->{$code};
 		}

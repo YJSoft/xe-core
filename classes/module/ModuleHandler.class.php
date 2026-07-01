@@ -1198,7 +1198,8 @@ class ModuleHandler extends Handler
 
 		$key = $module . '.' . ($kind != 'admin' ? '' : 'admin') . '.' . $type;
 
-		if(is_array($GLOBALS['__MODULE_EXTEND__']) && array_key_exists($key, $GLOBALS['__MODULE_EXTEND__']))
+		$extend_module = null;
+		if(is_array($GLOBALS['__MODULE_EXTEND__'] ?? null) && array_key_exists($key, $GLOBALS['__MODULE_EXTEND__']))
 		{
 			$module = $extend_module = $GLOBALS['__MODULE_EXTEND__'][$key];
 		}
