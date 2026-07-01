@@ -362,7 +362,7 @@ class DBMysqli_innodb extends DBMysql
 			$rows[] = $resultObject;
 		}
 
-		mysqli_stmt_close($stmt);
+		$stmt->close();
 
 		if($arrayIndexEndValue)
 		{
