@@ -43,6 +43,10 @@ class DBMysqli_innodb extends DBMysql
 	 */
 	function __connect($connection)
 	{
+		// PHP 8.1+ changed the default mysqli report mode to MYSQLI_REPORT_ERROR|MYSQLI_REPORT_STRICT,
+		// which throws mysqli_sql_exception on any MySQL error instead of returning false.
+		// XE1 relies on checking return values and errno, so disable exception throwing.
+		mysqli_report(MYSQLI_REPORT_OFF);
 		// Attempt to connect
 		if($connection["db_port"])
 		{
@@ -503,8 +507,10 @@ class DBMysqli_innodb extends DBMysql
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;
+		_xe_trace("_createTable($table_name) entry, errno={$this->errno}");
 		if($this->isTableExists($table_name))
 		{
+			_xe_trace("_createTable($table_name) => SKIP (already exists)");
 			return;
 		}
 		$table_name = $this->prefix . $table_name;
@@ -573,11 +579,14 @@ class DBMysqli_innodb extends DBMysql
 
 		$schema = sprintf('create table `%s` (%s%s) %s;', $this->addQuotes($table_name), "\n", implode(",\n", $column_schema), "ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci");
 
+		_xe_trace("_createTable($table_name) executing CREATE TABLE");
 		$output = $this->_query($schema);
 		if(!$output)
 		{
+			_xe_trace("_createTable($table_name) => CREATE FAILED errno={$this->errno} '{$this->errstr}'");
 			return false;
 		}
+		_xe_trace("_createTable($table_name) => CREATE SUCCESS");
 	}
 }
 
