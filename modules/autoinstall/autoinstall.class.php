@@ -14,7 +14,7 @@ class XmlGenerater
 	 * @param array $params The data
 	 * @return string Returns xml string
 	 */
-	function generate(&$params)
+	static function generate(&$params)
 	{
 		$xmlDoc = '<?xml version="1.0" encoding="utf-8" ?><methodCall><params>';
 		if(!is_array($params))
