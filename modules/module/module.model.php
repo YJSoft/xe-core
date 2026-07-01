@@ -2145,7 +2145,7 @@ class moduleModel extends module
 				}
 				// Separate processing for the virtual group access
 				if(!$grant_exists['access']) $grant->access = true;
-				if(count($grant_info))
+				if(!empty($grant_info))
 				{
 					foreach($grant_info as  $grant_name => $grant_item)
 					{
@@ -2177,7 +2177,7 @@ class moduleModel extends module
 			if($grant->manager)
 			{
 				$grant->access = true;
-				if(count($grant_info))
+				if(!empty($grant_info))
 				{
 					foreach($grant_info as $key => $val)
 					{
