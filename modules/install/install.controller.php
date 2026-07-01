@@ -185,7 +185,10 @@ class installController extends install
 			$oDB->commit();
 		} catch(\Throwable $e) {
 			$oDB->rollback();
-			return new BaseObject(-1, $e->getMessage());
+			$msg = get_class($e) . ': ' . $e->getMessage()
+				. ' in ' . $e->getFile() . ':' . $e->getLine()
+				. "\n" . $e->getTraceAsString();
+			return new BaseObject(-1, nl2br(htmlspecialchars($msg)));
 		}
 
 		// Create a config file

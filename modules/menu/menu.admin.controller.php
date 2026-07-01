@@ -128,6 +128,7 @@ class menuAdminController extends menu
 		// 'unlinked' menu 존재여부 확인
 		$oModuleModel = getModel('module');
 		$moduleConfig = $oModuleModel->getModuleConfig('menu');
+		if(!$moduleConfig) $moduleConfig = new stdClass();
 
 		if($moduleConfig->unlinked_menu_srl)
 		{
