@@ -977,7 +977,7 @@ class moduleController extends module
 		}
 
 		getDestroyXeVars($obj);
-		if(!$obj || !count($obj)) return new BaseObject();
+		if(!$obj || !count((array)$obj)) return new BaseObject();
 
 		$args = new stdClass;
 		$args->module_srl = $module_srl;
@@ -1070,7 +1070,7 @@ class moduleController extends module
 	{
 		$this->deleteModuleExtraVars($module_srl);
 		getDestroyXeVars($obj);
-		if(!$obj || !count($obj)) return;
+		if(!$obj || !count((array)$obj)) return;
 
 		foreach($obj as $key => $val)
 		{
@@ -1120,7 +1120,7 @@ class moduleController extends module
 	function insertModuleGrants($module_srl, $obj)
 	{
 		$this->deleteModuleGrants($module_srl);
-		if(!$obj || !count($obj)) return;
+		if(!$obj || !count((array)$obj)) return;
 
 		foreach($obj as $name => $val)
 		{
