@@ -181,9 +181,12 @@ class installController extends install
 		// Install all the modules
 		try {
 			$oDB->begin();
+			_xe_trace('procInstall: BEGIN installDownloadedModule');
 			$this->installDownloadedModule();
+			_xe_trace('procInstall: END installDownloadedModule — committing');
 			$oDB->commit();
-		} catch(Exception $e) {
+		} catch(\Throwable $e) {
+			_xe_trace('procInstall: EXCEPTION caught: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
 			$oDB->rollback();
 			return new BaseObject(-1, $e->getMessage());
 		}
@@ -506,6 +509,7 @@ class installController extends install
 	 */
 	function installDownloadedModule()
 	{
+		_xe_trace('installDownloadedModule START');
 		$oModuleModel = getModel('module');
 		// Create a table ny finding schemas/*.xml file in each module
 		$module_list = FileHandler::readDir('./modules/', NULL, false, true);
@@ -519,10 +523,19 @@ class installController extends install
 			if(!$xml_info) continue;
 			$modules[$xml_info->category][] = $module;
 		}
+		_xe_trace('categories found: ' . json_encode(array_map('count', $modules ?? [])));
 		// Install "module" module in advance
+		_xe_trace('installModule(module) BEGIN');
 		$this->installModule('module','./modules/module');
+		_xe_trace('installModule(module) END');
 		$oModule = getClass('module');
-		if($oModule->checkUpdate()) $oModule->moduleUpdate();
+		$_cu = $oModule->checkUpdate();
+		_xe_trace('module->checkUpdate()=' . var_export($_cu, true));
+		if($_cu) {
+			_xe_trace('module->moduleUpdate() BEGIN');
+			$oModule->moduleUpdate();
+			_xe_trace('module->moduleUpdate() END');
+		}
 		// Determine the order of module installation depending on category
 		$install_step = array('system','content','member');
 		// Install all the remaining modules
@@ -533,12 +546,20 @@ class installController extends install
 				foreach($modules[$category] as $module)
 				{
 					if($module == 'module') continue;
+					_xe_trace("installModule($module) cat=$category BEGIN");
 					$this->installModule($module, sprintf('./modules/%s', $module));
+					_xe_trace("installModule($module) cat=$category END");
 
 					$oModule = getClass($module);
 					if(is_object($oModule) && method_exists($oModule, 'checkUpdate'))
 					{
-						if($oModule->checkUpdate()) $oModule->moduleUpdate();
+						$_cu = $oModule->checkUpdate();
+						_xe_trace("$module->checkUpdate()=" . var_export($_cu, true));
+						if($_cu) {
+							_xe_trace("$module->moduleUpdate() BEGIN");
+							$oModule->moduleUpdate();
+							_xe_trace("$module->moduleUpdate() END");
+						}
 					}
 				}
 				unset($modules[$category]);
@@ -554,18 +575,27 @@ class installController extends install
 					foreach($module_list as $module)
 					{
 						if($module == 'module') continue;
+						_xe_trace("installModule($module) cat=$category BEGIN");
 						$this->installModule($module, sprintf('./modules/%s', $module));
+						_xe_trace("installModule($module) cat=$category END");
 
 						$oModule = getClass($module);
 						if($oModule && method_exists($oModule, 'checkUpdate') && method_exists($oModule, 'moduleUpdate'))
 						{
-							if($oModule->checkUpdate()) $oModule->moduleUpdate();
+							$_cu = $oModule->checkUpdate();
+							_xe_trace("$module->checkUpdate()=" . var_export($_cu, true));
+							if($_cu) {
+								_xe_trace("$module->moduleUpdate() BEGIN");
+								$oModule->moduleUpdate();
+								_xe_trace("$module->moduleUpdate() END");
+							}
 						}
 					}
 				}
 			}
 		}
 
+		_xe_trace('installDownloadedModule DONE');
 		return new BaseObject();
 	}
 
@@ -585,9 +615,13 @@ class installController extends install
 		{
 			$file = trim($schema_files[$i]);
 			if(!$file || substr($file,-4)!='.xml') continue;
+			_xe_trace("  createTableByXmlFile($file) BEGIN");
 			$output = $oDB->createTableByXmlFile($file);
-			if($output === false)
+			_xe_trace("  createTableByXmlFile($file) result=" . var_export($output, true));
+			if($output === false) {
+				_xe_trace("  EXCEPTION: msg_create_table_failed for $file");
 				throw new Exception('msg_create_table_failed');
+			}
 		}
 		// Create a table and module instance and then execute install() method
 		unset($oModule);
