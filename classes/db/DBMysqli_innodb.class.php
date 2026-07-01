@@ -507,10 +507,8 @@ class DBMysqli_innodb extends DBMysql
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;
-		_xe_trace("_createTable($table_name) entry, errno={$this->errno}");
 		if($this->isTableExists($table_name))
 		{
-			_xe_trace("_createTable($table_name) => SKIP (already exists)");
 			return;
 		}
 		$table_name = $this->prefix . $table_name;
@@ -579,14 +577,11 @@ class DBMysqli_innodb extends DBMysql
 
 		$schema = sprintf('create table `%s` (%s%s) %s;', $this->addQuotes($table_name), "\n", implode(",\n", $column_schema), "ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci");
 
-		_xe_trace("_createTable($table_name) executing CREATE TABLE");
 		$output = $this->_query($schema);
 		if(!$output)
 		{
-			_xe_trace("_createTable($table_name) => CREATE FAILED errno={$this->errno} '{$this->errstr}'");
 			return false;
 		}
-		_xe_trace("_createTable($table_name) => CREATE SUCCESS");
 	}
 }
 

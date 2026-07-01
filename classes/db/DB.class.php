@@ -1205,23 +1205,6 @@ class DB
 		// Notify to complete a query execution
 		$this->actFinish();
 
-		// DEBUG: log every query and error
-		$log_file = defined('_XE_PATH_') ? _XE_PATH_ . 'files/debug_sql.log' : dirname(__DIR__, 2) . '/files/debug_sql.log';
-		$is_error = method_exists($this, 'isError') && $this->isError();
-		$errmsg = $is_error ? ($this->errstr ?? '') : '';
-		$trace = array_map(function($f) {
-			return sprintf('  %s%s%s (%s:%s)',
-				$f['class'] ?? '', $f['type'] ?? '', $f['function'] ?? '?',
-				basename($f['file'] ?? '?'), $f['line'] ?? '?');
-		}, array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 0, 10));
-		$entry = sprintf("[%s] %s\nSQL: %s\nERROR: %s\nTRACE:\n%s\n\n",
-			date('H:i:s'),
-			$is_error ? 'FAIL' : 'OK',
-			$query,
-			$errmsg,
-			implode("\n", $trace));
-		@file_put_contents($log_file, $entry, FILE_APPEND | LOCK_EX);
-
 		// Return result
 		return $result;
 	}
