@@ -43,6 +43,10 @@ class DBMysqli extends DBMysql
 	 */
 	function __connect($connection)
 	{
+		// PHP 8.1+ throws mysqli_sql_exception by default, but XE1 handles
+		// database errors through return values and mysqli_errno().
+		mysqli_report(MYSQLI_REPORT_OFF);
+
 		// Attempt to connect
 		if($connection["db_port"])
 		{
@@ -246,54 +250,61 @@ class DBMysqli extends DBMysql
 		 * Unless store_result is called before
 		 * MYSQLI_TYPE for longtext is 252
 		 */
+		// Build numerically-indexed bind args to avoid PHP 8.1+ named-argument
+		// error when call_user_func_array receives a string-keyed array.
 		$longtext_exists = false;
+		$fieldNames = array();  // ordered list of column names for result building
+		$seenFields = array();  // duplicate-name detection
+		$row = array();         // holds bound values; referenced by $bindArgs
+		$bindArgs = array($stmt); // $bindArgs[0] = stmt, rest = column bindings
+		$k = 0;
+
 		foreach($fields as $field)
 		{
-			if(isset($resultArray[$field->name])) // When joined tables are used and the same column name appears twice, we should add it separately, otherwise bind_result fails
+			$name = $field->name;
+			if(isset($seenFields[$name])) // duplicate column name (e.g. joined tables)
 			{
-				$field->name = 'repeat_' . $field->name;
+				$name = 'repeat_' . $name;
 			}
+			$seenFields[$field->name] = true;
+			$fieldNames[] = $name;
 
-			// Array passed needs to contain references, not values
-			$row[$field->name] = "";
-			$resultArray[$field->name] = &$row[$field->name];
+			$row[$k] = "";
+			$bindArgs[] = &$row[$k]; // reference so mysqli_stmt_fetch updates $row[$k]
+			$k++;
 
 			if($field->type == 252)
 			{
 				$longtext_exists = true;
 			}
 		}
-		$resultArray = array_merge(array($stmt), $resultArray);
 
 		if($longtext_exists)
 		{
 			mysqli_stmt_store_result($stmt);
 		}
 
-		call_user_func_array('mysqli_stmt_bind_result', $resultArray);
+		call_user_func_array('mysqli_stmt_bind_result', $bindArgs);
 
 		$rows = array();
 		while(mysqli_stmt_fetch($stmt))
 		{
 			$resultObject = new stdClass();
 
-			foreach($resultArray as $key => $value)
+			foreach($fieldNames as $i => $name)
 			{
-				if($key === 0)
-				{
-					continue; // Skip stmt object
-				}
+				$key = $name;
 				if(strpos($key, 'repeat_'))
 				{
 					$key = substr($key, 6);
 				}
-				$resultObject->$key = $value;
+				$resultObject->$key = $bindArgs[$i + 1]; // +1: $bindArgs[0] is $stmt
 			}
 
 			$rows[] = $resultObject;
 		}
 
-		mysqli_stmt_close($stmt);
+		$stmt->close();
 
 		if($arrayIndexEndValue)
 		{

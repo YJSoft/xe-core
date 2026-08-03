@@ -198,7 +198,7 @@ class TemplateHandler
 
 		$output = $this->_fetch($buff);
 
-		if(($__templatehandler_root_tpl ?? null) == $this->file)
+		if(isset($__templatehandler_root_tpl) && $__templatehandler_root_tpl == $this->file)
 		{
 			$__templatehandler_root_tpl = null;
 		}

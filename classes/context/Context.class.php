@@ -178,6 +178,12 @@ class Context
 	function __construct()
 	{
 		$this->oFrontEndFileHandler = new FrontEndFileHandler();
+		if(!isset($GLOBALS['__Context__']) || !is_object($GLOBALS['__Context__']))
+		{
+			$GLOBALS['__Context__'] = new stdClass();
+		}
+		$this->context = &$GLOBALS['__Context__'];
+
 		$this->get_vars = new stdClass();
 
 		// include ssl action cache file

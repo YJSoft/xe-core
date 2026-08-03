@@ -55,10 +55,12 @@ $I->writeToFile(_XE_PATH_ . 'config/install.config.php', $install_config);
 $I->amOnPage('/');
 
 $I->dontSeeElement('//div[@id="progress"]/ul/li');
+$I->resetCookie('PHPSESSID');
+$I->resetCookie('xe_logged');
 $I->amOnPage('/index.php?act=dispMemberLoginForm');
 
-$I->fillField('user_id', 'admin@admin.net');
-$I->submitForm('.login-body form', [
+$I->fillField('#fo_member_login input[name="user_id"]', 'admin@admin.net');
+$I->submitForm('#fo_member_login', [
     'act' => 'procMemberLogin',
     'user_id' => 'admin@admin.net',
     'password' => 'admin1@3',

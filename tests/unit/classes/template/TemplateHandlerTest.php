@@ -32,7 +32,7 @@ class TemplateHandlerTest extends \Codeception\TestCase\Test
             // foreach loop
             array(
                 '<ul><li loop="$arr=>$key,$val" class="sample"><a>Link</a><ul><li loop="$arr2=>$key2,$val2"></li></ul></li></ul>',
-                '?><ul><?php if($__Context->arr&&count($__Context->arr))foreach($__Context->arr as $__Context->key=>$__Context->val){ ?><li class="sample"><a>Link</a><ul><?php if($__Context->arr2&&count($__Context->arr2))foreach($__Context->arr2 as $__Context->key2=>$__Context->val2){ ?><li></li><?php } ?></ul></li><?php } ?></ul>'
+                '?><ul><?php if($__Context->arr&&count((array)$__Context->arr))foreach($__Context->arr as $__Context->key=>$__Context->val){ ?><li class="sample"><a>Link</a><ul><?php if($__Context->arr2&&count((array)$__Context->arr2))foreach($__Context->arr2 as $__Context->key2=>$__Context->val2){ ?><li></li><?php } ?></ul></li><?php } ?></ul>'
             ),
             // while loop
             array(
@@ -67,7 +67,7 @@ class TemplateHandlerTest extends \Codeception\TestCase\Test
             // <!--@foreach--> ~ <!--@endforeach-->
             array(
                 '<!--@foreach($arr as $key=>$val)--><li>item{$key} : {$val}</li><!--@endfor-->',
-                PHP_EOL . 'if($__Context->arr&&count($__Context->arr))foreach($__Context->arr as $__Context->key=>$__Context->val){ ?><li>item<?php echo escape($__Context->key, false) ?> : <?php echo escape($__Context->val, false) ?></li><?php } ?>'
+                PHP_EOL . 'if($__Context->arr&&count((array)$__Context->arr))foreach($__Context->arr as $__Context->key=>$__Context->val){ ?><li>item<?php echo escape($__Context->key, false) ?> : <?php echo escape($__Context->val, false) ?></li><?php } ?>'
             ),
             // <!--@while--> ~ <!--@endwhile-->
             array(
@@ -182,7 +182,7 @@ class TemplateHandlerTest extends \Codeception\TestCase\Test
             // issue 135
             array(
                 '<block loop="$_m_list_all=>$key,$val"><p>{$key}</p><div>34 Loop block {$val}</div></block>',
-                PHP_EOL . 'if($__Context->_m_list_all&&count($__Context->_m_list_all))foreach($__Context->_m_list_all as $__Context->key=>$__Context->val){ ?><p><?php echo escape($__Context->key, false) ?></p><div>34 Loop block <?php echo escape($__Context->val, false) ?></div><?php } ?>'
+                PHP_EOL . 'if($__Context->_m_list_all&&count((array)$__Context->_m_list_all))foreach($__Context->_m_list_all as $__Context->key=>$__Context->val){ ?><p><?php echo escape($__Context->key, false) ?></p><div>34 Loop block <?php echo escape($__Context->val, false) ?></div><?php } ?>'
             ),
             // issue 136
             array(
@@ -192,17 +192,17 @@ class TemplateHandlerTest extends \Codeception\TestCase\Test
             // issue 188
             array(
                 '<div cond="$ii < $nn" loop="$dummy => $k, $v">Hello, world!</div>',
-                PHP_EOL . 'if($__Context->ii < $__Context->nn){;'.PHP_EOL.'if($__Context->dummy&&count($__Context->dummy))foreach($__Context->dummy as $__Context->k=>$__Context->v){ ?><div>Hello, world!</div><?php }} ?>'
+                PHP_EOL . 'if($__Context->ii < $__Context->nn){;'.PHP_EOL.'if($__Context->dummy&&count((array)$__Context->dummy))foreach($__Context->dummy as $__Context->k=>$__Context->v){ ?><div>Hello, world!</div><?php }} ?>'
             ),
             // issue 190
             array(
                 '<div cond="!($i >= $n)" loop="$dummy => $k, $v">Hello, world!</div>',
-                PHP_EOL . 'if(!($__Context->i >= $__Context->n)){;'.PHP_EOL.'if($__Context->dummy&&count($__Context->dummy))foreach($__Context->dummy as $__Context->k=>$__Context->v){ ?><div>Hello, world!</div><?php }} ?>'
+                PHP_EOL . 'if(!($__Context->i >= $__Context->n)){;'.PHP_EOL.'if($__Context->dummy&&count((array)$__Context->dummy))foreach($__Context->dummy as $__Context->k=>$__Context->v){ ?><div>Hello, world!</div><?php }} ?>'
             ),
             // issue 183
             array(
                 '<table>38<thead><tr><th loop="$vvvls => $vvv">{$vvv}</th></tr></thead>'."\n".'<tbody><tr><td>C</td><td>D</td></tr></tbody></table>',
-                '?><table>38<thead><tr><?php if($__Context->vvvls&&count($__Context->vvvls))foreach($__Context->vvvls as $__Context->vvv){ ?><th><?php echo escape($__Context->vvv, false) ?></th><?php } ?></tr></thead>'."\n".'<tbody><tr><td>C</td><td>D</td></tr></tbody></table>'
+                '?><table>38<thead><tr><?php if($__Context->vvvls&&count((array)$__Context->vvvls))foreach($__Context->vvvls as $__Context->vvv){ ?><th><?php echo escape($__Context->vvv, false) ?></th><?php } ?></tr></thead>'."\n".'<tbody><tr><td>C</td><td>D</td></tr></tbody></table>'
             ),
             // issue 512 - ignores <marquee>
             array(

@@ -152,7 +152,8 @@ class FrontEndFileHandler extends Handler
 
 		$fileName = preg_replace('/(?:[\/]{3,})(.*)/', '//$1', $fileName);
 		$url_info = parse_url($fileName);
-		$pathInfo = pathinfo(str_replace('?' . ($url_info['query'] ?? ''), '', $fileName));
+		$query = isset($url_info['query']) ? $url_info['query'] : '';
+		$pathInfo = pathinfo(str_replace('?' . $query, '', $fileName));
 
 		$file = new stdClass();
 		$file->fileName = basename($url_info['path']);
@@ -160,7 +161,7 @@ class FrontEndFileHandler extends Handler
 		$file->fileRealPath = FileHandler::getRealPath($pathInfo['dirname']);
 		$file->fileExtension = strtolower($pathInfo['extension']);
 		$file->fileNameNoExt = preg_replace('/\.min$/', '', $pathInfo['filename']);
-		$file->query = $url_info['query'] ?? '';
+		$file->query = $query;
 		$file->external = !empty($url_info['host']);
 		$file->dirName = $pathInfo['dirname'];
 		$file->keyName = implode('.', array($file->fileNameNoExt, $file->fileExtension));

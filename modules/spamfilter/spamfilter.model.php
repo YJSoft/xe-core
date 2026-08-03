@@ -46,7 +46,7 @@ class spamfilterModel extends spamfilter
 		$ipaddress = $_SERVER['REMOTE_ADDR'];
 
 		$ip_list = $this->getDeniedIPList();
-		if(!count($ip_list)) return new BaseObject();
+		if(empty($ip_list)) return new BaseObject();
 
 		$count = count($ip_list);
 		for($i=0;$i<$count;$i++)
@@ -77,7 +77,7 @@ class spamfilterModel extends spamfilter
 	function isDeniedWord($text)
 	{
 		$word_list = $this->getDeniedWordList();
-		if(!count($word_list)) return new BaseObject();
+		if(empty($word_list)) return new BaseObject();
 
 		$count = count($word_list);
 		for($i=0;$i<$count;$i++)
