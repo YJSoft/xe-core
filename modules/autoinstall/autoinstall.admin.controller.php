@@ -251,11 +251,12 @@ class autoinstallAdminController extends autoinstall
 	 */
 	function updatePackages(&$xmlDoc)
 	{
-		$oModel = getModel('autoinstall');
-		if(!$xmlDoc->response->packages->item)
+		if(!isset($xmlDoc->response->packages->item) || !$xmlDoc->response->packages->item)
 		{
 			return;
 		}
+
+		$oModel = getModel('autoinstall');
 		if(!is_array($xmlDoc->response->packages->item))
 		{
 			$xmlDoc->response->packages->item = array($xmlDoc->response->packages->item);
@@ -292,6 +293,11 @@ class autoinstallAdminController extends autoinstall
 	 */
 	function updateCategory(&$xmlDoc)
 	{
+		if(!isset($xmlDoc->response->categorylist->item) || !$xmlDoc->response->categorylist->item)
+		{
+			return;
+		}
+
 		executeQuery("autoinstall.deleteCategory");
 		$oModel = getModel('autoinstall');
 		if(!is_array($xmlDoc->response->categorylist->item))
