@@ -2004,6 +2004,14 @@ class memberController extends member
 			}
 		}
 
+		// Prevent session fixation by issuing a new session ID before storing login information.
+		// SSO requires the same session ID across domains, so these features cannot be used together.
+		$db_info = Context::getDBInfo();
+		if($db_info->use_sso != 'Y' && (!isset($db_info->use_session_regenerate) || $db_info->use_session_regenerate != 'N'))
+		{
+			session_regenerate_id(true);
+		}
+
 		$this->setSessionInfo();
 
 		return $output;
