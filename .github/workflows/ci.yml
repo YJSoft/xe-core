@@ -79,35 +79,63 @@ jobs:
 
     - name: Install Composer dependencies (PHP 5.4 - 7.4)
       if: matrix.php != '5.3' && !matrix.codecept_ver
-      run: composer install --prefer-dist --no-progress
+      run: |
+        for attempt in 1 2 3; do
+          if composer install --prefer-dist --no-progress; then
+            break
+          fi
+
+          if [ "$attempt" -eq 3 ]; then
+            exit 1
+          fi
+
+          echo "::warning::Composer install failed (attempt $attempt/3); retrying in $((attempt * 10)) seconds"
+          sleep "$((attempt * 10))"
+        done
 
     - name: Install Composer dependencies (PHP 8.0, Codeception 4.x)
       if: matrix.codecept_ver == '4'
       run: |
-        composer require --dev \
-          "codeception/codeception:^4.0" \
-          "codeception/module-asserts" \
-          "codeception/module-db" \
-          "codeception/module-phpbrowser" \
-          "codeception/module-filesystem" \
-          --prefer-dist --no-progress
+        for attempt in 1 2 3; do
+          if composer require --dev \
+            "codeception/codeception:^4.0" \
+            "codeception/module-asserts" \
+            "codeception/module-db" \
+            "codeception/module-phpbrowser" \
+            "codeception/module-filesystem" \
+            --prefer-dist --no-progress; then
+            break
+          fi
+
+          if [ "$attempt" -eq 3 ]; then
+            exit 1
+          fi
+
+          echo "::warning::Composer install failed (attempt $attempt/3); retrying in $((attempt * 10)) seconds"
+          sleep "$((attempt * 10))"
+        done
 
     - name: Install Composer dependencies (PHP 8.1+, Codeception 5.x)
       if: matrix.codecept_ver == '5'
       run: |
-        composer require --dev \
-          "codeception/codeception:^5.0" \
-          "codeception/module-asserts" \
-          "codeception/module-db" \
-          "codeception/module-phpbrowser" \
-          "codeception/module-filesystem" \
-          --prefer-dist --no-progress
+        for attempt in 1 2 3; do
+          if composer require --dev \
+            "codeception/codeception:^5.0" \
+            "codeception/module-asserts" \
+            "codeception/module-db" \
+            "codeception/module-phpbrowser" \
+            "codeception/module-filesystem" \
+            --prefer-dist --no-progress; then
+            break
+          fi
 
-    - name: Start PHP Server
-      if: matrix.php != '5.3'
-      run: |
-        php -S 127.0.0.1:8000 -d log_errors=1 -d error_log=/tmp/php_server.log &
-        sleep 3
+          if [ "$attempt" -eq 3 ]; then
+            exit 1
+          fi
+
+          echo "::warning::Composer install failed (attempt $attempt/3); retrying in $((attempt * 10)) seconds"
+          sleep "$((attempt * 10))"
+        done
 
     - name: Run Grunt tasks
       run: |
@@ -118,7 +146,77 @@ jobs:
       if: matrix.php != '5.3'
       run: |
         ./vendor/bin/codecept build
-        ./vendor/bin/codecept run -d --fail-fast --env travis
+
+        server_pid=
+
+        stop_php_server() {
+          if [ -n "$server_pid" ]; then
+            kill "$server_pid" 2>/dev/null || true
+            wait "$server_pid" 2>/dev/null || true
+            server_pid=
+          fi
+        }
+
+        trap stop_php_server EXIT
+        : > /tmp/php_server.log
+
+        for test_attempt in 1 2; do
+          echo "=== Codeception attempt $test_attempt/2 ===" >> /tmp/php_server.log
+          php -d log_errors=1 -d error_log=/tmp/php_server.log -S 127.0.0.1:8000 >> /tmp/php_server.log 2>&1 &
+          server_pid=$!
+          server_ready=
+
+          for readiness_attempt in $(seq 1 30); do
+            if ! kill -0 "$server_pid" 2>/dev/null; then
+              break
+            fi
+
+            if curl --fail --silent \
+              --connect-timeout 1 --max-time 2 \
+              --output /dev/null http://127.0.0.1:8000/; then
+              server_ready=1
+              break
+            fi
+
+            sleep 1
+          done
+
+          if [ -z "$server_ready" ]; then
+            echo "::warning::PHP server failed to become ready (attempt $test_attempt/2)"
+            cat /tmp/php_server.log
+            stop_php_server
+
+            if [ "$test_attempt" -eq 2 ]; then
+              exit 1
+            fi
+
+            sleep 2
+            continue
+          fi
+
+          set +e
+          ./vendor/bin/codecept run -d --fail-fast --env travis 2>&1 | tee /tmp/codeception.log
+          test_status=${PIPESTATUS[0]}
+          set -e
+
+          server_exited=
+          if ! kill -0 "$server_pid" 2>/dev/null; then
+            server_exited=1
+          fi
+          stop_php_server
+
+          if [ "$test_status" -eq 0 ]; then
+            exit 0
+          fi
+
+          if [ "$test_attempt" -eq 1 ] && { [ -n "$server_exited" ] || grep -Fq "cURL error 52" /tmp/codeception.log; }; then
+            echo "::warning::PHP server connection was lost; restarting the server and retrying Codeception once"
+            sleep 2
+            continue
+          fi
+
+          exit "$test_status"
+        done
 
     - name: Show PHP server error log
       if: always() && matrix.php != '5.3'

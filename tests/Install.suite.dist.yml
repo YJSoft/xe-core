@@ -4,7 +4,7 @@ modules:
     enabled: [Db, PhpBrowser, DbDropTablesHelper, InstallHelper, Filesystem]
     config:
         PhpBrowser:
-            url: 'http://localhost:8000/'
+            url: 'http://127.0.0.1:8000/'
         DbDropTablesHelper:
             dsn: 'mysql:host=127.0.0.1;dbname=xe_test'
             user: 'root'
