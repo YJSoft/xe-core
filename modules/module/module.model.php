@@ -2072,6 +2072,7 @@ class moduleModel extends module
 				$args->module_srl = $module_srl;
 				$args->member_srl = $member_info->member_srl;
 				$output = executeQuery('module.getModuleAdmin',$args);
+				if(!$output->toBool()) throw new Exception('msg_db_query_failed');
 				if($output->data && $output->data->member_srl == $member_info->member_srl) $grant->manager = true;
 			}
 			// If not an administrator, get information from the DB and grant manager privilege.
@@ -2090,6 +2091,8 @@ class moduleModel extends module
 					$output = executeQueryArray('module.getModuleGrants', $args);
 				}
 
+				// A failed lookup is not an empty permission configuration.
+				if(!$output->toBool()) throw new Exception('msg_db_query_failed');
 				$grant_exists = $granted = array();
 
 				if($output->data)

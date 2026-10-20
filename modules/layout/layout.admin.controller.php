@@ -261,8 +261,15 @@ class layoutAdminController extends layout
 		if($output->toBool())
 		{
 			$oLayoutModel = getModel('layout');
-			$cache_file = $oLayoutModel->getUserLayoutCache($args->layout_srl, Context::getLangType());
-			FileHandler::removeFile($cache_file);
+			if(!is_scalar($args->layout_srl) || !preg_match('/^[0-9]+$/D', (string)$args->layout_srl)) return $output;
+			$cache_files = glob($oLayoutModel->getUserLayoutCache($args->layout_srl, '*'));
+			if(is_array($cache_files))
+			{
+				foreach($cache_files as $cache_file)
+				{
+					FileHandler::removeFile($cache_file);
+				}
+			}
 		}
 
 		return $output;

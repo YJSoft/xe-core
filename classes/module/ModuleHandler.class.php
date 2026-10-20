@@ -216,33 +216,9 @@ class ModuleHandler extends Handler
 
 		// if success_return_url and error_return_url is incorrect
 		$urls = array(Context::get('success_return_url'), Context::get('error_return_url'));
-		$dbInfo = Context::getDBInfo();
-		$defaultUrlInfo = parse_url($dbInfo->default_url);
-		$defaultHost = $defaultUrlInfo['host'];
-		$siteDomain = parse_url($site_module_info->domain);
-		$siteDomain = $siteDomain['host'];
-
 		foreach($urls as $url)
 		{
-			if(empty($url))
-			{
-				continue;
-			}
-
-			$decodedUrl = urldecode(str_replace('\\', '/', $url));
-			$urlInfo = parse_url($decodedUrl);
-			$host = $urlInfo['host'];
-
-			// 호스트가 있는 절대 URL인 경우: 허용된 도메인인지 확인
-			if($host)
-			{
-				if($host !== $defaultHost && $host !== $siteDomain)
-				{
-					throw new Exception('msg_default_url_is_null');
-				}
-			}
-			// 호스트가 없지만 스킴이 있는 경우: javascript:, data: 등 차단
-			else if(preg_match("/^(https?|[a-z0-9])+\:(\/)*/i", $decodedUrl))
+			if($url !== null && $url !== '' && !Security::isInternalURL($url))
 			{
 				throw new Exception('msg_invalid_request');
 			}

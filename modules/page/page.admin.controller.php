@@ -378,11 +378,22 @@ class pageAdminController extends page
 
 	protected static function _isAllowedExternalPath($path)
 	{
-		// Remove null bytes from path
-		$path = str_replace("\0", "", $path);
+		if($path === '') return true;
+		if(!is_string($path) || preg_match('/[\x00-\x1f\x7f]/', $path)) return false;
 
 		// Normalize the directory separator.
 		$path = str_replace('\\', '/', $path);
+		// Leading ../ is needed by installations sharing files outside the root.
+		// Parent components elsewhere can hide forbidden directories.
+		$relative_path = preg_replace('!^(?:\.\./)+!', '', $path);
+		if(preg_match('!(?:^|/)\.\.(?:/|$)!', $relative_path)) return false;
+		$is_windows_path = DIRECTORY_SEPARATOR === '\\' && preg_match('!^[a-z]:/!i', $path);
+		if(!$is_windows_path && preg_match('!^[a-z][a-z0-9+.-]*:!i', $path))
+		{
+			if(!preg_match('!^https?://!i', $path)) return false;
+			$url = @parse_url($path);
+			if($url === false || empty($url['host'])) return false;
+		}
 
 		// Check for forbidden paths.
 		if (preg_match('!(?:^|/)files/(?:attach|cache|config|debug|env|member_extra_info|ruleset|site_design|thumbnails)/!i', $path))
@@ -391,9 +402,11 @@ class pageAdminController extends page
 		}
 
 		// Run the check again after resolving any symbolic links.
-		if (!preg_match('!^https?://!i', $path) && file_exists($path))
+		if (!preg_match('!^https?://!i', $path))
 		{
+			if(!is_file($path)) return false;
 			$realpath = realpath($path);
+			if($realpath === false) return false;
 			if ($realpath !== false)
 			{
 				$normalized_realpath = str_replace('\\', '/', $realpath);

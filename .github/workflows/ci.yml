@@ -140,6 +140,9 @@ jobs:
           sleep "$((attempt * 10))"
         done
 
+    - name: Run standalone security regressions (including PHP 5.3)
+      run: php tests/security/regressions.php
+
     - name: Run Grunt tasks
       run: |
         grunt lint --force

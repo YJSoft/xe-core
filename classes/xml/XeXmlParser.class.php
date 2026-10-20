@@ -127,8 +127,8 @@ class XeXmlParser
 
 		$this->oParser = xml_parser_create('UTF-8');
 
-		xml_set_element_handler($this->oParser, [$this, '_tagOpen'], [$this, '_tagClosed']);
-		xml_set_character_data_handler($this->oParser, [$this, '_tagBody']);
+		xml_set_element_handler($this->oParser, array($this, '_tagOpen'), array($this, '_tagClosed'));
+		xml_set_character_data_handler($this->oParser, array($this, '_tagBody'));
 
 		xml_parse($this->oParser, $this->input);
 		xml_parser_free($this->oParser);
