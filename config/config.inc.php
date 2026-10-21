@@ -382,6 +382,7 @@ $GLOBALS['__xe_autoload_file_map'] = array_change_key_case(array(
 	'XmlGenerator' => 'classes/xml/XmlGenerator.class.php',
 	'XmlJsFilter' => 'classes/xml/XmlJsFilter.class.php',
 	'XmlLangParser' => 'classes/xml/XmlLangParser.class.php',
+	'XmlParser' => 'classes/xml/XmlParser.class.php',
 	'XeXmlParser' => 'classes/xml/XeXmlParser.class.php',
 	'XmlQueryParser' => 'classes/xml/XmlQueryParser.class.php',
 	'DBParser' => 'classes/xml/xmlquery/DBParser.class.php',
