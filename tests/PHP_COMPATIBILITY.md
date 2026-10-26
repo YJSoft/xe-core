@@ -157,6 +157,29 @@ before extracting live board/autoinstall markup.
   before the next experiment. These checks establish sensitivity to these
   defects; they do not claim exhaustive mutation coverage.
 
+## Installation charset verification (2026-10-26)
+
+XE connects to an existing MySQL database; installation does not create the
+database or change its default charset. `installController::installModule()`
+loads each module's schema through `createTableByXmlFile()`. The MyISAM and
+InnoDB schema builders explicitly append `CHARACTER SET utf8 COLLATE
+utf8_general_ci`, and both mysqli drivers call `mysqli_set_charset(..., 'utf8')`
+when connecting. A latin1 database default therefore does not make XE's
+installation tables latin1.
+
+The disposable installation was checked through `information_schema`: the
+database default remained `latin1 / latin1_swedish_ci`, while all 78 installed
+tables and 298 character columns used `utf8mb3 / utf8mb3_general_ci`. Both XE
+mysqli drivers also reported UTF-8 client, connection and result charsets.
+MariaDB reports the code's `utf8` charset as `utf8mb3`. The failing test had
+bypassed XE's schema builder and omitted the charset on its temporary table;
+the corrected fixture explicitly matches XE's table charset.
+
+For commit `1cdaf27db`, [CI run 40271452151](https://github.com/YJSoft/xe-core/actions/runs/40271452151)
+completed successfully on all 16 PHP jobs (5.3–8.6); CodeQL also succeeded.
+PHP 8.4's installation server terminated once and the existing automatic retry
+then completed the full suite successfully.
+
 ## Historical audit index
 
 The following index is based on the current branch's non-merge commit history,
