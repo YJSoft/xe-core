@@ -429,7 +429,7 @@ class FrontEndFileHandler extends Handler
 				$path = $script_path . substr($path, 2);
 			}
 		}
-		else if(strpos($file, '../') === 0)
+		else if(strpos($path, '../') === 0)
 		{
 			$path = $this->_normalizeFilePath($script_path . $path);
 		}

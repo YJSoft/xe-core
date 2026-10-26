@@ -1,0 +1,19 @@
+class_name: DatabaseTester
+actor: DatabaseTester
+modules:
+    enabled: [Asserts, Db]
+    config:
+        Db:
+            dsn: 'mysql:host=127.0.0.1;dbname=xe_test'
+            user: 'root'
+            password: 'root'
+            populate: false
+            cleanup: false
+env:
+    travis:
+        modules:
+            config:
+                Db:
+                    dsn: 'mysql:host=127.0.0.1;dbname=xe_test'
+                    user: 'root'
+                    password: 'root'

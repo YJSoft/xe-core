@@ -71,6 +71,12 @@ jobs:
       with:
         node-version: '16'
 
+    - name: Check PHP syntax (including PHP 5.3)
+      run: |
+        while IFS= read -r -d '' file; do
+          php -l "$file" > /dev/null || exit 1
+        done < <(git ls-files -z '*.php' '*.inc' ':!:tests/**')
+
     - name: Install NPM dependencies
       run: |
         npm install -g grunt-cli
