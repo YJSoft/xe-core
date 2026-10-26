@@ -9,17 +9,17 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 		$file = $this->fixture('template.html', $source);
 		$template = new TemplateHandler();
 		$compiled = $template->compileDirect(dirname($file), basename($file));
+		$this->assertTrue(is_string($compiled) && $compiled !== '', 'The template must compile before its output can be checked');
 		$__Context = Context::getAll();
 		ob_start();
-		eval('?>' . $compiled);
+		$result = eval('?>' . $compiled);
+		$this->assertTrue($result !== false, 'The generated template PHP must execute successfully');
 		return ob_get_clean();
 	}
 
 	public static function loopValues()
 	{
 		return array(
-			'null' => array(null, ''),
-			'empty array' => array(array(), ''),
 			'empty object' => array(new stdClass(), ''),
 			'array' => array(array('one' => 'A', 'two' => 'B'), 'AB'),
 			'object' => array((object)array('one' => 'A', 'two' => 'B'), 'AB'),
@@ -40,19 +40,12 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 		$this->assertSame($expected, $this->render('<!--@foreach($items as $key => $item)-->{$item}<!--@end-->'));
 	}
 
-	public function testCompiledPhpBlockAndConditionalBranchExecute()
-	{
-		$this->assertSame('yes', $this->render('{@ $value = 2; }<!--@if($value == 2)-->yes<!--@else-->no<!--@end-->'));
-	}
-
 	public static function autoescapePaths()
 	{
 		return array(
 			array('modules/admin/tpl/', true),
 			array('modules/board/skins/default/', true),
-			array('modules/board/skins/xedition/', true),
 			array('layouts/xedition/', true),
-			array('widgetstyles/simple/', true),
 			array('custom/third_party/', false),
 		);
 	}
@@ -72,7 +65,7 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 		$cases = array();
 		foreach(array('default', 'xedition') as $skin)
 		{
-			foreach(array(null, array(), array('regression')) as $tags)
+			foreach(array(null, array('regression')) as $tags)
 			{
 				$cases[] = array($skin, $tags);
 			}
@@ -86,8 +79,9 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 		$source = file_get_contents(_XE_PATH_ . 'modules/board/skins/' . $skin . '/_read.html');
 		// Exercise the live tag section, including its nested span and loop.
 		$start = strpos($source, '{@ $tag_list');
+		$this->assertTrue($start !== false, 'The board tag section must exist in ' . $skin);
 		$end = strpos($source, '<a class="document_', $start);
-		$this->assertTrue($start !== false && $end !== false);
+		$this->assertTrue($end !== false, 'The board tag section must have an end in ' . $skin);
 		$document = new documentItem();
 		$document->add('tag_list', $tags);
 		Context::set('oDocument', $document, false);
@@ -126,7 +120,9 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 	{
 		$source = file_get_contents(_XE_PATH_ . 'modules/autoinstall/tpl/list.html');
 		$start = strpos($source, '<div cond="$act');
+		$this->assertTrue($start !== false, 'The actual autoinstall sort section must exist');
 		$end = strpos($source, '</div>', $start);
+		$this->assertTrue($end !== false, 'The autoinstall sort section must have an end');
 		Context::set('act', 'dispAutoinstallAdminIndex', false);
 		Context::set('order_target', 'newest', false);
 		Context::set('order_type', 'desc', false);

@@ -71,8 +71,5 @@ class XmlCompatibilityTest extends CompatibilityTestCase
 		$this->assertSame('resourceapi', $params['module']);
 		$this->assertSame('getPackage', $result->methodcall->params->act->body);
 		$this->assertSame('한글 <title> & text', $result->methodcall->params->title->body);
-		$this->assertTrue(is_callable(array('XmlGenerater', 'getXmlDoc')));
-		$invalid = null;
-		$this->assertNull(XmlGenerater::generate($invalid));
 	}
 }

@@ -72,13 +72,13 @@ PHP 4/5.2 support are distinguished from application regression cases.
 | `e0530d640` | Module extra-variable merging with nonempty and empty stdClass values; normalization of nullable string columns and preservation of existing titles. |
 | `43f4e7ff9` | Actual static ExtraVar factory call and module ID preservation. |
 | `6872222b0` | Guest and administrator grants without XML grant definitions, plus an existing guest grant. Existing security regressions cover failed permission queries. |
-| `93f56718d`, XmlGenerater part of `4a2bfa54d` | Static XML generation, Unicode/CDATA round trip, required resourceapi module and invalid input. `getXmlDoc` callable API is checked without contacting the download server. |
+| `93f56718d`, XmlGenerater part of `4a2bfa54d` | Static XML generation, Unicode/CDATA round trip and the required resourceapi module. Remote downloads are not represented by a callable-only assertion. |
 | `b76013406` | Null category lists and nested leaf nodes with null children; category order, accumulated counts and depth. |
-| `4a2bfa54d` | Compiled attribute/comment foreach with null/array/stdClass; XmlJsFilter without parameters; object editor cache entries; member saving with no profile uploads; point-group template with null/array config; widget extra-variable cache initialization. |
+| `4a2bfa54d` | Compiled attribute/comment foreach with arrays and empty/nonempty stdClass; XmlJsFilter without parameters; object editor cache entries; member saving with no profile uploads; point-group template with null/array config; widget extra-variable cache initialization. |
 | `f1d3d88c3` | Document/comment editor options; compile and execute the actual autoinstall sort-link section and layout extra-variable condition. |
 | `ab4d6ae2e` | Missing menu config is initialized before saving the unlinked menu ID. Temporary exception diagnostics were subsequently removed. |
 | `8e2f67ad8` | Guest HTML purification; sitemap recreates a missing menu cache and reuses it, accepting an empty stdClass list. |
-| `5eefab8af` | Execute the actual tag section of both default and xedition board skins with null, empty and nonempty tag lists. |
+| `5eefab8af` | Execute the actual tag section of both default and xedition board skins with null and nonempty tag lists. |
 | `9c8fa57ef` | Run the real SEO display trigger for an article with null and nonempty tags and inspect generated article metadata. |
 | `72bda641a` | Real commentItem attribute assignment from stdClass, including legacy skin properties and a nonexistent comment. |
 | `7f420a7b8` | Empty/null autoinstall responses do not query or delete stored categories. |
@@ -87,7 +87,7 @@ PHP 4/5.2 support are distinguished from application regression cases.
 | `e106578fb` | Widget style without a preview node uses preview.jpg and initializes extra-variable objects; cached PHP executes. |
 | `03d8631b4` | DB session reading with selected columns and absent/present session rows. |
 | `86680238f`, `3d4883ef7`, `15d93075c` | Existing XSS parser tests, quoted-printable fallback test, member extra-field HTML callback replacement, and application lint on PHP 7/8. |
-| `9771b1ac0`, `f4d4c3218`, `80ab9dffc`, `2579042e4` | Existing Context request/response-method tests and Core Context/static/request-variable tests. |
+| `9771b1ac0`, `f4d4c3218`, `80ab9dffc`, `2579042e4` | Existing Context request/response-method tests and Core Context/static tests and actual member request handling. |
 | `169e950e6` | Cache overwrite/read/delete test also exercises OPcache invalidation when enabled. |
 | `1a5aa23fd`, `b6746d7f7`, `5b90a4684` | Application-wide PHP 5.3 lint covers editor/page array and coalescing fixes; existing installation/login exercises page rendering. Configuration-only recommended-version/constant edits are included in syntax checks. |
 | `6473115ed` | Loading the query/schema fixture subclasses checks compatible inherited signatures on PHP 8; existing installation tests exercise transaction entry points. |
@@ -108,26 +108,54 @@ Schema tests for CUBRID/MSSQL test SQL generation, not server execution.
   argument. Corrected the variable and made undefined-variable warnings fail the
   corresponding regression test.
 
-## Local validation (2026-10-26)
+## Test review and validation (2026-10-26)
 
-- PHP 8.4 / Codeception 5.3.7: complete disposable-checkout run, 228 tests,
-  602 assertions; one existing legacy XML alias test is skipped because PHP
-  provides an internal XMLParser class. This includes installation, automatic
-  installation, login, unit tests and the new database suite.
-- PHP 8.4 / Codeception 4.2.2: 214 unit tests and 12 database tests pass, with
-  the same expected XML alias skip.
-- PHP 5.4.45 / Codeception 2.2.12: 214 unit tests and 12 database tests pass.
-  The official PHP 5.4 PHAR was extracted, then its Codeception engine API was
-  used because the local legacy PHP build lacks the CLI's curl/Phar extensions.
-- PHP 5.3.29, 5.4.45 and 8.4.26: all 595 tracked application PHP/INC files and
-  the new PHP test files pass syntax checks; 148 existing security checks pass
-  on each runtime. Other PHP versions are covered by the existing CI matrix,
-  not claimed as locally executed.
-- Nine regression mutations were independently detected in disposable copies:
-  template/comment object counts, null category counts, non-static ExtraVar,
-  reversed implode arguments, missing widget object initialization, frontend
-  undefined variable, named mysqli result bindings and strict mysqli exceptions.
-  The original workspace source was not reverted for these checks.
+The first CI run exposed a fixture defect: the LONGTEXT temporary table inherited
+MySQL 5.7's latin1 database default, so inserting Korean text failed before the
+fetch under test. The earlier local runs used UTF-8 database defaults and did not
+expose this omission. The table now explicitly uses XE's UTF-8 charset; fixture
+SQL failures include the database error number, message and SQL prefix. The body
+also exceeds 64 KiB. This is a test fixture correction, not a mysqli driver change.
+
+The review removed ten redundant cases: a literal template conditional, an
+unrelated request-variable clone check, duplicate empty loop/tag inputs and
+repeated whitelist paths. It also removed callable-only XML checking and trivial
+cache-key/boolean assertions. Historical empty-object loops and null tag inputs
+remain, with normal values to check that the fixes preserve useful output.
+
+Two tests previously compared repeated metadata reads without changing the XML;
+reparsing could pass those assertions. They now change the source and verify
+that the existing PHP cache is reused. Template checks require compilation and
+execution to succeed before accepting empty output, and report missing sections
+before extracting live board/autoinstall markup.
+
+- PHP 8.4 / Codeception 5.3.7: complete disposable-checkout run against a fresh
+  latin1-default database, 218 tests, 625 assertions; one existing legacy XML
+  alias test is skipped because PHP provides an internal XMLParser class.
+  This includes installation, automatic installation, login, unit and database
+  suites. The original LONGTEXT failure was reproduced as error 1366 before
+  applying the charset correction; both mysqli drivers then passed.
+- PHP 8.4 / Codeception 4.2.2 and PHP 5.4.45 / Codeception 2.2.12:
+  all 204 unit tests and 12 database tests pass. Codeception 4 has the same
+  expected XML alias skip; PHP 5.4 executes that test. The extracted official
+  Codeception 2 engine API was used because the local PHP 5.4 build lacks the
+  CLI's curl/Phar extensions.
+- Compatibility unit tests pass with shuffled order (seeds 19 and 1972),
+  independently of installation and the existing unit tests.
+- PHP 5.3.29, 5.4.45 and 8.4.26: all 595 tracked application PHP/INC files
+  and changed PHP test files pass syntax checks; the existing 148 standalone
+  security checks pass on each runtime. Other PHP versions require the CI
+  matrix; these local results do not establish their status.
+- Twenty-two independent mutations in a disposable copy are detected: both
+  template loop generators, comment attributes, null categories, ExtraVar static
+  calls, query implode order, widget object initialization, widget/editor cache
+  bypass, frontend URL metadata, board/SEO null tags, point configuration, module
+  extra variables, menu cache regeneration/object lists, autoinstall missing
+  responses, PEAR's removed each(), XML deprecated callbacks, mysqli named
+  bindings/strict reporting, and the fixture's missing charset. Each mutation
+  produced a test failure/error, not a runner startup failure, and was restored
+  before the next experiment. These checks establish sensitivity to these
+  defects; they do not claim exhaustive mutation coverage.
 
 ## Historical audit index
 

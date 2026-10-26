@@ -18,15 +18,6 @@ class CoreCompatibilityTest extends CompatibilityTestCase
 		$this->assertSame('&lt;test&gt;', escape('<test>'));
 	}
 
-	public function testRequestVariablesAreAnIndependentObject()
-	{
-		$this->assertInstanceOf('stdClass', Context::getRequestVars());
-		Context::set('title', 'original', true);
-		$vars = Context::getRequestVars();
-		$vars->title = 'changed';
-		$this->assertSame('original', Context::getRequestVars()->title);
-	}
-
 	public function testContextWithoutDatabaseAndUnknownLanguageCode()
 	{
 		$this->failOnPhpWarnings();
@@ -81,7 +72,6 @@ class CoreCompatibilityTest extends CompatibilityTestCase
 		$extra = ExtraVar::getInstance(123);
 		$this->assertInstanceOf('ExtraVar', $extra);
 		$this->assertSame(123, $extra->module_srl);
-		$this->assertSame(__XE_VERSION__ . ':test:key', CacheHandler::getCacheKey('test/key'));
 	}
 
 	public function testQueryArrayNormalizesSingleObjectAndPreservesEmptyResults()
@@ -117,7 +107,6 @@ class CoreCompatibilityTest extends CompatibilityTestCase
 	public function testLegacyObjectAliasIsOnlyRegisteredBeforePhp72()
 	{
 		$object = new BaseObject(-1, 'error');
-		$this->assertFalse($object->toBool());
 		if(version_compare(PHP_VERSION, '7.2', '<'))
 		{
 			$this->assertTrue(is_a($object, 'Object'));

@@ -28,8 +28,10 @@ class MetadataCompatibilityTest extends CompatibilityTestCase
 		$this->assertSame('Color', $info->extra_var->color->name);
 		$this->assertSame('', $info->extra_var->color->value);
 		$this->assertSame('20260102', $info->date);
-		// A second read must exercise the generated PHP cache too.
-		touch($cache, time() + 2);
+		// Change the source: equal output now proves the PHP cache was reused.
+		$this->fixture('conf/info.xml', $this->xml('widget', '<description>Changed source</description>'));
+		$this->assertFileExists($cache);
+		$this->assertTrue(touch($cache, time() + 10));
 		clearstatcache();
 		$this->assertEquals($info, $model->getWidgetInfo($this->fixtureName));
 	}
@@ -83,7 +85,9 @@ class MetadataCompatibilityTest extends CompatibilityTestCase
 		$cache = $this->trackGeneratedFile(_XE_PATH_ . 'files/cache/editor/' . $this->fixtureName . '.en.php');
 		$info = $model->getComponentXmlInfo($this->fixtureName);
 		$this->assertOptionalMetadata($info);
-		touch($cache, time() + 2);
+		$this->fixture('components/' . $this->fixtureName . '/info.xml', $this->xml('component', '<description>Changed source</description>'));
+		$this->assertFileExists($cache);
+		$this->assertTrue(touch($cache, time() + 10));
 		clearstatcache();
 		$this->assertEquals($info, $model->getComponentXmlInfo($this->fixtureName));
 	}

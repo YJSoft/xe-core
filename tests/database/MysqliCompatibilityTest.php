@@ -49,6 +49,13 @@ class MysqliCompatibilityTest extends CompatibilityTestCase
 		return array(array('DBMysqli'), array('DBMysqli_innodb'));
 	}
 
+	private function executeFixtureSql($connection, $sql)
+	{
+		$result = mysqli_query($connection, $sql);
+		$this->assertTrue($result !== false, sprintf('Fixture SQL failed (%d): %s; SQL: %s', mysqli_errno($connection), mysqli_error($connection), substr($sql, 0, 200)));
+		return $result;
+	}
+
 	/** @dataProvider drivers */
 	public function testPreparedResultBindsNamedColumnsAndCopiesEachRow($class)
 	{
@@ -92,9 +99,10 @@ class MysqliCompatibilityTest extends CompatibilityTestCase
 		$connection = $db->master_db['resource'];
 		$table = $this->fixtureName;
 		// Temporary tables disappear when this test's connection closes.
-		$this->assertTrue(mysqli_query($connection, 'CREATE TEMPORARY TABLE `' . $table . '` (body LONGTEXT)'));
-		$body = str_repeat('한글 <content> ', 3000);
-		$this->assertTrue(mysqli_query($connection, 'INSERT INTO `' . $table . '` VALUES (\'' . mysqli_real_escape_string($connection, $body) . '\')'));
+		// Match XE's UTF-8 tables even when the database default is latin1.
+		$this->executeFixtureSql($connection, 'CREATE TEMPORARY TABLE `' . $table . '` (body LONGTEXT) CHARACTER SET utf8 COLLATE utf8_general_ci');
+		$body = str_repeat('한글 <content> ', 5000);
+		$this->executeFixtureSql($connection, 'INSERT INTO `' . $table . '` VALUES (\'' . mysqli_real_escape_string($connection, $body) . '\')');
 		$row = $db->_fetch($db->_query('SELECT body FROM `' . $table . '`'));
 		$this->assertSame($body, $row->body);
 	}
