@@ -1,0 +1,67 @@
+name: Update CA certificates
+
+on:
+  schedule:
+    # Every Monday at 12:17 KST (03:17 UTC).
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-cacert
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Download and validate updated certificates
+        working-directory: libs/cacert
+        shell: bash
+        run: |
+          http_status=$(curl --fail --silent --show-error --location \
+            --proto '=https' --proto-redir '=https' --tlsv1.2 \
+            --retry 3 --connect-timeout 15 --max-time 120 \
+            --etag-compare etag.txt --etag-save etag.txt --remote-name \
+            --write-out '%{http_code}' https://curl.se/ca/cacert.pem)
+
+          if [ "$http_status" = 304 ]; then
+            echo "CA certificates are already up to date."
+            exit 0
+          fi
+
+          if [ "$http_status" != 200 ]; then
+            echo "Unexpected HTTP status: $http_status" >&2
+            exit 1
+          fi
+
+          curl --fail --silent --show-error --location \
+            --proto '=https' --proto-redir '=https' --tlsv1.2 \
+            --retry 3 --connect-timeout 15 --max-time 120 \
+            --output "$RUNNER_TEMP/cacert.pem.sha256" \
+            https://curl.se/ca/cacert.pem.sha256
+          sha256sum --check "$RUNNER_TEMP/cacert.pem.sha256"
+          openssl crl2pkcs7 -nocrl -certfile cacert.pem -outform DER -out /dev/null
+
+      - name: Commit and push changed certificates
+        shell: bash
+        run: |
+          if git diff --quiet -- libs/cacert/cacert.pem; then
+            echo "No certificate changes to commit."
+            exit 0
+          fi
+
+          git config user.name 'YJSoft'
+          git config user.email 'yjsoft@yjsoft.xyz'
+          git add libs/cacert/cacert.pem libs/cacert/etag.txt
+          git commit -m "Update cacert.pem"
+          git push
