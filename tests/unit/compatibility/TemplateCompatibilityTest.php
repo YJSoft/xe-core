@@ -135,4 +135,43 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 		$this->assertFalse(strpos($html, 'page=5'));
 		$this->assertTrue(strpos($html, 'order_type=asc') !== false);
 	}
+
+	public function testPhp2ShellWarningRendersDangerPartialMitigationAndFixedStates()
+	{
+		$lang = new stdClass();
+		foreach(array('php2shell_danger_title', 'php2shell_warning_title', 'msg_php_warning_now_version', 'php2shell_danger_description', 'php2shell_warning_description', 'php2shell_update_required', 'php2shell_patch_guidance', 'php2shell_configuration_guidance', 'php2shell_verification_limit', 'php2shell_official_advisory', 'cmd_close') as $key)
+		{
+			$lang->{$key} = $key;
+		}
+		Context::set('lang', $lang, false);
+		$template = new TemplateHandler();
+		$compiled = $template->compileDirect(_XE_PATH_ . 'modules/admin/tpl/', '_php2shell_warning.html');
+		$this->assertTrue(is_string($compiled) && $compiled !== '');
+		$progress_on = array('global_value' => '1', 'local_value' => '1');
+		$progress_off = array('global_value' => '0', 'local_value' => '0');
+		foreach(array(array('7.4.33', $progress_on, 'danger', true), array('8.1.34', $progress_off, 'warning', true), array('8.2.34', $progress_off, 'danger', false), array('8.4.26', $progress_on, 'danger', false), array('8.4.27', $progress_on, '', false)) as $case)
+		{
+			list($version, $settings, $level, $dismissible) = $case;
+			Context::set('php2shell_status', Security::getPhp2ShellStatus($version, $settings), false);
+			$__Context = Context::getAll();
+			ob_start();
+			$result = eval('?>' . $compiled);
+			$html = ob_get_clean();
+			$this->assertTrue($result !== false);
+			if($level === '')
+			{
+				$this->assertSame('', trim($html));
+				continue;
+			}
+			$this->assertTrue(strpos($html, 'role="alert"') !== false);
+			$this->assertTrue(strpos($html, 'php2shell-warning ' . $level) !== false);
+			$this->assertSame($level === 'danger', strpos($html, 'php2shell_danger_title') !== false);
+			$this->assertSame($level === 'warning', strpos($html, 'php2shell_warning_title') !== false);
+			$this->assertSame($level === 'danger', strpos($html, 'php2shell_configuration_guidance') !== false);
+			$this->assertSame($dismissible, strpos($html, 'php2shell-dismiss') !== false);
+			$this->assertSame(!$dismissible, strpos($html, 'php2shell_update_required') !== false);
+			$this->assertTrue(strpos($html, 'php2shell_verification_limit') !== false);
+			$this->assertTrue(strpos($html, $version) !== false);
+		}
+	}
 }

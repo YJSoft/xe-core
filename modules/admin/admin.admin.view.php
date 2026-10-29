@@ -266,6 +266,7 @@ class adminAdminView extends admin
 	{
 		$db_info = Context::getDBInfo();
 		Context::set('db_info',$db_info);
+		Context::set('php2shell_status', Security::getPhp2ShellStatus());
 
 		// Get statistics
 		$args = new stdClass();

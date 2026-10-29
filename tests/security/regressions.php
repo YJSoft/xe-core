@@ -479,4 +479,36 @@ $GLOBALS['query_data']['module.getLangListByLangcode'] = array((object)array('va
 $display_list = $admin_model->getLangListByLangcode(new stdClass());
 check($display_list->data[0]->value === '&lt;img src=x onerror=alert(1)&gt;', 'Search list escapes legacy raw HTML');
 check($display_list->data[1]->value === '&lt;img src=x onerror=alert(1)&gt;', 'Search list does not double-escape stored HTML');
+// Passive PHP2Shell checks only: fixture versions and INI values, no exploit probes.
+$progress_on = array('global_value' => '1', 'local_value' => '1');
+$progress_off = array('global_value' => '0', 'local_value' => '0');
+foreach(array('5.3.29', '5.4.45', '5.6.40', '7.0.33', '7.1.33', '7.2.34', '7.3.33', '7.4.33', '8.0.30', '8.1.34', '8.1.34-8.vendor', '8.2.34', '8.3.35', '8.4.26', '8.5.11', '8.6.0RC3', '8.6.0-dev', '8.7.0', 'unknown') as $version) {
+    $status = Security::getPhp2ShellStatus($version, $progress_on);
+    check(!$status['patched'] && $status['level'] === 'danger', 'Unverified PHP with upload progress enabled: ' . $version);
+    $status = Security::getPhp2ShellStatus($version, $progress_off);
+    $legacy = preg_match('/\A[0-9]+\.[0-9]+/', $version, $branch) && version_compare($branch[0], '8.2', '<');
+    check($status['dismissible'] === (bool)$legacy, 'Only PHP <= 8.1 notices are dismissible: ' . $version);
+    check(!$status['patched'] && $status['level'] === ($legacy ? 'warning' : 'danger'), 'Supported branches require updates even with upload progress disabled: ' . $version);
+}
+foreach(array('8.2.35', '8.2.36', '8.3.36', '8.3.37', '8.4.27', '8.4.28', '8.5.12', '8.5.13', '8.4.27-1+deb12u1', '8.6.0RC4', '8.6.0RC5', '8.6.0', '8.6.1') as $version) {
+    foreach(array($progress_on, $progress_off, false) as $settings) {
+        $status = Security::getPhp2ShellStatus($version, $settings);
+        check($status['patched'] && $status['level'] === '', 'Known fixed PHP2Shell release: ' . $version);
+    }
+}
+foreach(array('8.2.35RC1', '8.3.36beta1', '8.4.27-dev', '8.5.12alpha1') as $version) {
+    $status = Security::getPhp2ShellStatus($version, $progress_on);
+    check(!$status['patched'], 'Prerelease must not inherit the stable release fix: ' . $version);
+}
+foreach(array(false, array(), array('local_value' => '0'), array('global_value' => '0'), array('global_value' => '1', 'local_value' => '0'), array('global_value' => '0', 'local_value' => '1'), array('global_value' => false, 'local_value' => false), array('global_value' => 'unexpected', 'local_value' => '0')) as $settings) {
+    $status = Security::getPhp2ShellStatus('7.4.33', $settings);
+    check(!$status['upload_progress_disabled'] && $status['level'] === 'danger', 'Missing, ambiguous or late INI override must not suppress the danger warning');
+}
+foreach(array('', '0', 'Off', 'FALSE', 'no', 'None') as $value) {
+    $status = Security::getPhp2ShellStatus('7.4.33', array('global_value' => $value, 'local_value' => $value));
+    check($status['upload_progress_disabled'] && $status['level'] === 'warning', 'Recognize explicit INI off value: ' . $value);
+}
+$session_settings = function_exists('ini_get_all') && extension_loaded('session') ? ini_get_all('session') : false;
+$progress_settings = isset($session_settings['session.upload_progress.enabled']) ? $session_settings['session.upload_progress.enabled'] : false;
+check(Security::getPhp2ShellStatus() === Security::getPhp2ShellStatus(PHP_VERSION, $progress_settings), 'Default assessment reads this PHP runtime and its session INI settings');
 echo 'OK: ', $GLOBALS['checks'], ' security checks on PHP ', PHP_VERSION, "\n";

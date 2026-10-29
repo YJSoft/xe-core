@@ -5,11 +5,14 @@
 <load target="./js/jqplot.categoryAxisRenderer.min.js" />
 <load target="./js/jqplot.pointLabels.min.js" />
 <load target="./css/jquery.jqplot.min.css" />
+<load target="./css/php2shell.css" />
 
 <div class="content" id="content">
 	<div class="x_page-header">
 		<h1>{$lang->control_panel} <a class="x_icon-question-sign" href="https://yjsoft.github.io/xe-core/help/index.html#UMAN_dashboard" target="_blank">{$lang->help}</a></h1>
 	</div>
+
+	<include target="./_php2shell_warning.html" />
 
 	<div class="message error">
 		<h2>{$lang->admin_xe_discontinued}</h2>
@@ -84,6 +87,24 @@
 <script>
 jQuery(function($)
 {
+	// Only PHP <= 8.1 notices can be dismissed, for this browser tab session.
+	var $php2shellWarning = $('#php2shellWarning');
+	var $php2shellDismiss = $php2shellWarning.find('.php2shell-dismiss');
+	if($php2shellDismiss.length) {
+		var dismissalKey = 'xe.php2shell.dismissed.v1:' + window.location.pathname + ':' + $php2shellWarning.attr('data-php-version') + ':' + $php2shellWarning.attr('data-php2shell-level');
+		try {
+			if(window.sessionStorage.getItem(dismissalKey) === '1') {
+				$php2shellWarning.hide();
+			}
+		} catch(e) {}
+		$php2shellDismiss.on('click', function() {
+			try {
+				window.sessionStorage.setItem(dismissalKey, '1');
+			} catch(e) {}
+			$php2shellWarning.hide();
+		});
+	}
+
 	// check browser version
 	if($.browser.msie == true ) {
 		var arrBrowserVersion = $.browser.version.split('.');

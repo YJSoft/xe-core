@@ -10,6 +10,64 @@
  */
 class Security
 {
+	/**
+	 * Passive PHP2Shell assessment; never sends requests or exercises the defects.
+	 * Optional inputs allow testing without changing the running PHP configuration.
+	 * Backports cannot be verified from PHP_VERSION and remain unverified here.
+	 * Source: https://www.php.net/archive/2026.php#2026-10-21-5
+	 */
+	public static function getPhp2ShellStatus($php_version = null, $upload_progress = null)
+	{
+		if($php_version === null) $php_version = PHP_VERSION;
+		if($upload_progress === null)
+		{
+			$settings = function_exists('ini_get_all') && extension_loaded('session') ? ini_get_all('session') : false;
+			$upload_progress = isset($settings['session.upload_progress.enabled']) ? $settings['session.upload_progress.enabled'] : false;
+		}
+
+		$fixed_versions = array(
+			'8.2' => '8.2.35',
+			'8.3' => '8.3.36',
+			'8.4' => '8.4.27',
+			'8.5' => '8.5.12',
+			'8.6' => '8.6.0RC4',
+		);
+		$patched = false;
+		$dismissible = false;
+		// Keep prerelease markers when comparing; ignore distribution package suffixes.
+		if(is_string($php_version) && preg_match('/\A([0-9]+\.[0-9]+)\.[0-9]+(?:[.-]?(?:dev|alpha|beta|RC)[0-9]*)?/i', $php_version, $matches))
+		{
+			$branch = $matches[1];
+			$dismissible = version_compare($branch, '8.2', '<');
+			$patched = isset($fixed_versions[$branch]) && version_compare($matches[0], $fixed_versions[$branch], '>=');
+		}
+
+		// Both master and local values must be explicitly off. A per-directory
+		// override (.user.ini) can be applied too late to block request parsing.
+		$upload_progress_disabled = false;
+		if(is_array($upload_progress) && isset($upload_progress['global_value'], $upload_progress['local_value']))
+		{
+			$off_values = array('', '0', 'off', 'false', 'no', 'none');
+			$upload_progress_disabled = true;
+			foreach(array('global_value', 'local_value') as $key)
+			{
+				$value = $upload_progress[$key];
+				if(!is_string($value) || !in_array(strtolower(trim($value)), $off_values, true))
+				{
+					$upload_progress_disabled = false;
+				}
+			}
+		}
+
+		return array(
+			'php_version' => $php_version,
+			'patched' => $patched,
+			'upload_progress_disabled' => $upload_progress_disabled,
+			'dismissible' => $dismissible,
+			'level' => $patched ? '' : ($dismissible && $upload_progress_disabled ? 'warning' : 'danger'),
+		);
+	}
+
 	/** Check redirect destinations against configured HTTP(S) hosts and ports. */
 	public static function isInternalURL($url)
 	{

@@ -1,0 +1,13 @@
+<div cond="$php2shell_status['level']" id="php2shellWarning" class="message php2shell-warning {$php2shell_status['level']}" role="alert" data-php-version="{$php2shell_status['php_version']}" data-php2shell-level="{$php2shell_status['level']}">
+	<button cond="$php2shell_status['dismissible']" type="button" class="x_close php2shell-dismiss" title="{$lang->cmd_close}" aria-label="{$lang->cmd_close}">&times;</button>
+	<h2 cond="$php2shell_status['level'] == 'danger'">{$lang->php2shell_danger_title}</h2>
+	<h2 cond="$php2shell_status['level'] == 'warning'">{$lang->php2shell_warning_title}</h2>
+	<p>{$lang->msg_php_warning_now_version}: <strong>{$php2shell_status['php_version']}</strong></p>
+	<p cond="$php2shell_status['level'] == 'danger' && $php2shell_status['dismissible']">{$lang->php2shell_danger_description}</p>
+	<p cond="$php2shell_status['level'] == 'danger' && !$php2shell_status['dismissible']">{$lang->php2shell_update_required}</p>
+	<p cond="$php2shell_status['level'] == 'warning'">{$lang->php2shell_warning_description}</p>
+	<p>{$lang->php2shell_patch_guidance}</p>
+	<p cond="$php2shell_status['level'] == 'danger'">{$lang->php2shell_configuration_guidance}</p>
+	<p>{$lang->php2shell_verification_limit}</p>
+	<p><a href="https://www.php.net/archive/2026.php#2026-10-21-5" target="_blank" rel="noopener noreferrer">{$lang->php2shell_official_advisory}</a></p>
+</div>
