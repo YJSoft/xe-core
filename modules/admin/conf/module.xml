@@ -11,6 +11,7 @@
 		<action name="dispAdminCheckServerEnv" type="view" />
 
         <action name="procAdminRemoveIcons" type="controller" />
+        <action name="procAdminConfirmSecurityPatch" type="controller" method="POST" />
 		<action name="procAdminRecompileCacheFile" type="controller" />
         <action name="procAdminLogout" type="controller" method="GET|POST" />
         <action name="procAdminInsertDefaultDesignInfo" type="controller" />

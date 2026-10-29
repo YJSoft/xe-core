@@ -10,6 +10,46 @@
  */
 class adminAdminModel extends admin
 {
+	/** Registry keys are also used in confirmation filenames. Never accept arbitrary paths. */
+	function getSecurityPatchAdvisory($advisory_id)
+	{
+		$advisories = array(
+			'php2shell-2026' => array('revision' => 1, 'cves' => array('CVE-2026-109618', 'CVE-2026-109619')),
+		);
+		return is_string($advisory_id) && isset($advisories[$advisory_id]) ? $advisories[$advisory_id] : false;
+	}
+
+	function getSecurityPatchConfirmationPath($advisory_id)
+	{
+		return $this->getSecurityPatchAdvisory($advisory_id) ? _XE_PATH_ . 'files/env/security_patch_confirmed_' . $advisory_id . '.json' : false;
+	}
+
+	/** A confirmation is an administrator's attestation, not automatic patch detection. */
+	function getSecurityPatchConfirmation($advisory_id)
+	{
+		$advisory = $this->getSecurityPatchAdvisory($advisory_id);
+		$path = $this->getSecurityPatchConfirmationPath($advisory_id);
+		if(!$advisory || !$path) return false;
+		$json = FileHandler::readFile($path);
+		if(!is_string($json) || $json === '') return false;
+		$record = json_decode($json, true);
+		if(!is_array($record) || !isset($record['schema_version'], $record['advisory_id'], $record['revision'], $record['cves'], $record['php_version'], $record['php_sapi'], $record['confirmed_at'], $record['confirmed_by'])) return false;
+		if($record['schema_version'] !== 1 || $record['advisory_id'] !== $advisory_id || $record['revision'] !== $advisory['revision'] || $record['cves'] !== $advisory['cves']) return false;
+		if($record['php_version'] !== PHP_VERSION || $record['php_sapi'] !== PHP_SAPI) return false;
+		if(!is_int($record['confirmed_at']) || $record['confirmed_at'] <= 0 || !is_string($record['confirmed_by']) || !preg_match('/\A[1-9][0-9]*\z/', $record['confirmed_by'])) return false;
+		return $record;
+	}
+
+	function getPhp2ShellStatus()
+	{
+		$status = Security::getPhp2ShellStatus();
+		$status['advisory_id'] = 'php2shell-2026';
+		$advisory = $this->getSecurityPatchAdvisory($status['advisory_id']);
+		$status['advisory_revision'] = $advisory['revision'];
+		$status['patch_confirmed'] = $this->getSecurityPatchConfirmation($status['advisory_id']) !== false;
+		if($status['patch_confirmed']) $status['level'] = '';
+		return $status;
+	}
 
 	/**
 	 * Ftp root path

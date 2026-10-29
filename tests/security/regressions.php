@@ -42,8 +42,11 @@ class FileHandler
 {
     public static function removeFile($path) { return !file_exists($path) || unlink($path); }
     public static function makeDir($path) { return is_dir($path) || mkdir($path, 0777, true); }
+    public static function readFile($path) { return is_file($path) ? file_get_contents($path) : null; }
+    public static function writeFile($path, $contents) { if (empty($GLOBALS['fixture_write_failure'])) file_put_contents($path, $contents, LOCK_EX); }
 }
 function getModel($name) { return $GLOBALS['models'][$name]; }
+function getAdminModel($name) { return $GLOBALS['models'][$name . '_admin']; }
 function getController($name) { return $GLOBALS['models'][$name . '_controller']; }
 function getAdminController($name) { return getController($name); }
 function executeQuery($query, $args = null)
@@ -511,4 +514,80 @@ foreach(array('', '0', 'Off', 'FALSE', 'no', 'None') as $value) {
 $session_settings = function_exists('ini_get_all') && extension_loaded('session') ? ini_get_all('session') : false;
 $progress_settings = isset($session_settings['session.upload_progress.enabled']) ? $session_settings['session.upload_progress.enabled'] : false;
 check(Security::getPhp2ShellStatus() === Security::getPhp2ShellStatus(PHP_VERSION, $progress_settings), 'Default assessment reads this PHP runtime and its session INI settings');
+
+// Confirmation persistence uses isolated fixture files, never the live files/env directory.
+require _XE_PATH_ . 'modules/admin/admin.class.php';
+require _XE_PATH_ . 'modules/admin/admin.admin.model.php';
+require _XE_PATH_ . 'modules/admin/admin.admin.controller.php';
+class FixtureSecurityPatchAdminModel extends adminAdminModel
+{
+    public function getSecurityPatchConfirmationPath($id) {
+        $path = parent::getSecurityPatchConfirmationPath($id);
+        return $path ? $GLOBALS['fixture_dir'] . basename($path) : false;
+    }
+}
+class FixtureSecurityPatchMemberModel
+{
+    public $logged_info;
+    public function getLoggedInfo() { return $this->logged_info; }
+}
+$patch_model = new FixtureSecurityPatchAdminModel();
+$patch_member = new FixtureSecurityPatchMemberModel();
+$GLOBALS['models']['admin_admin'] = $patch_model;
+$GLOBALS['models']['member'] = $patch_member;
+$patch_member->logged_info = (object)array('is_admin' => 'Y', 'member_srl' => 123);
+$patch_path = $patch_model->getSecurityPatchConfirmationPath('php2shell-2026');
+check(basename($patch_path) === 'security_patch_confirmed_php2shell-2026.json', 'Confirmation filename identifies its advisory and supports future CVEs');
+check(!$patch_model->getSecurityPatchConfirmation('php2shell-2026'), 'Missing confirmation must not suppress warnings');
+Context::set('default_url', 'http://example.com/');
+Context::set('request_url', 'http://example.com/');
+Context::set('act', 'procAdminConfirmSecurityPatch');
+Context::set('security_advisory_id', 'php2shell-2026');
+Context::set('security_advisory_revision', '1');
+Context::set('php_version', PHP_VERSION);
+Context::set('patch_confirmed', 'Y');
+$_SERVER = array('REQUEST_METHOD' => 'POST', 'HTTP_HOST' => 'example.com', 'HTTP_ORIGIN' => 'http://example.com');
+$patch_member->logged_info = null;
+$controller = new adminAdminController();
+check(!$controller->procAdminConfirmSecurityPatch()->toBool() && !file_exists($patch_path), 'Guest cannot confirm patches');
+$patch_member->logged_info = (object)array('is_admin' => 'N', 'member_srl' => 123);
+check(!$controller->procAdminConfirmSecurityPatch()->toBool() && !file_exists($patch_path), 'Non-admin cannot confirm patches');
+$patch_member->logged_info->is_admin = 'Y';
+$_SERVER['REQUEST_METHOD'] = 'GET';
+check(!$controller->procAdminConfirmSecurityPatch()->toBool() && !file_exists($patch_path), 'GET cannot save patch confirmation');
+$_SERVER['REQUEST_METHOD'] = 'POST';
+$_SERVER['HTTP_ORIGIN'] = 'http://untrusted.example';
+check(!$controller->procAdminConfirmSecurityPatch()->toBool() && !file_exists($patch_path), 'Untrusted request origin cannot save patch confirmation');
+$_SERVER['HTTP_ORIGIN'] = 'http://example.com';
+foreach(array(array('security_advisory_id', '../unknown'), array('security_advisory_id', array('php2shell-2026')), array('security_advisory_revision', '0'), array('php_version', 'different-runtime'), array('patch_confirmed', 'N')) as $invalid) {
+    $previous = Context::get($invalid[0]);
+    Context::set($invalid[0], $invalid[1]);
+    check(!$controller->procAdminConfirmSecurityPatch()->toBool() && !file_exists($patch_path), 'Reject invalid/stale confirmation field: ' . $invalid[0]);
+    Context::set($invalid[0], $previous);
+}
+check($patch_model->getSecurityPatchConfirmationPath('unknown-cve') === false, 'Unknown advisories cannot select confirmation paths');
+$GLOBALS['fixture_write_failure'] = true;
+check(!$controller->procAdminConfirmSecurityPatch()->toBool() && !file_exists($patch_path), 'Failed file writes must not report success');
+$GLOBALS['fixture_write_failure'] = false;
+$controller->procAdminConfirmSecurityPatch();
+check($controller->getMessage() === 'security_patch_confirmation_saved', 'Authorized confirmation reports success');
+$record = $patch_model->getSecurityPatchConfirmation('php2shell-2026');
+check($record !== false && $record['confirmed_by'] === '123', 'Persist and load the confirming administrator');
+check($record['php_version'] === PHP_VERSION && $record['php_sapi'] === PHP_SAPI, 'Confirmation is bound to the web runtime version and SAPI');
+check($record['cves'] === array('CVE-2026-109618', 'CVE-2026-109619'), 'PHP2Shell confirmation covers both CVEs');
+$confirmed_status = $patch_model->getPhp2ShellStatus();
+check($confirmed_status['patch_confirmed'] && $confirmed_status['level'] === '', 'Saved confirmation suppresses this advisory warning');
+foreach(array('php_version' => 'different-runtime', 'php_sapi' => 'different-sapi', 'revision' => 0, 'advisory_id' => 'other-cve', 'cves' => array('CVE-other'), 'schema_version' => 0, 'confirmed_at' => 0, 'confirmed_by' => '') as $field => $value) {
+    $invalid_record = $record;
+    $invalid_record[$field] = $value;
+    file_put_contents($patch_path, json_encode($invalid_record));
+    check(!$patch_model->getSecurityPatchConfirmation('php2shell-2026'), 'Changed or invalid confirmation is ignored: ' . $field);
+}
+foreach(array('not-json', '1', '{}', '') as $invalid_json) {
+    file_put_contents($patch_path, $invalid_json);
+    check(!$patch_model->getSecurityPatchConfirmation('php2shell-2026'), 'Malformed/incomplete confirmation cannot hide a warning');
+}
+unlink($patch_path);
+$unconfirmed_status = $patch_model->getPhp2ShellStatus();
+check($unconfirmed_status['patch_confirmed'] === false, 'Deleting the record restores automatic assessment');
 echo 'OK: ', $GLOBALS['checks'], ' security checks on PHP ', PHP_VERSION, "\n";

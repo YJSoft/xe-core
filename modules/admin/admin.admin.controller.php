@@ -10,6 +10,50 @@
  */
 class adminAdminController extends admin
 {
+	/** Save a trusted administrator's patch confirmation for one registered advisory. */
+	function procAdminConfirmSecurityPatch()
+	{
+		$oMemberModel = getModel('member');
+		$logged_info = $oMemberModel->getLoggedInfo();
+		if(!is_object($logged_info) || !isset($logged_info->is_admin, $logged_info->member_srl) || $logged_info->is_admin !== 'Y' || !preg_match('/\A[1-9][0-9]*\z/', (string)$logged_info->member_srl))
+		{
+			return new BaseObject(-1, 'msg_is_not_administrator');
+		}
+		if(!Security::checkCSRFRequest() || Context::get('patch_confirmed') !== 'Y')
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
+		$oAdminAdminModel = getAdminModel('admin');
+		$advisory_id = Context::get('security_advisory_id');
+		$advisory = $oAdminAdminModel->getSecurityPatchAdvisory($advisory_id);
+		if(!$advisory || Context::get('php_version') !== PHP_VERSION || Context::get('security_advisory_revision') !== (string)$advisory['revision'])
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+		$record = array(
+			'schema_version' => 1,
+			'advisory_id' => $advisory_id,
+			'revision' => $advisory['revision'],
+			'cves' => $advisory['cves'],
+			'php_version' => PHP_VERSION,
+			'php_sapi' => PHP_SAPI,
+			'confirmed_at' => time(),
+			'confirmed_by' => (string)$logged_info->member_srl,
+		);
+		$json = json_encode($record);
+		if(!is_string($json)) return new BaseObject(-1, 'msg_security_patch_confirmation_failed');
+		$path = $oAdminAdminModel->getSecurityPatchConfirmationPath($advisory_id);
+		if(!$path) return new BaseObject(-1, 'msg_invalid_request');
+		FileHandler::writeFile($path, $json . "\n");
+		// writeFile() has no return value; verify persistence before reporting success.
+		if(FileHandler::readFile($path) !== $json . "\n")
+		{
+			return new BaseObject(-1, 'msg_security_patch_confirmation_failed');
+		}
+		$this->setMessage('security_patch_confirmation_saved', 'info');
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin'));
+	}
 
 	/**
 	 * initialization

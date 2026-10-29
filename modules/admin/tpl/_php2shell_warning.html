@@ -10,4 +10,15 @@
 	<p cond="$php2shell_status['level'] == 'danger'">{$lang->php2shell_configuration_guidance}</p>
 	<p>{$lang->php2shell_verification_limit}</p>
 	<p><a href="https://www.php.net/archive/2026.php#2026-10-21-5" target="_blank" rel="noopener noreferrer">{$lang->php2shell_official_advisory}</a></p>
+	<form action="./" method="post" class="php2shell-confirmation">
+		<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin')}" />
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="procAdminConfirmSecurityPatch" />
+		<input type="hidden" name="security_advisory_id" value="{$php2shell_status['advisory_id']}" />
+		<input type="hidden" name="security_advisory_revision" value="{$php2shell_status['advisory_revision']}" />
+		<input type="hidden" name="php_version" value="{$php2shell_status['php_version']}" />
+		<input type="hidden" name="XE_VALIDATOR_ID" value="modules/admin/tpl/index/1" />
+		<p>{$lang->security_patch_confirm_description}</p>
+		<button type="submit" name="patch_confirmed" value="Y" class="x_btn x_btn-primary">{$lang->security_patch_confirm}</button>
+	</form>
 </div>
