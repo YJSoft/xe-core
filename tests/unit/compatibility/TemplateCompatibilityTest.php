@@ -157,6 +157,7 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 			$status = Security::getPhp2ShellStatus($version, $settings);
 			$status['advisory_id'] = 'php2shell-2026';
 			$status['advisory_revision'] = 1;
+			$status['confirmation_allowed'] = $dismissible;
 			Context::set('php2shell_status', $status, false);
 			$__Context = Context::getAll();
 			ob_start();
@@ -177,10 +178,10 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 			$this->assertSame(!$dismissible, strpos($html, 'php2shell_update_required') !== false);
 			$this->assertTrue(strpos($html, 'php2shell_verification_limit') !== false);
 			$this->assertTrue(strpos($html, $version) !== false);
-			$this->assertTrue(strpos($html, 'name="act" value="procAdminConfirmSecurityPatch"') !== false);
-			$this->assertTrue(strpos($html, 'name="security_advisory_id" value="php2shell-2026"') !== false);
-			$this->assertTrue(strpos($html, 'name="patch_confirmed" value="Y"') !== false);
-			$this->assertTrue(strpos($html, 'security_patch_confirm_description') !== false);
+			$this->assertSame($dismissible, strpos($html, 'name="act" value="procAdminConfirmSecurityPatch"') !== false);
+			$this->assertSame($dismissible, strpos($html, 'name="security_advisory_id" value="php2shell-2026"') !== false);
+			$this->assertSame($dismissible, strpos($html, 'name="patch_confirmed" value="Y"') !== false);
+			$this->assertSame($dismissible, strpos($html, 'security_patch_confirm_description') !== false);
 		}
 	}
 }

@@ -27,7 +27,7 @@ class adminAdminController extends admin
 		$oAdminAdminModel = getAdminModel('admin');
 		$advisory_id = Context::get('security_advisory_id');
 		$advisory = $oAdminAdminModel->getSecurityPatchAdvisory($advisory_id);
-		if(!$advisory || Context::get('php_version') !== PHP_VERSION || Context::get('security_advisory_revision') !== (string)$advisory['revision'])
+		if(!$advisory || !$oAdminAdminModel->canConfirmSecurityPatch($advisory_id) || Context::get('php_version') !== PHP_VERSION || Context::get('security_advisory_revision') !== (string)$advisory['revision'])
 		{
 			return new BaseObject(-1, 'msg_invalid_request');
 		}

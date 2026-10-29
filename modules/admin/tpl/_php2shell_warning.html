@@ -10,7 +10,7 @@
 	<p cond="$php2shell_status['level'] == 'danger'">{$lang->php2shell_configuration_guidance}</p>
 	<p>{$lang->php2shell_verification_limit}</p>
 	<p><a href="https://www.php.net/archive/2026.php#2026-10-21-5" target="_blank" rel="noopener noreferrer">{$lang->php2shell_official_advisory}</a></p>
-	<form action="./" method="post" class="php2shell-confirmation">
+	<form cond="$php2shell_status['confirmation_allowed']" action="./" method="post" class="php2shell-confirmation">
 		<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin')}" />
 		<input type="hidden" name="module" value="admin" />
 		<input type="hidden" name="act" value="procAdminConfirmSecurityPatch" />

@@ -566,6 +566,9 @@ foreach(array(array('security_advisory_id', '../unknown'), array('security_advis
     Context::set($invalid[0], $previous);
 }
 check($patch_model->getSecurityPatchConfirmationPath('unknown-cve') === false, 'Unknown advisories cannot select confirmation paths');
+$confirmation_allowed = PHP_VERSION_ID < 80200;
+check($patch_model->canConfirmSecurityPatch('php2shell-2026') === $confirmation_allowed, 'PHP2Shell confirmations are restricted to PHP <= 8.1');
+if($confirmation_allowed) {
 $GLOBALS['fixture_write_failure'] = true;
 check(!$controller->procAdminConfirmSecurityPatch()->toBool() && !file_exists($patch_path), 'Failed file writes must not report success');
 $GLOBALS['fixture_write_failure'] = false;
@@ -590,4 +593,19 @@ foreach(array('not-json', '1', '{}', '') as $invalid_json) {
 unlink($patch_path);
 $unconfirmed_status = $patch_model->getPhp2ShellStatus();
 check($unconfirmed_status['patch_confirmed'] === false, 'Deleting the record restores automatic assessment');
+} else {
+    $result = $controller->procAdminConfirmSecurityPatch();
+    check(is_object($result) && !$result->toBool() && !file_exists($patch_path), 'PHP >= 8.2 rejects direct confirmation POSTs without writing a file');
+    // Simulate a valid record created by the previous implementation, not a request.
+    $old_record = array('schema_version' => 1, 'advisory_id' => 'php2shell-2026', 'revision' => 1,
+        'cves' => array('CVE-2026-109618', 'CVE-2026-109619'), 'php_version' => PHP_VERSION,
+        'php_sapi' => PHP_SAPI, 'confirmed_at' => time(), 'confirmed_by' => '123');
+    file_put_contents($patch_path, json_encode($old_record));
+    check($patch_model->getSecurityPatchConfirmation('php2shell-2026') === false, 'PHP >= 8.2 ignores pre-existing valid confirmation records');
+    $status = $patch_model->getPhp2ShellStatus();
+    $automatic_status = Security::getPhp2ShellStatus();
+    check(!$status['confirmation_allowed'] && !$status['patch_confirmed'], 'PHP >= 8.2 cannot use stored patch confirmations');
+    check($status['level'] === $automatic_status['level'], 'PHP >= 8.2 warning level is determined only by automatic version assessment');
+    unlink($patch_path);
+}
 echo 'OK: ', $GLOBALS['checks'], ' security checks on PHP ', PHP_VERSION, "\n";

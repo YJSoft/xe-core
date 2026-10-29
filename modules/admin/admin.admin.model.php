@@ -14,9 +14,16 @@ class adminAdminModel extends admin
 	function getSecurityPatchAdvisory($advisory_id)
 	{
 		$advisories = array(
-			'php2shell-2026' => array('revision' => 1, 'cves' => array('CVE-2026-109618', 'CVE-2026-109619')),
+			'php2shell-2026' => array('revision' => 1, 'cves' => array('CVE-2026-109618', 'CVE-2026-109619'), 'max_confirmation_php_version_id' => 80199),
 		);
 		return is_string($advisory_id) && isset($advisories[$advisory_id]) ? $advisories[$advisory_id] : false;
+	}
+
+	/** Officially updated PHP branches must never suppress warnings by attestation. */
+	function canConfirmSecurityPatch($advisory_id)
+	{
+		$advisory = $this->getSecurityPatchAdvisory($advisory_id);
+		return $advisory && isset($advisory['max_confirmation_php_version_id']) && PHP_VERSION_ID <= $advisory['max_confirmation_php_version_id'];
 	}
 
 	function getSecurityPatchConfirmationPath($advisory_id)
@@ -27,6 +34,7 @@ class adminAdminModel extends admin
 	/** A confirmation is an administrator's attestation, not automatic patch detection. */
 	function getSecurityPatchConfirmation($advisory_id)
 	{
+		if(!$this->canConfirmSecurityPatch($advisory_id)) return false;
 		$advisory = $this->getSecurityPatchAdvisory($advisory_id);
 		$path = $this->getSecurityPatchConfirmationPath($advisory_id);
 		if(!$advisory || !$path) return false;
@@ -46,6 +54,7 @@ class adminAdminModel extends admin
 		$status['advisory_id'] = 'php2shell-2026';
 		$advisory = $this->getSecurityPatchAdvisory($status['advisory_id']);
 		$status['advisory_revision'] = $advisory['revision'];
+		$status['confirmation_allowed'] = $this->canConfirmSecurityPatch($status['advisory_id']);
 		$status['patch_confirmed'] = $this->getSecurityPatchConfirmation($status['advisory_id']) !== false;
 		if($status['patch_confirmed']) $status['level'] = '';
 		return $status;
