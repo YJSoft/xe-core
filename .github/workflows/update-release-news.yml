@@ -1,0 +1,128 @@
+name: Update release news
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      valid: ${{ steps.tag.outputs.valid }}
+    steps:
+      - name: Validate release tag
+        id: tag
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+          tag = event['release']['tag_name']
+          valid = re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', tag) is not None
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'valid={str(valid).lower()}\n')
+          if not valid:
+              print(f'Skipping non-version release tag: {tag!r}')
+          PY
+
+  update:
+    needs: validate
+    if: needs.validate.outputs.valid == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pages: write
+    concurrency:
+      group: update-release-news
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout release news branch
+        uses: actions/checkout@v6
+        with:
+          ref: release-news
+
+      - name: Update release.xml
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          import xml.etree.ElementTree as ET
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+          release = event['release']
+          version = release['tag_name']
+          if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', version):
+              print('Skipping non-version release tag.')
+              raise SystemExit(0)
+
+          path = Path('release.xml')
+          parser = ET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
+          tree = ET.parse(path, parser=parser)
+          root = tree.getroot()
+          if root.tag != 'zbxe_news':
+              raise SystemExit('Unexpected release.xml root element.')
+
+          # A rerun of an older release must not downgrade the latest version.
+          current = root.get('released_version', '')
+          if re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', current):
+              if tuple(map(int, version.split('.'))) < tuple(map(int, current.split('.'))):
+                  print(f'Skipping older release {version}; latest is {current}.')
+                  raise SystemExit(0)
+
+          # Use publication time so reruns keep the same date (Korea Standard Time).
+          published_at = datetime.fromisoformat(release['published_at'].replace('Z', '+00:00'))
+          date = published_at.astimezone(ZoneInfo('Asia/Seoul')).strftime('%Y%m%d%H%M%S')
+          url = release['html_url']
+          title = f'XE Core ver. {version}'
+
+          # Replace an existing entry for the same version instead of duplicating it.
+          for item in root.findall('item'):
+              if item.get('url') == url or item.text == title:
+                  root.remove(item)
+
+          item = ET.Element('item', {'url': url, 'date': date})
+          item.text = title
+          item.tail = root.text or '\n    '
+          root.insert(0, item)
+          root.set('released_version', version)
+          tree.write(path, encoding='utf-8', xml_declaration=True)
+          with path.open('ab') as output:
+              output.write(b'\n')
+          PY
+
+      - name: Commit and push release news
+        shell: bash
+        run: |
+          if git diff --quiet -- release.xml; then
+            echo 'Release news is already up to date.'
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add release.xml
+          git commit -m 'Update release news'
+          git push origin HEAD:release-news
+
+      # Pages must use "Deploy from a branch": release-news / (root).
+      # GITHUB_TOKEN pushes do not trigger Pages builds automatically.
+      - name: Request GitHub Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
