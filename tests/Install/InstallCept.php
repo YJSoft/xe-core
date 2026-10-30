@@ -2,6 +2,7 @@
 use \Codeception\Configuration;
 
 $I = new InstallTester($scenario);
+$db_choice = getenv('XE_TEST_DB_CHOICE') === 'pdo_mysql' ? 'pdo_mysql' : 'mysql';
 
 $config = (!$this->env) ? Configuration::suiteSettings('Install', Configuration::config()) : Configuration::suiteEnvironments('Install')[$this->env];
 
@@ -64,16 +65,17 @@ $I->seeElement('input[name="db_type"][value="mysql"]');
 $I->dontSeeElement('input[name="db_type"][value="mysqli"]');
 $I->dontSeeElement('input[name="db_type"][value="mysql_innodb"]');
 $I->dontSeeElement('input[name="db_type"][value="mysqli_innodb"]');
-$I->dontSeeElement('input[name="db_type"][value="pdo_mysql"]');
+$I->seeElement('input[name="db_type"][value="pdo_mysql"]');
+$I->see('MySQL PDO (beta)', '#content');
 $I->dontSeeElement('input[name="db_type"][value="pdo_mysql_innodb"]');
-$I->submitForm('#content form', ['db_type' => 'mysql', 'act' => 'dispInstallDBForm']);
+$I->submitForm('#content form', ['db_type' => $db_choice, 'act' => 'dispInstallDBForm']);
 
 // Step 6 : db info
 // $I->seeInCurrentUrl('act=dispInstallDBForm');
 $I->seeElement('//div[@id="progress"]/ul/li[6][@class="active"]');
 $I->submitForm('#content form', [
     'act' => 'procMysqlDBSetting',
-    'db_type' => 'mysql',
+    'db_type' => $db_choice,
     'db_userid' => $dbinfo['user'],
     'db_password' => $dbinfo['password'],
     'db_database' => $dbinfo['dbname'],
@@ -96,7 +98,7 @@ $I->seeElement('//div[@id="progress"]/ul/li[8][@class="active"]');
 $I->fillField('#aMail', 'admin@admin.net');
 $I->submitForm('#content form', [
     'act' => 'procInstall',
-    'db_type' => 'mysql',
+    'db_type' => $db_choice,
     'email_address' => 'admin@admin.net',
     'password' => 'admin1@3',
     'password2' => 'admin1@3',
@@ -107,7 +109,7 @@ $I->submitForm('#content form', [
 // Step 9
 $I->dontSeeElement('//div[@id="progress"]/ul/li');
 $I->openFile(_XE_PATH_ . 'files/config/db.config.php');
-$I->seeInThisFile("'db_type' => 'pdo_mysql_innodb'");
+$I->seeInThisFile("'db_type' => '" . ($db_choice === 'pdo_mysql' ? 'pdo_mysql_innodb' : 'mysqli_innodb') . "'");
 $I->seeInDatabase('information_schema.TABLES', ['TABLE_SCHEMA' => $dbinfo['dbname'], 'TABLE_NAME' => 'xe_documents', 'ENGINE' => 'InnoDB']);
 $I->amOnPage('/index.php?act=dispMemberLoginForm');
 

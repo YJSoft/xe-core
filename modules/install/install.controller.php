@@ -214,7 +214,7 @@ class installController extends install
 		}
 	}
 
-	/** Select PDO MySQL, mysqli or mysql for new installations, then an engine. */
+	/** The ordinary MySQL choice prefers mysqli; PDO beta is explicitly selected. */
 	function _connectInstallDatabase($db_info)
 	{
 		if(Context::isInstalled()) return new BaseObject(-1, 'msg_already_installed');
@@ -222,7 +222,7 @@ class installController extends install
 		$is_mysql = DB::isMysql($db_type);
 		if($is_mysql)
 		{
-			$db_type = getModel('install')->getMysqlConnectionDriver();
+			$db_type = getModel('install')->getMysqlConnectionDriver($db_type);
 			if(!$db_type) return new BaseObject(-1, 'msg_dbconnect_failed');
 			$db_info->master_db['db_type'] = $db_type;
 			foreach($db_info->slave_db as $key => $slave) $db_info->slave_db[$key]['db_type'] = $db_type;

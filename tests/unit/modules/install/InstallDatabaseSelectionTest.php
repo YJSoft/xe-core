@@ -3,7 +3,7 @@ require_once _XE_PATH_ . 'tests/_support/CompatibilityTestCase.php';
 
 class InstallDatabaseSelectionTest extends CompatibilityTestCase
 {
-	public function testInstallerRendersOneMysqlChoiceAndSelectsItByDefault()
+	public function testInstallerDefaultsToMysqlAndOffersPdoSeparatelyAsBeta()
 	{
 		Context::loadLang('modules/install/lang');
 		$view = new installView();
@@ -24,6 +24,8 @@ class InstallDatabaseSelectionTest extends CompatibilityTestCase
 		preg_match_all('/name="db_type" type="radio" value="(mysql[^\"]*)"/', $html, $matches);
 		$this->assertSame(array('mysql'), $matches[1]);
 		$this->assertTrue(strpos($html, 'id="db_type_mysql" checked="checked"') !== false);
+		$this->assertTrue(strpos($html, 'MySQL PDO (beta)') !== false);
+		$this->assertFalse(strpos($html, 'id="db_type_pdo_mysql" checked="checked"') !== false);
 	}
 
 	public function testLegacyDriverNamesReturnToTheUnifiedMysqlForm()
@@ -35,6 +37,19 @@ class InstallDatabaseSelectionTest extends CompatibilityTestCase
 		$view->dispInstallDBForm();
 		$this->assertSame('form.mysql.html', $view->getTemplateFile());
 		$this->assertSame('mysql', Context::get('db_type'));
+	}
+
+	public function testPdoEngineVariantReturnsToTheExplicitBetaForm()
+	{
+		Context::loadLang('modules/install/lang');
+		Context::set('db_type', 'pdo_mysql_innodb');
+		$_SERVER['HTTPS'] = 'off';
+		$view = new installView();
+		$view->install_enable = true;
+		$view->dispInstallDBForm();
+		$this->assertSame('form.mysql.html', $view->getTemplateFile());
+		$this->assertSame('pdo_mysql', Context::get('db_type'));
+		$this->assertTrue(strpos(Context::get('title'), 'MySQL PDO (beta)') !== false);
 	}
 
 	public static function engineAvailability()

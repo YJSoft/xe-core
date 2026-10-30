@@ -23,7 +23,7 @@ foreach($dsn as $piece) {
 }
 
 $install_config = array(
-    'db_type' => $dbinfo['type'],
+    'db_type' => 'pdo_mysql',
     'db_port' => $dbinfo['port'],
     'db_hostname' => $dbinfo['host'],
     'db_userid' => $dbinfo['user'],

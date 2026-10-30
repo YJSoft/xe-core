@@ -23,12 +23,12 @@ class DB
 	 * @var array
 	 */
 	var $priority_dbms = array(
-		'pdo_mysql_innodb' => 8,
-		'pdo_mysql' => 7,
-		'mysqli' => 6,
-		'mysqli_innodb' => 5,
-		'mysql' => 4,
-		'mysql_innodb' => 3,
+		'mysqli' => 8,
+		'mysqli_innodb' => 7,
+		'mysql' => 6,
+		'mysql_innodb' => 5,
+		'pdo_mysql_innodb' => 4,
+		'pdo_mysql' => 3,
 		'cubrid' => 2,
 		'mssql' => 1
 	);

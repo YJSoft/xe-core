@@ -15,16 +15,18 @@ class DBPdo_mysql_innodb extends DBPdo_mysql
 
 	function _begin($transactionLevel = 0)
 	{
-		return $this->_query($transactionLevel ? 'SAVEPOINT SP' . $transactionLevel : 'START TRANSACTION') !== false;
+		return $transactionLevel ? $this->pdoTransaction('SAVEPOINT SP' . $transactionLevel)
+			: $this->pdoTransaction('START TRANSACTION', 'beginTransaction');
 	}
 
 	function _rollback($transactionLevel = 0)
 	{
-		return $this->_query($transactionLevel > 1 ? 'ROLLBACK TO SAVEPOINT SP' . ($transactionLevel - 1) : 'ROLLBACK') !== false;
+		return $transactionLevel > 1 ? $this->pdoTransaction('ROLLBACK TO SAVEPOINT SP' . ($transactionLevel - 1))
+			: $this->pdoTransaction('ROLLBACK', 'rollBack');
 	}
 
 	function _commit()
 	{
-		return $this->_query('COMMIT') !== false;
+		return $this->pdoTransaction('COMMIT', 'commit');
 	}
 }

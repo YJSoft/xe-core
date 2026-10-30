@@ -71,6 +71,25 @@ class DBPdo_mysql extends DBMysql
 			isset($info[2]) ? $info[2] : $exception->getMessage());
 	}
 
+	/** Transaction commands must bypass native statement preparation on older clients. */
+	protected function pdoTransaction($sql, $method = null)
+	{
+		$connection = $this->_getConnection('master');
+		$this->actStart($sql);
+		$success = false;
+		try
+		{
+			if($method && ($method === 'beginTransaction' || $connection->inTransaction()))
+			{
+				$success = $connection->$method();
+			}
+			else $success = $connection->exec($sql) !== false;
+		}
+		catch(PDOException $e) { $this->setPdoError($e); }
+		$this->actFinish();
+		return $success;
+	}
+
 	function addQuotes($string)
 	{
 		if(version_compare(PHP_VERSION, '5.4.0', '<') && get_magic_quotes_gpc())

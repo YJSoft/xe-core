@@ -22,6 +22,7 @@ $assert = function($condition, $message) use (&$checks) {
 	if(!$condition) throw new Exception($message);
 	$checks++;
 };
+PdoMysqlContract::installation($settings, sys_get_temp_dir() . '/xe_pdo_' . uniqid() . '.php', $assert);
 foreach(array('DBPdo_mysql', 'DBPdo_mysql_innodb') as $driver)
 {
 	foreach(array(false, true) as $prepared) PdoMysqlContract::run($settings, $driver, $prepared, $assert);

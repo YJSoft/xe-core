@@ -4,26 +4,36 @@ class installModel extends install
 {
 	var $pwd;
 
-	function getMysqlConnectionDriver()
+	function getMysqlConnectionDriver($db_type = 'mysql')
 	{
-		if(DBPdo_mysql::isSupported()) return 'pdo_mysql';
+		if(in_array($db_type, array('pdo_mysql', 'pdo_mysql_innodb'), true))
+		{
+			return DBPdo_mysql::isSupported() ? 'pdo_mysql' : false;
+		}
 		if(function_exists('mysqli_connect')) return 'mysqli';
 		if(function_exists('mysql_connect')) return 'mysql';
 		return false;
 	}
 
-	/** Return installer choices, combining all MySQL drivers into one entry. */
+	/** Keep the established MySQL choice and a separate, opt-in PDO beta. */
 	function getInstallDBList($enabled = true)
 	{
 		$mysql = new stdClass();
 		$mysql->db_type = 'mysql';
+		$mysql->name = 'mysql';
 		$mysql->enable = $this->getMysqlConnectionDriver() !== false;
-		$list = array($mysql);
+		$pdo = new stdClass();
+		$pdo->db_type = 'pdo_mysql';
+		$pdo->name = 'MySQL PDO (beta)';
+		$pdo->enable = $this->getMysqlConnectionDriver('pdo_mysql') !== false;
+		$list = array($mysql, $pdo);
 		foreach(DB::getSupportedList() as $db)
 		{
 			if(!DB::isMysql($db->db_type))
 			{
-				$list[] = $db;
+				$choice = clone $db;
+				$choice->name = $choice->db_type;
+				$list[] = $choice;
 			}
 		}
 

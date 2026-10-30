@@ -2,6 +2,46 @@
 /** Shared real-database checks, executable without Codeception on PHP 5.3. */
 class PdoMysqlContract
 {
+	public static function installation($settings, $config_file, $check)
+	{
+		$controller = new installController();
+		$controller->db_tmp_config_file = $config_file;
+		Context::getInstance()->request_method = 'JSON';
+		$settings['db_type'] = 'pdo_mysql';
+		foreach($settings as $key => $value) Context::set($key, $value);
+		if(Context::isInstalled())
+		{
+			$saved = FileHandler::readFile(Context::getConfigFile());
+			$output = $controller->_procDBSetting();
+			$check($output instanceof BaseObject && !$output->toBool(), 'Installed sites reject a new installation connection');
+			$check($saved === FileHandler::readFile(Context::getConfigFile()), 'Installed configuration remains unchanged');
+			return;
+		}
+		try
+		{
+			foreach(array('first_', 'second_') as $prefix)
+			{
+				Context::set('db_table_prefix', $prefix);
+				$check($controller->_procDBSetting() === null, 'New installation connects with fresh settings');
+				$db = DB::getInstance();
+				$check($db instanceof DBPdo_mysql_innodb && $db->prefix === $prefix, 'Explicit PDO beta selects InnoDB');
+				include $config_file;
+				$check($db_info->master_db['db_type'] === 'pdo_mysql_innodb' && $db_info->slave_db[0]['db_type'] === 'pdo_mysql_innodb', 'Selected driver is saved for master and slave');
+			}
+			$saved = FileHandler::readFile($config_file);
+			Context::set('db_database', 'pdo_missing_' . str_replace('.', '_', uniqid('', true)));
+			$output = $controller->_procDBSetting();
+			$check($output instanceof BaseObject && !$output->toBool(), 'A failed retry does not reuse an old connection');
+			$check($saved === FileHandler::readFile($config_file), 'Failed retries do not overwrite saved settings');
+		}
+		catch(Exception $e)
+		{
+			FileHandler::removeFile($config_file);
+			throw $e;
+		}
+		FileHandler::removeFile($config_file);
+	}
+
 	private static function argument($value, $type = 'varchar')
 	{
 		$argument = new Argument('value', $value);
@@ -96,7 +136,7 @@ class PdoMysqlContract
 			$db->rollback();
 			$db->commit();
 			$row = $db->_fetch(self::sql($db, 'SELECT count(*) AS count FROM `' . $table . '`', $check));
-			$check((int)$row->count === ($type === 'pdo_mysql_innodb' ? 1 : 2), 'Nested rollback respects the table engine');
+			$check((int)$row->count === ($type === 'pdo_mysql_innodb' ? 1 : 2), 'Nested rollback respects the table engine; actual rows=' . $row->count);
 			$check(!$db->transaction_started, 'Transaction nesting returns to zero');
 			$db->begin();
 			self::sql($db, "INSERT INTO `" . $table . "` (body) VALUES ('rollback')", $check);

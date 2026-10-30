@@ -34,8 +34,9 @@ a disposable checkout and test databases, as CI does.
 
 ## PDO MySQL regression coverage
 
-New installations prefer PDO MySQL, then mysqli, then legacy mysql. Existing
-saved drivers are retained. PDO requires PHP >= 5.3.6 for the DSN charset option;
+The default `mysql` installation choice prefers mysqli, then legacy mysql.
+`MySQL PDO (beta)` is a separate, opt-in choice pending third-party compatibility
+verification. Existing saved drivers are retained. PDO requires PHP >= 5.3.6 for the DSN charset option;
 the application minimum remains PHP 5.3.0.
 
 `tests/_support/PdoMysqlContract.php` checks both PDO engine drivers, prepared
@@ -48,8 +49,11 @@ Set `XE_TEST_DB_HOST`, `XE_TEST_DB_PORT`, `XE_TEST_DB_NAME`, `XE_TEST_DB_USER` a
 `XE_TEST_DB_PASSWORD` for local credentials; defaults match CI's test database.
 The checks create only connection-local temporary tables.
 
-Installation tests check the unified MySQL choice, saved `pdo_mysql_innodb`
-driver, physical InnoDB table creation and login. They explicitly clear the
+Installation tests check the default MySQL choice and separate PDO beta choice,
+saved drivers, physical InnoDB table creation and login. Manual installation
+uses mysqli by default; set `XE_TEST_DB_CHOICE=pdo_mysql` to test manual PDO
+installation in a PDO-only environment. Automatic installation explicitly
+requests PDO. They explicitly clear the
 configured test database before each installation; use a disposable checkout.
 
 ## PHP and Codeception versions

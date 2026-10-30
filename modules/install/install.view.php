@@ -125,7 +125,12 @@ class installView extends install
 			$enableList = $oInstallModel->getInstallDBList();
 			Context::set('enableDBList', $enableList);
 			Context::set('disableDBList', $oInstallModel->getInstallDBList(false));
-			Context::set('defaultDatabase', count($enableList) ? $enableList[0]->db_type : '');
+			$defaultDatabase = '';
+			foreach($enableList as $db)
+			{
+				if($db->db_type !== 'pdo_mysql') { $defaultDatabase = $db->db_type; break; }
+			}
+			Context::set('defaultDatabase', $defaultDatabase);
 
 			Context::set('progressMenu', '4');
 			$this->setTemplateFile('select_db');
@@ -142,16 +147,16 @@ class installView extends install
 		// Return to the start-up screen if db_type is not specified
 		if(!Context::get('db_type')) return $this->dispInstallSelectDB();
 
-		// The installer exposes one MySQL choice; stored driver names remain unchanged.
+		// Normalize engine variants to the ordinary MySQL or explicit PDO beta form.
 		if(DB::isMysql(Context::get('db_type')))
 		{
-			Context::set('db_type', 'mysql');
+			Context::set('db_type', in_array(Context::get('db_type'), array('pdo_mysql', 'pdo_mysql_innodb'), true) ? 'pdo_mysql' : 'mysql');
 		}
 
 		// Output the file, disp_db_info_form.html
-		$tpl_filename = sprintf('form.%s', Context::get('db_type'));
+		$tpl_filename = sprintf('form.%s', Context::get('db_type') === 'pdo_mysql' ? 'mysql' : Context::get('db_type'));
 
-		$title = sprintf(Context::getLang('input_dbinfo_by_dbtype'), Context::get('db_type'));
+		$title = sprintf(Context::getLang('input_dbinfo_by_dbtype'), Context::get('db_type') === 'pdo_mysql' ? 'MySQL PDO (beta)' : Context::get('db_type'));
 		Context::set('title', $title);
 
 		$error_return_url = getNotEncodedUrl('', 'act', Context::get('act'), 'db_type', Context::get('db_type'));

@@ -1,5 +1,6 @@
 <?php
 require_once _XE_PATH_ . 'tests/_support/CompatibilityTestCase.php';
+require_once _XE_PATH_ . 'tests/_support/PdoMysqlContract.php';
 
 /** @group compatibility */
 class MysqliCompatibilityTest extends CompatibilityTestCase
@@ -7,13 +8,11 @@ class MysqliCompatibilityTest extends CompatibilityTestCase
 	private $connections;
 	private $reportMode;
 	private $dbSettings;
-	private $installDatabases;
 
 	protected function _before()
 	{
 		parent::_before();
 		$this->connections = array();
-		$this->installDatabases = array();
 		$driver = new mysqli_driver();
 		$this->reportMode = $driver->report_mode;
 		$config = $this->getModule('Db')->_getConfig();
@@ -25,7 +24,6 @@ class MysqliCompatibilityTest extends CompatibilityTestCase
 
 	protected function _after()
 	{
-		foreach($this->installDatabases as $db) $db->close();
 		foreach($this->connections as $connection) mysqli_close($connection);
 		mysqli_report($this->reportMode);
 		parent::_after();
@@ -52,32 +50,10 @@ class MysqliCompatibilityTest extends CompatibilityTestCase
 		return array(array('DBMysqli'), array('DBMysqli_innodb'));
 	}
 
-	public function testInstallerPrefersPdoAndSavesInnodbUsingFreshConnectionSettings()
+	public function testInstallationPolicySelectsPdoAndProtectsExistingConfiguration()
 	{
-		$controller = new installController();
-		$controller->db_tmp_config_file = $this->fixtureDir . 'tmpDB.config.php';
-		Context::getInstance()->request_method = 'JSON';
-		foreach(array('first_', 'second_') as $prefix)
-		{
-			$settings = $this->dbSettings;
-			$settings['db_type'] = 'mysql';
-			$settings['db_table_prefix'] = $prefix;
-			foreach($settings as $key => $value) Context::set($key, $value);
-			$this->assertNull($controller->_procDBSetting());
-			$db = DB::getInstance();
-			$this->installDatabases[] = $db;
-			$this->assertInstanceOf('DBPdo_mysql_innodb', $db);
-			$this->assertSame($prefix, $db->prefix);
-			include $controller->db_tmp_config_file;
-			$this->assertSame('pdo_mysql_innodb', $db_info->master_db['db_type']);
-			$this->assertSame('pdo_mysql_innodb', $db_info->slave_db[0]['db_type']);
-		}
-		// A failed retry must not reuse the preceding successful connection or config.
-		$saved = FileHandler::readFile($controller->db_tmp_config_file);
-		Context::set('db_database', $this->fixtureName . '_missing');
-		$output = $controller->_procDBSetting();
-		$this->assertFalse($output->toBool());
-		$this->assertSame($saved, FileHandler::readFile($controller->db_tmp_config_file));
+		$self = $this;
+		PdoMysqlContract::installation($this->dbSettings, $this->fixtureDir . 'tmpDB.config.php', function($condition, $message) use ($self) { $self->assertTrue($condition, $message); });
 	}
 
 	public function testExistingMyisamConfigurationIsNotChangedByInstallerChoices()
