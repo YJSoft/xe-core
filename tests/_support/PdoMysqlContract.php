@@ -74,7 +74,7 @@ class PdoMysqlContract
 			$check((int)$row->count === 1, 'Only the requested row was deleted');
 			$row = $db->_fetch(self::sql($db, 'SELECT NULL AS duplicate, 2 AS duplicate, 3 AS duplicate', $check));
 			$check($row->duplicate === null && (string)$row->repeat_duplicate === '2' && (string)$row->repeat_repeat_duplicate === '3', 'Duplicate names retain every column');
-			$check($db->_fetch(self::sql($db, 'SELECT 1 WHERE 0', $check)) === array(), 'Empty result is an array');
+			$check($db->_fetch(self::sql($db, 'SELECT 1 FROM DUAL WHERE 0', $check)) === array(), 'Empty result is an array');
 
 			// Projection parameters precede derived-table parameters; COUNT omits projection values.
 			$derived = new Subquery('d', array(new PdoContractProjection(21, 'value')), array(new Table('(SELECT 1) seed')), array(), array(), array(), null);

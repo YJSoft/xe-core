@@ -129,7 +129,7 @@ class MysqliCompatibilityTest extends CompatibilityTestCase
 	public function testPreparedResultHandlesEmptyAndIndexedResults($class)
 	{
 		$db = $this->connect($class);
-		$this->assertSame(array(), $db->_fetch($db->_query('SELECT 1 AS id WHERE 1 = 0')));
+		$this->assertSame(array(), $db->_fetch($db->_query('SELECT 1 AS id FROM DUAL WHERE 1 = 0')));
 		$rows = $db->_fetch($db->_query('SELECT 1 AS id UNION ALL SELECT 2'), 10);
 		$this->assertSame(array(10, 9), array_keys($rows));
 		$this->assertSame('1', (string)$rows[10]->id);
