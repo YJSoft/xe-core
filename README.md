@@ -25,13 +25,26 @@ XE 코어는 모듈, 애드온, 에디터 컴포넌트, 위젯, 레이아웃의 
 보안 패치나 PHP 상위 버전에서 발생하는 오동작을 수정하는 것 이외 코드 공헌은 받지 않습니다.
 
 ## Server Requirements
-* PHP version greater than 5.3.0 (But recommend PHP >= 7.4.0)
-* MYSQL version 4.1 or greater (But recommend MYSQL >= 5.x)
-* XML Library
-* GD Library
-* Fileinfo Extension
-* ICONV
-* session.auto_start = Off (php.ini)
+
+| 항목 | 요구 사항 |
+| --- | --- |
+| PHP | **5.3.0 이상** (7.4.0 이상 권장). 호환성 검증을 계속 진행하고 있으며, 버전별 검증 범위는 [CI 설정](.github/workflows/ci.yml)과 [호환성 테스트 문서](tests/PHP_COMPATIBILITY.md)를 참고하세요. |
+| MySQL | **4.1 이상**. |
+| DB 연결 확장 | PHP `mysqli` 확장(`mysqli` / `mysqli_innodb` 드라이버) 또는 레거시 `mysql` 확장(`mysql` / `mysql_innodb` 드라이버)이 필요합니다. `mysql` 확장은 [PHP 7.0에서 제거](https://www.php.net/manual/en/book.mysql.php)되었으므로 PHP 7 이상에서는 `mysqli`를 사용해야 합니다. PDO MySQL만 설치해서는 XE의 MySQL 드라이버를 사용할 수 없습니다. |
+| XML | PHP `xml` 확장(`xml_parser_create()`). 코어의 XML 설정 및 쿼리 파싱에 필요합니다. |
+| DOM | PHP `dom` 확장(`DOMDocument`). 일반 사용자의 SVG 업로드 정화 처리에 필요합니다. |
+| GD | GIF/JPEG/PNG를 지원하는 PHP `gd` 확장. 이미지 및 썸네일 처리에 필요하며, 설치 검사는 `imagecreatefromgif()` 유무를 확인합니다. |
+| Fileinfo | PHP `fileinfo` 확장. 업로드 파일의 MIME 형식 검사에 필요합니다. |
+| 문자 인코딩 | PHP `iconv` 확장. 문자셋 변환에 필요합니다. 우체국 우편번호 API 검색을 사용한다면 `mbstring` 확장도 필요합니다. |
+| 기본 PHP 기능 | `session`, `hash`, `json` 기능을 사용할 수 있어야 합니다. |
+| PHP 설정 | `session.auto_start = Off` (`php.ini`). |
+| 파일 권한 | PHP 실행 사용자가 `files/`와 그 하위 디렉터리에 쓸 수 있어야 합니다. 설치 시 `files/`가 없다면 생성할 수 있도록 설치 경로에 쓰기 권한이 필요합니다. |
+
+<!-- 현재 MySQL 테스트는 MySQL 5.7에서만 수행합니다. -->
+
+MySQL 테이블 생성에는 선택한 드라이버에 맞는 MyISAM 또는 InnoDB와 `utf8` / `utf8_general_ci` 지원이 필요합니다.
+
+MySQL 8.x와 구형 PHP를 함께 사용할 때는 [PHP MySQL 클라이언트의 인증 방식 호환성](https://www.php.net/manual/en/mysqli.requirements.php)을 확인해야 합니다. 또한 기존 회원의 `mysql_old_password` 해시 검증에 사용하는 `OLD_PASSWORD()` 함수는 [MySQL 5.7에서 제거](https://dev.mysql.com/blog-archive/removal-and-deprecation-in-mysql-5-7/)되어, 해당 방식의 비밀번호를 사용하는 회원은 별도의 전환이 필요합니다.
 
 ## Contributors
 https://github.com/YJSoft/xe-core/graphs/contributors
