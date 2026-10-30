@@ -4,10 +4,20 @@ require_once _XE_PATH_ . 'tests/_support/CompatibilityTestCase.php';
 /** @group compatibility */
 class TemplateCompatibilityTest extends CompatibilityTestCase
 {
-	private function render($source)
+	private function render($source, $autoescape = false)
 	{
 		$file = $this->fixture('template.html', $source);
 		$template = new TemplateHandler();
+		if($autoescape)
+		{
+			// Config directives must execute in TemplateHandler's scope, as in a real request.
+			FileHandler::writeFile($file, '<config autoescape="on" />' . $source);
+			$html = $template->compile(dirname($file), basename($file));
+			$property = new ReflectionProperty('TemplateHandler', 'compiled_file');
+			$property->setAccessible(true);
+			$this->trackGeneratedFile($property->getValue($template));
+			return $html;
+		}
 		$compiled = $template->compileDirect(dirname($file), basename($file));
 		$this->assertTrue(is_string($compiled) && $compiled !== '', 'The template must compile before its output can be checked');
 		$__Context = Context::getAll();
@@ -102,6 +112,43 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 			$this->render($match[0]);
 			$this->assertSame($groups ? array(100 => 7) : array(), Context::get('point_group'));
 		}
+	}
+
+	public function testCkeditorComponentSettingsRenderAsValidJsonWithAutoescape()
+	{
+		$source = file_get_contents(_XE_PATH_ . 'modules/editor/skins/ckeditor/editor.html');
+		$this->assertSame(1, preg_match('/<!--@if\(\$enable_component\)-->(.*?)<!--@endif-->/s', $source, $match));
+		$components = array(
+			'emoticon' => (object)array('title' => '이모티콘 출력'),
+			'image_link' => (object)array('title' => "Image \"link\" & 'quote' </script><script>alert(1)</script>"),
+		);
+		Context::set('enable_component', true, false);
+		Context::set('component_list', $components, false);
+		$html = $this->render('<script>' . $match[1] . '</script>', true);
+		$this->assertSame(1, preg_match('/xe_component_arrays\s*=\s*(.*);/', $html, $json));
+		$this->assertSame(array('emoticon' => $components['emoticon']->title, 'image_link' => escape($components['image_link']->title, false)), json_decode($json[1], true));
+		$this->assertSame(1, substr_count($html, '</script>'));
+	}
+
+	public static function boardSharingSkins()
+	{
+		return array(array('default'), array('xedition'));
+	}
+
+	/** @dataProvider boardSharingSkins */
+	public function testBoardSharingTitleRendersAsValidJsonWithAutoescape($skin)
+	{
+		$source = file_get_contents(_XE_PATH_ . 'modules/board/skins/' . $skin . '/_read.html');
+		$this->assertSame(1, preg_match('/var sTitle = .*;/', $source, $match));
+		$title = "한글 \"title\" & 'quote' </script><script>alert(1)</script>";
+		$document = new documentItem();
+		$document->document_srl = 1;
+		$document->add('title', $title);
+		Context::set('oDocument', $document, false);
+		$html = $this->render('<script>' . $match[0] . '</script>', true);
+		$this->assertSame(1, preg_match('/var sTitle = (.*);/', $html, $json));
+		$this->assertSame($document->getTitleText(), json_decode($json[1], true));
+		$this->assertSame(1, substr_count($html, '</script>'));
 	}
 
 	public function testLayoutExtraVariableSectionAcceptsNullAndObjectSettings()
