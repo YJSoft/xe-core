@@ -61,7 +61,7 @@
 			<!--@foreach($component_list as $component_name => $component)-->
 				{@ $xe_component[$component_name] = escape($component->title, false)}
 			<!--@endforeach-->
-			settings.ckeconfig.xe_component_arrays = {json_encode($xe_component)};
+			settings.ckeconfig.xe_component_arrays = {$xe_component|json};
 		<!--@endif-->
 
 		<!--@if(!$enable_default_component)-->
