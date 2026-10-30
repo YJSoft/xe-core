@@ -52,7 +52,7 @@ class MysqliCompatibilityTest extends CompatibilityTestCase
 		return array(array('DBMysqli'), array('DBMysqli_innodb'));
 	}
 
-	public function testInstallerPrefersMysqliAndSavesInnodbUsingFreshConnectionSettings()
+	public function testInstallerPrefersPdoAndSavesInnodbUsingFreshConnectionSettings()
 	{
 		$controller = new installController();
 		$controller->db_tmp_config_file = $this->fixtureDir . 'tmpDB.config.php';
@@ -66,11 +66,11 @@ class MysqliCompatibilityTest extends CompatibilityTestCase
 			$this->assertNull($controller->_procDBSetting());
 			$db = DB::getInstance();
 			$this->installDatabases[] = $db;
-			$this->assertInstanceOf('DBMysqli_innodb', $db);
+			$this->assertInstanceOf('DBPdo_mysql_innodb', $db);
 			$this->assertSame($prefix, $db->prefix);
 			include $controller->db_tmp_config_file;
-			$this->assertSame('mysqli_innodb', $db_info->master_db['db_type']);
-			$this->assertSame('mysqli_innodb', $db_info->slave_db[0]['db_type']);
+			$this->assertSame('pdo_mysql_innodb', $db_info->master_db['db_type']);
+			$this->assertSame('pdo_mysql_innodb', $db_info->slave_db[0]['db_type']);
 		}
 		// A failed retry must not reuse the preceding successful connection or config.
 		$saved = FileHandler::readFile($controller->db_tmp_config_file);

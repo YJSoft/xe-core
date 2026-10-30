@@ -34,7 +34,7 @@ class HintTableTag extends TableTag
 	function getTableString()
 	{
 		$dbParser = DB::getParser();
-		$dbType = ucfirst(Context::getDBType());
+		$dbType = DB::isMysql(Context::getDBType()) ? 'Mysql' : ucfirst(Context::getDBType());
 
 		$result = sprintf('new %sTableWithHint(\'%s\'%s, array('
 				, !strncasecmp($dbType, 'Mysql', 5) ? 'Mysql' : $dbType

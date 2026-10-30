@@ -49,7 +49,7 @@ $I->amOnPage('/');
 
 $I->dontSeeElement('//div[@id="progress"]/ul/li');
 $I->openFile(_XE_PATH_ . 'files/config/db.config.php');
-$I->seeInThisFile("'db_type' => 'mysqli_innodb'");
+$I->seeInThisFile("'db_type' => 'pdo_mysql_innodb'");
 $I->seeInDatabase('information_schema.TABLES', ['TABLE_SCHEMA' => $dbinfo['dbname'], 'TABLE_NAME' => 'xe_documents', 'ENGINE' => 'InnoDB']);
 $I->resetCookie('PHPSESSID');
 $I->resetCookie('xe_logged');

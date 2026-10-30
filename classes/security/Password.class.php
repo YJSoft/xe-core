@@ -145,7 +145,7 @@ class Password
 				return md5($password) === $hash || md5(sha1(md5($password))) === $hash;
 
 			case 'mysql_old_password':
-				return (class_exists('Context') && substr(Context::getDBType(), 0, 5) === 'mysql') ?
+				return (class_exists('Context') && DB::isMysql(Context::getDBType())) ?
 					DB::getInstance()->isValidOldPassword($password, $hash) : false;
 
 			case 'mysql_password':

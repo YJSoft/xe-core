@@ -313,7 +313,10 @@ class QueryTag
 
 	function getTables()
 	{
-		if($this->query->index_hint && ($this->query->index_hint->attrs->for == 'ALL' || Context::getDBType() == strtolower($this->query->index_hint->attrs->for)))
+		$db_type = Context::getDBType();
+		if($this->query->index_hint && ($this->query->index_hint->attrs->for == 'ALL'
+			|| $db_type == strtolower($this->query->index_hint->attrs->for)
+			|| (DB::isMysql($db_type) && strtolower($this->query->index_hint->attrs->for) === 'mysql')))
 		{
 			return $this->tables = new TablesTag($this->query->tables, $this->query->index_hint);
 		}

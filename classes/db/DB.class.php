@@ -23,6 +23,8 @@ class DB
 	 * @var array
 	 */
 	var $priority_dbms = array(
+		'pdo_mysql_innodb' => 8,
+		'pdo_mysql' => 7,
 		'mysqli' => 6,
 		'mysqli_innodb' => 5,
 		'mysql' => 4,
@@ -179,6 +181,17 @@ class DB
 	public static function create()
 	{
 		return new DB;
+	}
+
+	/** Internal connection drivers that use the MySQL SQL dialect. */
+	public static function getMysqlDriverTypes()
+	{
+		return array('mysql', 'mysql_innodb', 'mysqli', 'mysqli_innodb', 'pdo_mysql', 'pdo_mysql_innodb');
+	}
+
+	public static function isMysql($db_type)
+	{
+		return in_array($db_type, self::getMysqlDriverTypes(), true);
 	}
 
 	/**

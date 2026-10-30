@@ -555,11 +555,16 @@ class DBMysql extends DB
 			}
 		}
 
-		$schema = sprintf('create table `%s` (%s%s) %s;', $this->addQuotes($table_name), "\n", implode(",\n", $column_schema), "ENGINE = MYISAM  CHARACTER SET utf8 COLLATE utf8_general_ci");
+		$schema = sprintf('create table `%s` (%s%s) %s;', $this->addQuotes($table_name), "\n", implode(",\n", $column_schema), 'ENGINE = ' . $this->getTableEngine() . '  CHARACTER SET utf8 COLLATE utf8_general_ci');
 
 		$output = $this->_query($schema);
 		if(!$output)
 			return false;
+	}
+
+	function getTableEngine()
+	{
+		return 'MYISAM';
 	}
 
 	/**

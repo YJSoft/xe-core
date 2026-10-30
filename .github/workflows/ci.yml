@@ -149,6 +149,9 @@ jobs:
     - name: Run standalone security regressions (including PHP 5.3)
       run: php tests/security/regressions.php
 
+    - name: Run real PDO MySQL regressions (including PHP 5.3)
+      run: php tests/database/pdo_mysql_smoke.php
+
     - name: Run Grunt tasks
       run: |
         grunt lint --force

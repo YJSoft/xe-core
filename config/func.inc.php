@@ -1332,7 +1332,7 @@ function mysql_pre4_hash_password($password)
 
 	for($i = 0; $i < strlen($password); $i++)
 	{
-		if($password[$i] == ' ' || $password[$i] == '\t')
+		if($password[$i] == ' ' || $password[$i] == "\t")
 		{
 			continue;
 		}
@@ -1353,7 +1353,7 @@ function mysql_pre4_hash_password($password)
 		$nr2 += 0x80000000;
 	}
 
-	return sprintf("%08lx%08lx", $nr, $nr2);
+	return sprintf("%08lx%08lx", $nr & 0x7fffffff, $nr2 & 0x7fffffff);
 }
 
 /**

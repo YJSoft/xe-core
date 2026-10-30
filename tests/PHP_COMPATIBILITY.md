@@ -32,6 +32,26 @@ do not clear application tables. A missing database is a failure, not a skipped
 test. The existing **Install** suite reinstalls XE and clears `files/`; run it in
 a disposable checkout and test databases, as CI does.
 
+## PDO MySQL regression coverage
+
+New installations prefer PDO MySQL, then mysqli, then legacy mysql. Existing
+saved drivers are retained. PDO requires PHP >= 5.3.6 for the DSN charset option;
+the application minimum remains PHP 5.3.0.
+
+`tests/_support/PdoMysqlContract.php` checks both PDO engine drivers, prepared
+and literal Query paths, binding order through nested SELECTs and pagination,
+LONGTEXT/NULL/duplicate columns, error recovery, nested rollback, reconnect and
+legacy password hashes. Codeception's database suite and the standalone
+`php tests/database/pdo_mysql_smoke.php` run the same checks against a real DB.
+CI executes the standalone script on every PHP version, including PHP 5.3.
+Set `XE_TEST_DB_HOST`, `XE_TEST_DB_PORT`, `XE_TEST_DB_NAME`, `XE_TEST_DB_USER` and
+`XE_TEST_DB_PASSWORD` for local credentials; defaults match CI's test database.
+The checks create only connection-local temporary tables.
+
+Installation tests check the unified MySQL choice, saved `pdo_mysql_innodb`
+driver, physical InnoDB table creation and login. They explicitly clear the
+configured test database before each installation; use a disposable checkout.
+
 ## PHP and Codeception versions
 
 | PHP | Framework / test paths | CI checks |

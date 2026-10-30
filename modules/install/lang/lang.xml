@@ -397,16 +397,16 @@
 	</item>
 	<item name="db_desc" type="array">
 		<item name="mysql">
-			<value xml:lang="ko"><![CDATA[mysqli 확장을 우선 사용하며, 없으면 레거시 mysql 확장을 사용합니다.<br />InnoDB를 사용할 수 있으면 InnoDB를, 사용할 수 없으면 MyISAM을 사용합니다.]]></value>
-			<value xml:lang="en"><![CDATA[Uses mysqli when available, otherwise the legacy mysql extension.<br />Uses InnoDB when available, otherwise MyISAM.]]></value>
-			<value xml:lang="jp"><![CDATA[mysqli 拡張を優先し、利用できない場合は従来の mysql 拡張を使用します。<br />InnoDB が利用可能なら InnoDB、それ以外は MyISAM を使用します。]]></value>
-			<value xml:lang="zh-CN"><![CDATA[优先使用 mysqli 扩展，不可用时使用旧版 mysql 扩展。<br />InnoDB 可用时使用 InnoDB，否则使用 MyISAM。]]></value>
-			<value xml:lang="zh-TW"><![CDATA[優先使用 mysqli 擴充功能，無法使用時使用舊版 mysql 擴充功能。<br />InnoDB 可用時使用 InnoDB，否則使用 MyISAM。]]></value>
-			<value xml:lang="fr"><![CDATA[Utilise mysqli si disponible, sinon l'ancienne extension mysql.<br />Utilise InnoDB si disponible, sinon MyISAM.]]></value>
-			<value xml:lang="ru"><![CDATA[Используется mysqli, а при его отсутствии — устаревшее расширение mysql.<br />Используется InnoDB, если он доступен, иначе MyISAM.]]></value>
-			<value xml:lang="es"><![CDATA[Usa mysqli si está disponible; de lo contrario, la extensión antigua mysql.<br />Usa InnoDB si está disponible; de lo contrario, MyISAM.]]></value>
-			<value xml:lang="tr"><![CDATA[Varsa mysqli, yoksa eski mysql uzantısı kullanılır.<br />Varsa InnoDB, yoksa MyISAM kullanılır.]]></value>
-			<value xml:lang="vi"><![CDATA[Ưu tiên dùng mysqli; nếu không có thì dùng phần mở rộng mysql cũ.<br />Dùng InnoDB nếu khả dụng, nếu không thì dùng MyISAM.]]></value>
+			<value xml:lang="ko"><![CDATA[사용 가능한 확장에 따라 PDO MySQL, mysqli, 레거시 mysql 순서로 사용합니다.<br />InnoDB를 사용할 수 있으면 InnoDB를, 사용할 수 없으면 MyISAM을 사용합니다.]]></value>
+			<value xml:lang="en"><![CDATA[Uses PDO MySQL, mysqli, or the legacy mysql extension, in that order of availability.<br />Uses InnoDB when available, otherwise MyISAM.]]></value>
+			<value xml:lang="jp"><![CDATA[利用可能な拡張に応じて PDO MySQL、mysqli、従来の mysql の順に使用します。<br />InnoDB が利用可能なら InnoDB、それ以外は MyISAM を使用します。]]></value>
+			<value xml:lang="zh-CN"><![CDATA[根据扩展的可用性，依次选择 PDO MySQL、mysqli、旧版 mysql。<br />InnoDB 可用时使用 InnoDB，否则使用 MyISAM。]]></value>
+			<value xml:lang="zh-TW"><![CDATA[依擴充功能的可用性，依序選擇 PDO MySQL、mysqli、舊版 mysql。<br />InnoDB 可用時使用 InnoDB，否則使用 MyISAM。]]></value>
+			<value xml:lang="fr"><![CDATA[Utilise les extensions disponibles dans cet ordre : PDO MySQL, mysqli, puis l'ancienne extension mysql.<br />Utilise InnoDB si disponible, sinon MyISAM.]]></value>
+			<value xml:lang="ru"><![CDATA[Доступные расширения выбираются в порядке PDO MySQL, mysqli, затем устаревшее mysql.<br />Используется InnoDB, если он доступен, иначе MyISAM.]]></value>
+			<value xml:lang="es"><![CDATA[Elige las extensiones disponibles en este orden: PDO MySQL, mysqli y mysql antiguo.<br />Usa InnoDB si está disponible; de lo contrario, MyISAM.]]></value>
+			<value xml:lang="tr"><![CDATA[Kullanılabilir uzantılar sırasıyla PDO MySQL, mysqli ve eski mysql olarak seçilir.<br />Varsa InnoDB, yoksa MyISAM kullanılır.]]></value>
+			<value xml:lang="vi"><![CDATA[Chọn phần mở rộng khả dụng theo thứ tự PDO MySQL, mysqli, rồi mysql cũ.<br />Dùng InnoDB nếu khả dụng, nếu không thì dùng MyISAM.]]></value>
 		</item>
 		<item name="mysqli_innodb">
 			<value xml:lang="ko"><![CDATA[MySQL DB를 innodb를 이용하여 사용합니다.<br />innodb는 트랜잭션을 사용할 수 있습니다.]]></value>

@@ -143,7 +143,7 @@ class installView extends install
 		if(!Context::get('db_type')) return $this->dispInstallSelectDB();
 
 		// The installer exposes one MySQL choice; stored driver names remain unchanged.
-		if(in_array(Context::get('db_type'), array('mysqli', 'mysqli_innodb', 'mysql_innodb')))
+		if(DB::isMysql(Context::get('db_type')))
 		{
 			Context::set('db_type', 'mysql');
 		}

@@ -214,23 +214,22 @@ class installController extends install
 		}
 	}
 
-	/** Connect new installations using mysqli first, then select a supported engine. */
+	/** Select PDO MySQL, mysqli or mysql for new installations, then an engine. */
 	function _connectInstallDatabase($db_info)
 	{
 		if(Context::isInstalled()) return new BaseObject(-1, 'msg_already_installed');
 		$db_type = $db_info->master_db['db_type'];
-		$is_mysql = in_array($db_type, array('mysql', 'mysql_innodb', 'mysqli', 'mysqli_innodb'));
+		$is_mysql = DB::isMysql($db_type);
 		if($is_mysql)
 		{
-			// Never use the removed/deprecated mysql API when mysqli is available.
-			$db_type = function_exists('mysqli_connect') ? 'mysqli' : 'mysql';
-			if(!function_exists($db_type . '_connect')) return new BaseObject(-1, 'msg_dbconnect_failed');
+			$db_type = getModel('install')->getMysqlConnectionDriver();
+			if(!$db_type) return new BaseObject(-1, 'msg_dbconnect_failed');
 			$db_info->master_db['db_type'] = $db_type;
 			foreach($db_info->slave_db as $key => $slave) $db_info->slave_db[$key]['db_type'] = $db_type;
 		}
 		Context::setDBInfo($db_info);
 		// A repeated connection check must use the newly submitted credentials.
-		$cached_types = $is_mysql ? array('mysql', 'mysql_innodb', 'mysqli', 'mysqli_innodb') : array($db_type);
+		$cached_types = $is_mysql ? DB::getMysqlDriverTypes() : array($db_type);
 		foreach($cached_types as $cached_type)
 		{
 			if(isset($GLOBALS['__DB__'][$cached_type]))

@@ -1,10 +1,10 @@
 # PDO MySQL 드라이버 추가 설계안
 
-작성일: 2026-10-30. 상태: 구현 전 제안.
+작성일: 2026-10-30. 상태: 구현 및 신규 설치 기본 사용 전환.
 
-**XE의 기존 DB 인터페이스를 유지하는 PDO MySQL 드라이버를 추가하고, 검증 후 신규 설치의 우선순위를 정하는 방식**을 권장한다. PDO 연결 코드를 만드는 것보다 XML 쿼리의 매개변수, 결과 형태, 오류 처리와 기존 설정의 호환성을 맞추는 일이 중요하다.
+**XE의 기존 DB 인터페이스를 유지하는 PDO MySQL 드라이버를 추가했으며, 신규 설치는 PDO MySQL → mysqli → mysql 순서로 선택한다.** PDO 연결 코드를 만드는 것보다 XML 쿼리의 매개변수, 결과 형태, 오류 처리와 기존 설정의 호환성을 맞추는 일이 중요하다.
 
-이 문서는 현재 작업 트리의 MySQL 설치 선택지 통합 변경을 기준으로 한다. 해당 변경은 설치 화면에는 `mysql` 하나만 표시하고, 내부적으로 `mysqli` 우선·레거시 `mysql` 차선, InnoDB 우선·MyISAM 차선으로 선택한다. PDO는 아직 구현되어 있지 않다. PHP 5.3.0 이상과 MySQL 4.1 이상이라는 기존 요구 사항을 이 문서에서 변경하지 않는다.
+설치 화면에는 `mysql` 하나만 표시하고, 내부 연결 API는 PDO MySQL, mysqli, 레거시 mysql 순서로 선택한다. 엔진은 InnoDB를 우선하고 사용할 수 없을 때만 MyISAM을 사용한다. 기존 사이트의 저장된 드라이버는 자동 전환하지 않는다. PHP 5.3.0 이상과 MySQL 4.1 이상이라는 기존 요구 사항을 이 문서에서 변경하지 않는다.
 
 ## 1. Rhymix에서 확인한 구조
 
@@ -47,7 +47,7 @@ XE에서는 처음부터 Rhymix와 같은 전면 교체를 하지 않는다. PHP
 | `pdo_mysql` | PDO MySQL | MyISAM |
 | `pdo_mysql_innodb` | PDO MySQL | InnoDB |
 
-후보 파일명은 `classes/db/DBPdo_mysql.class.php`, `classes/db/DBPdo_mysql_innodb.class.php`이다. 현재 [DB 팩토리와 파일 검색](../classes/db/DB.class.php)의 이름 규칙에 맞추기 위한 명명이며, 구현 시 팩토리·자동 검색 양쪽에서 확인한다. PDO 접속용 DSN의 접두사는 내부 드라이버명과 달리 `mysql:`이다. [PHP DSN 문서](https://www.php.net/manual/en/ref.pdo-mysql.connection.php).
+구현 파일은 `classes/db/DBPdo_mysql.class.php`, `classes/db/DBPdo_mysql_innodb.class.php`이다. 현재 [DB 팩토리와 파일 검색](../classes/db/DB.class.php)의 이름 규칙에 맞추기 위한 명명이며, 구현 시 팩토리·자동 검색 양쪽에서 확인한다. PDO 접속용 DSN의 접두사는 내부 드라이버명과 달리 `mysql:`이다. [PHP DSN 문서](https://www.php.net/manual/en/ref.pdo-mysql.connection.php).
 
 연결 API와 스토리지 엔진을 별도 설정으로 분리하는 장기 설계도 가능하지만, 처음부터 기존 네 드라이버의 설정 형식까지 바꾸지는 않는다.
 
@@ -55,11 +55,11 @@ XE에서는 처음부터 Rhymix와 같은 전면 교체를 하지 않는다. PHP
 
 | 단계 | 신규 설치 정책 | 기존 설치 정책 |
 | --- | --- | --- |
-| 최초 구현·검증 | 기본 `mysqli → mysql` 정책을 유지하고 PDO는 명시적 설정으로 시험 | 저장된 드라이버로 연결 |
-| 기본 사용 전환 | 검증을 마친 뒤 `PDO MySQL → mysqli → mysql`을 권장 후보로 결정 | 자동 전환하지 않음 |
+| 드라이버 검증 | PDO와 기존 드라이버의 계약을 실제 DB로 검증 | 저장된 드라이버로 연결 |
+| 기본 사용 전환 | `PDO MySQL → mysqli → mysql` 순서로 자동 선택 | 자동 전환하지 않음 |
 | 기존 사이트의 PDO 전환 | 해당 없음 | 관리자가 명시적으로 전환하고 되돌릴 설정을 보관 |
 
-PDO와 mysqli 중 무엇을 기본으로 할지는 별도 정책 변경이다. 이번 문서만으로 앞서 정한 mysqli 우선 정책이 변경되는 것은 아니다. 최종 전환 단계에서도 설치 화면의 DB 선택지는 `mysql` 하나로 유지한다.
+신규 설치의 기본값은 PDO 우선으로 전환했다. 일반 설치와 설정 파일 자동 설치에 동일한 정책을 적용하며, 설치 화면의 DB 선택지는 `mysql` 하나로 유지한다.
 
 여기서 차선 선택은 **PHP 확장의 부재나 명시적인 지원 조건 불충족**에 대한 것이다. PDO를 선택한 뒤 인증 실패·접속 오류·SQL 오류가 났다는 이유로 mysqli/mysql로 몰래 재시도하지 않는다. 특히 쓰기 쿼리의 성공 여부가 불명확할 때 다른 드라이버로 재실행해서는 안 된다.
 
@@ -80,7 +80,7 @@ PDO와 mysqli 중 무엇을 기본으로 할지는 별도 정책 변경이다. �
 
 문자셋에는 별도 경계가 있다. PDO MySQL의 DSN `charset` 처리는 PHP 5.3.6에서 지원되었으므로, PHP 5.3.0~5.3.5를 최신 PDO와 같게 취급할 수 없다. [PHP 공식 버그 기록](https://bugs.php.net/bug.php?id=54960).
 
-초기 권장안은 **PDO 경로의 활성화 조건을 PHP 5.3.6 이상으로 잡고**, 5.3.0~5.3.5에서는 기존 mysqli/mysql 경로를 유지하는 것이다. 이는 프로젝트 전체의 PHP 최소 버전 변경이 아니다. 그 이전 버전에서도 PDO가 반드시 필요하다면 초기화 명령, 실제 연결 문자셋, 인용 함수와 prepare 동작을 별도로 구현·검증한 후 활성화한다. `SET NAMES` 한 줄 추가만으로 문자셋 처리가 검증되었다고 보지 않는다.
+구현에서는 **PDO 경로의 활성화 조건을 PHP 5.3.6 이상으로 잡고**, 5.3.0~5.3.5에서는 기존 mysqli/mysql 경로를 유지하는 것이다. 이는 프로젝트 전체의 PHP 최소 버전 변경이 아니다. 그 이전 버전에서도 PDO가 반드시 필요하다면 초기화 명령, 실제 연결 문자셋, 인용 함수와 prepare 동작을 별도로 구현·검증한 후 활성화한다. `SET NAMES` 한 줄 추가만으로 문자셋 처리가 검증되었다고 보지 않는다.
 
 ### 권장 초기 설정
 
@@ -173,7 +173,7 @@ PDO 연결 종료는 객체 참조 해제가 필요하다. `_close($connection)`
 | [HintTableTag](../classes/xml/xmlquery/tags/table/HintTableTag.class.php) | PDO 이름으로 존재하지 않는 `Pdo_mysqlTableWithHint` 클래스를 생성하지 않게 MySQL 방언으로 매핑 |
 | [QueryTag](../classes/xml/xmlquery/tags/query/QueryTag.class.php) | `index_hint for="mysql"` 적용 여부를 내부 API명과 분리해 확인 |
 | [Password](../classes/security/Password.class.php) | 현재 `db_type`의 `mysql` 접두사 검사에 PDO가 빠지는 문제 처리 |
-| [DBMysql의 구형 비밀번호 검증](../classes/db/DBMysql.class.php) | `OLD_PASSWORD()` 의존성을 PDO가 해결해 주지 않음을 반영. 전환 시 기존 회원 로그인 회귀 확인 |
+| [구형 비밀번호 검증](../config/func.inc.php) | PDO에서는 기존 PHP 해시 함수를 사용. 31비트 마스크와 탭 처리 보완 후 기존 회원 로그인 검증 |
 | 쿼리 캐시 | 현재 파일명에는 `db_type`이 포함됨. PDO용 캐시와 MySQL 방언 판정 변경 후의 재생성 검증 |
 | README·설치 언어 | 구현 완료 후에만 PDO 지원과 실제 선택 우선순위를 안내 |
 
@@ -208,9 +208,9 @@ DB 버전 검증은 우선 기존 MySQL 5.7 대상으로 추가하고, 8.x/Maria
 ## 9. 권장 구현 순서와 완료 기준
 
 1. **호환 계약 고정:** 기존 결과 형태·오류·시퀀스·트랜잭션·MySQL 방언 분기를 테스트로 정리한다.
-2. **명시 설정으로 PDO 구현:** 두 내부 드라이버, 연결·조회·바인딩·결과·오류·연결 해제를 구현한다. 기존 mysqli/mysql 기본 선택은 유지한다.
+2. **명시 설정으로 PDO 구현:** 두 내부 드라이버, 연결·조회·바인딩·결과·오류·연결 해제를 구현한다. 기존 사이트의 저장된 드라이버는 유지한다.
 3. **코어 통합:** XML 힌트, 구형 비밀번호 판별, 설정 로드와 캐시, master/slave 경로를 점검한다.
 4. **설치 통합:** PDO-only 설치와 명시 PDO 자동 설치를 지원하고 단일 `mysql` UI를 유지한다. 실제 생성 엔진과 로그인까지 검증한다.
-5. **기본값 결정:** 위 테스트를 통과한 뒤 신규 설치에서 PDO를 우선할지 별도 변경으로 결정한다. 기존 사이트의 자동 전환은 하지 않는다.
+5. **기본 사용 전환:** 신규 설치는 PDO를 우선한다. 기존 사이트의 자동 전환은 하지 않는다.
 
 추가 드라이버의 완료 기준은 PDO-only 환경의 설치·로그인, 기존 쿼리 결과·오류 계약의 일치, MyISAM 보존, mysqli가 남아 있는 환경과 없는 환경 모두의 정상 동작이다. mysqli 제거, XML 쿼리 시스템 전면 교체, utf8mb4 일괄 전환, 기존 사이트의 자동 마이그레이션은 별도 작업으로 둔다.

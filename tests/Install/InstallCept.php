@@ -64,6 +64,8 @@ $I->seeElement('input[name="db_type"][value="mysql"]');
 $I->dontSeeElement('input[name="db_type"][value="mysqli"]');
 $I->dontSeeElement('input[name="db_type"][value="mysql_innodb"]');
 $I->dontSeeElement('input[name="db_type"][value="mysqli_innodb"]');
+$I->dontSeeElement('input[name="db_type"][value="pdo_mysql"]');
+$I->dontSeeElement('input[name="db_type"][value="pdo_mysql_innodb"]');
 $I->submitForm('#content form', ['db_type' => 'mysql', 'act' => 'dispInstallDBForm']);
 
 // Step 6 : db info
@@ -105,7 +107,7 @@ $I->submitForm('#content form', [
 // Step 9
 $I->dontSeeElement('//div[@id="progress"]/ul/li');
 $I->openFile(_XE_PATH_ . 'files/config/db.config.php');
-$I->seeInThisFile("'db_type' => 'mysqli_innodb'");
+$I->seeInThisFile("'db_type' => 'pdo_mysql_innodb'");
 $I->seeInDatabase('information_schema.TABLES', ['TABLE_SCHEMA' => $dbinfo['dbname'], 'TABLE_NAME' => 'xe_documents', 'ENGINE' => 'InnoDB']);
 $I->amOnPage('/index.php?act=dispMemberLoginForm');
 

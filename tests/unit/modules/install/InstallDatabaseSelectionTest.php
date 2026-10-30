@@ -40,7 +40,7 @@ class InstallDatabaseSelectionTest extends CompatibilityTestCase
 	public static function engineAvailability()
 	{
 		$cases = array();
-		foreach(array('mysql', 'mysqli') as $client)
+		foreach(array('mysql', 'mysqli', 'pdo_mysql') as $client)
 		{
 			$cases[] = array($client, 'YES', '', $client . '_innodb');
 			$cases[] = array($client, 'DEFAULT', '', $client . '_innodb');

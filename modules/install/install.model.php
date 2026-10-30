@@ -4,16 +4,24 @@ class installModel extends install
 {
 	var $pwd;
 
+	function getMysqlConnectionDriver()
+	{
+		if(DBPdo_mysql::isSupported()) return 'pdo_mysql';
+		if(function_exists('mysqli_connect')) return 'mysqli';
+		if(function_exists('mysql_connect')) return 'mysql';
+		return false;
+	}
+
 	/** Return installer choices, combining all MySQL drivers into one entry. */
 	function getInstallDBList($enabled = true)
 	{
 		$mysql = new stdClass();
 		$mysql->db_type = 'mysql';
-		$mysql->enable = function_exists('mysqli_connect') || function_exists('mysql_connect');
+		$mysql->enable = $this->getMysqlConnectionDriver() !== false;
 		$list = array($mysql);
 		foreach(DB::getSupportedList() as $db)
 		{
-			if(!in_array($db->db_type, array('mysql', 'mysql_innodb', 'mysqli', 'mysqli_innodb')))
+			if(!DB::isMysql($db->db_type))
 			{
 				$list[] = $db;
 			}
