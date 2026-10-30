@@ -11,14 +11,6 @@ $dsn = $db_config['dsn'];
 $dsn = preg_split('/[;:]/', $dsn);
 $db_type = array_shift($dsn);
 
-if($db_type === 'mysql' || $db_type === 'mysql_innodb')
-{
-	if(!function_exists('mysql_connect') && function_exists('mysqli_connect'))
-	{
-		$db_type = ($db_type === 'mysql') ? 'mysqli' : 'mysql_innodb';
-	}
-}
-
 $dbinfo = [
     'type' => $db_type,
     'user' => $db_config['user'],
@@ -51,10 +43,14 @@ $install_config = array(
 $install_config = '<' . '?php $install_config = ' . var_export($install_config, true) . ';';
 
 $I->wantTo('Auto install');
+$I->cleanup();
 $I->writeToFile(_XE_PATH_ . 'config/install.config.php', $install_config);
 $I->amOnPage('/');
 
 $I->dontSeeElement('//div[@id="progress"]/ul/li');
+$I->openFile(_XE_PATH_ . 'files/config/db.config.php');
+$I->seeInThisFile("'db_type' => 'mysqli_innodb'");
+$I->seeInDatabase('information_schema.TABLES', ['TABLE_SCHEMA' => $dbinfo['dbname'], 'TABLE_NAME' => 'xe_documents', 'ENGINE' => 'InnoDB']);
 $I->resetCookie('PHPSESSID');
 $I->resetCookie('xe_logged');
 $I->amOnPage('/index.php?act=dispMemberLoginForm');

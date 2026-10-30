@@ -4,6 +4,62 @@ class installModel extends install
 {
 	var $pwd;
 
+	/** Return installer choices, combining all MySQL drivers into one entry. */
+	function getInstallDBList($enabled = true)
+	{
+		$mysql = new stdClass();
+		$mysql->db_type = 'mysql';
+		$mysql->enable = function_exists('mysqli_connect') || function_exists('mysql_connect');
+		$list = array($mysql);
+		foreach(DB::getSupportedList() as $db)
+		{
+			if(!in_array($db->db_type, array('mysql', 'mysql_innodb', 'mysqli', 'mysqli_innodb')))
+			{
+				$list[] = $db;
+			}
+		}
+
+		$result = array();
+		foreach($list as $db)
+		{
+			if((bool)$db->enable === (bool)$enabled) $result[] = $db;
+		}
+		return $result;
+	}
+
+	/** Select an engine only after connecting to the installation database. */
+	function getMysqlInstallDriver($db_type, $oDB)
+	{
+		$result = $oDB->_query('SHOW ENGINES');
+		if(!$result || $oDB->isError()) return $oDB->getError();
+		$rows = $oDB->_fetch($result);
+		if(!is_array($rows)) $rows = array($rows);
+		$engines = array();
+		foreach($rows as $row)
+		{
+			if(is_object($row) && in_array(strtoupper($row->Support), array('YES', 'DEFAULT')))
+			{
+				$engines[strtolower($row->Engine)] = true;
+			}
+		}
+
+		// SHOW ENGINES can report YES even when CREATE TABLE is disabled for an engine.
+		$result = $oDB->_query("SHOW VARIABLES LIKE 'disabled_storage_engines'");
+		if(!$result || $oDB->isError()) return $oDB->getError();
+		$row = $oDB->_fetch($result);
+		if(is_object($row))
+		{
+			foreach(explode(',', $row->Value) as $engine) unset($engines[strtolower(trim($engine))]);
+		}
+
+		if(isset($engines['innodb'])) $db_type .= '_innodb';
+		else if(!isset($engines['myisam'])) return new BaseObject(-1, 'msg_no_mysql_storage_engine');
+
+		$output = new BaseObject();
+		$output->add('db_type', $db_type);
+		return $output;
+	}
+
 	function getSFTPList()
 	{
 		$ftp_info =  Context::getRequestVars();

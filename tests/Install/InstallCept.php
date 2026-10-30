@@ -37,6 +37,7 @@ if(\Filehandler::exists(_XE_PATH_ . 'config/install.config.php')) {
 
 // Step 1
 $I->wantTo('Install XE Core');
+$I->cleanup();
 $I->amOnPage('/index.php?l=ko');
 $I->setCookie('l', 'ko');
 $I->seeElement('//div[@id="progress"]/ul/li[1][@class="active"]');
@@ -59,14 +60,18 @@ $I->click('#task-checklist-confirm');
 // Step 5 : SelectDB
 $I->seeInCurrentUrl('act=dispInstallSelectDB');
 $I->seeElement('//div[@id="progress"]/ul/li[5][@class="active"]');
-$I->submitForm('#content form', ['db_type' => 'mysqli', 'act' => 'dispInstallDBForm']);
+$I->seeElement('input[name="db_type"][value="mysql"]');
+$I->dontSeeElement('input[name="db_type"][value="mysqli"]');
+$I->dontSeeElement('input[name="db_type"][value="mysql_innodb"]');
+$I->dontSeeElement('input[name="db_type"][value="mysqli_innodb"]');
+$I->submitForm('#content form', ['db_type' => 'mysql', 'act' => 'dispInstallDBForm']);
 
 // Step 6 : db info
 // $I->seeInCurrentUrl('act=dispInstallDBForm');
 $I->seeElement('//div[@id="progress"]/ul/li[6][@class="active"]');
 $I->submitForm('#content form', [
     'act' => 'procMysqlDBSetting',
-    'db_type' => 'mysqli',
+    'db_type' => 'mysql',
     'db_userid' => $dbinfo['user'],
     'db_password' => $dbinfo['password'],
     'db_database' => $dbinfo['dbname'],
@@ -89,7 +94,7 @@ $I->seeElement('//div[@id="progress"]/ul/li[8][@class="active"]');
 $I->fillField('#aMail', 'admin@admin.net');
 $I->submitForm('#content form', [
     'act' => 'procInstall',
-    'db_type' => 'mysqli',
+    'db_type' => 'mysql',
     'email_address' => 'admin@admin.net',
     'password' => 'admin1@3',
     'password2' => 'admin1@3',
@@ -99,6 +104,9 @@ $I->submitForm('#content form', [
 
 // Step 9
 $I->dontSeeElement('//div[@id="progress"]/ul/li');
+$I->openFile(_XE_PATH_ . 'files/config/db.config.php');
+$I->seeInThisFile("'db_type' => 'mysqli_innodb'");
+$I->seeInDatabase('information_schema.TABLES', ['TABLE_SCHEMA' => $dbinfo['dbname'], 'TABLE_NAME' => 'xe_documents', 'ENGINE' => 'InnoDB']);
 $I->amOnPage('/index.php?act=dispMemberLoginForm');
 
 $I->fillField('user_id', 'admin@admin.net');

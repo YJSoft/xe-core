@@ -397,16 +397,16 @@
 	</item>
 	<item name="db_desc" type="array">
 		<item name="mysql">
-			<value xml:lang="ko"><![CDATA[MySQL DB를 php의 mysql*()함수를 이용하여 사용합니다.<br />DB 파일은 myisam으로 생성되기에 트랜잭션이 이루어지지 않습니다.]]></value>
-			<value xml:lang="en"><![CDATA[Use MySQL as a database with mysql*() functions in php.<br />Transactions will not be processed since DB file is created in myisam.]]></value>
-			<value xml:lang="jp"><![CDATA[MySQL DBでPHPの「mysql*()」関数を利用してデータの入出力を行います。<br />DBは「myisam」タイプで作成されるため、トランザクション処理はできません。]]></value>
-			<value xml:lang="zh-CN"><![CDATA[利用php的 mysql*()函数使用mysql DB。<br />DB数据是以myisam生成，因此不能实现transaction。]]></value>
-			<value xml:lang="zh-TW"><![CDATA[利用 PHP 的『mysql*()』函數使用 MySQL 資料庫。<br />利用『myisam』建立資料庫檔案，因此不能實現transaction。]]></value>
-			<value xml:lang="fr"><![CDATA[Utilisera fonction mysql*() pour utiliser la base de données de mysql.<br />La transaction sera invalidé parce que le fichier de Base de Données est créé par myisam.]]></value>
-			<value xml:lang="ru"><![CDATA[Используем mysql*() функцию, чтобы использовать базу данных mysql.<br />Транзакция отключена из-за того, что файл базы данных создан посредством myisam.]]></value>
-			<value xml:lang="es"><![CDATA[Utilizando las funciones mysql*() de PHP usar DB mysql.<br />La transacción es desabilitado ya que DB(Bases de Datos) está creado por myisam.]]></value>
-			<value xml:lang="tr"><![CDATA[PHP'de mysql*() özellikleri için MySQL'ü veritabanı olarak kullanınız.<br />İşlemler, veritabanı dosyası myisam 'da oluşturulduğu zaman işlenmeyecektir.]]></value>
-			<value xml:lang="vi"><![CDATA[Dùng chức năng <b>mysql*()</b> để sử dụng MySql Database.<br />Giao dịch được vô hiệu hóa bởi File Database được tạo ra bởi myisam.]]></value>
+			<value xml:lang="ko"><![CDATA[mysqli 확장을 우선 사용하며, 없으면 레거시 mysql 확장을 사용합니다.<br />InnoDB를 사용할 수 있으면 InnoDB를, 사용할 수 없으면 MyISAM을 사용합니다.]]></value>
+			<value xml:lang="en"><![CDATA[Uses mysqli when available, otherwise the legacy mysql extension.<br />Uses InnoDB when available, otherwise MyISAM.]]></value>
+			<value xml:lang="jp"><![CDATA[mysqli 拡張を優先し、利用できない場合は従来の mysql 拡張を使用します。<br />InnoDB が利用可能なら InnoDB、それ以外は MyISAM を使用します。]]></value>
+			<value xml:lang="zh-CN"><![CDATA[优先使用 mysqli 扩展，不可用时使用旧版 mysql 扩展。<br />InnoDB 可用时使用 InnoDB，否则使用 MyISAM。]]></value>
+			<value xml:lang="zh-TW"><![CDATA[優先使用 mysqli 擴充功能，無法使用時使用舊版 mysql 擴充功能。<br />InnoDB 可用時使用 InnoDB，否則使用 MyISAM。]]></value>
+			<value xml:lang="fr"><![CDATA[Utilise mysqli si disponible, sinon l'ancienne extension mysql.<br />Utilise InnoDB si disponible, sinon MyISAM.]]></value>
+			<value xml:lang="ru"><![CDATA[Используется mysqli, а при его отсутствии — устаревшее расширение mysql.<br />Используется InnoDB, если он доступен, иначе MyISAM.]]></value>
+			<value xml:lang="es"><![CDATA[Usa mysqli si está disponible; de lo contrario, la extensión antigua mysql.<br />Usa InnoDB si está disponible; de lo contrario, MyISAM.]]></value>
+			<value xml:lang="tr"><![CDATA[Varsa mysqli, yoksa eski mysql uzantısı kullanılır.<br />Varsa InnoDB, yoksa MyISAM kullanılır.]]></value>
+			<value xml:lang="vi"><![CDATA[Ưu tiên dùng mysqli; nếu không có thì dùng phần mở rộng mysql cũ.<br />Dùng InnoDB nếu khả dụng, nếu không thì dùng MyISAM.]]></value>
 		</item>
 		<item name="mysqli_innodb">
 			<value xml:lang="ko"><![CDATA[MySQL DB를 innodb를 이용하여 사용합니다.<br />innodb는 트랜잭션을 사용할 수 있습니다.]]></value>
@@ -800,6 +800,10 @@
 		<value xml:lang="es"><![CDATA[Instalación de XE ya existe.]]></value>
 		<value xml:lang="tr"><![CDATA[XE zaten kurulmuştur]]></value>
 		<value xml:lang="vi"><![CDATA[Một phiên bản nào đó của XE đã được cài đặt từ trước.<br />Xin hãy kiểm tra lại!]]></value>
+	</item>
+	<item name="msg_no_mysql_storage_engine">
+		<value xml:lang="ko"><![CDATA[InnoDB와 MyISAM을 모두 사용할 수 없습니다. DB 서버의 스토리지 엔진 설정을 확인해주세요.]]></value>
+		<value xml:lang="en"><![CDATA[Neither InnoDB nor MyISAM is available. Please check the database server's storage engine settings.]]></value>
 	</item>
 	<item name="msg_dbconnect_failed">
 		<value xml:lang="ko"><![CDATA[DB접속 오류가 발생하였습니다. DB정보를 다시 확인해주세요.]]></value>

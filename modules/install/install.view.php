@@ -121,20 +121,11 @@ class installView extends install
 		}
 		else
 		{
-			$defaultDatabase = 'mysqli';
-			$disableList = DB::getDisableList();
-			if(is_array($disableList))
-			{
-				foreach($disableList AS $key=>$value)
-				{
-					if($value->db_type == $defaultDatabase)
-					{
-						$defaultDatabase = 'mysql';
-						break;
-					}
-				}
-			}
-			Context::set('defaultDatabase', $defaultDatabase);
+			$oInstallModel = getModel('install');
+			$enableList = $oInstallModel->getInstallDBList();
+			Context::set('enableDBList', $enableList);
+			Context::set('disableDBList', $oInstallModel->getInstallDBList(false));
+			Context::set('defaultDatabase', count($enableList) ? $enableList[0]->db_type : '');
 
 			Context::set('progressMenu', '4');
 			$this->setTemplateFile('select_db');
@@ -150,6 +141,12 @@ class installView extends install
 		if(!$this->install_enable) return $this->dispInstallCheckEnv();
 		// Return to the start-up screen if db_type is not specified
 		if(!Context::get('db_type')) return $this->dispInstallSelectDB();
+
+		// The installer exposes one MySQL choice; stored driver names remain unchanged.
+		if(in_array(Context::get('db_type'), array('mysqli', 'mysqli_innodb', 'mysql_innodb')))
+		{
+			Context::set('db_type', 'mysql');
+		}
 
 		// Output the file, disp_db_info_form.html
 		$tpl_filename = sprintf('form.%s', Context::get('db_type'));

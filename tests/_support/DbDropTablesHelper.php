@@ -5,7 +5,8 @@ class DbDropTablesHelper extends \Codeception\Module\Db
 {
     public function cleanup()
     {
-        $dbh = $this->driver->getDbh();
+        $driver = method_exists($this, '_getDriver') ? $this->_getDriver() : $this->driver;
+        $dbh = $driver->getDbh();
         if (!$dbh) {
             throw new ModuleConfigException(
                 __CLASS__,
@@ -14,7 +15,7 @@ class DbDropTablesHelper extends \Codeception\Module\Db
         }
 
         try {
-            $this->driver->cleanup();
+            $driver->cleanup();
         } catch (\Exception $e) {
             throw new ModuleException(__CLASS__, $e->getMessage());
         }
