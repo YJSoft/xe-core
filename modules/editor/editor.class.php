@@ -7,6 +7,67 @@
  */
 class editor extends ModuleObject
 {
+	/** Use the routed module for both authorization and storage, never request module_srl. */
+	protected function getAutosaveModuleInfo()
+	{
+		$module_info = Context::get('current_module_info');
+		if(!is_object($module_info) || empty($module_info->module_srl) || empty($module_info->module)) return null;
+		$oModuleModel = getModel('module');
+		$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
+		if(empty($grant->access) || (isset($grant->write_document) && !$grant->write_document)) return null;
+		if(!isset($grant->write_document) && isset($grant->write_comment) && !$grant->write_comment) return null;
+		if($module_info->module === 'member' || ($module_info->module === 'page' && empty($grant->manager))) return null;
+		return $module_info;
+	}
+
+	/** Guest autosaves require a secret cookie; an IP address is not proof of ownership. */
+	protected function getAutosaveIdentity($module_srl, $create = false)
+	{
+		$args = new stdClass();
+		$args->module_srl = $module_srl;
+		$logged_info = Context::get('logged_info');
+		$args->member_srl = !empty($logged_info->member_srl) ? $logged_info->member_srl : 0;
+		if(!$args->member_srl)
+		{
+			$cookie = 'autosave_certify_key_' . $module_srl;
+			$key = isset($_COOKIE[$cookie]) ? $_COOKIE[$cookie] : null;
+			if(!is_string($key) || !preg_match('/^[a-f0-9]{40,100}$/iD', $key))
+			{
+				if(!$create) return null;
+				$key = Security::getRandomToken(20);
+				$secure = !empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off';
+				setcookie($cookie, $key, time() + 3600, '', '', $secure, true);
+				$_COOKIE[$cookie] = $key;
+			}
+			$args->certify_key = $key;
+		}
+		return $args;
+	}
+
+	/** Validate old autosave rows before granting, moving, or deleting their attachments. */
+	protected function isAutosaveTargetSafe($target_srl, $module_srl, &$has_files = null)
+	{
+		$has_files = false;
+		if(!$target_srl) return true;
+		$oDocumentModel = getModel('document');
+		$document = $oDocumentModel->getDocument($target_srl);
+		if($document->isExists()) return false;
+
+		$args = new stdClass();
+		$args->upload_target_srl = $target_srl;
+		$output = executeQueryArray('file.getFiles', $args);
+		if(!$output->toBool()) return false;
+		$logged_info = Context::get('logged_info');
+		foreach((array)$output->data as $file)
+		{
+			$has_files = true;
+			if((string)$file->module_srl !== (string)$module_srl || $file->isvalid !== 'N') return false;
+			$owner = !empty($logged_info->member_srl) && (string)$logged_info->member_srl === (string)$file->member_srl;
+			if(!$owner && empty($_SESSION['__XE_UPLOADING_FILES_INFO__'][$file->file_srl])) return false;
+		}
+		return true;
+	}
+
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 */

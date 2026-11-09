@@ -75,6 +75,7 @@ function _editorAutoSave(exe, callback) {
 			title   : title,
 			content : content,
 			mid     : current_mid,
+			editor_sequence : editor_sequence,
 			document_srl : editorRelKeys[editor_sequence].primary.value
 		};
 
