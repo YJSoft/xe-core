@@ -455,7 +455,7 @@ class moduleAdminController extends module
 					// Create a directory
 					if(!FileHandler::makeDir($path)) return false;
 
-					$filename = $path.$image_obj['name'];
+					$filename = $path.UploadFileFilter::sanitizeFilename($image_obj['name']);
 					// Move the file
 					if(!move_uploaded_file($image_obj['tmp_name'], $filename))
 					{

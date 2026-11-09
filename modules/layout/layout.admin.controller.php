@@ -436,7 +436,7 @@ class layoutAdminController extends layout
 		$path = $oLayoutModel->getUserLayoutImagePath($layout_srl);
 		if(!is_dir($path)) FileHandler::makeDir($path);
 
-		$filename = strtolower($source['name']);
+		$filename = strtolower(UploadFileFilter::sanitizeFilename($source['name']));
 		if($filename != urlencode($filename))
 		{
 			$ext = substr(strrchr($filename,'.'),1);
@@ -444,7 +444,7 @@ class layoutAdminController extends layout
 		}
 
 		// Check uploaded file
-		if(!checkUploadedFile($source['tmp_name'])) return false;
+		if(!checkUploadedFile($source['tmp_name'], $filename)) return false;
 		
 		if(file_exists($path .'/'. $filename)) @unlink($path . $filename);
 		if(!move_uploaded_file($source['tmp_name'], $path . $filename )) return false;

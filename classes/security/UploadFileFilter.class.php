@@ -5,6 +5,29 @@
  */
 class UploadFileFilter
 {
+	/** Sanitize every extension before retaining a client-supplied filename. */
+	public static function sanitizeFilename($filename)
+	{
+		$filename = basename(str_replace('\\', '/', (string)$filename));
+		$filename = preg_replace('/[\x00-\x1f\x7f:]/', '', $filename);
+		$parts = explode('.', trim($filename, " .\t\r\n"));
+		$name = array_shift($parts);
+		if($name === '') $name = 'upload';
+		$last = count($parts) - 1;
+		foreach($parts as $index => $part)
+		{
+			$part = trim($part);
+			if($part === '') continue;
+			if(preg_match('/^(?:ph(?:p[0-9]*|ps|t(?:ml)?|ar)?|p?html?|cgi|pl|exe|com|bat|cmd|msi|scr|(?:a|j)spx?|inc|shtml|htaccess|htpasswd)$/iD', $part))
+			{
+				if($index === $last) $name .= '.' . $part . '-x';
+				continue;
+			}
+			$name .= '.' . $part;
+		}
+		return $name;
+	}
+
 	/**
 	 * Generic checker
 	 *
