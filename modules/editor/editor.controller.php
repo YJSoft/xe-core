@@ -244,12 +244,12 @@ class editorController extends editor
 		}
 		$xml_obj->body = $match[4];
 
-		if(!$xml_obj->attrs->editor_component) return $match[0];
+		if(empty($xml_obj->attrs->editor_component)) return '';
 
 		// Get converted codes by using component::transHTML()
 		$oEditorModel = getModel('editor');
 		$oComponent = &$oEditorModel->getComponentObject($xml_obj->attrs->editor_component, 0);
-		if(!is_object($oComponent)||!method_exists($oComponent, 'transHTML')) return $match[0];
+		if(!is_object($oComponent)||!method_exists($oComponent, 'transHTML')) return '';
 
 		return $oComponent->transHTML($xml_obj);
 	}

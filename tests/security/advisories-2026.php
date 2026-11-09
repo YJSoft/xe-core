@@ -81,3 +81,34 @@ foreach (array(
     check($filename === $expected, 'Sanitize all filename extensions: ' . $input);
     check(UploadFileFilter::sanitizeFilename($filename) === $filename, 'Filename sanitization is stable: ' . $input);
 }
+
+require_once _XE_PATH_ . 'modules/editor/editor.class.php';
+require_once _XE_PATH_ . 'modules/editor/editor.controller.php';
+require_once _XE_PATH_ . 'modules/editor/editor.model.php';
+class AdvisoryComponent
+{
+    public function transHTML($xml) { return '<p>' . $xml->attrs->custom_value . '</p>'; }
+}
+class AdvisoryComponentModel
+{
+    public $component;
+    public function &getComponentObject($name, $sequence = 0) { return $this->component; }
+}
+$component_model = new AdvisoryComponentModel();
+$GLOBALS['models']['editor'] = $component_model;
+$editor_controller = new editorController();
+foreach (array('x-init', 'ng-init', 'v-effect', 'hx-on', 'wire-init', 'X-INIT') as $directive) {
+    $content = '<div editor_component="missing" ' . $directive . '="alert(1)" custom_value="safe" data-file-srl="123">TEST</div>';
+    $purifier = new Purifier();
+    $purifier->setConfig('Cache.SerializerPath', $GLOBALS['fixture_dir']);
+    $purifier->purify($content);
+    check(stripos($content, $directive . '=') === false, 'Component HTML cannot whitelist frontend directive ' . $directive);
+    check(strpos($content, 'custom_value="safe"') !== false && strpos($content, 'data-file-srl="123"') !== false, 'Preserve component values and data attributes');
+}
+foreach (array(null, new BaseObject(-1, 'missing'), new stdClass()) as $component) {
+    $component_model->component = $component;
+    $content = '<div editor_component="missing" x-init="alert(1)">TEST</div><p>Keep</p>';
+    check($editor_controller->transComponent($content) === '<p>Keep</p>', 'Unknown or unrenderable components cannot survive in rendered HTML');
+}
+$component_model->component = new AdvisoryComponent();
+check($editor_controller->transComponent('<div editor_component="known" custom_value="safe">TEST</div>') === '<p>safe</p>', 'Known editor components still render');
