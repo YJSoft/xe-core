@@ -608,4 +608,5 @@ check($unconfirmed_status['patch_confirmed'] === false, 'Deleting the record res
     check($status['level'] === $automatic_status['level'], 'PHP >= 8.2 warning level is determined only by automatic version assessment');
     unlink($patch_path);
 }
+require dirname(__FILE__) . '/advisories-2026.php';
 echo 'OK: ', $GLOBALS['checks'], ' security checks on PHP ', PHP_VERSION, "\n";
