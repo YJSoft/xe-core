@@ -58,3 +58,26 @@ $GLOBALS['document']->secret = false;
 $preview = new AdvisoryWidgetController();
 $preview->procWidgetGenerateCodeInPage();
 check($preview->executed, 'Widget preview preserves readable public documents');
+
+require_once _XE_PATH_ . 'classes/security/UploadFileFilter.class.php';
+foreach (array(
+    'example.php.jpg' => 'example.jpg',
+    'example.PHP.GIF' => 'example.GIF',
+    'example.php.aspx.exe.jpg' => 'example.jpg',
+    'example .php. webp' => 'example .webp',
+    'example.  PHP  .  ASPX .gif' => 'example.gif',
+    'example.php.foo.php8.jpg' => 'example.foo.jpg',
+    'example.phtml.phar.pht.cgi.pl.jsp.inc.png' => 'example.png',
+    'example.php' => 'example.php-x',
+    'example.php.jpg. ' => 'example.jpg',
+    '../example.php.jpg' => 'example.jpg',
+    'C:\\fakepath\\example.PHP.GIF' => 'example.GIF',
+    '.htaccess' => 'htaccess',
+    'example.jpg' => 'example.jpg',
+    'my.photo.2026.PNG' => 'my.photo.2026.PNG',
+    '한글 이미지.jpg' => '한글 이미지.jpg'
+) as $input => $expected) {
+    $filename = UploadFileFilter::sanitizeFilename($input);
+    check($filename === $expected, 'Sanitize all filename extensions: ' . $input);
+    check(UploadFileFilter::sanitizeFilename($filename) === $filename, 'Filename sanitization is stable: ' . $input);
+}
