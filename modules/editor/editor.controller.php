@@ -19,14 +19,12 @@ class editorController extends editor
 	 */
 	function procEditorSaveDoc()
 	{
-
-		$this->deleteSavedDoc(false);
-
 		$args = new stdClass;
 		$args->document_srl = Context::get('document_srl');
 		$args->content = Context::get('content');
 		$args->title = Context::get('title');
 		$output = $this->doSaveDoc($args);
+		if(!$output->toBool()) return $output;
 
 		$this->setMessage('msg_auto_saved');
 	}
@@ -259,29 +257,48 @@ class editorController extends editor
 	 */
 	function doSaveDoc($args)
 	{
-		if(!$args->document_srl) $args->document_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
+		$module_info = $this->getAutosaveModuleInfo();
+		if(!$module_info) return new BaseObject(-1, 'msg_not_permitted');
+		if(!isset($args->title, $args->content) || !is_string($args->title) || !is_string($args->content)) return new BaseObject(-1, 'msg_invalid_request');
+		$document_srl = isset($args->document_srl) ? $args->document_srl : 0;
+		if(!is_scalar($document_srl) && $document_srl !== null) return new BaseObject(-1, 'msg_invalid_request');
+		$document_srl = (int)$document_srl;
+		if($document_srl && !$this->isAutosaveTargetSafe($document_srl, $module_info->module_srl)) return new BaseObject(-1, 'msg_not_permitted');
 
-		// Get the current module if module_srl doesn't exist
-		if(!$args->module_srl) $args->module_srl = Context::get('module_srl');
-		if(!$args->module_srl)
+		// A client-supplied document_srl cannot create an upload authorization.
+		$editor_sequence = Context::get('editor_sequence');
+		$upload_info = is_scalar($editor_sequence) && isset($_SESSION['upload_info'][$editor_sequence]) ? $_SESSION['upload_info'][$editor_sequence] : null;
+		// Older editor clients omit editor_sequence; accept only an already issued target.
+		if(($editor_sequence === null || $editor_sequence === '') && $document_srl && !empty($_SESSION['upload_info']))
 		{
-			$current_module_info = Context::get('current_module_info');
-			$args->module_srl = $current_module_info->module_srl;
+			foreach($_SESSION['upload_info'] as $candidate)
+			{
+				if(!empty($candidate->enabled) && isset($candidate->module_srl, $candidate->upload_target_srl) &&
+					(int)$candidate->module_srl === (int)$module_info->module_srl && (int)$candidate->upload_target_srl === $document_srl)
+				{
+					$upload_info = $candidate;
+					break;
+				}
+			}
+		}
+		$target_srl = 0;
+		if(!empty($upload_info->enabled) && isset($upload_info->module_srl) && (int)$upload_info->module_srl === (int)$module_info->module_srl)
+		{
+			$target_srl = (int)$upload_info->upload_target_srl;
+			if($document_srl && $document_srl !== $target_srl) return new BaseObject(-1, 'msg_not_permitted');
+			if(!$this->isAutosaveTargetSafe($target_srl, $module_info->module_srl)) return new BaseObject(-1, 'msg_not_permitted');
 		}
 
-		if(Context::get('is_logged'))
-		{
-			$logged_info = Context::get('logged_info');
-			$args->member_srl = $logged_info->member_srl;
-		}
-		else
-		{
-			$args->certify_key = $_COOKIE['autosave_certify_key_' . $args->module_srl];
-			if(!$args->certify_key) $args->certify_key = Password::createSecureSalt(40);
-			setcookie('autosave_certify_key_' . $args->module_srl, $args->certify_key, $_SERVER['REQUEST_TIME'] + 3600, '', '', false, true);
-		}
-
-		return executeQuery('editor.insertSavedDoc', $args);
+		$identity = $this->getAutosaveIdentity($module_info->module_srl, true);
+		// Build a fresh row: direct callers cannot inject another author or module.
+		$row = clone $identity;
+		$row->document_srl = $target_srl;
+		$row->title = escape($args->title, false);
+		$row->content = removeHackTag(preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $args->content));
+		$row->ipaddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+		$output = executeQuery('editor.deleteSavedDoc', $identity);
+		if(!$output->toBool()) return $output;
+		return executeQuery('editor.insertSavedDoc', $row);
 	}
 
 	/**
@@ -291,15 +308,21 @@ class editorController extends editor
 	{
 		$editor_sequence = Context::get('editor_sequence');
 		$primary_key = Context::get('primary_key');
+		if(!is_scalar($editor_sequence) || !preg_match('/^[1-9][0-9]*$/D', (string)$editor_sequence) || !is_string($primary_key)) return new BaseObject(-1, 'msg_invalid_request');
 		$oEditorModel = getModel('editor');
-		$oFileController = getController('file');
 
 		$saved_doc = $oEditorModel->getSavedDoc(null);
+		if(!$saved_doc) return new BaseObject(-1, 'msg_not_permitted');
 
-		$oFileController->setUploadInfo($editor_sequence, $saved_doc->document_srl, intval($saved_doc->module_srl));
-		$vars = $this->getVariables();
+		// Only an editor already authorized for uploads may restore its attachment target.
+		$upload_info = isset($_SESSION['upload_info'][$editor_sequence]) ? $_SESSION['upload_info'][$editor_sequence] : null;
+		if(!empty($upload_info->enabled) && isset($upload_info->module_srl) && (int)$upload_info->module_srl === (int)$saved_doc->module_srl)
+		{
+			$oFileController = getController('file');
+			$oFileController->setUploadInfo($editor_sequence, $saved_doc->document_srl, intval($saved_doc->module_srl));
+		}
 		$this->add("editor_sequence", $editor_sequence);
-		$this->add("key", $primary_key);
+		$this->add("key", escape($primary_key));
 		$this->add("title", $saved_doc->title);
 		$this->add("content", $saved_doc->content);
 		$this->add("document_srl", $saved_doc->document_srl);
@@ -320,48 +343,23 @@ class editorController extends editor
 	 */
 	function deleteSavedDoc($mode = false)
 	{
-		$args = new stdClass();
-		$args->module_srl = Context::get('module_srl');
-
-		// Get the current module if module_srl doesn't exist
-		if(!$args->module_srl)
+		$module_info = $this->getAutosaveModuleInfo();
+		if(!$module_info) return new BaseObject(-1, 'msg_not_permitted');
+		$args = $this->getAutosaveIdentity($module_info->module_srl);
+		if(!$args) return;
+		$output = executeQueryArray('editor.getSavedDocument', $args);
+		if(!$output->toBool()) return $output;
+		foreach((array)$output->data as $saved_doc)
 		{
-			$current_module_info = Context::get('current_module_info');
-			$args->module_srl = $current_module_info->module_srl;
-		}
-		if(Context::get('is_logged'))
-		{
-			$logged_info = Context::get('logged_info');
-			$args->member_srl = $logged_info->member_srl;
-		}
-		else
-		{
-			$args->certify_key = $_COOKIE['autosave_certify_key_' . $args->module_srl];
-			// @see https://github.com/xpressengine/xe-core/issues/2208
-			// 변경 이전에 작성된 게시물 호환성 유지
-			if(!$args->certify_key) {
-				unset($args->certify_key);
-				$args->ipaddress = $_SERVER['REMOTE_ADDR'];
-			}
-		}
-		// Check if the auto-saved document already exists
-		$output = executeQuery('editor.getSavedDocument', $args);
-		$saved_doc = $output->data;
-		if(!$saved_doc) return;
-
-		$oDocumentModel = getModel('document');
-		$oSaved = $oDocumentModel->getDocument($saved_doc->document_srl);
-		if(!$oSaved->isExists())
-		{
-			if($mode)
+			if((string)$saved_doc->module_srl !== (string)$args->module_srl || (string)$saved_doc->member_srl !== (string)$args->member_srl) continue;
+			if(!$args->member_srl && (empty($saved_doc->certify_key) || $saved_doc->certify_key !== $args->certify_key)) continue;
+			if($mode && $saved_doc->document_srl && $this->isAutosaveTargetSafe($saved_doc->document_srl, $args->module_srl))
 			{
-				$output = executeQuery('editor.getSavedDocument', $args);
-				$output = ModuleHandler::triggerCall('editor.deleteSavedDoc', 'after', $saved_doc);
+				$result = ModuleHandler::triggerCall('editor.deleteSavedDoc', 'after', $saved_doc);
+				if(!$result->toBool()) return $result;
 			}
 		}
-
-		$output = executeQuery('editor.deleteSavedDoc', $args);
-		return $output;
+		return executeQuery('editor.deleteSavedDoc', $args);
 	}
 
 	/**
