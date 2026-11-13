@@ -30,11 +30,13 @@ class RveDocumentModel
 {
     public $documents = array();
     public function getConfigStatus($key) { return strtoupper($key); }
+    public function getDocumentCountByMemberSrl($srl) { return 0; }
     public function getDocument($srl = 0, $admin = false, $extra = true, $columns = array()) { return isset($this->documents[$srl]) ? $this->documents[$srl] : new RveDocument(0); }
 }
 class RveCommentModel
 {
     public $comments = array();
+    public function getCommentCountByMemberSrl($srl) { return 0; }
     public function getComment($srl = 0, $admin = false, $columns = array()) { return isset($this->comments[$srl]) ? $this->comments[$srl] : new RveComment(0); }
 }
 class RveModuleModel
@@ -96,3 +98,41 @@ $rve_document->add('status', 'PUBLIC');
 $rve_document->add('module_srl', 999);
 check(!$rve_board->dispBoardWriteComment()->toBool(), 'Comment forms reject parent documents in another module');
 $rve_document->add('module_srl', 100);
+
+require_once _XE_PATH_ . 'modules/member/member.controller.php';
+class RveMemberModel
+{
+    public $members = array();
+    public function getMemberInfoByMemberSrl($srl, $site = 0, $columns = array()) { return isset($this->members[$srl]) ? $this->members[$srl] : null; }
+}
+class RveMemberController extends memberController
+{
+    public $updates = 0;
+    public function __construct() {}
+    public function updateMember($args, $is_admin = false) { $this->updates++; return new BaseObject(); }
+    public function _clearMemberCache($srl, $site = 0) {}
+}
+$rve_members = new RveMemberModel();
+$rve_members->members[99] = (object)array('member_srl' => 99, 'is_admin' => 'Y', 'user_id' => 'root', 'email_address' => 'root@example.com', 'nick_name' => 'Root', 'description' => '');
+$GLOBALS['models']['member'] = $rve_members;
+$rve_member = new RveMemberController();
+$rve_modules->grants[100]->manager = true;
+Context::set('member_srl', 99);
+Context::set('module_srl', 100);
+Context::set('cnt_loop', 1);
+$result = $rve_member->procMemberSpammerManage();
+check(!$result->toBool() && $rve_member->updates === 0, 'RVE-2026-35 module managers cannot ban site administrators');
+$rve_members->members[99]->is_admin = 'N';
+$result = $rve_member->procMemberSpammerManage();
+check(!$result->toBool() && $rve_member->updates === 0, 'Module managers cannot globally ban ordinary members either');
+$spammer_view = new FixtureMemberView();
+check(!$spammer_view->dispMemberSpammer()->toBool(), 'Spammer management UI is restricted to site administrators');
+Context::get('logged_info')->is_admin = 'Y';
+$rve_members->members[99]->is_admin = 'Y';
+check(!$rve_member->procMemberSpammerManage()->toBool() && $rve_member->updates === 0, 'Even administrators cannot classify another administrator as a spammer');
+$rve_members->members[99]->is_admin = 'N';
+check($rve_member->procMemberSpammerManage()->toBool() && $rve_member->updates === 1, 'Administrators can still ban ordinary spam accounts');
+$spammer_view->dispMemberSpammer();
+check($spammer_view->getTemplateFile() === 'spammer.html', 'Administrators retain the spammer management UI');
+Context::set('member_srl', 0);
+check(!$rve_member->procMemberSpammerManage()->toBool() && $rve_member->updates === 1, 'Spammer management rejects empty member IDs');

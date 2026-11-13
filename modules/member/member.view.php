@@ -650,13 +650,7 @@ class memberView extends member
 		$member_srl = Context::get('member_srl');
 		$module_srl = Context::get('module_srl');
 
-		// check grant
-		$oModuleModel = getModel('module');
-		$columnList = array('module_srl', 'module');
-		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
-		$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
-
-		if(!$grant->manager) return new BaseObject(-1,'msg_not_permitted');
+		if(!$this->canManageSpammer($member_srl)) return new BaseObject(-1,'msg_not_permitted');
 
 		$oMemberModel = getModel('member');
 

@@ -30,9 +30,9 @@
 		<permission action="procMemberSaveDocument" target="member" />
 		<permission action="procMemberDeleteSavedDocument" target="member" />
 
-		<permission action="procMemberSpammerManage" target="manager" />
+		<permission action="procMemberSpammerManage" target="root" />
 		<permission action="getApiGroups" target="manager" />
-		<permission action="dispMemberSpammer" target="manager" />
+		<permission action="dispMemberSpammer" target="root" />
 	</permissions>
 	<actions>
 		<action name="dispMemberInfo" type="view" standalone="true" meta-noindex="true" />
