@@ -37,6 +37,8 @@ class Context
     public static function getRequestUri() { return self::get('request_url'); }
     public static function isInstalled() { return true; }
     public static function getLang($key) { return $key; }
+    public static function addJsFilter($path, $file) {}
+    public static function loadLang($path) {}
 }
 class FileHandler
 {
@@ -609,4 +611,5 @@ check($unconfirmed_status['patch_confirmed'] === false, 'Deleting the record res
     unlink($patch_path);
 }
 require dirname(__FILE__) . '/advisories-2026.php';
+require dirname(__FILE__) . '/advisories-2026-november.php';
 echo 'OK: ', $GLOBALS['checks'], ' security checks on PHP ', PHP_VERSION, "\n";
