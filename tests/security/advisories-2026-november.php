@@ -43,6 +43,7 @@ class RveModuleModel
 {
     public $modules = array();
     public $grants = array();
+    public function isSiteAdmin($member, $site = null) { return !empty($GLOBALS['rve_site_admin']); }
     public function getModuleInfoByModuleSrl($srl, $columns = array()) { return isset($this->modules[$srl]) ? clone $this->modules[$srl] : null; }
     public function getGrant($module, $member = null, $xml = null) { return isset($this->grants[$module->module_srl]) ? $this->grants[$module->module_srl] : (object)array('access' => false, 'manager' => false); }
 }
@@ -136,3 +137,48 @@ $spammer_view->dispMemberSpammer();
 check($spammer_view->getTemplateFile() === 'spammer.html', 'Administrators retain the spammer management UI');
 Context::set('member_srl', 0);
 check(!$rve_member->procMemberSpammerManage()->toBool() && $rve_member->updates === 1, 'Spammer management rejects empty member IDs');
+
+class RveModuleController
+{
+    public $inserted = array();
+    public $updated = array();
+    public function insertModule($args) { $this->inserted[] = clone $args; $out = new BaseObject(); $out->add('module_srl', 101); return $out; }
+    public function updateModule($args) { $this->updated[] = clone $args; $out = new BaseObject(); $out->add('module_srl', $args->module_srl); return $out; }
+}
+$rve_module_controller = new RveModuleController();
+$GLOBALS['models']['module_controller'] = $rve_module_controller;
+$rve_page = new pageAdminController();
+Context::$values = array('is_logged' => true, 'logged_info' => (object)array('member_srl' => 10, 'is_admin' => 'N'), 'module_srl' => 100, 'page_name' => 'page', 'page_type' => 'OUTSIDE', 'path' => '', 'mpath' => '');
+$result = $rve_page->procPageAdminUpdate();
+check($result instanceof BaseObject && !$result->toBool() && !count($rve_module_controller->updated), 'RVE-2026-36 cannot convert another module into a page');
+$rve_modules->modules[100]->module = 'page';
+$rve_modules->modules[100]->page_type = 'ARTICLE';
+$rve_modules->modules[100]->site_srl = 0;
+$rve_page->origin_module_info = clone $rve_modules->modules[100];
+$rve_page->procPageAdminUpdate();
+check(count($rve_module_controller->updated) === 1 && $rve_module_controller->updated[0]->page_type === 'ARTICLE', 'Page updates preserve the existing page type');
+$rve_modules->grants[100]->manager = false;
+$result = $rve_page->procPageAdminUpdate();
+check($result instanceof BaseObject && !$result->toBool() && count($rve_module_controller->updated) === 1, 'Page updates recheck manager permission on the target module');
+$rve_modules->grants[100]->manager = true;
+$rve_page->origin_module_info->module_srl = 999;
+check(!$rve_page->procPageAdminUpdate()->toBool(), 'A routed page cannot update a different page ID');
+$rve_page->origin_module_info = null;
+$result = $rve_page->procPageAdminInsert();
+check($result instanceof BaseObject && !$result->toBool() && !count($rve_module_controller->inserted), 'Insert action cannot be used as an update action');
+Context::set('module_srl', null);
+check(!$rve_page->procPageAdminInsert()->toBool(), 'A module manager cannot create arbitrary pages');
+Context::get('logged_info')->is_admin = 'Y';
+$rve_page->procPageAdminInsert();
+check(count($rve_module_controller->inserted) === 1 && $rve_module_controller->inserted[0]->module === 'page', 'Administrators can create pages');
+Context::set('module_srl', 777);
+$result = $rve_page->procPageAdminUpdate();
+check($result instanceof BaseObject && !$result->toBool() && count($rve_module_controller->inserted) === 1, 'Updating a missing page cannot silently create one');
+Context::set('module_srl', null);
+Context::set('site_srl', 999);
+Context::set('site_module_info', (object)array('site_srl' => 20));
+Context::get('logged_info')->is_admin = 'N';
+$GLOBALS['rve_site_admin'] = true;
+$rve_page->procPageAdminInsert();
+check(count($rve_module_controller->inserted) === 2 && $rve_module_controller->inserted[1]->site_srl === 20, 'Virtual site administrators create pages only in their current site');
+$GLOBALS['rve_site_admin'] = false;
