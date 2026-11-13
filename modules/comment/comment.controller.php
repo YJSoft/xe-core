@@ -272,6 +272,11 @@ class commentController extends comment
 			unset($obj->member_srl);
 			unset($obj->user_id);
 		}
+		if(!$manual_inserted)
+		{
+			$obj->voted_count = $obj->blamed_count = $obj->uploaded_count = 0;
+			$obj->ipaddress = $_SERVER['REMOTE_ADDR'];
+		}
 
 		// call a trigger (before)
 		$output = ModuleHandler::triggerCall('comment.insertComment', 'before', $obj);
@@ -334,6 +339,11 @@ class commentController extends comment
 		elseif(!$is_admin && !$manual_inserted && !checkUserSequence($obj->comment_srl)) 
 		{
 			return new BaseObject(-1, 'msg_not_permitted');
+		}
+		if(!$manual_inserted)
+		{
+			$oFileModel = getModel('file');
+			$obj->uploaded_count = $oFileModel->getFilesCount($obj->comment_srl);
 		}
 
 		// determine the order

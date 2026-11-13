@@ -217,7 +217,6 @@ class documentController extends document
 		
 		if($obj->notify_message != 'Y') $obj->notify_message = 'N';
 		if(!$obj->email_address) $obj->email_address = '';
-		if(!$isRestore) $obj->ipaddress = $_SERVER['REMOTE_ADDR'];
 		
 		// only manager can modify regdate, last_update, last_updater
 		$grant = Context::get('grant');
@@ -252,6 +251,11 @@ class documentController extends document
 			unset($obj->member_srl);
 			unset($obj->user_id);
 		}
+		if(!$manual_inserted && !$isRestore)
+		{
+			foreach(array('readed_count', 'voted_count', 'blamed_count', 'comment_count', 'trackback_count', 'uploaded_count') as $counter) $obj->{$counter} = 0;
+			$obj->ipaddress = $_SERVER['REMOTE_ADDR'];
+		}
 
 		// Call a trigger (before)
 		$output = ModuleHandler::triggerCall('document.insertDocument', 'before', $obj);
@@ -259,6 +263,11 @@ class documentController extends document
 		// Register it if no given document_srl exists
 		if(!$obj->document_srl) $obj->document_srl = getNextSequence();
 		elseif(!$manual_inserted && !$isRestore && !checkUserSequence($obj->document_srl)) return new BaseObject(-1, 'msg_not_permitted');
+		if(!$manual_inserted && !$isRestore)
+		{
+			$oFileModel = getModel('file');
+			$obj->uploaded_count = $oFileModel->getFilesCount($obj->document_srl);
+		}
 
 		$oDocumentModel = getModel('document');
 		// Set to 0 if the category_srl doesn't exist

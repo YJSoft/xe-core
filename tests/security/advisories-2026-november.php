@@ -217,3 +217,46 @@ foreach(array('TEMP', 'PRIVATE') as $status) {
     check(!$rve_vote_model->getDocumentVotedMemberList()->toBool(), 'Unpublished document voter lists are restricted: ' . $status);
 }
 $rve_document->add('status', 'PUBLIC');
+
+// Insertion tests execute the real controller and capture the actual INSERT arguments.
+require_once _XE_PATH_ . 'modules/document/document.controller.php';
+require_once _XE_PATH_ . 'modules/comment/comment.controller.php';
+function checkCSRF() { return true; }
+function checkUserSequence($srl) { return $srl >= 1000; }
+function getNextSequence() { static $next = 1000; return ++$next; }
+class Mobile { public static function isFromMobilePhone() { return false; } }
+class RveFileModel { public function getFilesCount($srl) { return 2; } }
+function rveInsertedRow($name)
+{
+    foreach($GLOBALS['query_log'] as $entry) if($entry[0] === $name) return $entry[1];
+    check(false, 'Insertion must reach its database query: ' . $name);
+}
+$GLOBALS['models']['file'] = new RveFileModel();
+Context::set('logged_info', (object)array('member_srl' => 10, 'user_id' => 'member', 'user_name' => 'Member', 'nick_name' => 'Member', 'is_admin' => 'N', 'email_address' => '', 'homepage' => ''));
+Context::set('grant', (object)array('manager' => false));
+$_SERVER['REMOTE_ADDR'] = '192.0.2.10';
+$insert_document = new documentController();
+foreach(array(array(false, false), array(true, false), array(false, true)) as $mode) {
+    $args = (object)array('module_srl' => 100, 'document_srl' => 0, 'title' => 'Title', 'content' => '<p>Text</p>', 'nick_name' => 'Import author', 'comment_status' => 'ALLOW', 'status' => 'PUBLIC', 'ipaddress' => '203.0.113.99', 'readed_count' => 777, 'voted_count' => 777, 'blamed_count' => 777, 'comment_count' => 777, 'trackback_count' => 777, 'uploaded_count' => 777);
+    $GLOBALS['query_log'] = array();
+    $GLOBALS['query_fail_name'] = 'document.insertDocument';
+    $insert_document->insertDocument($args, $mode[0], $mode[1]);
+    $row = rveInsertedRow('document.insertDocument');
+    foreach(array('readed_count', 'voted_count', 'blamed_count', 'comment_count', 'trackback_count') as $counter) {
+        check($row->$counter === ($mode[0] || $mode[1] ? 777 : 0), 'RVE-2026-39 document insertion protects ' . $counter . ' while preserving trusted imports/restores');
+    }
+    check($row->ipaddress === ($mode[0] || $mode[1] ? '203.0.113.99' : '192.0.2.10'), 'Document insertion binds IP to the current request except trusted imports/restores');
+    if(!$mode[0] && !$mode[1]) check($row->uploaded_count === 2, 'Document attachment count is calculated from stored files');
+}
+$insert_comment = new commentController();
+foreach(array(false, true) as $manual) {
+    $args = (object)array('module_srl' => 100, 'document_srl' => 200, 'comment_srl' => 0, 'parent_srl' => 0, 'content' => '<p>Text</p>', 'nick_name' => 'Import author', 'ipaddress' => '203.0.113.99', 'voted_count' => 777, 'blamed_count' => 777, 'uploaded_count' => 777);
+    $GLOBALS['query_log'] = array();
+    $GLOBALS['query_fail_name'] = 'comment.insertComment';
+    $insert_comment->insertComment($args, $manual);
+    $row = rveInsertedRow('comment.insertComment');
+    check($row->voted_count === ($manual ? 777 : 0) && $row->blamed_count === ($manual ? 777 : 0), 'Comment insertion protects voting counts while preserving trusted imports');
+    check($row->ipaddress === ($manual ? '203.0.113.99' : '192.0.2.10'), 'Comment insertion binds IP to the current request except trusted imports');
+    if(!$manual) check($row->uploaded_count === 2, 'Comment attachment count is calculated from stored files');
+}
+unset($GLOBALS['query_fail_name']);
