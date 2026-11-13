@@ -43,6 +43,9 @@ class RveModuleModel
 {
     public $modules = array();
     public $grants = array();
+    public $category_reads = 0;
+    public function getModuleCategories() { $this->category_reads++; return array(); }
+    public function syncModuleToSite(&$info) {}
     public function isSiteAdmin($member, $site = null) { return !empty($GLOBALS['rve_site_admin']); }
     public function getModulePartConfig($name, $srl) { return (object)array('use_vote_up' => 'S', 'use_vote_down' => 'S'); }
     public function getModuleInfoByModuleSrl($srl, $columns = array()) { return isset($this->modules[$srl]) ? clone $this->modules[$srl] : null; }
@@ -260,3 +263,30 @@ foreach(array(false, true) as $manual) {
     if(!$manual) check($row->uploaded_count === 2, 'Comment attachment count is calculated from stored files');
 }
 unset($GLOBALS['query_fail_name']);
+
+require_once _XE_PATH_ . 'modules/board/board.admin.view.php';
+class RveBoardAdminView extends boardAdminView
+{
+    public function __construct() {}
+    public function stop($message) { $this->stop_proc = true; return new BaseObject(-1, $message); }
+}
+$rve_modules->modules[200] = (object)array('module_srl' => 200, 'module' => 'board', 'use_status' => 'PUBLIC|@|SECRET');
+$rve_modules->grants[200] = (object)array('access' => true, 'manager' => false);
+Context::$values = array('module_srl' => 200, 'logged_info' => (object)array('member_srl' => 10, 'is_admin' => 'N'));
+$settings = new RveBoardAdminView();
+$settings->origin_module_info = $rve_modules->modules[100];
+$settings->module_srl = 100;
+$result = $settings->init();
+check($result instanceof BaseObject && !$result->toBool() && Context::get('module_info') === null, 'RVE-2026-40 settings check permission on the requested board before publishing its configuration');
+check($rve_modules->category_reads === 0, 'Rejected settings requests do not load administrator data');
+$rve_modules->grants[200]->manager = true;
+$settings = new RveBoardAdminView();
+$settings->origin_module_info = $rve_modules->modules[100];
+check(!$settings->init()->toBool(), 'A routed board settings request cannot switch board IDs');
+$settings = new RveBoardAdminView();
+$settings->origin_module_info = $rve_modules->modules[200];
+$settings->init();
+check(!$settings->stop_proc && Context::get('module_info')->module_srl === 200, 'Managers retain access to the board they actually administer');
+Context::set('module_srl', 999999);
+$settings = new RveBoardAdminView();
+check(!$settings->init()->toBool(), 'Missing board IDs cannot turn into a board list request');
