@@ -130,6 +130,9 @@ check(!$result->toBool() && $rve_member->updates === 0, 'RVE-2026-35 module mana
 $rve_members->members[99]->is_admin = 'N';
 $result = $rve_member->procMemberSpammerManage();
 check(!$result->toBool() && $rve_member->updates === 0, 'Module managers cannot globally ban ordinary members either');
+Context::set('cnt_loop', 2);
+check(!$rve_member->procMemberSpammerManage()->toBool(), 'Module managers cannot bypass authorization in the content-deletion phase');
+Context::set('cnt_loop', 1);
 $spammer_view = new FixtureMemberView();
 check(!$spammer_view->dispMemberSpammer()->toBool(), 'Spammer management UI is restricted to site administrators');
 Context::get('logged_info')->is_admin = 'Y';
@@ -141,6 +144,8 @@ $spammer_view->dispMemberSpammer();
 check($spammer_view->getTemplateFile() === 'spammer.html', 'Administrators retain the spammer management UI');
 Context::set('member_srl', 0);
 check(!$rve_member->procMemberSpammerManage()->toBool() && $rve_member->updates === 1, 'Spammer management rejects empty member IDs');
+Context::set('member_srl', 10);
+check(!$rve_member->procMemberSpammerManage()->toBool() && $rve_member->updates === 1, 'Administrators cannot mark themselves as spammers');
 
 class RveModuleController
 {
@@ -290,3 +295,18 @@ check(!$settings->stop_proc && Context::get('module_info')->module_srl === 200, 
 Context::set('module_srl', 999999);
 $settings = new RveBoardAdminView();
 check(!$settings->init()->toBool(), 'Missing board IDs cannot turn into a board list request');
+
+// RVE-2026-41 relies on Rhymix-only property encoding and restoration.
+foreach(array(
+    '<a title=\'<div editor_component="x" srcdoc="&lt;script&gt;window.__xeRve41=1&lt;/script&gt;">\'>TEST</a>',
+    '<iframe src="https://trusted.example/" rx_encoded_datas="copied-signed-value" srcdoc="&lt;script&gt;window.__xeRve41=1&lt;/script&gt;"></iframe>',
+    '<div editor_component="image_link" srcdoc="&lt;script&gt;window.__xeRve41=1&lt;/script&gt;">TEST</div><iframe src="https://trusted.example/" rx_encoded_datas="copied-signed-value"></iframe>'
+) as $content) {
+    $had_iframe = strpos($content, '<iframe') !== false;
+    $purifier = new Purifier();
+    $purifier->setConfig('Cache.SerializerPath', $GLOBALS['fixture_dir']);
+    $purifier->purify($content);
+    check(!preg_match('/<iframe\b[^>]*(?:srcdoc|rx_encoded_datas|rx_encoded_properties)\s*=/i', $content), 'RVE-2026-41 payloads cannot restore iframe attributes in XE');
+    check(stripos($content, '<script') === false, 'RVE-2026-41 payloads do not produce executable script elements in XE');
+    if($had_iframe) check(strpos($content, '<iframe src="https://trusted.example/"') !== false, 'Filtering preserves safe iframe sources while removing malicious attributes');
+}
