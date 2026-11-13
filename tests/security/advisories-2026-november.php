@@ -44,6 +44,7 @@ class RveModuleModel
     public $modules = array();
     public $grants = array();
     public function isSiteAdmin($member, $site = null) { return !empty($GLOBALS['rve_site_admin']); }
+    public function getModulePartConfig($name, $srl) { return (object)array('use_vote_up' => 'S', 'use_vote_down' => 'S'); }
     public function getModuleInfoByModuleSrl($srl, $columns = array()) { return isset($this->modules[$srl]) ? clone $this->modules[$srl] : null; }
     public function getGrant($module, $member = null, $xml = null) { return isset($this->grants[$module->module_srl]) ? $this->grants[$module->module_srl] : (object)array('access' => false, 'manager' => false); }
 }
@@ -182,3 +183,37 @@ $GLOBALS['rve_site_admin'] = true;
 $rve_page->procPageAdminInsert();
 check(count($rve_module_controller->inserted) === 2 && $rve_module_controller->inserted[1]->site_srl === 20, 'Virtual site administrators create pages only in their current site');
 $GLOBALS['rve_site_admin'] = false;
+
+require_once _XE_PATH_ . 'modules/document/document.model.php';
+$rve_vote_model = new documentModel();
+$rve_modules->modules[100]->module = 'board';
+$rve_modules->modules[100]->consultation = 'N';
+$rve_modules->grants[100]->manager = false;
+Context::$values = array('document_srl' => 200, 'logged_info' => (object)array('member_srl' => 10, 'is_admin' => 'N'));
+foreach(array('access', 'view') as $permission) {
+    $rve_modules->grants[100]->$permission = false;
+    $GLOBALS['query_log'] = array();
+    $result = $rve_vote_model->getDocumentVotedMemberList();
+    check($result instanceof BaseObject && !$result->toBool() && !count($GLOBALS['query_log']), 'RVE-2026-38 voter lookup checks actual source document ' . $permission . ' permission');
+    $rve_modules->grants[100]->$permission = true;
+}
+$_SESSION['accessible'] = array();
+$rve_document->add('status', 'SECRET');
+check(!$rve_vote_model->getDocumentVotedMemberList()->toBool(), 'Voter lists of unread secret documents are unavailable');
+$rve_document->add('status', 'PUBLIC');
+$rve_modules->modules[100]->consultation = 'Y';
+check(!$rve_vote_model->getDocumentVotedMemberList()->toBool(), 'Voter lists cannot expose another author consultation document');
+$rve_document->granted = true;
+$GLOBALS['query_log'] = array();
+$rve_vote_model->getDocumentVotedMemberList();
+check(count($GLOBALS['query_log']) === 1 && $GLOBALS['query_log'][0][0] === 'document.getVotedMemberList', 'An authorized author can still retrieve the voter list');
+$rve_document->granted = false;
+$rve_modules->modules[100]->consultation = 'N';
+Context::set('document_srl', 999999);
+check(!$rve_vote_model->getDocumentVotedMemberList()->toBool(), 'Voter lists require an existing document');
+Context::set('document_srl', 200);
+foreach(array('TEMP', 'PRIVATE') as $status) {
+    $rve_document->add('status', $status);
+    check(!$rve_vote_model->getDocumentVotedMemberList()->toBool(), 'Unpublished document voter lists are restricted: ' . $status);
+}
+$rve_document->add('status', 'PUBLIC');

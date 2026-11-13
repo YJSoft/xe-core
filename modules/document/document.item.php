@@ -201,7 +201,7 @@ class documentItem extends BaseObject
 			if(empty($grant->access) || (isset($grant->view) && !$grant->view && !$this->isGranted())) return false;
 			if($module_info->module === 'board' && isset($module_info->consultation) && $module_info->consultation === 'Y' &&
 				!$this->isNotice() && empty($grant->manager) && empty($grant->consultation_read) && !$this->isGranted()) return false;
-			if($this->get('status') === 'TEMP' && !$this->isGranted()) return false;
+			if(in_array($this->get('status'), array('TEMP', 'PRIVATE'), true) && !$this->isGranted()) return false;
 			if(!$this->isSecret() || $this->isGranted()) return true;
 		}
 		return $_SESSION['accessible'][$this->document_srl]==true?true:false;
