@@ -346,6 +346,8 @@ class fileModel extends file
 	function getFileGrant($file_info, $member_info)
 	{
 		if(!$file_info) return null;
+		$file_grant = new stdClass();
+		$document_grant = false;
 
 		if($_SESSION['__XE_UPLOADING_FILES_INFO__'][$file_info->file_srl])
 		{
@@ -360,7 +362,7 @@ class fileModel extends file
 		$oDocument = $oDocumentModel->getDocument($file_info->upload_target_srl);
 		if($oDocument->isExists()) $document_grant = $oDocument->isGranted();
 
-		$file_grant->is_deletable = ($document_grant || $member_info->is_admin == 'Y' || $member_info->member_srl == $file_info->member_srl || $grant->manager);
+		$file_grant->is_deletable = ($document_grant || $member_info->is_admin == 'Y' || (!empty($member_info->member_srl) && $member_info->member_srl == $file_info->member_srl) || $grant->manager);
 
 		return $file_grant;
 	}

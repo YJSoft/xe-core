@@ -148,8 +148,14 @@ class commentItem extends BaseObject
 		return $this->get('is_secret') == 'Y' ? TRUE : FALSE;
 	}
 
-	function isAccessible()
+	function isAccessible($strict = false)
 	{
+		if($strict)
+		{
+			$oDocumentModel = getModel('document');
+			$oDocument = $oDocumentModel->getDocument($this->get('document_srl'));
+			if(!$oDocument->isAccessible(true)) return false;
+		}
 		if($_SESSION['accessibled_comment'][$this->comment_srl])
 		{
 			return TRUE;

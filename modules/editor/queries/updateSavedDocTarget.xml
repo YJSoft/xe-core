@@ -1,0 +1,13 @@
+<query id="updateSavedDocTarget" action="update">
+    <tables>
+        <table name="editor_autosave" />
+    </tables>
+    <columns>
+        <column name="document_srl" var="document_srl" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="module_srl" var="module_srl" filter="number" notnull="notnull" />
+        <condition operation="equal" column="member_srl" var="member_srl" filter="number" notnull="notnull" pipe="and" />
+        <condition operation="equal" column="certify_key" var="certify_key" pipe="and" />
+    </conditions>
+</query>

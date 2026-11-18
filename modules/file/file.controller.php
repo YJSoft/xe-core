@@ -36,11 +36,12 @@ class fileController extends file
 		if(!is_uploaded_file($file_info['tmp_name'])) exit();
 
 		// Validate editor_sequence and module_srl
-		if(empty($_SESSION['upload_info'][$editor_sequence]->enabled))
+		$module_srl = (int)$this->module_srl;
+		if(!is_scalar($editor_sequence) || !preg_match('/^[1-9][0-9]*$/D', (string)$editor_sequence) || empty($_SESSION['upload_info'][$editor_sequence]->enabled))
 		{
 			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'editor_sequence'));
 		}
-		if ($_SESSION['upload_info'][$editor_sequence]->module_srl !== $module_srl)
+		if (!isset($_SESSION['upload_info'][$editor_sequence]->module_srl) || (int)$_SESSION['upload_info'][$editor_sequence]->module_srl !== $module_srl)
 		{
 			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'module_srl'));
 		}
@@ -53,8 +54,6 @@ class fileController extends file
 			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'upload_target_srl'));
 		}
 
-		$module_srl = $this->module_srl;
-		
 		// Create if upload_target_srl is not defined in the session information
 		if(!$upload_target_srl) $_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl = getNextSequence();
 
@@ -93,12 +92,12 @@ class fileController extends file
 
 		// Validate editor_sequence and module_srl
 		$editor_sequence = Context::get('editor_sequence');
-		$module_srl = $this->module_srl;
-		if (empty($_SESSION['upload_info'][$editor_sequence]->enabled))
+		$module_srl = (int)$this->module_srl;
+		if (!is_scalar($editor_sequence) || !preg_match('/^[1-9][0-9]*$/D', (string)$editor_sequence) || empty($_SESSION['upload_info'][$editor_sequence]->enabled))
 		{
 			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'editor_sequence'));
 		}
-		if ($_SESSION['upload_info'][$editor_sequence]->module_srl && $_SESSION['upload_info'][$editor_sequence]->module_srl !== $module_srl)
+		if (!isset($_SESSION['upload_info'][$editor_sequence]->module_srl) || (int)$_SESSION['upload_info'][$editor_sequence]->module_srl !== $module_srl)
 		{
 			return $this->stop(sprintf(Context::getLang('msg_invalid_upload_info'), 'module_srl'));
 		}
@@ -113,20 +112,6 @@ class fileController extends file
 		
 		// Create if upload_target_srl is not defined in the session information
 		if(!$upload_target_srl) $_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl = getNextSequence();
-
-		// Delete and then attempt to re-upload if file_srl is requested
-		$file_srl = Context::get('file_srl');
-		if($file_srl)
-		{
-			$oFileModel = getModel('file');
-			$logged_info = Context::get('logged_info');
-			$file_info = $oFileModel->getFile($file_srl);
-			$file_grant = $oFileModel->getFileGrant($file_info, $logged_info);
-			if($file_info->file_srl == $file_srl && $file_info->upload_target_srl == $upload_target_srl && $file_grant->is_deletable)
-			{
-				$this->deleteFile($file_srl);
-			}
-		}
 
 		$file_info = Context::get('Filedata');
 		// An error appears if not a normally uploaded file
@@ -665,6 +650,7 @@ class fileController extends file
 	 */
 	function setUploadInfo($editor_sequence, $upload_target_srl = 0, $module_srl = 0)
 	{
+		if(!is_scalar($editor_sequence) || !preg_match('/^[1-9][0-9]*$/D', (string)$editor_sequence)) return;
 		if(!$module_srl)
 		{
 			$current_module_info = Context::get('current_module_info');
@@ -680,6 +666,7 @@ class fileController extends file
 		}
 		$_SESSION['upload_info'][$editor_sequence]->enabled = true;
 		$_SESSION['upload_info'][$editor_sequence]->upload_target_srl = (int)$upload_target_srl;
+		$_SESSION['upload_info'][$editor_sequence]->module_srl = (int)$module_srl;
 		if (!$module_srl)
 		{
 			trigger_error('No module_srl supplied to setUploadInfo(), and cannot determine automatically', E_USER_WARNING);
@@ -733,6 +720,7 @@ class fileController extends file
 	 */
 	function insertFile($file_info, $module_srl, $upload_target_srl, $download_count = 0, $manual_insert = false)
 	{
+		$file_info['name'] = UploadFileFilter::sanitizeFilename($file_info['name']);
 		$file_info['extension'] = strtolower(pathinfo($file_info['name'], PATHINFO_EXTENSION));
 		$file_info['original_extension'] = $file_info['extension'];
 
@@ -779,7 +767,6 @@ class fileController extends file
 			}
 		}
 
-		$file_info['name'] = preg_replace('/\.((ph(p|t|ar)?[0-9]?|p?html?|cgi|pl|exe|(?:a|j)sp|inc).*)$/i', '$0-x',$file_info['name']);
 		$file_info['name'] = removeHackTag($file_info['name']);
 		$file_info['name'] = str_replace(array('<','>'),array('%3C','%3E'),$file_info['name']);
 		$file_info['name'] = str_replace('&amp;', '&', $file_info['name']);

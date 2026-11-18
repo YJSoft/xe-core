@@ -6,6 +6,17 @@
  * high class of the member module
  */
 class member extends ModuleObject {
+	/** Spammer actions affect the whole site, including content outside one module. */
+	protected function canManageSpammer($member_srl)
+	{
+		$logged_info = Context::get('logged_info');
+		if(!Context::get('is_logged') || empty($logged_info->member_srl) || $logged_info->is_admin !== 'Y') return false;
+		if(!is_scalar($member_srl) || !preg_match('/^[1-9][0-9]*$/D', (string)$member_srl) || (string)$member_srl === (string)$logged_info->member_srl) return false;
+		$oMemberModel = getModel('member');
+		$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl);
+		return $member_info && (string)$member_info->member_srl === (string)$member_srl && $member_info->is_admin !== 'Y';
+	}
+
 	/**
 	 * Use sha1 encryption
 	 *
