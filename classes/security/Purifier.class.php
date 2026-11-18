@@ -108,6 +108,8 @@ class Purifier
 					foreach($m2[1] as $value2)
 					{
 						$value2 = strtolower($value2);
+						// Frontend template directives must not become component attributes.
+						if(strpos($value2, '-') !== false && strpos($value2, 'data-') !== 0) continue;
 						//SECISSUE check style attr
 						if($value2 == 'style' || preg_match('/^(?:on|widget$|widgetstyle$|rx_encoded_properties$)/', $value2))
 						{

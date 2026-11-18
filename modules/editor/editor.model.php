@@ -508,59 +508,54 @@ class editorModel extends editor
 	 */
 	function getSavedDoc($upload_target_srl)
 	{
-		$auto_save_args = new stdClass();
-		$auto_save_args->module_srl = Context::get('module_srl');
-		// Get the current module if module_srl doesn't exist
-		if(!$auto_save_args->module_srl)
+		$module_info = $this->getAutosaveModuleInfo();
+		if(!$module_info) return;
+		$args = $this->getAutosaveIdentity($module_info->module_srl);
+		if(!$args) return;
+		$output = executeQueryArray('editor.getSavedDocument', $args);
+		if(!$output->toBool() || !$output->data) return;
+		$rows = $output->data;
+		$saved_doc = is_array($rows) ? reset($rows) : $rows;
+		if(!is_object($saved_doc) || (string)$saved_doc->module_srl !== (string)$args->module_srl || (string)$saved_doc->member_srl !== (string)$args->member_srl) return;
+		if(!$args->member_srl && (empty($saved_doc->certify_key) || $saved_doc->certify_key !== $args->certify_key)) return;
+		$saved_doc = clone $saved_doc;
+		$has_files = false;
+		if(!$this->isAutosaveTargetSafe($saved_doc->document_srl, $args->module_srl, $has_files)) return;
+		if($saved_doc->document_srl && !$has_files && !$upload_target_srl)
 		{
-			$current_module_info = Context::get('current_module_info');
-			$auto_save_args->module_srl = $current_module_info->module_srl;
-		}
-		// Find a document by using member_srl for logged-in user and ipaddress for non-logged user
-		if(Context::get('is_logged'))
-		{
-			$logged_info = Context::get('logged_info');
-			$auto_save_args->member_srl = $logged_info->member_srl;
-		}
-		else
-		{
-			$auto_save_args->certify_key = $_COOKIE['autosave_certify_key_' . $auto_save_args->module_srl];
-			// @see https://github.com/xpressengine/xe-core/issues/2208
-			// 변경 이전에 작성된 게시물 호환성 유지
-			if(!$auto_save_args->certify_key) $auto_save_args->ipaddress = $_SERVER['REMOTE_ADDR'];
-		}
-		// Extract auto-saved data from the DB
-		$output = executeQuery('editor.getSavedDocument', $auto_save_args);
-		$saved_doc = $output->data;
-		// Return null if no result is auto-saved
-		if(!$saved_doc) return;
-
-		if($saved_doc->certify_key && !isset($auto_save_args->certify_key))
-		{
-			return;
+			$issued_target = false;
+			if(!empty($_SESSION['upload_info']))
+			{
+				foreach($_SESSION['upload_info'] as $upload_info)
+				{
+					if(!empty($upload_info->enabled) && isset($upload_info->module_srl, $upload_info->upload_target_srl) &&
+						(int)$upload_info->module_srl === (int)$args->module_srl && (int)$upload_info->upload_target_srl === (int)$saved_doc->document_srl) $issued_target = true;
+				}
+			}
+			// A legacy row alone cannot reserve an arbitrary, unused document sequence.
+			if(!$issued_target) $saved_doc->document_srl = 0;
 		}
 
-		// Check if the auto-saved document already exists
-		$oDocumentModel = getModel('document');
-		$oSaved = $oDocumentModel->getDocument($saved_doc->document_srl);
-		if($oSaved->isExists()) return;
-		// Move all the files if the auto-saved data contains document_srl and file
-		// Then set document_srl to editor_sequence
-		if($saved_doc->document_srl && $upload_target_srl && !Context::get('document_srl'))
+		// Refilter legacy rows as well as new autosaves before returning them to an editor.
+		$saved_doc->title = escape($saved_doc->title, false);
+		$saved_doc->content = removeHackTag(preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $saved_doc->content));
+		if($upload_target_srl && !Context::get('document_srl'))
 		{
-			$saved_doc->module_srl = $auto_save_args->module_srl;
-			$oFileController = getController('file');
-			$oFileController->moveFile($saved_doc->document_srl, $saved_doc->module_srl, $upload_target_srl);
+			if(!$this->isAutosaveTargetSafe($upload_target_srl, $args->module_srl)) return;
+			if($saved_doc->document_srl && (int)$saved_doc->document_srl !== (int)$upload_target_srl)
+			{
+				$oFileController = getController('file');
+				$output = $oFileController->moveFile($saved_doc->document_srl, $args->module_srl, $upload_target_srl);
+				// Legacy fileController::moveFile() returns void on success.
+				if($output instanceof BaseObject && !$output->toBool()) return;
+			}
+			$saved_doc->document_srl = (int)$upload_target_srl;
+			$update = clone $args;
+			$update->document_srl = $saved_doc->document_srl;
+			$output = executeQuery('editor.updateSavedDocTarget', $update);
+			if(!$output->toBool()) return;
 		}
-		else if($upload_target_srl) $saved_doc->document_srl = $upload_target_srl;
-		// Change auto-saved data
-		$saved_doc->certify_key = $auto_save_args->certify_key;
-		$oEditorController = getController('editor');
-		$oEditorController->deleteSavedDoc(false);
-		$oEditorController->doSaveDoc($saved_doc);
-
-		setUserSequence($saved_doc->document_srl);
-
+		if($saved_doc->document_srl) setUserSequence($saved_doc->document_srl);
 		return $saved_doc;
 	}
 

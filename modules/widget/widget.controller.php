@@ -72,6 +72,23 @@ class widgetController extends widget
 
 		$attribute = $this->arrangeWidgetVars($widget, Context::getRequestVars(), $vars);
 		// Wanted results
+		if($widget === 'widgetContent' && !empty($vars->document_srl))
+		{
+			$oDocumentModel = getModel('document');
+			$oDocument = $oDocumentModel->getDocument($vars->document_srl);
+			if(!$oDocument->isExists()) return new BaseObject(-1, 'msg_invalid_request');
+
+			// XE's isAccessible() only checks the password session, not module grants.
+			$oModuleModel = getModel('module');
+			$module_info = $oModuleModel->getModuleInfoByModuleSrl($oDocument->get('module_srl'));
+			if(!$module_info || !$module_info->module_srl) return new BaseObject(-1, 'msg_not_permitted');
+			$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
+			if(empty($grant->access) || (empty($grant->view) && !$oDocument->isGranted()) ||
+				($oDocument->isSecret() && !$oDocument->isGranted() && !$oDocument->isAccessible()))
+			{
+				return new BaseObject(-1, 'msg_not_permitted');
+			}
+		}
 		$widget_code = $this->execute($widget, $vars, true, false);
 
 		$oModuleController = getController('module');

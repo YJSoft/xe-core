@@ -58,7 +58,7 @@ class rssAdminController extends rss
 					if(!FileHandler::makeDir($path)) $alt_message = 'msg_error_occured';
 					else
 					{
-						$filename = $path.$image_obj['name'];
+						$filename = $path.UploadFileFilter::sanitizeFilename($image_obj['name']);
 
 						// Move the file
 						if(!move_uploaded_file($image_obj['tmp_name'], $filename)) $alt_message = 'msg_error_occured';

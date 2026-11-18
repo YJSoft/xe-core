@@ -157,9 +157,39 @@ jobs:
         grunt lint --force
         grunt minify
 
+    - name: Prepare PHP crash diagnostics
+      if: matrix.php != '5.3'
+      run: |
+        diagnostics_dir="$RUNNER_TEMP/php-crash-diagnostics"
+        core_dir="$RUNNER_TEMP/php-cores"
+        mkdir -p "$diagnostics_dir" "$core_dir"
+
+        if ! command -v gdb >/dev/null 2>&1; then
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y gdb
+        fi
+
+        # Bypass the runner's crash handler and keep one core per process.
+        sudo sysctl -w "kernel.core_pattern=$core_dir/core.%p"
+        {
+          php --version
+          php --ini
+          php -m
+          php -r '
+            foreach (get_loaded_extensions() as $extension) {
+              printf("%s: %s\n", $extension, phpversion($extension));
+            }
+            foreach (array("opcache.enable", "opcache.enable_cli", "opcache.jit", "opcache.jit_buffer_size", "memory_limit", "max_execution_time") as $setting) {
+              printf("%s=%s\n", $setting, var_export(ini_get($setting), true));
+            }
+          '
+          cat /proc/sys/kernel/core_pattern
+        } 2>&1 | tee "$diagnostics_dir/php-runtime.log"
+
     - name: Run Codeception
       if: matrix.php != '5.3'
       run: |
+        ulimit -c unlimited
         ./vendor/bin/codecept build
 
         server_pid=
@@ -167,7 +197,12 @@ jobs:
         stop_php_server() {
           if [ -n "$server_pid" ]; then
             kill "$server_pid" 2>/dev/null || true
-            wait "$server_pid" 2>/dev/null || true
+            if wait "$server_pid"; then
+              server_status=0
+            else
+              server_status=$?
+            fi
+            echo "PHP server PID $server_pid exited with status $server_status" >> /tmp/php_server.log
             server_pid=
           fi
         }
@@ -179,6 +214,7 @@ jobs:
           echo "=== Codeception attempt $test_attempt/2 ===" >> /tmp/php_server.log
           php -d log_errors=1 -d error_log=/tmp/php_server.log -S 127.0.0.1:8000 >> /tmp/php_server.log 2>&1 &
           server_pid=$!
+          echo "PHP server PID $server_pid (attempt $test_attempt/2)" >> /tmp/php_server.log
           server_ready=
 
           for readiness_attempt in $(seq 1 30); do
@@ -186,7 +222,8 @@ jobs:
               break
             fi
 
-            if curl --fail --silent \
+            # A partial installer run can make the app return 404 until Codeception resets it.
+            if curl --silent --show-error \
               --connect-timeout 1 --max-time 2 \
               --output /dev/null http://127.0.0.1:8000/; then
               server_ready=1
@@ -210,7 +247,7 @@ jobs:
           fi
 
           set +e
-          ./vendor/bin/codecept run -d --fail-fast --env travis 2>&1 | tee /tmp/codeception.log
+          ./vendor/bin/codecept run -d --fail-fast --env travis 2>&1 | tee /tmp/codeception.log "$RUNNER_TEMP/php-crash-diagnostics/codeception-attempt-$test_attempt.log"
           test_status=${PIPESTATUS[0]}
           set -e
 
@@ -236,3 +273,43 @@ jobs:
     - name: Show PHP server error log
       if: always() && matrix.php != '5.3'
       run: cat /tmp/php_server.log 2>/dev/null || echo "(no php errors logged)"
+
+    - name: Collect PHP crash backtraces
+      if: always() && matrix.php != '5.3'
+      run: |
+        diagnostics_dir="$RUNNER_TEMP/php-crash-diagnostics"
+        mkdir -p "$diagnostics_dir"
+        if [ -f /tmp/php_server.log ]; then
+          cp /tmp/php_server.log "$diagnostics_dir/php-server.log"
+        fi
+
+        shopt -s nullglob
+        core_files=("$RUNNER_TEMP/php-cores"/core.*)
+        if [ "${#core_files[@]}" -eq 0 ]; then
+          echo "No PHP core dumps found." | tee "$diagnostics_dir/core-status.log"
+        fi
+
+        for core_file in "${core_files[@]}"; do
+          backtrace="$diagnostics_dir/$(basename "$core_file").backtrace.log"
+          echo "::group::PHP crash backtrace ($(basename "$core_file"))"
+          if timeout 45s gdb --batch \
+            -ex 'set pagination off' \
+            -ex 'set debuginfod enabled off' \
+            -ex 'info sharedlibrary' \
+            -ex 'thread apply all bt full' \
+            "$(readlink -f "$(command -v php)")" "$core_file" > "$backtrace" 2>&1; then
+            cat "$backtrace"
+          else
+            cat "$backtrace"
+            echo "::warning::Could not finish the PHP crash backtrace for $core_file"
+          fi
+          echo "::endgroup::"
+        done
+
+    - name: Upload PHP crash diagnostics
+      if: always() && matrix.php != '5.3'
+      uses: actions/upload-artifact@v4
+      with:
+        name: php-crash-diagnostics-${{ matrix.php }}-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/php-crash-diagnostics/
+        retention-days: 7
