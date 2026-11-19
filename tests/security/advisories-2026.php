@@ -441,8 +441,9 @@ foreach (array(serialize(new stdClass()), serialize(array(array('nested'))), ser
 // Existing outside pages are updated using the stored type, with the same path rules as rendering.
 class AdvisoryPageModel
 {
+    public $type = 'OUTSIDE';
     public function getModuleInfoByModuleSrl($id, $columns = array()) {
-        return (object)array('module_srl' => $id, 'module' => 'page', 'page_type' => 'OUTSIDE');
+        return (object)array('module_srl' => $id, 'module' => 'page', 'page_type' => $this->type);
     }
     public function getGrant($module, $member) { return (object)array('manager' => true, 'access' => true); }
 }
@@ -492,6 +493,17 @@ foreach (array('path', 'mpath') as $key) {
     Context::set($key . ' ', $settings['path']);
     $result = $admin->procPageAdminUpdate();
     check($result instanceof BaseObject && !$result->toBool() && !$page_writer->saved, 'Reject ambiguous setting names before storage for ' . $key);
+}
+foreach (array('ARTICLE', 'WIDGET') as $type) {
+    $GLOBALS['models']['module']->type = $type;
+    Context::$values = $settings;
+    Context::set('page_type', 'OUTSIDE');
+    Context::set('path', 'old-unused-page.html');
+    Context::set('mpath', 'old-unused-mobile.html');
+    $page_writer->saved = null;
+    $admin = new pageAdminController();
+    $admin->procPageAdminUpdate();
+    check($page_writer->saved && $page_writer->saved->page_type === $type && !isset($page_writer->saved->path) && !isset($page_writer->saved->mpath), 'Discard unused outside paths when saving a ' . $type . ' page');
 }
 $view = new AdvisoryOutsideView();
 $view->path = $GLOBALS['fixture_dir'] . 'linked.php';
