@@ -362,3 +362,78 @@ foreach (array(0, 8, 9, 10, 13, 32, 127) as $char) {
         check(Security::getSafeRedirectURL($url, '/index.php') === '/index.php', 'Obfuscated login and signup redirects use a safe fallback');
     }
 }
+
+// Only declared skin fields and module-owned images participate in a settings update.
+class AdvisorySkinModel
+{
+    public $stored = array('P' => array(), 'M' => array());
+    public function getModuleInfoByModuleSrl($id, $columns) {
+        return (object)array('module_srl' => $id, 'module' => 'board', 'site_srl' => 3, 'is_skin_fix' => 'N', 'is_mskin_fix' => 'N');
+    }
+    public function getModuleDefaultSkin($module, $mode, $site) { return $mode . $site; }
+    public function loadSkinInfo($path, $skin, $dir = 'skins') {
+        if ($skin !== ($dir === 'skins' ? 'P3' : 'M3')) return null;
+        return (object)array('colorset' => array((object)array('name' => 'blue')), 'extra_vars' => array(
+            (object)array('name' => 'label', 'type' => 'text'), (object)array('name' => 'options', 'type' => 'checkbox'),
+            (object)array('name' => 'logo', 'type' => 'image')));
+    }
+    public function getModuleSkinVars($id) { return $this->stored['P']; }
+    public function getModuleMobileSkinVars($id) { return $this->stored['M']; }
+}
+class AdvisorySkinWriter
+{
+    public $saved;
+    public $fail = false;
+    public function insertModuleSkinVars($id, $obj) { $this->saved = $obj; return new BaseObject($this->fail ? -1 : 0); }
+    public function insertModuleMobileSkinVars($id, $obj) { return $this->insertModuleSkinVars($id, $obj); }
+}
+class AdvisorySkinAdminModel extends moduleAdminModel
+{
+    public function checkbox($value) { return $this->decodeSkinCheckbox($value); }
+}
+$skin_model = new AdvisorySkinModel();
+$skin_writer = new AdvisorySkinWriter();
+$GLOBALS['models']['module'] = $skin_model;
+$GLOBALS['models']['module_controller'] = $skin_writer;
+$skin_admin = new moduleAdminController();
+$cwd = getcwd();
+chdir($GLOBALS['fixture_dir']);
+$folder = './files/attach/images/100/';
+FileHandler::makeDir($folder);
+$image = $folder . 'logo.png';
+file_put_contents($image, 'fixture');
+$unmanaged = './separate.png';
+file_put_contents($unmanaged, 'fixture');
+foreach (array('P', 'M') as $mode) {
+    $skin_model->stored[$mode]['logo'] = (object)array('value' => $unmanaged);
+    Context::$values = array('module_srl' => 100, '_mode' => $mode, 'label' => 'A & B', 'options' => array('A & B', array('nested')),
+        'colorset' => 'blue', 'extra' => 'unlisted', 'del_logo' => 'Y', 'del_label' => 'Y');
+    $skin_admin->procModuleAdminUpdateSkinInfo();
+    check($skin_writer->saved->label === 'A &amp; B' && $skin_writer->saved->options === array('A &amp; B') && $skin_writer->saved->colorset === 'blue', 'Declared skin values are escaped for ' . $mode);
+    check(count((array)$skin_writer->saved) === 3 && is_file($unmanaged), 'Ignore undeclared settings and leave unmanaged files intact for ' . $mode);
+}
+$skin_model->stored['P']['logo']->value = $image;
+$skin_model->stored['M']['logo']->value = $image;
+Context::set('_mode', 'P');
+Context::set('del_logo', null);
+Context::set('logo', $unmanaged);
+Context::set('colorset', 'missing');
+$skin_admin->procModuleAdminUpdateSkinInfo();
+check($skin_writer->saved->logo === $image && !isset($skin_writer->saved->colorset), 'Retain the managed image and accept only a declared colorset');
+Context::set('del_logo', 'Y');
+$skin_admin->procModuleAdminUpdateSkinInfo();
+check(is_file($image) && !isset($skin_writer->saved->logo), 'Keep an image still referenced by the other skin');
+$skin_model->stored['M'] = array();
+$skin_writer->fail = true;
+$result = $skin_admin->procModuleAdminUpdateSkinInfo();
+check(!$result->toBool() && is_file($image), 'Failed settings writes preserve the original image');
+$skin_writer->fail = false;
+$skin_admin->procModuleAdminUpdateSkinInfo();
+check(!file_exists($image) && is_file($unmanaged), 'Delete the last reference to a managed skin image after saving');
+chdir($cwd);
+$skin_reader = new AdvisorySkinAdminModel();
+$choices = array('first', '한글";', '0');
+check($skin_reader->checkbox(serialize($choices)) === $choices, 'Legacy checkbox values retain byte lengths and order');
+foreach (array(serialize(new stdClass()), serialize(array(array('nested'))), serialize($choices) . 'extra', 'a:1:{') as $invalid) {
+    check($skin_reader->checkbox($invalid) === array(), 'Reject malformed or non-list checkbox storage');
+}
