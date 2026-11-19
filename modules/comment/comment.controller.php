@@ -713,7 +713,7 @@ class commentController extends comment
 
 		if($anonymous)
 		{
-			getModel('member')->anonymizeAuthor($obj, $source_obj->get('member_srl'));
+			getModel('member')->anonymizeStoredAuthor($obj, $source_obj);
 		}
 
 		// call a trigger (before)

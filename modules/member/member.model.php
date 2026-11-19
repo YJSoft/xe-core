@@ -32,6 +32,21 @@ class memberModel extends member
 	}
 
 	/**
+	 * On edit, only a negative stored member number identifies an already anonymous author.
+	 * A named post or guest draft can still contain the writer's real nickname.
+	 */
+	function anonymizeStoredAuthor($obj, $source)
+	{
+		$member_srl = $source->get('member_srl');
+		$this->anonymizeAuthor($obj, $member_srl);
+		$alias = $source->get('nick_name');
+		if($member_srl < 0 && is_string($alias) && $alias !== '')
+		{
+			$obj->nick_name = $obj->user_name = $alias;
+		}
+	}
+
+	/**
 	 * @brief Return member's configuration
 	 */
 	function getMemberConfig()
