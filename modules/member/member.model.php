@@ -20,6 +20,18 @@ class memberModel extends member
 	}
 
 	/**
+	 * Set the public author fields before posting triggers see an anonymous submission.
+	 * The caller supplies the signed-in member number or the stored author's number.
+	 */
+	function anonymizeAuthor($obj, $member_srl)
+	{
+		$obj->member_srl = -abs((int)$member_srl);
+		$obj->user_id = $obj->email_address = $obj->homepage = '';
+		$obj->nick_name = $obj->user_name = 'anonymous';
+		$obj->notify_message = 'N';
+	}
+
+	/**
 	 * @brief Return member's configuration
 	 */
 	function getMemberConfig()

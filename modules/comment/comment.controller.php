@@ -186,10 +186,12 @@ class commentController extends comment
 	 * Enter comments
 	 * @param object $obj
 	 * @param bool $manual_inserted
+	 * @param bool $anonymous Optional trailing argument, kept out of the signature for subclass compatibility.
 	 * @return object
 	 */
 	function insertComment($obj, $manual_inserted = FALSE)
 	{
+		$anonymous = func_num_args() > 2 && func_get_arg(2) === true;
 		if(!$manual_inserted && !checkCSRF())
 		{
 			return new BaseObject(-1, 'msg_invalid_request');
@@ -246,6 +248,11 @@ class commentController extends comment
 		$obj->document_srl = intval($obj->document_srl);
 		$obj->parent_srl = intval($obj->parent_srl);
 
+		if($obj->comment_srl && !$manual_inserted && !checkUserSequence($obj->comment_srl))
+		{
+			return new BaseObject(-1, 'msg_not_permitted');
+		}
+
 		// Only managers can customize dates.
 		$grant = Context::get('grant');
 		if(!$grant->manager)
@@ -256,7 +263,11 @@ class commentController extends comment
 
 		// Add the current user's info, unless it is a guest post.
 		$logged_info = Context::get('logged_info');
-		if($logged_info->member_srl && !$manual_inserted)
+		if($anonymous)
+		{
+			getModel('member')->anonymizeAuthor($obj, isset($logged_info->member_srl) ? $logged_info->member_srl : 0);
+		}
+		elseif($logged_info->member_srl && !$manual_inserted)
 		{
 			$obj->member_srl = $logged_info->member_srl;
 			$obj->user_id = htmlspecialchars_decode($logged_info->user_id);
@@ -265,12 +276,16 @@ class commentController extends comment
 			$obj->email_address = $logged_info->email_address;
 			$obj->homepage = $logged_info->homepage;
 		}
-
-		// Remove member_srl and user_id if not logged in
-		if(!$logged_info->member_srl && !$manual_inserted)
+		elseif(!$logged_info->member_srl && !$manual_inserted)
 		{
 			unset($obj->member_srl);
 			unset($obj->user_id);
+		}
+
+		if(!$manual_inserted)
+		{
+			$obj->voted_count = $obj->blamed_count = $obj->uploaded_count = 0;
+			$obj->ipaddress = $_SERVER['REMOTE_ADDR'];
 		}
 
 		// call a trigger (before)
@@ -331,9 +346,10 @@ class commentController extends comment
 		{
 			$obj->comment_srl = getNextSequence();
 		}
-		elseif(!$is_admin && !$manual_inserted && !checkUserSequence($obj->comment_srl)) 
+		if(!$manual_inserted)
 		{
-			return new BaseObject(-1, 'msg_not_permitted');
+			$oFileModel = getModel('file');
+			$obj->uploaded_count = $oFileModel->getFilesCount($obj->comment_srl);
 		}
 
 		// determine the order
@@ -486,7 +502,7 @@ class commentController extends comment
 		// commit
 		$oDB->commit();
 
-		if(!$manual_inserted)
+		if(!$manual_inserted && !$anonymous)
 		{
 			// send a message if notify_message option in enabled in the original article
 			$oDocument->notify(Context::getLang('comment'), $obj->content);
@@ -657,10 +673,12 @@ class commentController extends comment
 	 * @param object $obj
 	 * @param bool $is_admin
 	 * @param bool $manual_updated
+	 * @param bool $anonymous Optional trailing argument, kept out of the signature for subclass compatibility.
 	 * @return object
 	 */
 	function updateComment($obj, $is_admin = FALSE, $manual_updated = FALSE)
 	{
+		$anonymous = func_num_args() > 3 && func_get_arg(3) === true;
 		if(!$manual_updated && !checkCSRF())
 		{
 			return new BaseObject(-1, 'msg_invalid_request');
@@ -691,6 +709,11 @@ class commentController extends comment
 		{
 			unset($obj->member_srl);
 			unset($obj->user_id);
+		}
+
+		if($anonymous)
+		{
+			getModel('member')->anonymizeAuthor($obj, $source_obj->get('member_srl'));
 		}
 
 		// call a trigger (before)
