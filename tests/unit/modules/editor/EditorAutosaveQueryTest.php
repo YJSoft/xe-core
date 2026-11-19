@@ -3,13 +3,13 @@ require_once _XE_PATH_ . 'tests/_support/CompatibilityTestCase.php';
 
 class EditorAutosaveQueryTest extends CompatibilityTestCase
 {
-	private function compileQuery($name, $args)
+	private function compileQuery($name, $args, $module = 'editor')
 	{
 		Context::setDBInfo((object)array('master_db' => array('db_type' => 'compatibility')));
 		$GLOBALS['__DB__']['compatibility'] = new AutosaveQueryDB();
 		$file = $this->fixture($name . '.php', '');
 		$parser = new XmlQueryParser();
-		$parser->parse_xml_query('editor.' . $name, _XE_PATH_ . 'modules/editor/queries/' . $name . '.xml', $file);
+		$parser->parse_xml_query($module . '.' . $name, _XE_PATH_ . 'modules/' . $module . '/queries/' . $name . '.xml', $file);
 		return include $file;
 	}
 
@@ -25,6 +25,13 @@ class EditorAutosaveQueryTest extends CompatibilityTestCase
 			$this->assertTrue(strpos($where, 'certify_key') !== false, $where);
 			$this->assertTrue(strpos($where, 'module_srl') !== false, $where);
 		}
+	}
+
+	public function testDraftFileLookupHasADefaultSortColumn()
+	{
+		$query = $this->compileQuery('getFiles', (object)array('upload_target_srl' => 200), 'file');
+		$this->assertTrue($query instanceof Query);
+		$this->assertTrue(strpos($query->getOrderByString(), 'source_filename') !== false);
 	}
 
 	public function testTargetUpdatesCannotCompileWithoutModuleAndAuthorConditions()

@@ -255,7 +255,8 @@ check($restored !== null && $restored->document_srl === 0 && !count($GLOBALS['ad
 $guest_row->document_srl = 300;
 $foreign_file = (object)array('file_srl' => 500, 'module_srl' => 100, 'member_srl' => 0, 'isvalid' => 'N');
 $GLOBALS['query_data']['file.getFiles'] = array($foreign_file);
-check($advisory_editor->getSavedDoc(null) === null, 'A guest cannot restore another guest pending attachments');
+$restored = $advisory_editor->getSavedDoc(null);
+check($restored && !$restored->document_srl && !isset($_SESSION['__XE_UPLOADING_FILES_INFO__'][500]), 'A legacy guest row still yields text without granting unverified attachments');
 ModuleHandler::$triggers = array();
 $editor_controller->deleteSavedDoc(true);
 check(!count(ModuleHandler::$triggers), 'A guest cannot delete another guest pending attachments through autosave removal');
@@ -325,6 +326,66 @@ $restored = $advisory_editor->getSavedDoc(301);
 check($restored !== null && $restored->document_srl === 301 && $advisory_files->moves === array(array(300, 100, 301)), 'Authorized attachment moves update the returned autosave target');
 $update = end($GLOBALS['query_log']);
 check($update[0] === 'editor.updateSavedDocTarget' && $update[1]->module_srl === 100 && $update[1]->member_srl === 41 && $update[1]->document_srl === 301, 'Moved attachments persist their new target with author and module conditions');
+
+// Closing the browser loses its PHP session. Restore into a newly opened editor,
+// then add a pending file and save again under the same member or guest identity.
+foreach (array(0, 41) as $author) {
+    $_SESSION = array();
+    $_COOKIE = array();
+    Context::set('logged_info', $author ? (object)array('member_srl' => $author, 'is_admin' => 'N') : null);
+    Context::set('editor_sequence', 7);
+    $row_input->document_srl = 300;
+    $row_input->title = 'first draft';
+    $row_input->content = '<p>first draft body</p>';
+    setUserSequence(300);
+    $advisory_files->setUploadInfo(7, 300, 100);
+    $pending = (object)array('file_srl' => 501, 'member_srl' => $author, 'module_srl' => 100, 'isvalid' => 'N');
+    $_SESSION['__XE_UPLOADING_FILES_INFO__'][501] = true;
+    $GLOBALS['query_data']['file.getFiles'] = array($pending);
+    $GLOBALS['query_log'] = array();
+    $result = $editor_controller->doSaveDoc($row_input);
+    $write = end($GLOBALS['query_log']);
+    check($result->toBool() && $write[0] === 'editor.insertSavedDoc', 'Persist the first draft before closing the browser');
+    $GLOBALS['query_data']['editor.getSavedDocument'] = array($write[1]);
+    if (!$author) {
+        foreach ($GLOBALS['query_log'] as $query) {
+            if ($query[0] === 'file.updateGuestUploadKey') $pending->guest_upload_key = $query[1]->guest_upload_key;
+        }
+        check(strlen($pending->guest_upload_key) === 64 && $pending->guest_upload_key !== $write[1]->certify_key, 'Backfill a verifiable guest file without storing the browser credential on it');
+    }
+
+    $_SESSION = array();
+    $advisory_files->setUploadInfo(19, 0, 100);
+    Context::set('editor_sequence', 19);
+    $reader = new editorController();
+    $reader->procEditorLoadSavedDocument();
+    check($reader->get('title') === $row_input->title && $reader->get('content') === $row_input->content, 'Restore the draft text in a fresh PHP session');
+    check($reader->get('document_srl') == 300 && checkUserSequence(300) && $_SESSION['upload_info'][19]->upload_target_srl === 300, 'Bind the restored draft to the new upload editor');
+    if (!$author) check(!empty($_SESSION['__XE_UPLOADING_FILES_INFO__'][501]), 'Restore the verified guest file grant');
+
+    $added = clone $pending;
+    $added->file_srl = 502;
+    if (!$author) $added->guest_upload_key = $advisory_editor->getGuestUploadKey(100, 502, true);
+    $GLOBALS['query_data']['file.getFiles'][] = $added;
+    $_SESSION['__XE_UPLOADING_FILES_INFO__'][502] = true;
+    $row_input->title = 'edited draft';
+    $result = $editor_controller->doSaveDoc($row_input);
+    $write = end($GLOBALS['query_log']);
+    check($result->toBool() && $write[1]->title === 'edited draft' && $write[1]->document_srl === 300, 'Save again after adding a file to the restored draft');
+    $GLOBALS['query_data']['editor.getSavedDocument'] = array($write[1]);
+    $_SESSION = array();
+    $restored = $advisory_editor->getSavedDoc(null);
+    check($restored && $restored->title === 'edited draft' && checkUserSequence(300), 'Reopen the edited draft a second time');
+    if (!$author) {
+        check(!empty($_SESSION['__XE_UPLOADING_FILES_INFO__'][501]) && !empty($_SESSION['__XE_UPLOADING_FILES_INFO__'][502]), 'Both guest uploads retain their owners on a second restart');
+        $_SESSION = array();
+        $added->guest_upload_key = $pending->guest_upload_key;
+        $restored = $advisory_editor->getSavedDoc(null);
+        check($restored && !$restored->document_srl && !checkUserSequence(300) && empty($_SESSION['__XE_UPLOADING_FILES_INFO__']), 'A file key belongs to a single file and a partial match cannot grant the target');
+    }
+}
+
+Context::set('editor_sequence', 7);
 
 // The file model must never equate guest ID zero with ownership.
 $GLOBALS['query_data']['file.getFiles'] = array();

@@ -50,6 +50,7 @@ class FileHandler
 }
 function checkCSRF() { return empty($GLOBALS['board_csrf_denied']); }
 function checkUserSequence($srl) { return in_array($srl, isset($_SESSION['seq']) ? $_SESSION['seq'] : array()); }
+function getScriptPath() { return '/'; }
 function getNextSequence() { static $next = 1000; $_SESSION['seq'][] = ++$next; return $next; }
 class Mobile { public static function isFromMobilePhone() { return false; } }
 function getModel($name) { return $GLOBALS['models'][$name]; }
@@ -288,6 +289,7 @@ class DB
     public function begin() { $this->begins++; }
     public function commit() { $this->commits++; }
     public function rollback() { $this->rollbacks++; }
+    public function isColumnExists($table, $column) { return empty($GLOBALS['fixture_old_autosave_schema']) && $table === 'files' && $column === 'guest_upload_key'; }
 }
 require _XE_PATH_ . 'modules/module/module.admin.controller.php';
 class FixtureLangController extends moduleAdminController

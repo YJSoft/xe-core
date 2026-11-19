@@ -263,7 +263,7 @@ class editorController extends editor
 		$document_srl = isset($args->document_srl) ? $args->document_srl : 0;
 		if(!is_scalar($document_srl) && $document_srl !== null) return new BaseObject(-1, 'msg_invalid_request');
 		$document_srl = (int)$document_srl;
-		if($document_srl && (!checkUserSequence($document_srl) || !$this->isAutosaveTargetSafe($document_srl, $module_info->module_srl))) return new BaseObject(-1, 'msg_not_permitted');
+		if($document_srl && (!checkUserSequence($document_srl) || !is_array($this->getAutosaveFiles($document_srl, $module_info->module_srl)))) return new BaseObject(-1, 'msg_not_permitted');
 
 		// A client-supplied document_srl cannot create an upload authorization.
 		$editor_sequence = Context::get('editor_sequence');
@@ -282,24 +282,55 @@ class editorController extends editor
 			}
 		}
 		$target_srl = 0;
+		$files = array();
 		if(!empty($upload_info->enabled) && isset($upload_info->module_srl) && (int)$upload_info->module_srl === (int)$module_info->module_srl)
 		{
 			$target_srl = (int)$upload_info->upload_target_srl;
 			if($document_srl && $document_srl !== $target_srl) return new BaseObject(-1, 'msg_not_permitted');
 			if($target_srl && !checkUserSequence($target_srl)) return new BaseObject(-1, 'msg_not_permitted');
-			if(!$this->isAutosaveTargetSafe($target_srl, $module_info->module_srl)) return new BaseObject(-1, 'msg_not_permitted');
+			$files = $this->getAutosaveFiles($target_srl, $module_info->module_srl);
+			if(!is_array($files)) return new BaseObject(-1, 'msg_not_permitted');
 		}
 
 		$identity = $this->getAutosaveIdentity($module_info->module_srl, true);
+		if(!$identity) return new BaseObject(-1, 'msg_not_permitted');
 		// Build a fresh row: direct callers cannot inject another author or module.
 		$row = clone $identity;
 		$row->document_srl = $target_srl;
 		$row->title = escape($args->title, false);
 		$row->content = removeHackTag(preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $args->content));
 		$row->ipaddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+		$oDB = DB::getInstance();
+		$oDB->begin();
+		// Upgrade pending guest files only while the original uploader can still prove ownership.
+		if(!$identity->member_srl && $files && $oDB->isColumnExists('files', 'guest_upload_key'))
+		{
+			foreach($files as $file)
+			{
+				$key = $this->getGuestUploadKey($identity->module_srl, $file->file_srl);
+				if(isset($file->guest_upload_key) && $file->guest_upload_key === $key) continue;
+				$update = new stdClass();
+				$update->file_srl = $file->file_srl;
+				$update->module_srl = $identity->module_srl;
+				$update->upload_target_srl = $target_srl;
+				$update->guest_upload_key = $key;
+				$output = executeQuery('file.updateGuestUploadKey', $update);
+				if(!$output->toBool())
+				{
+					$oDB->rollback();
+					return $output;
+				}
+			}
+		}
 		$output = executeQuery('editor.deleteSavedDoc', $identity);
-		if(!$output->toBool()) return $output;
-		return executeQuery('editor.insertSavedDoc', $row);
+		if($output->toBool()) $output = executeQuery('editor.insertSavedDoc', $row);
+		if(!$output->toBool())
+		{
+			$oDB->rollback();
+			return $output;
+		}
+		$oDB->commit();
+		return $output;
 	}
 
 	/**
@@ -354,7 +385,7 @@ class editorController extends editor
 		{
 			if((string)$saved_doc->module_srl !== (string)$args->module_srl || (string)$saved_doc->member_srl !== (string)$args->member_srl) continue;
 			if(!$args->member_srl && (empty($saved_doc->certify_key) || $saved_doc->certify_key !== $args->certify_key)) continue;
-			if($mode && $saved_doc->document_srl && $this->isAutosaveTargetSafe($saved_doc->document_srl, $args->module_srl))
+			if($mode && $saved_doc->document_srl && is_array($this->getAutosaveFiles($saved_doc->document_srl, $args->module_srl, !$args->member_srl)))
 			{
 				$result = ModuleHandler::triggerCall('editor.deleteSavedDoc', 'after', $saved_doc);
 				if(!$result->toBool()) return $result;

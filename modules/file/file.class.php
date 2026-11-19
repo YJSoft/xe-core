@@ -56,7 +56,7 @@ class file extends ModuleObject
 		$oDB = &DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
-		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
+		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'guest-upload-key', 'updated'));
 		if($oModuleModel->needUpdate($version_update_id))
 		{
 			// 2007. 10. 17 Create a trigger to insert, update, delete documents and comments
@@ -82,6 +82,7 @@ class file extends ModuleObject
 			// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 			if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'file', 'controller', 'triggerCopyModule', 'after')) return true;
 
+			if(!$oDB->isColumnExists('files', 'guest_upload_key')) return true;
 			if(!$oDB->isColumnExists('files', 'cover_image')) return true;
 
 			$oModuleController->insertUpdatedLog($version_update_id);
@@ -100,7 +101,7 @@ class file extends ModuleObject
 		$oDB = &DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
-		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
+		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'guest-upload-key', 'updated'));
 		if($oModuleModel->needUpdate($version_update_id))
 		{
 			// 2007. 10. 17 Create a trigger to insert, update, delete documents and comments
@@ -152,6 +153,12 @@ class file extends ModuleObject
 			}
 
 			if(!$oDB->isColumnExists('files', 'cover_image')) $oDB->addColumn('files', 'cover_image', 'char', '1', 'N');
+
+			if(!$oDB->isColumnExists('files', 'guest_upload_key'))
+			{
+				$oDB->addColumn('files', 'guest_upload_key', 'varchar', 64);
+				if(!$oDB->isColumnExists('files', 'guest_upload_key')) return new BaseObject(-1, 'msg_db_query_failed');
+			}
 
 			$oModuleController->insertUpdatedLog($version_update_id);
 		}

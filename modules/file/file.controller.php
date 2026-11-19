@@ -860,6 +860,11 @@ class fileController extends file
 		$args->member_srl = $member_srl;
 		$args->sid = $random->createSecureSalt(32, 'hex');
 
+		if(!$manual_insert && !$member_srl && $module_srl && DB::getInstance()->isColumnExists('files', 'guest_upload_key'))
+		{
+			$oEditorModel = getModel('editor');
+			$args->guest_upload_key = $oEditorModel->getGuestUploadKey($module_srl, $args->file_srl, true);
+		}
 		$output = executeQuery('file.insertFile', $args);
 		if(!$output->toBool()) return $output;
 
