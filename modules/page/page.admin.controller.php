@@ -24,10 +24,15 @@ class pageAdminController extends page
 		$oModuleModel = getModel('module');
 		// Set board module
 		$args = Context::getRequestVars();
+		// Extra-variable storage trims field names. Only accept the names checked here.
+		foreach($args as $key => $val)
+		{
+			if(trim($key) !== (string)$key) return new BaseObject(-1, 'msg_invalid_request');
+		}
 		$args->module = 'page';
 		$args->mid = $args->page_name;	//because if mid is empty in context, set start page mid
-		$args->path = isset($args->path) ? strval($args->path) : '';
-		$args->mpath = isset($args->mpath) ? strval($args->mpath) : '';
+		$args->path = isset($args->path) ? $args->path : '';
+		$args->mpath = isset($args->mpath) ? $args->mpath : '';
 		if (!self::_isAllowedExternalPath($args->path))
 		{
 			$this->setError(-1);
@@ -54,20 +59,18 @@ class pageAdminController extends page
 		// Check if an original module exists by using module_srl
 		if($args->module_srl)
 		{
-			$columnList = array('module_srl');
+			$columnList = array('module_srl', 'module');
 			$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->module_srl, $columnList);
-			if($module_info->module_srl != $args->module_srl)
+			if(!$module_info || $module_info->module !== 'page' || $module_info->module_srl != $args->module_srl)
 			{
-				unset($args->module_srl);
+				return new BaseObject(-1, 'msg_invalid_request');
 			}
-			else
+			$args->page_type = isset($module_info->page_type) ? $module_info->page_type : 'WIDGET';
+			foreach($args as $key=>$val)
 			{
-				foreach($args as $key=>$val)
-				{
-					$module_info->{$key} = $val;
-				}
-				$args = $module_info;
+				$module_info->{$key} = $val;
 			}
+			$args = $module_info;
 		}
 
 		switch ($args->page_type)
@@ -107,6 +110,14 @@ class pageAdminController extends page
 		}
 
 		if(!$output->toBool()) return $output;
+		if(!empty($args->module_srl) && $args->page_type === 'OUTSIDE')
+		{
+			$pattern = FileHandler::getRealPath(sprintf('./files/cache/opage/%d.*.php', $args->module_srl));
+			foreach((array)glob($pattern) as $cache_file)
+			{
+				if($cache_file) FileHandler::removeFile($cache_file);
+			}
+		}
 
 		$this->add("page", Context::get('page'));
 		$this->add('module_srl',$output->get('module_srl'));
@@ -121,7 +132,7 @@ class pageAdminController extends page
 	 */
 	function procPageAdminUpdate()
 	{
-		$this->procPageAdminInsert();
+		return $this->procPageAdminInsert();
 	}
 
 	function putDocumentsInPageToArray($target, &$array)
@@ -378,49 +389,7 @@ class pageAdminController extends page
 
 	protected static function _isAllowedExternalPath($path)
 	{
-		if($path === '') return true;
-		if(!is_string($path) || preg_match('/[\x00-\x1f\x7f]/', $path)) return false;
-
-		// Normalize the directory separator.
-		$path = str_replace('\\', '/', $path);
-		// Leading ../ is needed by installations sharing files outside the root.
-		// Parent components elsewhere can hide forbidden directories.
-		$relative_path = preg_replace('!^(?:\.\./)+!', '', $path);
-		if(preg_match('!(?:^|/)\.\.(?:/|$)!', $relative_path)) return false;
-		$is_windows_path = DIRECTORY_SEPARATOR === '\\' && preg_match('!^[a-z]:/!i', $path);
-		if(!$is_windows_path && preg_match('!^[a-z][a-z0-9+.-]*:!i', $path))
-		{
-			if(!preg_match('!^https?://!i', $path)) return false;
-			$url = @parse_url($path);
-			if($url === false || empty($url['host'])) return false;
-		}
-
-		// Check for forbidden paths.
-		if (preg_match('!(?:^|/)files/(?:attach|cache|config|debug|env|member_extra_info|ruleset|site_design|thumbnails)/!i', $path))
-		{
-			return false;
-		}
-
-		// Run the check again after resolving any symbolic links.
-		if (!preg_match('!^https?://!i', $path))
-		{
-			if(!is_file($path)) return false;
-			$realpath = realpath($path);
-			if($realpath === false) return false;
-			if ($realpath !== false)
-			{
-				$normalized_realpath = str_replace('\\', '/', $realpath);
-				if ($normalized_realpath !== $path)
-				{
-					if (!self::_isAllowedExternalPath($realpath))
-					{
-						return false;
-					}
-				}
-			}
-		}
-
-		return true;
+		return self::resolveExternalPath($path) !== false;
 	}
 }
 /* End of file page.admin.controller.php */
