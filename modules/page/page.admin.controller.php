@@ -33,20 +33,6 @@ class pageAdminController extends page
 		$args->mid = $args->page_name;	//because if mid is empty in context, set start page mid
 		$args->path = isset($args->path) ? $args->path : '';
 		$args->mpath = isset($args->mpath) ? $args->mpath : '';
-		if (!self::_isAllowedExternalPath($args->path))
-		{
-			$this->setError(-1);
-			$this->setMessage('msg_invalid_opage_pc_path');
-			$this->setRedirectUrl(Context::get('success_return_url'));
-			return;
-		}
-		if (!self::_isAllowedExternalPath($args->mpath))
-		{
-			$this->setError(-1);
-			$this->setMessage('msg_invalid_opage_mobile_path');
-			$this->setRedirectUrl(Context::get('success_return_url'));
-			return;
-		}
 		$args->opage_proc_php = isset($args->opage_proc_php) ? $args->opage_proc_php : 'N';
 		$args->opage_proc_tpl = isset($args->opage_proc_tpl) ? $args->opage_proc_tpl : 'N';
 		if ($args->opage_proc_tpl === 'Y')
@@ -73,6 +59,8 @@ class pageAdminController extends page
 			$args = $module_info;
 		}
 
+		if(empty($args->page_type)) $args->page_type = 'WIDGET';
+		if(!in_array($args->page_type, array('WIDGET', 'ARTICLE', 'OUTSIDE'), true)) return new BaseObject(-1, 'msg_invalid_request');
 		switch ($args->page_type)
 		{
 			case 'WIDGET' :
@@ -92,6 +80,20 @@ class pageAdminController extends page
 				}
 			case 'OUTSIDE' :
 				{
+					if (!self::_isAllowedExternalPath($args->path))
+					{
+						$this->setError(-1);
+						$this->setMessage('msg_invalid_opage_pc_path');
+						$this->setRedirectUrl(Context::get('success_return_url'));
+						return;
+					}
+					if (!self::_isAllowedExternalPath($args->mpath))
+					{
+						$this->setError(-1);
+						$this->setMessage('msg_invalid_opage_mobile_path');
+						$this->setRedirectUrl(Context::get('success_return_url'));
+						return;
+					}
 					unset($args->skin);
 					unset($args->mskin);
 					break;
