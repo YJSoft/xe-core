@@ -420,7 +420,7 @@ class documentController extends document
 
 		if($anonymous)
 		{
-			getModel('member')->anonymizeAuthor($obj, $source_obj->get('member_srl'));
+			getModel('member')->anonymizeStoredAuthor($obj, $source_obj);
 		}
 		elseif($obj->member_srl < 0)
 		{
@@ -522,7 +522,7 @@ class documentController extends document
 		}
 
 		// For the document written by logged-in user however no nick_name exists
-		if($source_obj->get('member_srl')&&!$obj->nick_name)
+		if(!$anonymous && $source_obj->get('member_srl') && !$obj->nick_name)
 		{
 			$obj->member_srl = $source_obj->get('member_srl');
 			$obj->user_name = $source_obj->get('user_name');

@@ -141,6 +141,39 @@ foreach(array('document', 'comment') as $kind) {
 }
 unset($GLOBALS['query_fail_name']);
 
+// An editor may supply different names, but only the stored anonymous alias is public.
+Context::set('nick_name', 'Editor name');
+foreach(array('document', 'comment') as $kind) {
+    $item = $posting_models->$kind;
+    $action = $kind === 'document' ? 'procBoardInsertDocument' : 'procBoardInsertComment';
+    $query = $kind . '.update' . ucfirst($kind);
+    $item->add('user_name', 'Private name');
+    $item->add('email_address', 'private@example.com');
+    $item->add('user_id', 'private');
+    $item->add('homepage', 'https://example.com/');
+    foreach(array(array(-25, 'Reader 7', 'Reader 7'), array(-25, '0', '0'), array(-25, '', 'anonymous'),
+        array(25, 'Member name', 'anonymous'), array(0, 'Guest name', 'anonymous')) as $case) {
+        list($owner, $name, $expected) = $case;
+        $item->add('member_srl', $owner);
+        $item->add('nick_name', $name);
+        $GLOBALS['query_fail_name'] = $query;
+        $GLOBALS['query_log'] = ModuleHandler::$triggers = array();
+        $board->$action();
+        $row = submittedBoardRow($query);
+        check(ModuleHandler::$triggers[0][0] === $query, 'Observe the first ' . $kind . ' update trigger');
+        foreach(array(ModuleHandler::$triggers[0][1], $row) as $author) {
+            check($author->member_srl === -abs($owner) && $author->nick_name === $expected && $author->user_name === $expected &&
+                $author->user_id === '' && $author->email_address === '' && $author->homepage === '' && $author->notify_message === 'N',
+                'Keep only the public alias before triggers and at the ' . $kind . ' write');
+        }
+        if($kind === 'document') {
+            $history = submittedBoardRow('document.insertHistory');
+            check($history->nick_name === $expected && $history->member_srl === -abs($owner), 'Keep the same anonymous author in history');
+        }
+    }
+}
+unset($GLOBALS['query_fail_name']);
+
 // XE stores document and comment read permissions separately, even at the same numeric ID.
 $document_at_same_id = new documentItem();
 $document_at_same_id->document_srl = $posting_models->comment->comment_srl;
