@@ -519,9 +519,15 @@ class editorModel extends editor
 		if(!is_object($saved_doc) || (string)$saved_doc->module_srl !== (string)$args->module_srl || (string)$saved_doc->member_srl !== (string)$args->member_srl) return;
 		if(!$args->member_srl && (empty($saved_doc->certify_key) || $saved_doc->certify_key !== $args->certify_key)) return;
 		$saved_doc = clone $saved_doc;
-		$has_files = false;
-		if(!$this->isAutosaveTargetSafe($saved_doc->document_srl, $args->module_srl, $has_files)) return;
-		if($saved_doc->document_srl && !$has_files)
+		$files = $this->getAutosaveFiles($saved_doc->document_srl, $args->module_srl, !$args->member_srl);
+		if($files === false) return;
+		if($files === null)
+		{
+			// An old guest row can still supply text, without rebinding unverified files.
+			$saved_doc->document_srl = 0;
+			$files = array();
+		}
+		if($saved_doc->document_srl && !$files)
 		{
 			$issued_target = false;
 			if(checkUserSequence($saved_doc->document_srl) && !empty($_SESSION['upload_info']))
@@ -541,7 +547,8 @@ class editorModel extends editor
 		$saved_doc->content = removeHackTag(preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $saved_doc->content));
 		if($upload_target_srl && !Context::get('document_srl'))
 		{
-			if(!checkUserSequence($upload_target_srl) || !$this->isAutosaveTargetSafe($upload_target_srl, $args->module_srl)) return;
+			if(!checkUserSequence($upload_target_srl)) return;
+			if((int)$saved_doc->document_srl !== (int)$upload_target_srl && !is_array($this->getAutosaveFiles($upload_target_srl, $args->module_srl))) return;
 			if($saved_doc->document_srl && (int)$saved_doc->document_srl !== (int)$upload_target_srl)
 			{
 				$oFileController = getController('file');
@@ -554,6 +561,10 @@ class editorModel extends editor
 			$update->document_srl = $saved_doc->document_srl;
 			$output = executeQuery('editor.updateSavedDocTarget', $update);
 			if(!$output->toBool()) return;
+		}
+		if(!$args->member_srl)
+		{
+			foreach($files as $file) $_SESSION['__XE_UPLOADING_FILES_INFO__'][$file->file_srl] = true;
 		}
 		if($saved_doc->document_srl) setUserSequence($saved_doc->document_srl);
 		return $saved_doc;

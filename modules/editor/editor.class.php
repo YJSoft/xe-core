@@ -35,8 +35,12 @@ class editor extends ModuleObject
 			{
 				if(!$create) return null;
 				$key = Security::getRandomToken(20);
+				if(!$key) return null;
+			}
+			if($create)
+			{
 				$secure = !empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off';
-				setcookie($cookie, $key, time() + 3600, '', '', $secure, true);
+				setcookie($cookie, $key, time() + 7 * 86400, getScriptPath(), '', $secure, true);
 				$_COOKIE[$cookie] = $key;
 			}
 			$args->certify_key = $key;
@@ -44,11 +48,22 @@ class editor extends ModuleObject
 		return $args;
 	}
 
-	/** Validate old autosave rows before granting, moving, or deleting their attachments. */
-	protected function isAutosaveTargetSafe($target_srl, $module_srl, &$has_files = null)
+	/** A download URL never contains the browser's draft credential. */
+	public function getGuestUploadKey($module_srl, $file_srl, $create = false)
 	{
-		$has_files = false;
-		if(!$target_srl) return true;
+		$identity = $this->getAutosaveIdentity($module_srl, $create);
+		if(empty($identity->certify_key)) return null;
+		return hash_hmac('sha256', $module_srl . ':' . $file_srl, $identity->certify_key);
+	}
+
+	/**
+	 * Return the pending files owned by this writer. A guest with an unverified
+	 * file can recover the text only (null). Other invalid targets return false.
+	 * Use the persistent credential only after authenticating the saved draft.
+	 */
+	protected function getAutosaveFiles($target_srl, $module_srl, $restore_guest = false)
+	{
+		if(!$target_srl) return array();
 		$oDocumentModel = getModel('document');
 		$document = $oDocumentModel->getDocument($target_srl);
 		if($document->isExists()) return false;
@@ -58,14 +73,26 @@ class editor extends ModuleObject
 		$output = executeQueryArray('file.getFiles', $args);
 		if(!$output->toBool()) return false;
 		$logged_info = Context::get('logged_info');
+		$member_srl = !empty($logged_info->member_srl) ? $logged_info->member_srl : 0;
+		$files = array();
+		$unverified_guest_file = false;
 		foreach((array)$output->data as $file)
 		{
-			$has_files = true;
 			if((string)$file->module_srl !== (string)$module_srl || $file->isvalid !== 'N') return false;
-			$owner = !empty($logged_info->member_srl) && (string)$logged_info->member_srl === (string)$file->member_srl;
-			if(!$owner && empty($_SESSION['__XE_UPLOADING_FILES_INFO__'][$file->file_srl])) return false;
+			if($file->member_srl)
+			{
+				if((string)$file->member_srl !== (string)$member_srl) return false;
+			}
+			elseif(empty($_SESSION['__XE_UPLOADING_FILES_INFO__'][$file->file_srl]))
+			{
+				if(!$restore_guest || empty($file->guest_upload_key) || $file->guest_upload_key !== $this->getGuestUploadKey($module_srl, $file->file_srl))
+				{
+					$unverified_guest_file = true;
+				}
+			}
+			$files[] = $file;
 		}
-		return true;
+		return $unverified_guest_file ? null : $files;
 	}
 
 	/**
