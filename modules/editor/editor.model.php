@@ -521,10 +521,10 @@ class editorModel extends editor
 		$saved_doc = clone $saved_doc;
 		$has_files = false;
 		if(!$this->isAutosaveTargetSafe($saved_doc->document_srl, $args->module_srl, $has_files)) return;
-		if($saved_doc->document_srl && !$has_files && !$upload_target_srl)
+		if($saved_doc->document_srl && !$has_files)
 		{
 			$issued_target = false;
-			if(!empty($_SESSION['upload_info']))
+			if(checkUserSequence($saved_doc->document_srl) && !empty($_SESSION['upload_info']))
 			{
 				foreach($_SESSION['upload_info'] as $upload_info)
 				{
@@ -541,7 +541,7 @@ class editorModel extends editor
 		$saved_doc->content = removeHackTag(preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $saved_doc->content));
 		if($upload_target_srl && !Context::get('document_srl'))
 		{
-			if(!$this->isAutosaveTargetSafe($upload_target_srl, $args->module_srl)) return;
+			if(!checkUserSequence($upload_target_srl) || !$this->isAutosaveTargetSafe($upload_target_srl, $args->module_srl)) return;
 			if($saved_doc->document_srl && (int)$saved_doc->document_srl !== (int)$upload_target_srl)
 			{
 				$oFileController = getController('file');

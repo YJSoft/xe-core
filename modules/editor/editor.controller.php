@@ -263,7 +263,7 @@ class editorController extends editor
 		$document_srl = isset($args->document_srl) ? $args->document_srl : 0;
 		if(!is_scalar($document_srl) && $document_srl !== null) return new BaseObject(-1, 'msg_invalid_request');
 		$document_srl = (int)$document_srl;
-		if($document_srl && !$this->isAutosaveTargetSafe($document_srl, $module_info->module_srl)) return new BaseObject(-1, 'msg_not_permitted');
+		if($document_srl && (!checkUserSequence($document_srl) || !$this->isAutosaveTargetSafe($document_srl, $module_info->module_srl))) return new BaseObject(-1, 'msg_not_permitted');
 
 		// A client-supplied document_srl cannot create an upload authorization.
 		$editor_sequence = Context::get('editor_sequence');
@@ -286,6 +286,7 @@ class editorController extends editor
 		{
 			$target_srl = (int)$upload_info->upload_target_srl;
 			if($document_srl && $document_srl !== $target_srl) return new BaseObject(-1, 'msg_not_permitted');
+			if($target_srl && !checkUserSequence($target_srl)) return new BaseObject(-1, 'msg_not_permitted');
 			if(!$this->isAutosaveTargetSafe($target_srl, $module_info->module_srl)) return new BaseObject(-1, 'msg_not_permitted');
 		}
 
