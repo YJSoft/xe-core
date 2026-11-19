@@ -122,7 +122,7 @@ function removeHackTag($content)
     $purifier->purify($content);
     return $content;
 }
-function setUserSequence($srl) { $GLOBALS['advisory_sequences'][] = $srl; }
+function setUserSequence($srl) { $_SESSION['seq'][] = $srl; $GLOBALS['advisory_sequences'][] = $srl; }
 class ModuleHandler
 {
     public static $triggers = array();
@@ -285,6 +285,21 @@ $guest_row->module_srl = 100;
 $_SESSION['upload_info'] = array();
 $GLOBALS['query_data']['file.getFiles'] = array();
 $advisory_files->setUploadInfo(7, 300, 100);
+$_SESSION['seq'] = array();
+foreach (array(0, 300) as $unissued_target) {
+    $row_input->document_srl = $unissued_target;
+    $GLOBALS['query_log'] = array();
+    $result = $editor_controller->doSaveDoc(clone $row_input);
+    check(!$result->toBool() && !count($GLOBALS['query_log']), 'An upload slot alone cannot authorize an autosave target');
+}
+$restored = $advisory_editor->getSavedDoc(null);
+check($restored && !$restored->document_srl && !checkUserSequence(300), 'Restoring text cannot issue a sequence from an upload slot alone');
+Context::set('document_srl', 200);
+$restored = $advisory_editor->getSavedDoc(301);
+check($restored && !$restored->document_srl && !checkUserSequence(300), 'An unused destination cannot authorize a legacy text-only source');
+Context::set('document_srl', null);
+setUserSequence(300);
+setUserSequence(301);
 $row_input->document_srl = 301;
 $result = $editor_controller->doSaveDoc(clone $row_input);
 check(!$result->toBool(), 'Autosave rejects document_srl differing from its issued upload target');
@@ -305,6 +320,7 @@ check(!$result->toBool(), 'Autosave rejects existing document targets');
 $row_input->document_srl = 0;
 $GLOBALS['query_data']['file.getFiles'] = array($foreign_file);
 $advisory_files->moves = array();
+check($advisory_editor->getSavedDoc(302) === null && !$advisory_files->moves, 'Restoration requires an issued destination before moving files');
 $restored = $advisory_editor->getSavedDoc(301);
 check($restored !== null && $restored->document_srl === 301 && $advisory_files->moves === array(array(300, 100, 301)), 'Authorized attachment moves update the returned autosave target');
 $update = end($GLOBALS['query_log']);
