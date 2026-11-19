@@ -411,6 +411,11 @@ foreach (array('P', 'M') as $mode) {
     $skin_admin->procModuleAdminUpdateSkinInfo();
     check($skin_writer->saved->label === 'A &amp; B' && $skin_writer->saved->options === array('A &amp; B') && $skin_writer->saved->colorset === 'blue', 'Declared skin values are escaped for ' . $mode);
     check(count((array)$skin_writer->saved) === 3 && is_file($unmanaged), 'Ignore undeclared settings and leave unmanaged files intact for ' . $mode);
+    Context::$values = array('module_srl' => 100, '_mode' => $mode, 'label' => '<sample title="quoted">', 'options' => serialize(array('blue')));
+    Context::set('label ', 'unused alias');
+    Context::set("logo\t", 'unused image field');
+    $skin_admin->procModuleAdminUpdateSkinInfo();
+    check((array)$skin_writer->saved === array('label' => '&lt;sample title=&quot;quoted&quot;&gt;'), 'Only the exact field name is stored, markup is escaped and a serialized scalar is ignored for ' . $mode);
 }
 $skin_model->stored['P']['logo']->value = $image;
 $skin_model->stored['M']['logo']->value = $image;
