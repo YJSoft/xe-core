@@ -570,7 +570,7 @@ class documentModel extends document
 			$oDocumentModel = getModel('document');
 			$oDocument = $oDocumentModel->getDocument($document_srl);	//before setting document recycle
 
-			if($oDocument->isExists())
+			if($oDocument->isExists() && filter_var($oDocument->getIpAddress(), FILTER_VALIDATE_IP))
 			{
 				// Find a post equivalent to ip address
 				$url = getUrl('','module','admin','act','dispDocumentAdminList','search_target','ipaddress','search_keyword',$oDocument->getIpAddress());

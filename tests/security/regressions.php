@@ -47,6 +47,10 @@ class FileHandler
     public static function readFile($path) { return is_file($path) ? file_get_contents($path) : null; }
     public static function writeFile($path, $contents) { if (empty($GLOBALS['fixture_write_failure'])) file_put_contents($path, $contents, LOCK_EX); }
 }
+function checkCSRF() { return empty($GLOBALS['board_csrf_denied']); }
+function checkUserSequence($srl) { return in_array($srl, isset($_SESSION['seq']) ? $_SESSION['seq'] : array()); }
+function getNextSequence() { static $next = 1000; $_SESSION['seq'][] = ++$next; return $next; }
+class Mobile { public static function isFromMobilePhone() { return false; } }
 function getModel($name) { return $GLOBALS['models'][$name]; }
 function getAdminModel($name) { return $GLOBALS['models'][$name . '_admin']; }
 function getController($name) { return $GLOBALS['models'][$name . '_controller']; }
@@ -612,4 +616,5 @@ check($unconfirmed_status['patch_confirmed'] === false, 'Deleting the record res
 }
 require dirname(__FILE__) . '/advisories-2026.php';
 require dirname(__FILE__) . '/advisories-2026-november.php';
+require dirname(__FILE__) . '/anonymous-board.php';
 echo 'OK: ', $GLOBALS['checks'], ' security checks on PHP ', PHP_VERSION, "\n";

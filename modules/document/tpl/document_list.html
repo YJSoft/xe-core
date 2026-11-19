@@ -53,7 +53,7 @@ xe.lang.msg_empty_search_keyword = '{$lang->msg_empty_search_keyword}';
 				<td class="nowr">{$oDocument->get('readed_count')}</td>
 				<td class="nowr">{$oDocument->get('voted_count')}/{$oDocument->get('blamed_count')}</td>
 				<td class="nowr">{$oDocument->getRegdate("Y-m-d H:i")}</td>
-				<td class="nowr"><a href="{getUrl('search_target','ipaddress','search_keyword',$oDocument->get('ipaddress'))}">{$oDocument->get('ipaddress')}</a></td>
+				<td class="nowr"><a href="{getUrl('search_target','ipaddress','search_keyword',$oDocument->get('ipaddress'))}">{escape($oDocument->get('ipaddress'))}</a></td>
 				<td class="nowr">{$status_name_list[$oDocument->get('status')]}</td>
 				<td><input type="checkbox" name="cart" value="{$oDocument->document_srl}" /></td>
 			</tr>

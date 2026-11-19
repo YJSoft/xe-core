@@ -17,6 +17,22 @@ class boardController extends board
 	{
 	}
 
+	// A posting action takes individual sequence numbers, never a list.
+	private function normalizePostingIds($obj, $fields)
+	{
+		foreach($fields as $field)
+		{
+			$value = isset($obj->$field) ? $obj->$field : 0;
+			if($value === '') $value = 0;
+			if((!is_int($value) && !is_string($value)) || filter_var($value, FILTER_VALIDATE_INT) === false || $value < 0)
+			{
+				return false;
+			}
+			$obj->$field = (int)$value;
+		}
+		return true;
+	}
+
 	/**
 	 * @brief insert document
 	 **/
@@ -31,14 +47,17 @@ class boardController extends board
 		{
 			return new BaseObject(-1, 'msg_not_permitted');
 		}
-		$logged_info = Context::get('logged_info');
 
 		// setup variables
 		$obj = Context::getRequestVars();
+		if(!$this->normalizePostingIds($obj, array('document_srl')))
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 		$obj->module_srl = $this->module_srl;
 		if($obj->is_notice!='Y'||!$this->grant->manager) $obj->is_notice = 'N';
-		$obj->commentStatus = $obj->comment_status;
-		unset($obj->extra_vars);
+		$obj->commentStatus = isset($obj->comment_status) ? $obj->comment_status : null;
+		unset($obj->extra_vars, $obj->password_is_hashed, $obj->ipaddress, $obj->list_order, $obj->uploaded_count);
 
 		$oModuleModel = getModel('module');
 		$module_config = $oModuleModel->getModuleInfoByModuleSrl($obj->module_srl);
@@ -72,46 +91,20 @@ class boardController extends board
 		$oDocumentController = getController('document');
 
 		// check if the document is existed
-		$oDocument = $oDocumentModel->getDocument($obj->document_srl, $this->grant->manager);
-
-		// update the document if it is existed
-		$is_update = false;
-		if($oDocument->isExists() && $oDocument->document_srl == $obj->document_srl)
+		$oDocument = $oDocumentModel->getDocument($obj->document_srl);
+		$is_update = $oDocument->isExists();
+		if($is_update && $oDocument->get('module_srl') != $this->module_srl)
 		{
-			$is_update = true;
+			return new BaseObject(-1, 'msg_invalid_request');
 		}
 
-		// if use anonymous is true
-		if($this->module_info->use_anonymous == 'Y')
-		{
-			$this->module_info->admin_mail = '';
-			$obj->notify_message = 'N';
-			if($is_update===false)
-			{
-				$obj->member_srl = -1*$logged_info->member_srl;
-			}
-			$obj->email_address = $obj->homepage = $obj->user_id = '';
-			$obj->user_name = $obj->nick_name = 'anonymous';
-			$bAnonymous = true;
-			if($is_update===false)
-			{
-				$oDocument->add('member_srl', $obj->member_srl);
-			}
-		}
-		else
-		{
-			$bAnonymous = false;
-		}
+		$anonymous = $this->module_info->use_anonymous == 'Y';
 
-		if($obj->is_secret == 'Y' || strtoupper($obj->status == 'SECRET'))
-		{
-			$use_status = explode('|@|', $this->module_info->use_status);
-			if(!is_array($use_status) || !in_array('SECRET', $use_status))
-			{
-				unset($obj->is_secret);
-				$obj->status = 'PUBLIC';
-			}
-		}
+		$use_status = $this->module_info->use_status;
+		if(!is_array($use_status)) $use_status = explode('|@|', (string)$use_status);
+		$secret = (isset($obj->is_secret) && $obj->is_secret === 'Y') || (isset($obj->status) && $obj->status === 'SECRET');
+		$obj->status = $secret && in_array('SECRET', $use_status, true) ? 'SECRET' : 'PUBLIC';
+		unset($obj->is_secret);
 
 		// update the document if it is existed
 		if($is_update)
@@ -119,11 +112,6 @@ class boardController extends board
 			if(!$oDocument->isGranted())
 			{
 				return new BaseObject(-1,'msg_not_permitted');
-			}
-
-			if($this->module_info->use_anonymous == 'Y') {
-				$obj->member_srl = abs($oDocument->get('member_srl')) * -1;
-				$oDocument->add('member_srl', $obj->member_srl);
 			}
 
 			if($this->module_info->protect_content=="Y" && $oDocument->get('comment_count')>0 && $this->grant->manager==false)
@@ -146,17 +134,17 @@ class boardController extends board
 				$obj->update_order = $obj->list_order = (getNextSequence() * -1);
 			}
 
-			$output = $oDocumentController->updateDocument($oDocument, $obj, $bAnonymous);
+			$output = $oDocumentController->updateDocument($oDocument, $obj, false, $anonymous);
 			$msg_code = 'success_updated';
 
 		// insert a new document otherwise
 		} else {
-			$output = $oDocumentController->insertDocument($obj, $bAnonymous);
+			$output = $oDocumentController->insertDocument($obj, false, false, true, $anonymous);
 			$msg_code = 'success_registed';
 			$obj->document_srl = $output->get('document_srl');
 
 			// send an email to admin user
-			if($output->toBool() && $this->module_info->admin_mail)
+			if($output->toBool() && !$anonymous && $this->module_info->admin_mail)
 			{
 				$oModuleModel = getModel('module');
 				$member_config = $oModuleModel->getModuleConfig('member');
@@ -258,10 +246,13 @@ class boardController extends board
 		{
 			return new BaseObject(-1, 'msg_not_permitted');
 		}
-		$logged_info = Context::get('logged_info');
 
 		// get the relevant data for inserting comment
 		$obj = Context::getRequestVars();
+		if(!$this->normalizePostingIds($obj, array('document_srl', 'comment_srl', 'parent_srl')))
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 		$obj->module_srl = $this->module_srl;
 
 		if(!$this->module_info->use_status) $this->module_info->use_status = 'PUBLIC';
@@ -296,71 +287,41 @@ class boardController extends board
 		// check if the doument is existed
 		$oDocumentModel = getModel('document');
 		$oDocument = $oDocumentModel->getDocument($obj->document_srl);
-		if(!$oDocument->isExists())
+		if(!$oDocument->isExists() || $oDocument->get('module_srl') != $this->module_srl)
 		{
 			return new BaseObject(-1,'msg_not_founded');
 		}
 
-		// For anonymous use, remove writer's information and notifying information
-		if($this->module_info->use_anonymous == 'Y')
-		{
-			$this->module_info->admin_mail = '';
-			$obj->notify_message = 'N';
-			$obj->member_srl = -1*$logged_info->member_srl;
-			$obj->email_address = $obj->homepage = $obj->user_id = '';
-			$obj->user_name = $obj->nick_name = 'anonymous';
-			$bAnonymous = true;
-		}
-		else
-		{
-			$bAnonymous = false;
-		}
-
-		// generate comment  module model object
+		$anonymous = $this->module_info->use_anonymous == 'Y';
 		$oCommentModel = getModel('comment');
-
-		// generate comment module controller object
 		$oCommentController = getController('comment');
+		$comment = !empty($obj->comment_srl) ? $oCommentModel->getComment($obj->comment_srl) : null;
+		unset($obj->uploaded_count);
+		if(!$this->grant->manager) unset($obj->last_update);
 
-		// check the comment is existed
-		// if the comment is not existed, then generate a new sequence
-		if(!$obj->comment_srl)
+		if($comment && $comment->isExists())
 		{
-			$obj->comment_srl = getNextSequence();
-		} else {
-			$comment = $oCommentModel->getComment($obj->comment_srl, $this->grant->manager);
-		}
-
-		// if comment_srl is not existed, then insert the comment
-		if($comment->comment_srl != $obj->comment_srl)
-		{
-
-			// parent_srl is existed
-			if($obj->parent_srl)
-			{
-				$parent_comment = $oCommentModel->getComment($obj->parent_srl);
-				if(!$parent_comment->comment_srl)
-				{
-					return new BaseObject(-1, 'msg_invalid_request');
-				}
-
-				$output = $oCommentController->insertComment($obj, $bAnonymous);
-
-			// parent_srl is not existed
-			} else {
-				$output = $oCommentController->insertComment($obj, $bAnonymous);
-			}
-		// update the comment if it is not existed
-		} else {
-			// check the grant
-			if(!$comment->isGranted())
+			if($comment->get('document_srl') != $obj->document_srl || !$comment->isGranted())
 			{
 				return new BaseObject(-1,'msg_not_permitted');
 			}
 
 			$obj->parent_srl = $comment->parent_srl;
-			$output = $oCommentController->updateComment($obj, $this->grant->manager);
-			$comment_srl = $obj->comment_srl;
+			$output = $oCommentController->updateComment($obj, $this->grant->manager, false, $anonymous);
+		}
+		else
+		{
+			if($obj->parent_srl)
+			{
+				$parent_comment = $oCommentModel->getComment($obj->parent_srl);
+				if(!$parent_comment->isExists() || $parent_comment->get('document_srl') != $obj->document_srl)
+				{
+					return new BaseObject(-1, 'msg_invalid_request');
+				}
+			}
+
+			if(empty($obj->comment_srl)) $obj->comment_srl = getNextSequence();
+			$output = $oCommentController->insertComment($obj, false, $anonymous);
 		}
 
 		if(!$output->toBool())
@@ -374,7 +335,7 @@ class boardController extends board
 		}
 		$this->add('mid', Context::get('mid'));
 		$this->add('document_srl', $obj->document_srl);
-		$this->add('comment_srl', $obj->comment_srl);
+		$this->add('comment_srl', $output->get('comment_srl'));
 	}
 
 	/**

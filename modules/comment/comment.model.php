@@ -89,7 +89,7 @@ class commentModel extends comment
 			$oCommentModel = getModel('comment');
 			$oComment = $oCommentModel->getComment($comment_srl);
 
-			if($oComment->isExists())
+			if($oComment->isExists() && filter_var($oComment->getIpAddress(), FILTER_VALIDATE_IP))
 			{
 				// Find a post of the corresponding ip address
 				$url = getUrl('', 'module', 'admin', 'act', 'dispCommentAdminList', 'search_target', 'ipaddress', 'search_keyword', $oComment->getIpAddress());

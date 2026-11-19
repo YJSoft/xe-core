@@ -229,10 +229,6 @@ $rve_document->add('status', 'PUBLIC');
 // Insertion tests execute the real controller and capture the actual INSERT arguments.
 require_once _XE_PATH_ . 'modules/document/document.controller.php';
 require_once _XE_PATH_ . 'modules/comment/comment.controller.php';
-function checkCSRF() { return true; }
-function checkUserSequence($srl) { return $srl >= 1000; }
-function getNextSequence() { static $next = 1000; return ++$next; }
-class Mobile { public static function isFromMobilePhone() { return false; } }
 class RveFileModel { public function getFilesCount($srl) { return 2; } }
 function rveInsertedRow($name)
 {
