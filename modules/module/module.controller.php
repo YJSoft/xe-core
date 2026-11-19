@@ -977,11 +977,10 @@ class moduleController extends module
 		}
 
 		getDestroyXeVars($obj);
-		if(!$obj || !count((array)$obj)) return new BaseObject();
 
 		$args = new stdClass;
 		$args->module_srl = $module_srl;
-		foreach($obj as $key => $val)
+		foreach((array)$obj as $key => $val)
 		{
 			// #17927989 For an old board which used the old blog module
 			// it often saved menu item(stdClass) on the skin info column
@@ -992,7 +991,7 @@ class moduleController extends module
 
 			$args->name = trim($key);
 			$args->value = trim($val);
-			if(!$args->name || !$args->value) continue;
+			if($args->name === '' || $args->value === '') continue;
 
 			if($mode === 'P')
 			{
@@ -1004,8 +1003,8 @@ class moduleController extends module
 			}
 			if(!$output->toBool())
 			{
-				return $output;
 				$oDB->rollback();
+				return $output;
 			}
 		}
 

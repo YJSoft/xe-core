@@ -361,17 +361,17 @@ class moduleAdminModel extends module
 				$group = $val->group;
 				$name = $val->name;
 				$type = $val->type;
-				if($skin_vars[$name]) 
+				if(isset($skin_vars[$name]))
 				{
 					$value = $skin_vars[$name]->value;
 				}
 				else $value = '';
 				if($type=="checkbox")
 				{
-					$value = $value?unserialize($value):array();
+					$value = $this->decodeSkinCheckbox($value);
+					if(!$value && isset($val->default) && $val->default !== '') $value = (array)$val->default;
 				}
-
-				$value = empty($value) ? $val->default : $value;
+				elseif($value === '') $value = $val->default;
 				$skin_info->extra_vars[$key]->value= $value;
 			}
 		}
@@ -390,6 +390,26 @@ class moduleAdminModel extends module
 
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path.'tpl', 'skin_config');
+	}
+
+	/** Read the flat list of strings stored by checkbox inputs, including on PHP 5.3. */
+	protected function decodeSkinCheckbox($data)
+	{
+		if(!is_string($data) || !preg_match('/^a:([0-9]+):\{/', $data, $header)) return array();
+		$offset = strlen($header[0]);
+		$count = (int)$header[1];
+		$size = strlen($data);
+		$values = array();
+		for($i = 0; $i < $count; $i++)
+		{
+			if(!preg_match('/\Gi:[0-9]+;s:([0-9]+):"/', $data, $field, 0, $offset)) return array();
+			$offset += strlen($field[0]);
+			$length = (int)$field[1];
+			if($length > $size - $offset - 2 || substr($data, $offset + $length, 2) !== '";') return array();
+			$values[] = substr($data, $offset, $length);
+			$offset += $length + 2;
+		}
+		return substr($data, $offset) === '}' ? $values : array();
 	}
 
 	/**

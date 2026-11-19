@@ -42,6 +42,7 @@ class Context
 }
 class FileHandler
 {
+    public static function getRealPath($path) { return substr($path, 0, 2) === './' ? getcwd() . substr($path, 1) : $path; }
     public static function removeFile($path) { return !file_exists($path) || unlink($path); }
     public static function makeDir($path) { return is_dir($path) || mkdir($path, 0777, true); }
     public static function readFile($path) { return is_file($path) ? file_get_contents($path) : null; }

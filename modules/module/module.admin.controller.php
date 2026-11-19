@@ -366,30 +366,30 @@ class moduleAdminController extends module
 		$mode = $mode === 'P' ? 'P' : 'M';
 
 		$oModuleModel = getModel('module');
-		$columnList = array('module_srl', 'module', 'skin', 'mskin', 'is_skin_fix', 'is_mskin_fix');
+		$columnList = array('module_srl', 'site_srl', 'module', 'skin', 'mskin', 'is_skin_fix', 'is_mskin_fix');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
 		if($module_info->module_srl)
 		{
 			if($mode === 'M')
 			{
-				if($module_info->is_mskin_fix == 'Y')
+				if($module_info->is_mskin_fix != 'N')
 				{
 					$skin = $module_info->mskin;
 				}
 				else
 				{
-					$skin = $oModuleModel->getModuleDefaultSkin($module_info->module, 'M');
+					$skin = $oModuleModel->getModuleDefaultSkin($module_info->module, 'M', $module_info->site_srl);
 				}
 			}
 			else
 			{
-				if($module_info->is_skin_fix == 'Y')
+				if($module_info->is_skin_fix != 'N')
 				{
 					$skin = $module_info->skin;
 				}
 				else
 				{
-					$skin = $oModuleModel->getModuleDefaultSkin($module_info->module, 'P');
+					$skin = $oModuleModel->getModuleDefaultSkin($module_info->module, 'P', $module_info->site_srl);
 				}
 			}
 
@@ -407,78 +407,62 @@ class moduleAdminController extends module
 				$skin_vars = $oModuleModel->getModuleSkinVars($module_srl);
 			}
 
-			// Check received variables (unset such variables as act, module_srl, page, mid, module)
-			$obj = Context::getRequestVars();
-			unset($obj->act);
-			unset($obj->error_return_url);
-			unset($obj->module_srl);
-			unset($obj->page);
-			unset($obj->mid);
-			unset($obj->module);
-			unset($obj->_mode);
-			// Separately handle if a type of extra_vars is an image in the original skin_info
-			if($skin_info->extra_vars)
+			if(!$skin_info) return new BaseObject(-1, 'msg_invalid_request');
+			$args = Context::getRequestVars();
+			$obj = new stdClass();
+			if(isset($args->colorset) && !empty($skin_info->colorset))
 			{
-				foreach($skin_info->extra_vars as $vars)
+				foreach($skin_info->colorset as $colorset)
 				{
-					if($vars->type!='image') continue;
-
-					$image_obj = $obj->{$vars->name};
-					// Get a variable to delete
-					$del_var = $obj->{"del_".$vars->name};
-					unset($obj->{"del_".$vars->name});
-					if($del_var == 'Y')
-					{
-						FileHandler::removeFile($skin_vars[$vars->name]->value);
-						continue;
-					}
-					// Use the previous data if not uploaded
-					if(!$image_obj['tmp_name'])
-					{
-						$obj->{$vars->name} = $skin_vars[$vars->name]->value;
-						continue;
-					}
-					// Ignore if the file is not successfully uploaded
-					if(!is_uploaded_file($image_obj['tmp_name']) || !checkUploadedFile($image_obj['tmp_name']))
-					{
-						unset($obj->{$vars->name});
-						continue;
-					}
-					// Ignore if the file is not an image
-					if(!preg_match("/\.(jpg|jpeg|gif|png)$/i", $image_obj['name']))
-					{
-						unset($obj->{$vars->name});
-						continue;
-					}
-					// Upload the file to a path
-					$path = sprintf("./files/attach/images/%s/", $module_srl);
-					// Create a directory
-					if(!FileHandler::makeDir($path)) return false;
-
-					$filename = $path.UploadFileFilter::sanitizeFilename($image_obj['name']);
-					// Move the file
-					if(!move_uploaded_file($image_obj['tmp_name'], $filename))
-					{
-						unset($obj->{$vars->name});
-						continue;
-					}
-					// Upload the file
-					FileHandler::removeFile($skin_vars[$vars->name]->value);
-					// Change a variable
-					unset($obj->{$vars->name});
-					$obj->{$vars->name} = $filename;
+					if($args->colorset === $colorset->name) $obj->colorset = escape($colorset->name, false);
 				}
 			}
-			// Load the entire skin of the module and then remove the image
-			/*
-			if($skin_info->extra_vars) {
-			foreach($skin_info->extra_vars as $vars) {
-			if($vars->type!='image') continue;
-			$value = $skin_vars[$vars->name];
-			if(file_exists($value)) @unlink($value);
+
+			$directory = sprintf('./files/attach/images/%d/', $module_info->module_srl);
+			$old_images = array();
+			$new_images = array();
+			$extra_vars = isset($skin_info->extra_vars) ? $skin_info->extra_vars : array();
+			foreach($extra_vars as $var)
+			{
+				$name = trim($var->name);
+				if($name === '') continue;
+				$value = isset($args->$name) ? $args->$name : null;
+				if($var->type === 'checkbox')
+				{
+					if(!is_array($value)) continue;
+					$obj->$name = array();
+					foreach($value as $choice)
+					{
+						if(is_string($choice)) $obj->{$name}[] = escape($choice);
+					}
+					continue;
+				}
+				if($var->type !== 'image')
+				{
+					if(is_string($value)) $obj->$name = escape($value);
+					continue;
+				}
+
+				$previous = isset($skin_vars[$name]->value) ? $skin_vars[$name]->value : '';
+				$previous = $this->getSkinImagePath($directory, $previous);
+				if($previous) $old_images[] = $previous;
+				if(isset($args->{'del_'.$name}) && $args->{'del_'.$name} === 'Y') continue;
+				if($previous) $obj->$name = $previous;
+
+				$image = isset($_FILES[$name]) ? $_FILES[$name] : null;
+				if(!isset($image['name'], $image['tmp_name']) || !is_string($image['name']) || !is_string($image['tmp_name'])) continue;
+				if(!preg_match('/\.(jpe?g|gif|png)$/iD', $image['name'], $extension) || !checkUploadedFile($image['tmp_name'], $image['name'])) continue;
+				if(is_link(FileHandler::getRealPath(rtrim($directory, '/'))) || !FileHandler::makeDir($directory)) continue;
+
+				$token = Security::getRandomToken(16);
+				if(!$token) continue;
+				$filename = $directory.$token.'.'.strtolower($extension[1]);
+				if(move_uploaded_file($image['tmp_name'], FileHandler::getRealPath($filename)))
+				{
+					$obj->$name = $filename;
+					$new_images[] = $filename;
+				}
 			}
-			}
-			*/
 			$oModuleController = getController('module');
 
 			if($mode === 'M')
@@ -491,12 +475,36 @@ class moduleAdminController extends module
 			}
 			if(!$output->toBool())
 			{
+				foreach($new_images as $filename) FileHandler::removeFile($filename);
 				return $output;
+			}
+
+			// A legacy filename may be shared by multiple settings or both skins.
+			$retained = array_filter((array)$obj, 'is_string');
+			$unused = array_diff($old_images, $retained);
+			if($unused)
+			{
+				$other_vars = $mode === 'P' ? $oModuleModel->getModuleMobileSkinVars($module_srl) : $oModuleModel->getModuleSkinVars($module_srl);
+				foreach((array)$other_vars as $var) $retained[] = $var->value;
+				foreach(array_unique(array_diff($unused, $retained)) as $filename)
+				{
+					if($this->getSkinImagePath($directory, $filename)) FileHandler::removeFile($filename);
+				}
 			}
 		}
 
 		$this->setMessage('success_saved');
 		$this->setRedirectUrl(Context::get('error_return_url'));
+	}
+
+	/** Only files directly in the module's own image directory are managed here. */
+	protected function getSkinImagePath($directory, $filename)
+	{
+		if(!is_string($filename) || $filename !== $directory.basename($filename)) return false;
+		if(!preg_match('/\.(jpe?g|gif|png)$/iD', $filename) || preg_match('/[[:cntrl:]:\\\\]/', $filename)) return false;
+		$file = FileHandler::getRealPath($filename);
+		if(is_link(dirname($file)) || is_link($file) || !is_file($file)) return false;
+		return $filename;
 	}
 
 	/**
