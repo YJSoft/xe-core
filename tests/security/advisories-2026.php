@@ -437,3 +437,67 @@ check($skin_reader->checkbox(serialize($choices)) === $choices, 'Legacy checkbox
 foreach (array(serialize(new stdClass()), serialize(array(array('nested'))), serialize($choices) . 'extra', 'a:1:{') as $invalid) {
     check($skin_reader->checkbox($invalid) === array(), 'Reject malformed or non-list checkbox storage');
 }
+
+// Existing outside pages are updated using the stored type, with the same path rules as rendering.
+class AdvisoryPageModel
+{
+    public function getModuleInfoByModuleSrl($id, $columns = array()) {
+        return (object)array('module_srl' => $id, 'module' => 'page', 'page_type' => 'OUTSIDE');
+    }
+    public function getGrant($module, $member) { return (object)array('manager' => true, 'access' => true); }
+}
+class AdvisoryPageWriter
+{
+    public $saved;
+    public function updateModule($settings) {
+        $this->saved = clone $settings;
+        $result = new BaseObject();
+        $result->add('module_srl', $settings->module_srl);
+        return $result;
+    }
+}
+require_once _XE_PATH_ . 'modules/page/page.view.php';
+class AdvisoryOutsideView extends pageView
+{
+    public function executeFile($path, $interval, $cache) { return 'local ' . $path; }
+    public function getHtmlPage($path, $interval, $cache) { return 'remote ' . $path; }
+}
+chdir($GLOBALS['fixture_dir']);
+FileHandler::makeDir('./files/cache/opage');
+file_put_contents('./files/cache/opage/111.pc.cache.php', 'different page');
+$page_writer = new AdvisoryPageWriter();
+$GLOBALS['models']['module'] = new AdvisoryPageModel();
+$GLOBALS['models']['module_controller'] = $page_writer;
+$settings = array('module_srl' => 110, 'page_name' => 'outside', 'is_logged' => true,
+    'logged_info' => (object)array('member_srl' => 41), 'path' => $GLOBALS['fixture_dir'] . 'allowed.php');
+foreach (array(null, 'ARTICLE') as $submitted_type) {
+    Context::$values = $settings;
+    if ($submitted_type) Context::set('page_type', $submitted_type);
+    file_put_contents('./files/cache/opage/110.pc.cache.php', 'old page');
+    file_put_contents('./files/cache/opage/110.m.compiled.php', 'old template');
+    $page_writer->saved = null;
+    $admin = new pageAdminController();
+    $admin->procPageAdminUpdate();
+    check(!file_exists('./files/cache/opage/110.pc.cache.php') && !file_exists('./files/cache/opage/110.m.compiled.php') && is_file('./files/cache/opage/111.pc.cache.php'), 'Invalidate only this outside page cache after updating');
+    check($page_writer->saved && $page_writer->saved->page_type === 'OUTSIDE' && $page_writer->saved->path === $settings['path'], 'An update uses the stored page type and the allowed desktop path');
+}
+foreach (array('path', 'mpath') as $key) {
+    Context::$values = $settings;
+    Context::set($key, array('invalid type'));
+    $page_writer->saved = null;
+    $admin = new pageAdminController();
+    $admin->procPageAdminUpdate();
+    check(!$admin->toBool() && !$page_writer->saved, 'Non-string path is rejected before updating ' . $key);
+    Context::$values = $settings;
+    Context::set($key . ' ', $settings['path']);
+    $result = $admin->procPageAdminUpdate();
+    check($result instanceof BaseObject && !$result->toBool() && !$page_writer->saved, 'Reject ambiguous setting names before storage for ' . $key);
+}
+$view = new AdvisoryOutsideView();
+$view->path = $GLOBALS['fixture_dir'] . 'linked.php';
+check($view->_getOutsideContent() === '', 'A previously stored restricted page is skipped before reading cache or content');
+$view->path = $settings['path'];
+check($view->_getOutsideContent() === 'local ' . realpath($view->path), 'Render the validated local path');
+$view->path = 'https://external.example/page.html';
+check($view->_getOutsideContent() === 'remote ' . $view->path, 'Keep the HTTP page renderer for a valid URL');
+chdir($cwd);

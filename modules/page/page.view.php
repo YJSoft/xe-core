@@ -165,14 +165,10 @@ class pageView extends page
 
 	function _getOutsideContent()
 	{
-		// check if it is http or internal file
-		if($this->path)
-		{
-			if(preg_match("/^([a-z]+):\/\//i",$this->path)) $content = $this->getHtmlPage($this->path, $this->interval, $this->cache_file);
-			else $content = $this->executeFile($this->path, $this->interval, $this->cache_file);
-		}
-
-		return $content;
+		$path = self::resolveExternalPath($this->path);
+		if($path === false || $path === '') return '';
+		if(preg_match('!^https?://!i', $path)) return $this->getHtmlPage($path, $this->interval, $this->cache_file);
+		return $this->executeFile($path, $this->interval, $this->cache_file);
 	}
 
 	/**
