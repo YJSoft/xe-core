@@ -269,6 +269,12 @@ class adminAdminView extends admin
 		$oAdminAdminModel = getAdminModel('admin');
 		Context::set('php2shell_status', $oAdminAdminModel->getPhp2ShellStatus());
 
+		require_once _XE_PATH_ . 'modules/autoinstall/NcenterliteReleaseInstaller.php';
+		$version = NcenterliteReleaseInstaller::getAffectedVersion();
+		Context::set('ncenterlite_patch_version', $version);
+		Context::set('ncenterlite_patch_available', $version !== false && NcenterliteReleaseInstaller::canInstall());
+		Context::set('ncenterlite_patch_url', NcenterliteReleaseInstaller::ZIP_URL);
+
 		// Get statistics
 		$args = new stdClass();
 		$args->date = date("Ymd000000", $_SERVER['REQUEST_TIME'] - 60 * 60 * 24);
