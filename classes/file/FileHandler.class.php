@@ -99,7 +99,7 @@ class FileHandler
 	 * @param string $source Path of source file
 	 * @param string $target Path of target file
 	 * @param string $force Y: overwrite
-	 * @return void
+	 * @return bool Whether the file was copied.
 	 */
 	public static function copyFile($source, $target, $force = 'Y')
 	{
@@ -115,7 +115,7 @@ class FileHandler
 			@unlink($target_dir . DIRECTORY_SEPARATOR . $target);
 		}
 
-		@copy($source, $target_dir . DIRECTORY_SEPARATOR . $target);
+		return @copy($source, $target_dir . DIRECTORY_SEPARATOR . $target);
 	}
 
 	/**

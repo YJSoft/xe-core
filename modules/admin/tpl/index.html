@@ -14,6 +14,18 @@
 
 	<include target="./_php2shell_warning.html" />
 
+	<div cond="$ncenterlite_patch_version !== false" class="message error" role="alert">
+		<h2>{sprintf($lang->ncenterlite_patch_title, $ncenterlite_patch_version)}</h2>
+		<form cond="$ncenterlite_patch_available" action="./" method="post">
+			<input type="hidden" name="module" value="admin" />
+			<input type="hidden" name="act" value="procAdminUpdateNcenterlite" />
+			<input type="hidden" name="XE_VALIDATOR_ID" value="modules/admin/tpl/index/1" />
+			<button type="submit" class="x_btn x_btn-primary">{$lang->ncenterlite_patch_apply}</button>
+		</form>
+		<p cond="!$ncenterlite_patch_available">{$lang->ncenterlite_patch_unavailable}</p>
+		<p><a href="{$ncenterlite_patch_url}">{$lang->ncenterlite_patch_zip}</a> &mdash; {$lang->ncenterlite_patch_manual}</p>
+	</div>
+
 	<div class="message error">
 		<h2>{$lang->admin_xe_discontinued}</h2>
 	</div>

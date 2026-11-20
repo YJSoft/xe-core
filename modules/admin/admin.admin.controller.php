@@ -10,6 +10,19 @@
  */
 class adminAdminController extends admin
 {
+	/** Apply the ncenterlite security release from the administrator dashboard. */
+	function procAdminUpdateNcenterlite()
+	{
+		$logged_info = getModel('member')->getLoggedInfo();
+		if(!isset($logged_info->is_admin) || $logged_info->is_admin !== 'Y') return new BaseObject(-1, 'msg_is_not_administrator');
+		if(!Security::checkCSRFRequest()) return new BaseObject(-1, 'msg_invalid_request');
+
+		require_once _XE_PATH_ . 'modules/autoinstall/NcenterliteReleaseInstaller.php';
+		$installer = new NcenterliteReleaseInstaller();
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin'));
+		return $installer->install();
+	}
+
 	/** Save a trusted administrator's patch confirmation for one registered advisory. */
 	function procAdminConfirmSecurityPatch()
 	{

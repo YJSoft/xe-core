@@ -1032,7 +1032,6 @@ class DirectModuleInstaller extends ModuleInstaller
 		{
 			return $output;
 		}
-		$target_dir = $this->target_path;
 		$copied = array();
 
 		if(is_array($file_list))
@@ -1053,22 +1052,12 @@ class DirectModuleInstaller extends ModuleInstaller
 					continue;
 				}
 				$path = FileHandler::getRealPath("./" . $this->target_path . "/" . $file);
-				$path_list = explode('/', dirname($this->target_path . "/" . $file));
-				$real_path = "./";
-
-				for($i = 0; $i < count($path_list); $i++)
+				$source = FileHandler::getRealPath($this->download_path . "/" . $org_file);
+				if(!$this->copyInstallFile($source, $path))
 				{
-					if($path_list == "")
-					{
-						continue;
-					}
-					$real_path .= $path_list[$i] . "/";
-					if(!file_exists(FileHandler::getRealPath($real_path)))
-					{
-						FileHandler::makeDir($real_path);
-					}
+					$output = new BaseObject(-1, 'msg_direct_inall_invalid');
+					break;
 				}
-				FileHandler::copyFile( FileHandler::getRealPath($this->download_path . "/" . $org_file), FileHandler::getRealPath("./" . $target_dir . '/' . $file));
 				$copied[] = $path;
 			}
 		}
@@ -1078,7 +1067,13 @@ class DirectModuleInstaller extends ModuleInstaller
 
 		$this->_close();
 
-		return new BaseObject();
+		return $output;
+	}
+
+	/** Copy one staged package file to its installation path. */
+	protected function copyInstallFile($source, $target)
+	{
+		return FileHandler::copyFile($source, $target);
 	}
 
 }
