@@ -105,8 +105,10 @@ check(!$rve_board->dispBoardWriteComment()->toBool(), 'Comment forms reject pare
 $rve_document->add('module_srl', 100);
 
 require_once _XE_PATH_ . 'modules/member/member.controller.php';
-class RveMemberModel
+require_once _XE_PATH_ . 'modules/member/member.model.php';
+class RveMemberModel extends memberModel
 {
+    public function __construct() {}
     public $members = array();
     public function getMemberInfoByMemberSrl($srl, $site = 0, $columns = array()) { return isset($this->members[$srl]) ? $this->members[$srl] : null; }
 }

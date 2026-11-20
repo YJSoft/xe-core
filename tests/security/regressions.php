@@ -43,6 +43,7 @@ class Context
 class FileHandler
 {
     public static function getRealPath($path) { return substr($path, 0, 2) === './' ? getcwd() . substr($path, 1) : $path; }
+    public static function removeDir($path) {} // Thumbnail cache is not used by the in-memory document fixtures.
     public static function removeFile($path) { return !file_exists($path) || unlink($path); }
     public static function makeDir($path) { return is_dir($path) || mkdir($path, 0777, true); }
     public static function readFile($path) { return is_file($path) ? file_get_contents($path) : null; }
@@ -51,6 +52,7 @@ class FileHandler
 function checkCSRF() { return empty($GLOBALS['board_csrf_denied']); }
 function checkUserSequence($srl) { return in_array($srl, isset($_SESSION['seq']) ? $_SESSION['seq'] : array()); }
 function getScriptPath() { return '/'; }
+function getNumberingPath($number, $depth = 3) { return ''; }
 function getNextSequence() { static $next = 1000; $_SESSION['seq'][] = ++$next; return $next; }
 class Mobile { public static function isFromMobilePhone() { return false; } }
 function getModel($name) { return $GLOBALS['models'][$name]; }
@@ -412,6 +414,7 @@ class CacheHandler
     public function isSupport() { return true; }
     public function getGroupKey($group, $key) { return $group . ':' . $key; }
     public function put($key, $value) { self::$data[$key] = $value; }
+    public function delete($key) { unset(self::$data[$key]); }
     public function get($key) { return isset(self::$data[$key]) ? self::$data[$key] : false; }
 }
 Context::set('lang_supported', array('ko' => 'Korean', 'en' => 'English'));

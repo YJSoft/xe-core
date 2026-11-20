@@ -19,6 +19,14 @@ class memberModel extends member
 	{
 	}
 
+	/** Resolve anonymity for regular writes made outside the board controller, including draft saves. */
+	function isAnonymousBoard($module_srl)
+	{
+		if(!$module_srl) return false;
+		$info = getModel('module')->getModuleInfoByModuleSrl($module_srl);
+		return isset($info->module, $info->use_anonymous) && $info->module === 'board' && $info->use_anonymous === 'Y';
+	}
+
 	/**
 	 * Set the public author fields before posting triggers see an anonymous submission.
 	 * The caller supplies the signed-in member number or the stored author's number.
@@ -40,7 +48,7 @@ class memberModel extends member
 		$member_srl = $source->get('member_srl');
 		$this->anonymizeAuthor($obj, $member_srl);
 		$alias = $source->get('nick_name');
-		if($member_srl < 0 && is_string($alias) && $alias !== '')
+		if($source->get('status') !== 'TEMP' && $member_srl < 0 && is_string($alias) && $alias !== '')
 		{
 			$obj->nick_name = $obj->user_name = $alias;
 		}

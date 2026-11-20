@@ -191,7 +191,6 @@ class commentController extends comment
 	 */
 	function insertComment($obj, $manual_inserted = FALSE)
 	{
-		$anonymous = func_num_args() > 2 && func_get_arg(2) === true;
 		if(!$manual_inserted && !checkCSRF())
 		{
 			return new BaseObject(-1, 'msg_invalid_request');
@@ -262,6 +261,8 @@ class commentController extends comment
 		}
 
 		// Add the current user's info, unless it is a guest post.
+		$anonymous = func_num_args() > 2 ? func_get_arg(2) === true
+			: (!$manual_inserted && getModel('member')->isAnonymousBoard($obj->module_srl));
 		$logged_info = Context::get('logged_info');
 		if($anonymous)
 		{
@@ -677,7 +678,6 @@ class commentController extends comment
 	 */
 	function updateComment($obj, $is_admin = FALSE, $manual_updated = FALSE)
 	{
-		$anonymous = func_num_args() > 3 && func_get_arg(3) === true;
 		if(!$manual_updated && !checkCSRF())
 		{
 			return new BaseObject(-1, 'msg_invalid_request');
@@ -695,6 +695,12 @@ class commentController extends comment
 
 		// Preserve original author info.
 		$source_obj = $oCommentModel->getComment($obj->comment_srl);
+		if(!$is_admin && !$source_obj->isGranted())
+		{
+			return new BaseObject(-1, 'msg_not_permitted');
+		}
+		$anonymous = func_num_args() > 3 ? func_get_arg(3) === true
+			: (!$manual_updated && getModel('member')->isAnonymousBoard($source_obj->get('module_srl')));
 		if($source_obj->get('member_srl'))
 		{
 			$obj->member_srl = $source_obj->get('member_srl');
@@ -720,13 +726,6 @@ class commentController extends comment
 		if(!$output->toBool())
 		{
 			return $output;
-		}
-
-
-		// check if permission is granted
-		if(!$is_admin && !$source_obj->isGranted())
-		{
-			return new BaseObject(-1, 'msg_not_permitted');
 		}
 
 		if($obj->password)

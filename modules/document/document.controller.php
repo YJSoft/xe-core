@@ -195,7 +195,6 @@ class documentController extends document
 	 */
 	function insertDocument($obj, $manual_inserted = false, $isRestore = false, $isLatest = true)
 	{
-		$anonymous = func_num_args() > 4 && func_get_arg(4) === true;
 		if(!$manual_inserted && !checkCSRF())
 		{
 			return new BaseObject(-1, 'msg_invalid_request');
@@ -244,6 +243,8 @@ class documentController extends document
 		unset($obj->_saved_doc_message);
 
 		// Add the current user's info, unless it is a guest post
+		$anonymous = func_num_args() > 4 ? func_get_arg(4) === true
+			: (!$manual_inserted && !$isRestore && getModel('member')->isAnonymousBoard($obj->module_srl));
 		$logged_info = Context::get('logged_info');
 		if($anonymous)
 		{
@@ -389,7 +390,6 @@ class documentController extends document
 	 */
 	function updateDocument($source_obj, $obj, $manual_updated = FALSE)
 	{
-		$anonymous = func_num_args() > 3 && func_get_arg(3) === true;
 		$logged_info = Context::get('logged_info');
 
 		if(!$manual_updated && !checkCSRF())
@@ -400,6 +400,9 @@ class documentController extends document
 		if(!$source_obj->document_srl || !$obj->document_srl) return new BaseObject(-1,'msg_invalied_request');
 		if(!$obj->status && $obj->is_secret == 'Y') $obj->status = 'SECRET';
 		if(!$obj->status) $obj->status = 'PUBLIC';
+
+		$anonymous = func_num_args() > 3 ? func_get_arg(3) === true
+			: (!$manual_updated && getModel('member')->isAnonymousBoard($source_obj->get('module_srl')));
 
 		// Preserve original author info.
 		if ($source_obj->get('member_srl'))
@@ -2451,16 +2454,32 @@ class documentController extends document
 	function procDocumentTempSave()
 	{
 		// Check login information
-		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
-		$module_info = Context::get('module_info');
 		$logged_info = Context::get('logged_info');
+		if(!Context::get('is_logged') || empty($logged_info->member_srl) || $logged_info->member_srl <= 0)
+		{
+			return new BaseObject(-1, 'msg_not_logged');
+		}
+		$module_info = $this->module_info;
+		if(empty($module_info->module_srl)) return new BaseObject(-1, 'msg_invalid_request');
+
+		if($module_info->module === 'board')
+		{
+			$grant = getModel('module')->getGrant($module_info, $logged_info);
+			if(empty($grant->access) || empty($grant->write_document)) return new BaseObject(-1, 'msg_not_permitted');
+		}
 
 		// Get form information
 		$obj = Context::getRequestVars();
-		// Change the target module to log-in information
+		$id = isset($obj->document_srl) && $obj->document_srl !== '' ? $obj->document_srl : 0;
+		if((!is_int($id) && !is_string($id)) || filter_var($id, FILTER_VALIDATE_INT) === false || $id < 0)
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+		$obj->document_srl = (int)$id;
 		$obj->module_srl = $module_info->module_srl;
 		$obj->status = $this->getConfigStatus('temp');
-		unset($obj->is_notice);
+		unset($obj->is_notice, $obj->extra_vars, $obj->password_is_hashed, $obj->list_order, $obj->ipaddress, $obj->uploaded_count);
+		if(!$this->grant->manager) unset($obj->title_color, $obj->title_bold);
 
 		// Extract from beginning part of contents in the guestbook
 		if(!$obj->title)
@@ -2472,12 +2491,12 @@ class documentController extends document
 		$oDocumentController = getController('document');
 
 		// Check if already exists
-		$oDocument = $oDocumentModel->getDocument($obj->document_srl, $this->grant->manager);
+		$oDocument = $oDocumentModel->getDocument($obj->document_srl);
 
 		// Update if already exists
 		if($oDocument->isExists() && $oDocument->document_srl == $obj->document_srl)
 		{
-			if($oDocument->get('module_srl') != $obj->module_srl)
+			if($oDocument->get('module_srl') != $obj->module_srl || $oDocument->get('status') !== $obj->status)
 			{
 				return new BaseObject(-1, 'msg_invalid_request');
 			}
@@ -2485,24 +2504,21 @@ class documentController extends document
 			{
 				return new BaseObject(-1, 'msg_invalid_request');
 			}
-			//if exist document status is already public, use temp status can point problem
-			$obj->status = $oDocument->get('status');
+			$obj->uploaded_count = getModel('file')->getFilesCount($obj->document_srl);
 			$output = $oDocumentController->updateDocument($oDocument, $obj);
-			$msg_code = 'success_updated';
-			// Otherwise, get a new
 		}
 		else
 		{
 			$output = $oDocumentController->insertDocument($obj);
-			$msg_code = 'success_registed';
-			$obj->document_srl = $output->get('document_srl');
-			$oDocument = $oDocumentModel->getDocument($obj->document_srl, $this->grant->manager);
 		}
-		// Set the attachment to be invalid state
-		if($oDocument->hasUploadedFiles())
+		if(!$output->toBool()) return $output;
+		$obj->document_srl = $output->get('document_srl');
+
+		// Only a successfully saved draft may change its attachments' validity.
+		if($obj->uploaded_count)
 		{
 			$args = new stdClass;
-			$args->upload_target_srl = $oDocument->document_srl;
+			$args->upload_target_srl = $obj->document_srl;
 			$args->isvalid = 'N';
 			executeQuery('file.updateFileValid', $args);
 		}

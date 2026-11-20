@@ -238,7 +238,7 @@ class memberController extends member
 
 		$oDocumentModel = getModel('document');
 		$oDocument = $oDocumentModel->getDocument($document_srl);
-		if ($oDocument->get('member_srl') != $logged_info->member_srl)
+		if (empty($logged_info->member_srl) || abs((int)$oDocument->get('member_srl')) != $logged_info->member_srl)
 		{
 			return new BaseObject(-1,'msg_invalid_request');
 		}
@@ -250,7 +250,7 @@ class memberController extends member
 		}
 
 		$oDocumentController = getController('document');
-		$oDocumentController->deleteDocument($document_srl);
+		return $oDocumentController->deleteDocument($document_srl);
 	}
 
 	/**
