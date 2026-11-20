@@ -93,9 +93,10 @@ class boardController extends board
 		// check if the document is existed
 		$oDocument = $oDocumentModel->getDocument($obj->document_srl);
 		$is_update = $oDocument->isExists();
-		if($is_update && $oDocument->get('module_srl') != $this->module_srl)
+		if($is_update)
 		{
-			return new BaseObject(-1, 'msg_invalid_request');
+			if($oDocument->get('module_srl') != $this->module_srl) return new BaseObject(-1, 'msg_invalid_request');
+			if(!$oDocument->isGranted()) return new BaseObject(-1, 'msg_not_permitted');
 		}
 
 		$anonymous = $this->module_info->use_anonymous == 'Y';
@@ -109,11 +110,6 @@ class boardController extends board
 		// update the document if it is existed
 		if($is_update)
 		{
-			if(!$oDocument->isGranted())
-			{
-				return new BaseObject(-1,'msg_not_permitted');
-			}
-
 			if($this->module_info->protect_content=="Y" && $oDocument->get('comment_count')>0 && $this->grant->manager==false)
 			{
 				return new BaseObject(-1,'msg_protect_content');

@@ -387,10 +387,11 @@ class memberView extends member
 		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
 		if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
-		// Get the saved document(module_srl is set to member_srl instead)
+		// Anonymous drafts store the owner's member number with the opposite sign.
 		$logged_info = Context::get('logged_info');
+		if(empty($logged_info->member_srl) || $logged_info->member_srl <= 0) return $this->stop('msg_not_logged');
 		$args = new stdClass();
-		$args->member_srl = $logged_info->member_srl;
+		$args->member_srls = array($logged_info->member_srl, -$logged_info->member_srl);
 		$args->page = (int)Context::get('page');
 		$args->statusList = array('TEMP');
 
