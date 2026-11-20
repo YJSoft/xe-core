@@ -4,6 +4,36 @@ require_once _XE_PATH_ . 'tests/_support/CompatibilityTestCase.php';
 /** @group compatibility */
 class ModuleCompatibilityTest extends CompatibilityTestCase
 {
+	public static function returnUrlParameters()
+	{
+		return array(
+			array('GET', 'success_return_url'),
+			array('GET', 'error_return_url'),
+			array('POST', 'success_return_url'),
+			array('POST', 'error_return_url'),
+		);
+	}
+
+	/** @dataProvider returnUrlParameters */
+	public function testExternalReturnUrlIsRejectedBeforeModuleInit($method, $parameter)
+	{
+		$_SERVER['REQUEST_METHOD'] = $method;
+		Context::setRequestMethod($method);
+		Context::setDBInfo((object)array('default_url' => 'https://site.example/'));
+		Context::set($parameter, 'https://external.example/', true);
+
+		try
+		{
+			new ModuleHandler();
+		}
+		catch(Exception $e)
+		{
+			$this->assertSame('msg_invalid_request', $e->getMessage());
+			return;
+		}
+		$this->fail('An external return URL reached module initialization.');
+	}
+
 	public function testCommentAttributesPopulateLegacySkinPropertiesFromAnObject()
 	{
 		$comment = new commentItem();

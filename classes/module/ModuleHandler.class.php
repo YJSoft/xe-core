@@ -35,6 +35,9 @@ class ModuleHandler extends Handler
 
 	function __construct($module = '', $act = '', $mid = '', $document_srl = '', $module_srl = '')
 	{
+		// Before-init triggers and addons can already read and store return URLs.
+		self::validateReturnUrls();
+
 		// If XE has not installed yet, set module as install
 		if(!Context::isInstalled())
 		{
@@ -205,24 +208,28 @@ class ModuleHandler extends Handler
 		}
 	}
 
+	private static function validateReturnUrls()
+	{
+		foreach(array('success_return_url', 'error_return_url') as $key)
+		{
+			$url = Context::get($key);
+			if($url !== '' && !Security::isInternalURL($url))
+			{
+				throw new Exception('msg_invalid_request');
+			}
+		}
+	}
+
 	/**
 	 * Initialization. It finds the target module based on module, mid, document_srl, and prepares to execute an action
 	 * @return boolean true: OK, false: redirected
 	 * */
 	function init()
 	{
+		// Addons may have changed the URLs since the constructor checked them.
+		self::validateReturnUrls();
 		$oModuleModel = getModel('module');
 		$site_module_info = Context::get('site_module_info');
-
-		// if success_return_url and error_return_url is incorrect
-		$urls = array(Context::get('success_return_url'), Context::get('error_return_url'));
-		foreach($urls as $url)
-		{
-			if($url !== null && $url !== '' && !Security::isInternalURL($url))
-			{
-				throw new Exception('msg_invalid_request');
-			}
-		}
 
 		if(!$this->document_srl && $this->mid && $this->entry)
 		{
