@@ -52,10 +52,9 @@ $oContext->init();
  **/
 if($oContext->checkSSO())
 {
-	$oModuleHandler = new ModuleHandler();
-
 	try
 	{
+		$oModuleHandler = new ModuleHandler();
 		if($oModuleHandler->init())
 		{
 			$oModuleHandler->displayContent($oModuleHandler->procModule());
