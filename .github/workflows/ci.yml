@@ -209,7 +209,10 @@ jobs:
 
         for test_attempt in 1 2; do
           echo "=== Codeception attempt $test_attempt/2 ===" >> /tmp/php_server.log
-          php -d log_errors=1 -d error_log=/tmp/php_server.log -S 127.0.0.1:8000 >> /tmp/php_server.log 2>&1 &
+          php -d opcache.enable=0 -d opcache.enable_cli=0 \
+            -d opcache.jit=disable -d opcache.jit_buffer_size=0 \
+            -d log_errors=1 -d error_log=/tmp/php_server.log \
+            -S 127.0.0.1:8000 >> /tmp/php_server.log 2>&1 &
           server_pid=$!
           echo "PHP server PID $server_pid (attempt $test_attempt/2)" >> /tmp/php_server.log
           server_ready=
