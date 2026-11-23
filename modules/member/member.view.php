@@ -252,6 +252,8 @@ class memberView extends member
 			Context::set('identifierValue', $logged_info->user_id);
 		}
 
+		$return_act = Context::get('act') === 'dispMemberModifyEmailAddress' ? 'dispMemberModifyEmailAddress' : 'dispMemberModifyInfo';
+		Context::set('success_return_url', getUrl('', 'mid', Context::get('mid'), 'act', $return_act));
 		$this->setTemplateFile('rechecked_password');
 	}
 
@@ -591,7 +593,6 @@ class memberView extends member
 	{
 		if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD' && $_SESSION['rechecked_password_step'] != 'INPUT_DATA')
 		{
-			Context::set('success_return_url', getUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyEmailAddress'));
 			$this->dispMemberModifyInfoBefore();
 			return;
 		}
