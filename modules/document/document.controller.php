@@ -1788,6 +1788,10 @@ class documentController extends document
 
 		$oDocumentModel = getModel('document');
 		$source_category = $oDocumentModel->getCategory($source_category_srl);
+		if(!$source_category)
+		{
+			return new BaseObject(-1, 'msg_not_founded');
+		}
 		// Check permissions
 		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'module');
@@ -1847,21 +1851,27 @@ class documentController extends document
 		// List variables
 		$args = Context::gets('module_srl','category_srl');
 
-		$oDB = &DB::getInstance();
-		$oDB->begin();
 		// Check permissions
 		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->module_srl, $columnList);
+		if(!$module_info) return new BaseObject(-1, 'msg_not_founded');
 		$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
 		if(!$grant->manager) return new BaseObject(-1,'msg_not_permitted');
 
 		$oDocumentModel = getModel('document');
 		// Get original information
 		$category_info = $oDocumentModel->getCategory($args->category_srl);
-		if($category_info->parent_srl) $parent_srl = $category_info->parent_srl;
+		if(!$category_info || (int)$category_info->module_srl !== (int)$module_info->module_srl)
+		{
+			return new BaseObject(-1, 'msg_not_founded');
+		}
+		$parent_srl = $category_info->parent_srl;
 		// Display an error that the category cannot be deleted if it has a child node
 		if($oDocumentModel->getCategoryChlidCount($args->category_srl)) return new BaseObject(-1, 'msg_cannot_delete_for_child');
+
+		$oDB = &DB::getInstance();
+		$oDB->begin();
 		// Remove from the DB
 		$output = $this->deleteCategory($args->category_srl);
 		if(!$output->toBool())
@@ -2311,6 +2321,21 @@ class documentController extends document
 		$category_srl = Context::get('target_category_srl');
 		$message_content = strip_tags(Context::get('message_content'));
 		if($message_content) $message_content = nl2br($message_content);
+
+		// Copying or moving into a module requires management and posting
+		// permission in the destination, not only in the source module.
+		if($type == 'move' || $type == 'copy')
+		{
+			if(!$module_srl) return new BaseObject(-1, 'fail_to_move');
+			$oModuleModel = getModel('module');
+			$target_module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+			if(!$target_module_info) return new BaseObject(-1, 'msg_not_founded');
+			$target_grant = $oModuleModel->getGrant($target_module_info, Context::get('logged_info'));
+			if(!$target_grant->manager || empty($target_grant->write_document))
+			{
+				return new BaseObject(-1, 'msg_not_permitted');
+			}
+		}
 
 		$cart = Context::get('cart');
 		$document_srl_list = (!is_array($cart)) ? explode('|@|', $cart) : $cart;
