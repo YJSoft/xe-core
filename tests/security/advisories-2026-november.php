@@ -29,9 +29,12 @@ class RveComment extends commentItem
 class RveDocumentModel
 {
     public $documents = array();
+	public $categories = array();
     public function getConfigStatus($key) { return strtoupper($key); }
     public function getDocumentCountByMemberSrl($srl) { return 0; }
     public function getDocument($srl = 0, $admin = false, $extra = true, $columns = array()) { return isset($this->documents[$srl]) ? $this->documents[$srl] : new RveDocument(0); }
+	public function getCategory($srl, $columns = array()) { return isset($this->categories[$srl]) ? $this->categories[$srl] : null; }
+	public function getCategoryChlidCount($srl) { return false; }
 }
 class RveCommentModel
 {
@@ -232,11 +235,76 @@ $rve_document->add('status', 'PUBLIC');
 require_once _XE_PATH_ . 'modules/document/document.controller.php';
 require_once _XE_PATH_ . 'modules/comment/comment.controller.php';
 class RveFileModel { public function getFilesCount($srl) { return 2; } }
+class RveSpamController
+{
+	public $calls = 0;
+	public function setAvoidLog() { $this->calls++; }
+}
+class RveDocumentAdminController
+{
+	public $moves = 0;
+	public $copies = 0;
+	public function moveDocumentModule($documents, $module, $category) { $this->moves++; return new BaseObject(); }
+	public function copyDocumentModule($documents, $module, $category) { $this->copies++; return new BaseObject(); }
+}
 function rveInsertedRow($name)
 {
     foreach($GLOBALS['query_log'] as $entry) if($entry[0] === $name) return $entry[1];
     check(false, 'Insertion must reach its database query: ' . $name);
 }
+$rve_previous_document_controller = isset($GLOBALS['models']['document_controller']) ? $GLOBALS['models']['document_controller'] : null;
+$rve_previous_spam_controller = isset($GLOBALS['models']['spamfilter_controller']) ? $GLOBALS['models']['spamfilter_controller'] : null;
+$rve_document_admin = new RveDocumentAdminController();
+$rve_spam = new RveSpamController();
+$GLOBALS['models']['document_controller'] = $rve_document_admin;
+$GLOBALS['models']['spamfilter_controller'] = $rve_spam;
+$rve_documents->documents[200]->granted = true;
+$rve_modules->modules[200] = (object)array('module_srl' => 200, 'module' => 'board', 'site_srl' => 0);
+$rve_modules->grants[200] = (object)array('access' => true, 'manager' => true, 'write_document' => false);
+Context::$values = array(
+	'is_logged' => true,
+	'logged_info' => (object)array('member_srl' => 10, 'is_admin' => 'N'),
+	'type' => 'move',
+	'target_module_srl' => 200,
+	'target_category_srl' => 0,
+	'message_content' => '',
+	'cart' => array(200),
+);
+$document_management = new documentController();
+$result = $document_management->procDocumentManageCheckedDocument();
+check($result instanceof BaseObject && !$result->toBool() && $rve_document_admin->moves === 0 && $rve_spam->calls === 0, 'RVE-2026-52 requires write permission in the destination module');
+$rve_modules->grants[200]->write_document = true;
+$rve_modules->grants[200]->manager = false;
+$result = $document_management->procDocumentManageCheckedDocument();
+check($result instanceof BaseObject && !$result->toBool() && $rve_document_admin->moves === 0 && $rve_spam->calls === 0, 'RVE-2026-52 requires management permission in the destination module');
+$rve_modules->grants[200]->manager = true;
+$document_management->procDocumentManageCheckedDocument();
+check($rve_document_admin->moves === 1 && $rve_spam->calls === 1, 'Authorized managers can still move documents to a writable destination');
+
+$rve_modules->grants[100]->manager = true;
+$rve_documents->categories[700] = (object)array('category_srl' => 700, 'module_srl' => 200, 'parent_srl' => 0);
+Context::$values = array(
+	'logged_info' => (object)array('member_srl' => 10, 'is_admin' => 'N'),
+	'module_srl' => 100,
+	'category_srl' => 700,
+);
+$GLOBALS['query_log'] = array();
+$result = $document_management->procDocumentDeleteCategory();
+check($result instanceof BaseObject && !$result->toBool() && !count($GLOBALS['query_log']), 'RVE-2026-53 rejects a category that belongs to another module');
+Context::$values = array(
+	'logged_info' => (object)array('member_srl' => 10, 'is_admin' => 'N'),
+	'source_srl' => 999999,
+	'parent_srl' => 0,
+	'target_srl' => 0,
+);
+$result = $document_management->procDocumentMoveCategory();
+check($result instanceof BaseObject && !$result->toBool(), 'Missing category moves are rejected before permission lookup');
+
+if($rve_previous_document_controller !== null) $GLOBALS['models']['document_controller'] = $rve_previous_document_controller;
+else unset($GLOBALS['models']['document_controller']);
+if($rve_previous_spam_controller !== null) $GLOBALS['models']['spamfilter_controller'] = $rve_previous_spam_controller;
+else unset($GLOBALS['models']['spamfilter_controller']);
+
 $GLOBALS['models']['file'] = new RveFileModel();
 Context::set('logged_info', (object)array('member_srl' => 10, 'user_id' => 'member', 'user_name' => 'Member', 'nick_name' => 'Member', 'is_admin' => 'N', 'email_address' => '', 'homepage' => ''));
 Context::set('grant', (object)array('manager' => false));

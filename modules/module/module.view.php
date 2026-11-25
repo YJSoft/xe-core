@@ -50,6 +50,9 @@ class moduleView extends module
 		$selected_module = Context::get('selected_module');
 		$site_module_info = Context::get('site_module_info');
 		$site_keyword = Context::get('site_keyword');
+		$scope = Context::get('scope');
+		if(!is_string($scope) || !preg_match('/^[a-z][a-z0-9_]*$/i', $scope)) $scope = '';
+		Context::set('scope', $scope);
 
 		$output = executeQuery('module.getSiteCount');
 		$site_count = $output->data->count;
@@ -82,7 +85,8 @@ class moduleView extends module
 			$module = trim($val->module);
 			if(!$module) continue;
 
-			if(!$oModuleModel->getGrant($val, $logged_info)->access)
+			$grant = $oModuleModel->getGrant($val, $logged_info);
+			if(!$grant->access || ($scope && (!$grant->manager || empty($grant->{$scope}))))
 			{
 				continue;
 			}
