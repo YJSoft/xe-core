@@ -28,6 +28,12 @@ class Context
     public static $values = array();
     public static function getRequestVars() { return (object)self::$values; }
     public static function get($key) { return isset(self::$values[$key]) ? self::$values[$key] : null; }
+	public static function gets()
+	{
+		$result = new stdClass();
+		foreach(func_get_args() as $key) $result->{$key} = self::get($key);
+		return $result;
+	}
     public static function set($key, $value) { self::$values[$key] = $value; }
     public static function loadLangSupported() { return array('ko' => 'Korean', 'en' => 'English'); }
     public static function getLangType() { return 'ko'; }
