@@ -19,11 +19,43 @@ class pageAdminController extends page
 	 */
 	function procPageAdminInsert()
 	{
+		return $this->savePage(false);
+	}
+
+	/** Insert and update have different authorization and immutable fields. */
+	protected function savePage($update)
+	{
 		// Create model/controller object of the module module
 		$oModuleController = getController('module');
 		$oModuleModel = getModel('module');
 		// Set board module
 		$args = Context::getRequestVars();
+		$logged_info = Context::get('logged_info');
+		if(!Context::get('is_logged') || empty($logged_info->member_srl)) return new BaseObject(-1, 'msg_not_permitted');
+		if($update)
+		{
+			if(!isset($args->module_srl) || !is_scalar($args->module_srl) || !preg_match('/^[1-9][0-9]*$/D', (string)$args->module_srl)) return new BaseObject(-1, 'msg_invalid_request');
+			$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->module_srl);
+			if(!$module_info || $module_info->module !== 'page') return new BaseObject(-1, 'msg_invalid_request');
+			if(!empty($this->origin_module_info->module_srl) && (string)$this->origin_module_info->module_srl !== (string)$module_info->module_srl) return new BaseObject(-1, 'msg_invalid_request');
+			$grant = $oModuleModel->getGrant($module_info, $logged_info);
+			if(empty($grant->access) || empty($grant->manager)) return new BaseObject(-1, 'msg_not_permitted');
+			$args->page_type = $module_info->page_type;
+		}
+		else
+		{
+			if(!empty($args->module_srl)) return new BaseObject(-1, 'msg_invalid_request');
+			$site_info = Context::get('site_module_info');
+			$site_srl = isset($site_info->site_srl) ? $site_info->site_srl : 0;
+			if($logged_info->is_admin !== 'Y')
+			{
+				if(!$oModuleModel->isSiteAdmin($logged_info, $site_srl)) return new BaseObject(-1, 'msg_not_permitted');
+				$args->site_srl = $site_srl;
+			}
+			unset($args->module_srl);
+		}
+		if(empty($args->page_type)) $args->page_type = 'WIDGET';
+		if(!in_array($args->page_type, array('WIDGET', 'ARTICLE', 'OUTSIDE'), true)) return new BaseObject(-1, 'msg_invalid_request');
 		// Extra-variable storage trims field names. Only accept the names checked here.
 		foreach($args as $key => $val)
 		{
@@ -42,19 +74,11 @@ class pageAdminController extends page
 		unset($args->page_name);
 
 		if($args->use_mobile != 'Y') $args->use_mobile = '';
-		// Check if an original module exists by using module_srl
-		if($args->module_srl)
+		if($update)
 		{
-			$columnList = array('module_srl', 'module');
-			$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->module_srl, $columnList);
-			if(!$module_info || $module_info->module !== 'page' || $module_info->module_srl != $args->module_srl)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-			$args->page_type = isset($module_info->page_type) ? $module_info->page_type : 'WIDGET';
 			foreach($args as $key=>$val)
 			{
-				$module_info->{$key} = $val;
+				if(!in_array($key, array('module', 'module_srl', 'site_srl', 'page_type'), true)) $module_info->{$key} = $val;
 			}
 			$args = $module_info;
 		}
@@ -100,7 +124,7 @@ class pageAdminController extends page
 				}
 		}
 		// Insert/update depending on module_srl
-		if(!$args->module_srl)
+		if(!$update)
 		{
 			$output = $oModuleController->insertModule($args);
 			$msg_code = 'success_registed';
@@ -112,7 +136,7 @@ class pageAdminController extends page
 		}
 
 		if(!$output->toBool()) return $output;
-		if(!empty($args->module_srl) && $args->page_type === 'OUTSIDE')
+		if($update && $args->page_type === 'OUTSIDE')
 		{
 			$pattern = FileHandler::getRealPath(sprintf('./files/cache/opage/%d.*.php', $args->module_srl));
 			foreach((array)glob($pattern) as $cache_file)
@@ -134,7 +158,7 @@ class pageAdminController extends page
 	 */
 	function procPageAdminUpdate()
 	{
-		return $this->procPageAdminInsert();
+		return $this->savePage(true);
 	}
 
 	function putDocumentsInPageToArray($target, &$array)

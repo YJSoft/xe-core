@@ -34,6 +34,15 @@ class ModuleCompatibilityTest extends CompatibilityTestCase
 		$this->fail('An external return URL reached module initialization.');
 	}
 
+	public function testGetReturnUrlsAreDiscardedByRequestFilter()
+	{
+		foreach(array('success_return_url', 'error_return_url') as $parameter)
+		{
+			$this->assertNull(Context::_filterRequestVar($parameter, '/index.php?act=dispMemberInfo', false, true));
+			$this->assertSame('/index.php?act=dispMemberInfo', Context::_filterRequestVar($parameter, '/index.php?act=dispMemberInfo', false, false));
+		}
+	}
+
 	public function testCommentAttributesPopulateLegacySkinPropertiesFromAnObject()
 	{
 		$comment = new commentItem();

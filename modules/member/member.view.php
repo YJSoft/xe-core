@@ -252,6 +252,8 @@ class memberView extends member
 			Context::set('identifierValue', $logged_info->user_id);
 		}
 
+		$return_act = Context::get('act') === 'dispMemberModifyEmailAddress' ? 'dispMemberModifyEmailAddress' : 'dispMemberModifyInfo';
+		Context::set('success_return_url', getUrl('', 'mid', Context::get('mid'), 'act', $return_act));
 		$this->setTemplateFile('rechecked_password');
 	}
 
@@ -591,7 +593,6 @@ class memberView extends member
 	{
 		if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD' && $_SESSION['rechecked_password_step'] != 'INPUT_DATA')
 		{
-			Context::set('success_return_url', getUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyEmailAddress'));
 			$this->dispMemberModifyInfoBefore();
 			return;
 		}
@@ -651,13 +652,7 @@ class memberView extends member
 		$member_srl = Context::get('member_srl');
 		$module_srl = Context::get('module_srl');
 
-		// check grant
-		$oModuleModel = getModel('module');
-		$columnList = array('module_srl', 'module');
-		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
-		$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
-
-		if(!$grant->manager) return new BaseObject(-1,'msg_not_permitted');
+		if(!$this->canManageSpammer($member_srl)) return new BaseObject(-1,'msg_not_permitted');
 
 		$oMemberModel = getModel('member');
 

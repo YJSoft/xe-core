@@ -2810,6 +2810,7 @@ class memberController extends member
 		if(!Context::get('is_logged')) return new BaseObject();
 
 		$logged_info = Context::get('logged_info');
+		if($logged_info->is_admin !== 'Y') return new BaseObject();
 		$document_srl = Context::get('target_srl');
 
 		$oDocumentModel = getModel('document');
@@ -2818,8 +2819,7 @@ class memberController extends member
 		$member_srl = $oDocument->get('member_srl');
 		$module_srl = $oDocument->get('module_srl');
 
-		if(!$member_srl) return new BaseObject();
-		if($oDocumentModel->grant->manager != 1 || $member_srl==$logged_info->member_srl) return new BaseObject();
+		if(!$this->canManageSpammer($member_srl)) return new BaseObject();
 
 		$oDocumentController = getController('document');
 		$url = getUrl('','module','member','act','dispMemberSpammer','member_srl',$member_srl,'module_srl',$module_srl);
@@ -2840,6 +2840,7 @@ class memberController extends member
 		if(!Context::get('is_logged')) return new BaseObject();
 
 		$logged_info = Context::get('logged_info');
+		if($logged_info->is_admin !== 'Y') return new BaseObject();
 		$comment_srl = Context::get('target_srl');
 
 		$oCommentModel = getModel('comment');
@@ -2848,8 +2849,7 @@ class memberController extends member
 		$module_srl = $oComment->get('module_srl');
 		$member_srl = $oComment->get('member_srl');
 
-		if(!$member_srl) return new BaseObject();
-		if($oCommentModel->grant->manager != 1 || $member_srl==$logged_info->member_srl) return new BaseObject();
+		if(!$this->canManageSpammer($member_srl)) return new BaseObject();
 
 		$oCommentController = getController('comment');
 		$url = getUrl('','module','member','act','dispMemberSpammer','member_srl',$member_srl,'module_srl',$module_srl);
@@ -2876,13 +2876,7 @@ class memberController extends member
 		if($proc_type == "delete")
 			$isMoveToTrash = false;
 
-		// check grant
-		$oModuleModel = getModel('module');
-		$columnList = array('module_srl', 'module');
-		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
-		$grant = $oModuleModel->getGrant($module_info, $logged_info);
-
-		if(!$grant->manager) return new BaseObject(-1,'msg_not_permitted');
+		if(!$this->canManageSpammer($member_srl)) return new BaseObject(-1,'msg_not_permitted');
 
 		$proc_msg = "";
 

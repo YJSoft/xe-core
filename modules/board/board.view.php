@@ -846,6 +846,10 @@ class boardView extends board
 		{
 			return $this->dispBoardMessage('msg_invalid_request');
 		}
+		if((string)$oDocument->get('module_srl') !== (string)$this->module_srl || !$oDocument->isAccessible(true))
+		{
+			return $this->dispBoardMessage('msg_not_permitted');
+		}
 
 		// Check allow comment
 		if(!$oDocument->allowComment())
@@ -901,6 +905,10 @@ class boardView extends board
 		{
 			return $this->dispBoardMessage('msg_invalid_request');
 		}
+		if((string)$oSourceComment->get('module_srl') !== (string)$this->module_srl || !$oSourceComment->isAccessible(true))
+		{
+			return $this->dispBoardMessage('msg_not_permitted');
+		}
 		if(Context::get('document_srl') && $oSourceComment->get('document_srl') != Context::get('document_srl'))
 		{
 			return $this->dispBoardMessage('msg_invalid_request');
@@ -909,6 +917,10 @@ class boardView extends board
 		// Check allow comment
 		$oDocumentModel = getModel('document');
 		$oDocument = $oDocumentModel->getDocument($oSourceComment->get('document_srl'));
+		if(!$oDocument->isExists() || (string)$oDocument->get('module_srl') !== (string)$this->module_srl || !$oDocument->isAccessible(true))
+		{
+			return $this->dispBoardMessage('msg_not_permitted');
+		}
 		if(!$oDocument->allowComment())
 		{
 			return $this->dispBoardMessage('msg_not_allow_comment');

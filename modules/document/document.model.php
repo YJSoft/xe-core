@@ -1223,8 +1223,8 @@ class documentModel extends document
 		if($point != -1) $point = 1;
 
 		$oDocumentModel = getModel('document');
-		$columnList = array('document_srl', 'module_srl');
-		$oDocument = $oDocumentModel->getDocument($document_srl, false, false, $columnList);
+		$oDocument = $oDocumentModel->getDocument($document_srl, false, false);
+		if(!$oDocument->isExists() || !$oDocument->isAccessible(true)) return new BaseObject(-1, 'msg_not_permitted');
 		$module_srl = $oDocument->get('module_srl');
 		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
 

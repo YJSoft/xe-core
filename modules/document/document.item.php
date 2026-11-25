@@ -189,8 +189,21 @@ class documentItem extends BaseObject
 		$this->grant_cache = true;
 	}
 
-	function isAccessible()
+	function isAccessible($strict = false)
 	{
+		if($strict)
+		{
+			if(!$this->isExists()) return false;
+			$oModuleModel = getModel('module');
+			$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->get('module_srl'));
+			if(!$module_info || !$module_info->module_srl) return false;
+			$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
+			if(empty($grant->access) || (isset($grant->view) && !$grant->view && !$this->isGranted())) return false;
+			if($module_info->module === 'board' && isset($module_info->consultation) && $module_info->consultation === 'Y' &&
+				!$this->isNotice() && empty($grant->manager) && empty($grant->consultation_read) && !$this->isGranted()) return false;
+			if(in_array($this->get('status'), array('TEMP', 'PRIVATE'), true) && !$this->isGranted()) return false;
+			if(!$this->isSecret() || $this->isGranted()) return true;
+		}
 		return $_SESSION['accessible'][$this->document_srl]==true?true:false;
 	}
 

@@ -282,6 +282,11 @@ class commentController extends comment
 			unset($obj->member_srl);
 			unset($obj->user_id);
 		}
+		if(!$manual_inserted)
+		{
+			$obj->voted_count = $obj->blamed_count = $obj->uploaded_count = 0;
+			$obj->ipaddress = $_SERVER['REMOTE_ADDR'];
+		}
 
 		if(!$manual_inserted)
 		{

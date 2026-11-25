@@ -26,17 +26,18 @@ class boardAdminView extends board {
 		$oModuleModel = getModel('module');
 
 		// get the module infomation based on the module_srl
+		$module_info = null;
 		if($module_srl) {
+			if(!is_scalar($module_srl) || !preg_match('/^[1-9][0-9]*$/D', (string)$module_srl)) return $this->stop('msg_invalid_request');
 			$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-			if(!$module_info) {
-				Context::set('module_srl','');
-				$this->act = 'list';
-			} else {
-				ModuleModel::syncModuleToSite($module_info);
-				$this->module_info = $module_info;
-				$this->module_info->use_status = explode('|@|', $module_info->use_status);
-				Context::set('module_info',$module_info);
-			}
+			if(!$module_info || $module_info->module !== 'board') return $this->stop('msg_invalid_request');
+			$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
+			if(empty($grant->access) || empty($grant->manager)) return $this->stop('msg_not_permitted');
+			if(!empty($this->origin_module_info->module_srl) && (string)$this->origin_module_info->module_srl !== (string)$module_info->module_srl) return $this->stop('msg_invalid_request');
+			$oModuleModel->syncModuleToSite($module_info);
+			$this->module_info = $module_info;
+			$this->module_info->use_status = explode('|@|', $module_info->use_status);
+			Context::set('module_info',$module_info);
 		}
 
 		if($module_info && $module_info->module != 'board') return $this->stop("msg_invalid_request");
