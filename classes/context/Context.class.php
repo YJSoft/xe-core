@@ -1410,6 +1410,13 @@ class Context
 	 */
 	public static function _filterRequestVar($key, $val, $do_stripslashes = true, $remove_hack = false)
 	{
+		// Return URLs are meaningful only for state-changing requests. Accepting
+		// them from GET requests lets untrusted links control later redirects.
+		if($remove_hack && in_array($key, array('success_return_url', 'error_return_url'), true))
+		{
+			return NULL;
+		}
+
 		if(!($isArray = is_array($val)))
 		{
 			$val = array($val);
