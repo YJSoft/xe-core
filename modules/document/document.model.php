@@ -58,7 +58,7 @@ class documentModel extends document
 		$_document_list = &$GLOBALS['XE_DOCUMENT_LIST'];
 
 		// XE XE_DOCUMENT_LIST all documents that the object referred to the global variable settings
-		if(count($_document_list) <= 0) return;
+		if(empty($_document_list)) return;
 
 		// Find all called the document object variable has been set extension
 		$document_srls = array();
@@ -272,7 +272,7 @@ class documentModel extends document
 				$group_args = clone($args);
 				$group_args->sort_index = 'documents.'.$args->sort_index;
 				$output = executeQueryArray($query_id, $group_args);
-				if(!$output->toBool()||!count($output->data)) return $output;
+				if(!$output->toBool() || empty($output->data)) return $output;
 
 				foreach($output->data as $key => $val)
 				{
@@ -301,10 +301,10 @@ class documentModel extends document
 			}
 		}
 		// Return if no result or an error occurs
-		if(!$output->toBool()||!count($output->data)) return $output;
+		if(!$output->toBool() || empty($output->data)) return $output;
 		$idx = 0;
 		$data = $output->data;
-		unset($output->data);
+		$output->data = array();
 
 		if(!isset($virtual_number))
 		{
@@ -339,12 +339,9 @@ class documentModel extends document
 
 		if($load_extra_vars) $this->setToAllDocumentExtraVars();
 
-		if(count($output->data))
+		foreach($output->data as $number => $document)
 		{
-			foreach($output->data as $number => $document)
-			{
-				$output->data[$number] = $GLOBALS['XE_DOCUMENT_LIST'][$document->document_srl];
-			}
+			$output->data[$number] = $GLOBALS['XE_DOCUMENT_LIST'][$document->document_srl];
 		}
 
 		// Call trigger (after)
@@ -363,18 +360,19 @@ class documentModel extends document
 	{
 		$args = new stdClass();
 		$args->module_srl = $obj->module_srl;
-		$args->category_srl= $obj->category_srl;
+		if(isset($obj->category_srl)) $args->category_srl = $obj->category_srl;
 		$output = executeQueryArray('document.getNoticeList', $args, $columnList);
 		if(!$output->toBool()||!$output->data) return;
 
-		foreach($output->data as $key => $val)
+		$result = new stdClass();
+		$result->data = array();
+		foreach($output->data as $val)
 		{
 			$document_srl = $val->document_srl;
 			if(!$document_srl) continue;
 
-			if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl])
+			if(!isset($GLOBALS['XE_DOCUMENT_LIST'][$document_srl]))
 			{
-				$oDocument = null;
 				$oDocument = new documentItem();
 				$oDocument->setAttribute($val, false);
 				$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
