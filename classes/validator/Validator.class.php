@@ -131,6 +131,7 @@ class Validator
 			return FALSE;
 		}
 
+		$messages = array();
 		// custom rules
 		if(isset($xml->ruleset->customrules) && isset($xml->ruleset->customrules->rule))
 		{
@@ -141,7 +142,6 @@ class Validator
 			}
 
 			$rules = array();
-			$messages = array();
 			foreach($customrules as $rule)
 			{
 				if(!isset($rule->attrs) || !isset($rule->attrs->name))
@@ -149,7 +149,7 @@ class Validator
 					continue;
 				}
 
-				$message = $rule->message ? $rule->message->body : NULL;
+				$message = isset($rule->message->body) ? $rule->message->body : NULL;
 				$rule = (array) $rule->attrs;
 				$rule['message'] = $message;
 				$name = $rule['name'];
@@ -186,7 +186,7 @@ class Validator
 				continue;
 			}
 
-			$title = $field->title ? $field->title->body : NULL;
+			$title = isset($field->title->body) ? $field->title->body : NULL;
 			$filter = (array) $field->attrs;
 			$filter['title'] = $title;
 
@@ -218,7 +218,7 @@ class Validator
 
 		$this->_xml_ruleset = $xml->ruleset;
 		$this->_filters = $filters;
-		$this->_message = $messages;
+		$this->_messages = $messages;
 		$this->_fieldNames = $fieldsNames;
 		$this->_xml_path = $xml_path;
 
@@ -281,7 +281,7 @@ class Validator
 			$names = array();
 			if($key[0] == '^')
 			{
-				$names = preg_grep('/^' . preg_quote(substr($key, 1)) . '/', $field_names);
+				$names = preg_grep('/^' . preg_quote(substr($key, 1), '/') . '/', $field_names);
 			}
 			elseif(substr($key, -2) == '[]')
 			{
@@ -312,7 +312,8 @@ class Validator
 
 			if(preg_match("/(^[a-z_]*)[\[](?:\'|\")?([a-z_]*)(?:\'|\")?[\]]$/i", $key, $matches))
 			{
-				$exists = array_key_exists($matches[1], $fields);
+				$exists = isset($fields[$matches[1]]) && is_array($fields[$matches[1]])
+					&& array_key_exists($matches[2], $fields[$matches[1]]);
 				$value = $exists ? $fields[$matches[1]][$matches[2]] : NULL;
 			}
 			else
@@ -321,16 +322,10 @@ class Validator
 				$value = $exists ? $fields[$fname] : NULL;
 			}
 
-			if(is_array($value))
+			$value = $this->getFieldText($value);
+			if($value === NULL)
 			{
-				if(!isset($value[tmp_name]))
-				{
-					$value = implode('', $value);
-				}
-				else
-				{
-					$value = $value['name'];
-				}
+				return $this->error($key, 'invalid');
 			}
 
 			// conditional statement
@@ -341,10 +336,13 @@ class Validator
 					continue;
 				}
 
+				// Unsubmitted condition fields have the same value as an absent form field.
+				preg_match_all('/\$(\w+)/', $cond['test'], $variables);
+				$conditionFields = $fields + array_fill_keys($variables[1], NULL);
 				$func_body = preg_replace('/\\$(\w+)/', '$c[\'$1\']', $cond['test']);
 				$func = eval('return function($c) { return !!(' . $func_body . '); };');
 
-				if($func($fields))
+				if($func($conditionFields))
 				{
 					$filter[$cond['attr']] = $cond['value'];
 				}
@@ -386,7 +384,7 @@ class Validator
 			// attr : length
 			if($length = $filter['length'])
 			{
-				list($min, $max) = explode(':', trim($length));
+				list($min, $max) = array_pad(explode(':', trim($length), 2), 2, '');
 				$is_min_b = (substr($min, -1) === 'b');
 				$is_max_b = (substr($max, -1) === 'b');
 				list($min, $max) = array((int) $min, (int) $max);
@@ -406,7 +404,7 @@ class Validator
 			// equalto
 			if($equalto = $filter['equalto'])
 			{
-				if(!array_key_exists($equalto, $fields) || trim($fields[$equalto]) !== $value)
+				if(!array_key_exists($equalto, $fields) || $fields[$equalto] !== $value)
 				{
 					return $this->error($key, 'equalto');
 				}
@@ -436,6 +434,29 @@ class Validator
 	}
 
 	/**
+	 * Combine form values for text rules, using only the names of uploaded files.
+	 */
+	private function getFieldText($value)
+	{
+		if(!is_array($value))
+		{
+			return is_scalar($value) || $value === NULL ? (string) $value : NULL;
+		}
+		if(isset($value['tmp_name']))
+		{
+			return isset($value['name']) ? $this->getFieldText($value['name']) : '';
+		}
+		$text = '';
+		foreach($value as $part)
+		{
+			$part = $this->getFieldText($part);
+			if($part === NULL) return NULL;
+			$text .= $part;
+		}
+		return $text;
+	}
+
+	/**
 	 * apply trim recursive
 	 * @param string|array $array
 	 * @return string|array
@@ -444,7 +465,11 @@ class Validator
 	{
 		if(!is_array($array))
 		{
-			return trim($array);
+			if(is_scalar($array) || $array === NULL || (is_object($array) && method_exists($array, '__toString')))
+			{
+				return trim((string) $array);
+			}
+			return $array;
 		}
 
 		foreach($array as $key => $value)
@@ -462,14 +487,15 @@ class Validator
 	 */
 	function error($field, $msg)
 	{
-		if(isset($this->_message[$msg]))
+		if(isset($this->_messages[$msg]))
 		{
-			$msg = $this->_message[$msg];
+			$msg = $this->_messages[$msg];
 		}
 		else
 		{
 			$lang_filter = Context::getLang('filter');
-			$msg = isset($lang_filter->{$msg}) ? $lang_filter->{$msg} : $lang_filter->invalid;
+			if(isset($lang_filter->{$msg})) $msg = $lang_filter->{$msg};
+			elseif(isset($lang_filter->invalid)) $msg = $lang_filter->invalid;
 		}
 
 		if(isset($this->_fieldNames[$field]))
@@ -481,7 +507,7 @@ class Validator
 			$fieldName = Context::getLang($field);
 		}
 
-		$msg = sprintf($msg, $fieldName);
+		$msg = sprintf($msg, is_scalar($fieldName) ? $fieldName : $field);
 
 		$this->_last_error = array('field' => $field, 'msg' => $msg);
 
@@ -607,12 +633,10 @@ class Validator
 	 */
 	function applyRule($name, $value)
 	{
+		if(!isset($this->_rules[$name])) return TRUE;
 		$rule = $this->_rules[$name];
-
-		if(is_array($value) && isset($value['tmp_name']))
-		{
-			$value = $value['name'];
-		}
+		$value = $this->getFieldText($value);
+		if($value === NULL) return FALSE;
 
 		switch($rule['type'])
 		{
@@ -621,7 +645,7 @@ class Validator
 			case 'enum':
 				return in_array($value, $rule['test']);
 			case 'expr':
-				if(!$rule['func_test'])
+				if(empty($rule['func_test']))
 				{
 					$rule['func_test'] = eval('return function($a) { return (' . preg_replace('/\$\$/', '$a', html_entity_decode($rule['test'])) . '); };');
 				}
@@ -756,31 +780,31 @@ class Validator
 				$field_lang = addslashes($filter['title']);
 				$messages[] = "v.cast('ADD_MESSAGE',['{$name}','{$field_lang}']);";
 			}
-			elseif(isset($lang->{$name}))
+			elseif(isset($lang->{$name}) && is_string($lang->{$name}))
 			{
 				$field_lang = addslashes($lang->{$name});
 				$messages[] = "v.cast('ADD_MESSAGE',['{$name}','{$field_lang}']);";
 			}
 
-			if($filter['required'] == 'true')
+			if(isset($filter['required']) && $filter['required'] == 'true')
 			{
 				$field[] = 'required:true';
 			}
-			if($filter['rule'])
+			if(!empty($filter['rule']))
 			{
 				$field[] = "rule:'" . strtolower($filter['rule']) . "'";
 			}
-			if($filter['default'])
+			if(!empty($filter['default']))
 			{
 				$field[] = "default:'{$filter['default']}'";
 			}
-			if($filter['modifier'])
+			if(!empty($filter['modifier']))
 			{
 				$field[] = "modifier:'{$filter['modifier']}'";
 			}
-			if($filter['length'])
+			if(!empty($filter['length']))
 			{
-				list($min, $max) = explode(':', $filter['length']);
+				list($min, $max) = array_pad(explode(':', $filter['length'], 2), 2, '');
 				if($min)
 				{
 					$field[] = "minlength:'{$min}'";
@@ -790,7 +814,7 @@ class Validator
 					$field[] = "maxlength:'{$max}'";
 				}
 			}
-			if($filter['if'])
+			if(!empty($filter['if']))
 			{
 				$ifs = array();
 				if(!isset($filter['if'][0]))
@@ -816,9 +840,9 @@ class Validator
 		}
 
 		// error messages
-		foreach($lang->filter as $key => $text)
+		foreach((isset($lang->filter) ? (array) $lang->filter : array()) as $key => $text)
 		{
-			if($text)
+			if(is_string($text) && $text !== '')
 			{
 				$text = preg_replace('@\r?\n@', '\\n', addslashes($text));
 				$messages[] = "v.cast('ADD_MESSAGE',['{$key}','{$text}']);";
