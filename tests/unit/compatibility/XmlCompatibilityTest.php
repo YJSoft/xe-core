@@ -11,9 +11,9 @@ class XmlCompatibilityTest extends CompatibilityTestCase
 		$module->add('rows', array((object)array('title' => 'One & two'), new stdClass()));
 		$handler = new XMLDisplayHandler();
 		$xml = simplexml_load_string($handler->toDoc($module));
-		$this->assertCount(2, $xml->rows->item);
+		$this->assertSame(2, $xml->rows->item->count());
 		$this->assertSame('One & two', (string)$xml->rows->item[0]->title);
-		$this->assertCount(0, $xml->rows->item[1]->children());
+		$this->assertSame(0, $xml->rows->item[1]->children()->count());
 	}
 
 	public function testParserCallbacksHandleAttributesRepeatedNodesAndUnicode()
