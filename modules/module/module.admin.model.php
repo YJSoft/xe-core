@@ -92,14 +92,11 @@ class moduleAdminModel extends module
 		$grantList->access = new stdClass();
 		$grantList->access->title = Context::getLang('grant_access');
 		$grantList->access->default = 'guest';
-		if(count($grantList))
+		foreach($grantList as $key => $val)
 		{
-			foreach($grantList as $key => $val)
-			{
-				if(!$val->default) $val->default = 'guest';
-				if($val->default == 'root') $val->default = 'manager';
-				$grant_list->{$key} = $val;
-			}
+			if(!$val->default) $val->default = 'guest';
+			if($val->default == 'root') $val->default = 'manager';
+			$grant_list->{$key} = $val;
 		}
 		$grant_list->manager = new stdClass();
 		$grant_list->manager->title = Context::getLang('grant_manager');
@@ -154,7 +151,7 @@ class moduleAdminModel extends module
 		$grant_list->access = new stdClass();
 		$grant_list->access->title = Context::getLang('grant_access');
 		$grant_list->access->default = 'guest';
-		if(count($source_grant_list))
+		if(!empty($source_grant_list))
 		{
 			foreach($source_grant_list as $key => $val)
 			{
@@ -169,6 +166,7 @@ class moduleAdminModel extends module
 		Context::set('grant_list', $grant_list);
 		// Get a permission group granted to the current module
 		$default_grant = array();
+		$selected_group = array();
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		$output = executeQueryArray('module.getModuleGrants', $args);
@@ -191,7 +189,7 @@ class moduleAdminModel extends module
 		Context::set('default_grant', $default_grant);
 		Context::set('module_srl', $module_srl);
 		// Extract admin ID set in the current module
-		$admin_member = $oModuleModel->getAdminId($module_srl);
+		$admin_member = (array)$oModuleModel->getAdminId($module_srl);
 		Context::set('admin_member', $admin_member);
 		// Get a list of groups
 		$oMemberModel = getModel('member');
