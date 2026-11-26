@@ -135,25 +135,26 @@ class XmlJsFilter extends XeXmlParser
 		$extend_filter = $attrs->extend_filter;
 
 
-		$field_node = $xml_obj->filter->form->node;
-		if($field_node && !is_array($field_node))
+		$field_node = isset($xml_obj->filter->form->node) ? $xml_obj->filter->form->node : array();
+		if(!is_array($field_node))
 		{
 			$field_node = array($field_node);
 		}
 
-		$parameter_param = $xml_obj->filter->parameter->param;
-		if($parameter_param && !is_array($parameter_param))
+		$parameter_param = isset($xml_obj->filter->parameter->param) ? $xml_obj->filter->parameter->param : array();
+		if(!is_array($parameter_param))
 		{
 			$parameter_param = array($parameter_param);
 		}
 
-		$response_tag = $xml_obj->filter->response->tag;
-		if($response_tag && !is_array($response_tag))
+		$response_tag = isset($xml_obj->filter->response->tag) ? $xml_obj->filter->response->tag : array();
+		if(!is_array($response_tag))
 		{
 			$response_tag = array($response_tag);
 		}
 
 		// If extend_filter exists, result returned by calling the method
+		$extend_filter_count = 0;
 		if($extend_filter)
 		{
 			// If extend_filter exists, it changes the name of cache not to use cache
@@ -173,7 +174,7 @@ class XmlJsFilter extends XeXmlParser
 				{
 					// get the result
 					$extend_filter_list = $oExtendFilter->{$method}(TRUE);
-					$extend_filter_count = count($extend_filter_list);
+					$extend_filter_count = $extend_filter_list ? count($extend_filter_list) : 0;
 
 					// apply lang_value from the result to the variable
 					for($i = 0; $i < $extend_filter_count; $i++)
@@ -309,8 +310,7 @@ class XmlJsFilter extends XeXmlParser
 
 		// generates parameter script to create dbata
 		$rename_params = array();
-		$parameter_count = $parameter_param ? count($parameter_param) : 0;
-		if($parameter_count)
+		if($parameter_param)
 		{
 			// contains parameter of the default filter contents
 			foreach($parameter_param as $key => $param)
@@ -391,7 +391,7 @@ class XmlJsFilter extends XeXmlParser
 			$js_messages[] = sprintf("v.cast('ADD_MESSAGE',['%s','%s']);", $key, $val);
 		}
 
-		$callback_func = $xml_obj->filter->response->attrs->callback_func;
+		$callback_func = isset($xml_obj->filter->response->attrs->callback_func) ? $xml_obj->filter->response->attrs->callback_func : null;
 		if(!$callback_func)
 		{
 			$callback_func = "filterAlertMessage";

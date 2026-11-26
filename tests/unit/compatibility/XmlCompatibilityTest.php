@@ -73,6 +73,26 @@ class XmlCompatibilityTest extends CompatibilityTestCase
 		$this->assertTrue(strpos($js, 'user_id') !== false);
 	}
 
+	public function testFriendListFiltersCompileWithoutChildNodes()
+	{
+		$GLOBALS['lang']->confirm_delete = 'Delete?';
+		$GLOBALS['lang']->confirm_move = 'Move?';
+		$GLOBALS['lang']->filter = array();
+		$filters = array(
+			'delete_friend_group' => array('procCommunicationDeleteFriendGroup', 'Delete?'),
+			'move_friend' => array('procCommunicationMoveFriend', 'Move?'),
+		);
+		foreach($filters as $name => $expected)
+		{
+			list($act, $confirm) = $expected;
+			$filter = new XmlJsFilter(_XE_PATH_ . 'modules/communication/skins/default/filter', $name . '.xml');
+			$filter->js_file = $this->fixtureDir . $name . '.js';
+			$filter->compile();
+			$js = file_get_contents($filter->js_file);
+			$this->assertTrue(strpos($js, "legacy_filter('$name', form, 'communication', '$act', filterAlertMessage, [], '$confirm', {})") !== false);
+		}
+	}
+
 	public function testAutoinstallXmlGeneratorCanBeCalledStatically()
 	{
 		require_once _XE_PATH_ . 'modules/autoinstall/autoinstall.class.php';
