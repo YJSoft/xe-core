@@ -57,6 +57,40 @@ class ModuleCompatibilityTest extends CompatibilityTestCase
 		$this->assertFalse($comment->isExists());
 	}
 
+	public function testBoardListsNoticesByDocumentIdAndCanExcludeThemFromTheRegularList()
+	{
+		$db = $this->useQueryFixture();
+		$view = new boardView();
+		$view->module_srl = 77;
+		$view->grant = (object)array('list' => true);
+		$GLOBALS['XE_DOCUMENT_LIST'] = array();
+		$GLOBALS['XE_EXTRA_KEYS'][77] = array();
+		$db->responses['document.getDocumentExtraVars'] = array();
+		$first = (object)array('document_srl' => 7702, 'module_srl' => 77, 'is_notice' => 'Y', 'lang_code' => 'en', 'title' => 'First notice');
+		$second = clone $first;
+		$second->document_srl = 7701;
+		$db->responses['document.getNoticeList'] = $first;
+		$view->dispBoardNoticeList();
+		$notices = Context::get('notice_list');
+		$this->assertSame(array(7702), array_keys($notices));
+		$this->assertSame('First notice', $notices[7702]->get('title'));
+
+		$db->responses['document.getNoticeList'] = array($first, $second);
+		$view->dispBoardNoticeList();
+		$both = Context::get('notice_list');
+		$this->assertSame(array(7702, 7701), array_keys($both));
+		$this->assertSame($notices[7702], $both[7702]);
+
+		$args = (object)array('module_srl' => 77, 'sort_index' => 'list_order');
+		$db->responses['document.getDocumentList'] = array(2 => $first, 1 => $second);
+		$model = getModel('document');
+		$this->assertSame(array(), $model->getDocumentList($args, true)->data);
+
+		$db->responses['document.getNoticeList'] = null;
+		$view->dispBoardNoticeList();
+		$this->assertSame(array(), Context::get('notice_list'));
+	}
+
 	public function testFriendPageHandlesEmptyListsAndResolvesGroupNames()
 	{
 		$db = $this->useQueryFixture();
