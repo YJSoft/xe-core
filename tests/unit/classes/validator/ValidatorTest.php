@@ -37,6 +37,32 @@ class ValidatorTest extends \Codeception\TestCase\Test
         $this->assertTrue( $vd->validate() );
     }
 
+    public function testArrayAndFileFields()
+    {
+        $vd = new Validator();
+        $vd->addFilter('field', array('required' => 'true', 'length' => '3:3'));
+
+        $this->assertTrue($vd->validate(array('field' => array('a', 'bc'))));
+        $this->assertTrue($vd->validate(array('field' => array('name' => 'abc', 'tmp_name' => '/tmp/upload'))));
+        $this->assertFalse($vd->validate(array('field' => array('name' => '', 'tmp_name' => ''))));
+        $uploads = array(array('name' => 'a', 'tmp_name' => '/tmp/one'), array('name' => 'bc', 'tmp_name' => '/tmp/two'));
+        $this->assertTrue($vd->validate(array('field' => $uploads)));
+        $this->assertFalse($vd->validate(array('field' => new stdClass())));
+    }
+
+    public function testNestedFieldAndComparisonTypes()
+    {
+        $vd = new Validator();
+        $vd->addFilter('user[name]', array('required' => 'true'));
+        $this->assertTrue($vd->validate(array('user' => array('name' => 'XE'))));
+        $this->assertFalse($vd->validate(array('user' => array())));
+        $this->assertFalse($vd->validate(array('user' => 'XE')));
+
+        $vd = new Validator();
+        $vd->addFilter('confirm', array('equalto' => 'original'));
+        $this->assertFalse($vd->validate(array('confirm' => 'XE', 'original' => array('XE'))));
+    }
+
     public function testNamePattern()
     {
         $vd = new Validator();
