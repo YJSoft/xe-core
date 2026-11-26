@@ -109,6 +109,29 @@ class ModuleCompatibilityTest extends CompatibilityTestCase
 		$this->assertTrue($model->getGrant($module, $guest, $xml)->view);
 	}
 
+	public function testBoardGrantFormRendersXmlGrantsWithoutModuleAdmins()
+	{
+		$db = $this->useQueryFixture();
+		$db->responses['module.getAdminID'] = null;
+		$db->responses['module.getModuleGrants'] = array((object)array('name' => 'view', 'group_srl' => 7));
+		$module = new CompatibilityGrantModuleModel();
+		$this->useModuleFixture('module', $module);
+		$this->useModuleFixture('member', new CompatibilityGrantMemberModel());
+
+		$view = new boardAdminView();
+		$view->module_info = (object)array('module_srl' => 1);
+		$view->xml_info = $module->getModuleActionXml('board');
+		$view->dispBoardAdminGrantInfo();
+
+		$html = Context::get('grant_content');
+		foreach(array('access', 'view', 'write_document', 'manager') as $grant)
+		{
+			$this->assertTrue(strpos($html, 'id="' . $grant . '_default"') !== false, $grant);
+		}
+		$this->assertSame(array('view' => array(7)), Context::get('selected_group'));
+		$this->assertSame(array(), Context::get('admin_member'));
+	}
+
 	public function testModuleControllerSavesObjectSkinExtraAndGrantSettings()
 	{
 		$db = $this->useQueryFixture();
@@ -257,6 +280,20 @@ class CompatibilityModuleConfigController
 	public $name;
 	public $config;
 	public function updateModuleConfig($name, $config) { $this->name = $name; $this->config = $config; }
+}
+
+class CompatibilityGrantModuleModel extends moduleModel
+{
+	public function getModuleInfoByModuleSrl($module_srl, $columnList = array())
+	{
+		return (object)array('module_srl' => $module_srl, 'site_srl' => 0);
+	}
+}
+
+class CompatibilityGrantMemberModel
+{
+	public function getMemberConfig() { return (object)array('identifier' => 'email_address'); }
+	public function getGroups($site_srl) { return array(7 => (object)array('group_srl' => 7, 'title' => 'Members', 'description' => '')); }
 }
 
 class CompatibilityMenuController extends menuAdminController
