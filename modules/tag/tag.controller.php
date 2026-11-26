@@ -22,17 +22,15 @@ class tagController extends tag
 		if(!$obj->tags) return new BaseObject();
 		// tags by variable
 		$tag_list = explode(',', $obj->tags);
-		$tag_count = count($tag_list);
 		$tag_list = array_unique($tag_list);
-		if(!count($tag_list)) return new BaseObject();
+		$arranged_tag_list = array();
 
 		foreach($tag_list as $tag)
 		{
 			if(!trim($tag)) continue;
 			$arranged_tag_list[] = trim($tag); 
 		}
-		if(!count($arranged_tag_list)) $obj->tags = null;
-		else $obj->tags = implode(',',$arranged_tag_list);
+		$obj->tags = $arranged_tag_list ? implode(',', $arranged_tag_list) : null;
 		return new BaseObject();
 	}
 

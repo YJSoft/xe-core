@@ -34,14 +34,15 @@ class widgetController extends widget
 		$oModuleModel = getModel('module');
 		$skin_info = $oModuleModel->loadSkinInfo($path, $skin);
 
-		for($i=0;$i<count($skin_info->colorset);$i++)
+		$colorset_list = array();
+		if(!empty($skin_info->colorset))
 		{
-			$colorset = sprintf('%s|@|%s', $skin_info->colorset[$i]->name, $skin_info->colorset[$i]->title);
-			$colorset_list[] = $colorset;
+			foreach($skin_info->colorset as $colorset)
+			{
+				$colorset_list[] = sprintf('%s|@|%s', $colorset->name, $colorset->title);
+			}
 		}
-
-		if(count($colorset_list)) $colorsets = implode("\n", $colorset_list);
-		$this->add('colorset_list', $colorsets);
+		$this->add('colorset_list', implode("\n", $colorset_list));
 	}
 
 	/**
@@ -730,10 +731,9 @@ class widgetController extends widget
 		if(!$widgetstyle_info) return $widget_content_body;
 
 		$widgetstyle_extra_var = new stdClass();
-		$widgetstyle_extra_var_key = get_object_vars($widgetstyle_info);
-		if(count($widgetstyle_extra_var_key['extra_var']))
+		if(!empty($widgetstyle_info->extra_var))
 		{
-			foreach($widgetstyle_extra_var_key['extra_var'] as $key => $val)
+			foreach($widgetstyle_info->extra_var as $key => $val)
 			{
 				$widgetstyle_extra_var->{$key} =  $args->{$key};
 			}
@@ -786,7 +786,7 @@ class widgetController extends widget
 		$vars->widget_padding_bottom = trim($request_vars->widget_padding_bottom);
 		$vars->document_srl= trim($request_vars->document_srl);
 
-		if(count($widget_info->extra_var))
+		if(!empty($widget_info->extra_var))
 		{
 			foreach($widget_info->extra_var as $key=>$val)
 			{
@@ -797,7 +797,7 @@ class widgetController extends widget
 		if($request_vars->widgetstyle)
 		{
 			$widgetStyle_info = $oWidgetModel->getWidgetStyleInfo($request_vars->widgetstyle);
-			if(count($widgetStyle_info->extra_var))
+			if(!empty($widgetStyle_info->extra_var))
 			{
 				foreach($widgetStyle_info->extra_var as $key=>$val)
 				{

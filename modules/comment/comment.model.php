@@ -409,6 +409,7 @@ class commentModel extends comment
 			return $output;
 		}
 
+		$result = array();
 		$comment_list = $output->data;
 		if($comment_list)
 		{
@@ -416,8 +417,6 @@ class commentModel extends comment
 			{
 				$comment_list = array($comment_list);
 			}
-
-			$comment_count = count($comment_list);
 
 			foreach($comment_list as $key => $attribute)
 			{
@@ -432,7 +431,6 @@ class commentModel extends comment
 
 				$result[$key] = $oComment;
 			}
-			$output->data = $result;
 		}
 
 		return $result;

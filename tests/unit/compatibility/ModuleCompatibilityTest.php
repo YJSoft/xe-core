@@ -128,6 +128,28 @@ class ModuleCompatibilityTest extends CompatibilityTestCase
 		$this->assertTrue($categories[1]->first && $categories[1]->last);
 	}
 
+	public function testMidListReusesSiteCacheOnlyForTheUnfilteredSite()
+	{
+		$db = $this->useQueryFixture();
+		class_exists('CacheHandler');
+		require_once _XE_PATH_ . 'classes/cache/CacheFile.class.php';
+		$GLOBALS['__CacheFile__'] = new CacheFile();
+		$GLOBALS['__CacheFile__']->cache_dir = $this->fixtureDir;
+
+		$model = new moduleModel();
+		$site = (object)array('site_srl' => 0);
+		$board = (object)array('mid' => 'board');
+		$db->responses['module.getMidList'] = $board;
+		$this->assertEquals(array('board' => $board), $model->getMidList($site));
+
+		$page = (object)array('mid' => 'page');
+		$db->responses['module.getMidList'] = $page;
+		$this->assertEquals(array('board' => $board), $model->getMidList($site));
+		$this->assertSame(array('page' => $page), $model->getMidList((object)array('site_srl' => 0, 'module' => 'page')));
+		$this->assertSame(array('page' => $page), $model->getMidList());
+		$this->assertCount(3, $db->queries);
+	}
+
 	public function testModuleExtraVariablesAcceptStdClassAndNormalizeNullableColumns()
 	{
 		$model = new CompatibilityModuleModel();
@@ -180,6 +202,19 @@ class ModuleCompatibilityTest extends CompatibilityTestCase
 		}
 		$this->assertSame(array('view' => array(7)), Context::get('selected_group'));
 		$this->assertSame(array(), Context::get('admin_member'));
+	}
+
+	public function testBulkBoardGrantsIncludeXmlAndVirtualPermissions()
+	{
+		$this->useModuleFixture('module', new CompatibilityGrantModuleModel());
+		$this->useModuleFixture('member', new CompatibilityGrantMemberModel());
+		Context::set('module_srls', '1,2', false);
+		$view = new moduleAdminView();
+		$view->dispModuleAdminModuleGrantSetup();
+		$grants = Context::get('grant_list');
+		$this->assertSame('guest', $grants->access->default);
+		$this->assertSame('guest', $grants->write_document->default);
+		$this->assertSame('manager', $grants->manager->default);
 	}
 
 	public function testModuleControllerSavesObjectSkinExtraAndGrantSettings()
@@ -336,7 +371,7 @@ class CompatibilityGrantModuleModel extends moduleModel
 {
 	public function getModuleInfoByModuleSrl($module_srl, $columnList = array())
 	{
-		return (object)array('module_srl' => $module_srl, 'site_srl' => 0);
+		return (object)array('module_srl' => $module_srl, 'module' => 'board', 'site_srl' => 0);
 	}
 }
 

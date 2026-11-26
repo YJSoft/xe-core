@@ -107,7 +107,7 @@ class content extends WidgetHandler
 				}
 			}
 			// Exit if no module is found
-			if(!count($args->modules_info)) return Context::get('msg_not_founded');
+			if(!is_array($args->modules_info) || !$args->modules_info) return Context::get('msg_not_founded');
 			$args->module_srl = implode(',',$module_srls);
 		}
 
@@ -197,7 +197,7 @@ class content extends WidgetHandler
 
 		$content_items = array();
 
-		if(!count($output)) return;
+		if(!is_array($output)) return $content_items;
 
 		foreach($output as $key => $oComment)
 		{

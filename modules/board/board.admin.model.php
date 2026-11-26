@@ -59,7 +59,7 @@ class boardAdminModel extends board
 		Context::set('setupUrl', $setupUrl);
 
 		// Extract admin ID set in the current module
-		$admin_member = $oModuleModel->getAdminId($moduleSrl);
+		$admin_member = (array)$oModuleModel->getAdminId($moduleSrl);
 		Context::set('admin_member', $admin_member);
 
 		$oTemplate = &TemplateHandler::getInstance();
