@@ -57,6 +57,56 @@ class ModuleCompatibilityTest extends CompatibilityTestCase
 		$this->assertFalse($comment->isExists());
 	}
 
+	public function testFriendPageHandlesEmptyListsAndResolvesGroupNames()
+	{
+		$db = $this->useQueryFixture();
+		Context::set('is_logged', true, false);
+		Context::set('logged_info', (object)array('member_srl' => 5), false);
+		$page = new BaseObject();
+		$page->data = null;
+		$page->page = $page->total_page = 1;
+		$page->total_count = 0;
+		$page->page_navigation = new PageHandler(0, 1, 1, 10);
+		$db->responses['communication.getFriends'] = $page;
+		$db->responses['communication.getFriendGroups'] = null;
+
+		$view = new communicationView();
+		$view->dispCommunicationFriend();
+		$this->assertSame(array(), Context::get('friend_group_list'));
+		$this->assertSame(array(), Context::get('friend_list'));
+		$this->assertSame($page->page_navigation, Context::get('page_navigation'));
+		$this->assertSame('friends.html', $view->getTemplateFile());
+
+		$group = (object)array('friend_group_srl' => 7, 'title' => 'Colleagues');
+		$db->responses['communication.getFriendGroups'] = $group;
+		$page->total_count = 2;
+		$page->data = array(2 => (object)array('friend_group_srl' => 7), 1 => (object)array('friend_group_srl' => 0));
+		$page->page_navigation = new PageHandler(2, 1, 1, 10);
+		$view->dispCommunicationFriend();
+		$friends = Context::get('friend_list');
+		$this->assertSame(array(7 => $group), Context::get('friend_group_list'));
+		$this->assertSame('Colleagues', $friends[2]->group_title);
+		$this->assertSame(Context::getLang('default_friend_group'), $friends[1]->group_title);
+		$this->assertSame(2, Context::get('total_count'));
+	}
+
+	public function testNewMessageHandlesEmptyAndSingleRowResults()
+	{
+		$db = $this->useQueryFixture();
+		Context::set('logged_info', (object)array('member_srl' => 5), false);
+		$model = new communicationModel();
+		$db->responses['communication.getNewMessage'] = null;
+		$this->assertNull($model->getNewMessage());
+
+		$message = (object)array('message_srl' => 12);
+		$db->responses['communication.getNewMessage'] = $message;
+		$db->responses['communication.setMessageReaded'] = null;
+		$this->assertSame($message, $model->getNewMessage());
+		$query = end($db->queries);
+		$this->assertSame('communication.setMessageReaded', $query[0]);
+		$this->assertSame(12, $query[1]->message_srl);
+	}
+
 	public function testCategoryArrangementAcceptsNullListsAndLeafChildren()
 	{
 		$model = new documentModel();

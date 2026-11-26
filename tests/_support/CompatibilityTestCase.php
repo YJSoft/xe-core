@@ -127,6 +127,7 @@ class CompatibilityQueryDB extends DB
 		{
 			throw new Exception('Unexpected fixture query: ' . $query_id);
 		}
+		if($this->responses[$query_id] instanceof BaseObject) return clone $this->responses[$query_id];
 		$output = new BaseObject();
 		$output->data = $this->responses[$query_id];
 		return $output;

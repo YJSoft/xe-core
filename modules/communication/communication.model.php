@@ -217,8 +217,8 @@ class communicationModel extends communication
 		$args->receiver_srl = $logged_info->member_srl;
 		$args->readed = 'N';
 
-		$output = executeQuery('communication.getNewMessage', $args, $columnList);
-		if(!count($output->data))
+		$output = executeQueryArray('communication.getNewMessage', $args, $columnList);
+		if(empty($output->data))
 		{
 			return;
 		}
@@ -292,8 +292,9 @@ class communicationModel extends communication
 		$args->list_count = 10;
 		$args->page_count = 10;
 
-		$output = executeQuery('communication.getFriends', $args, $columnList);
-		
+		$output = executeQueryArray('communication.getFriends', $args, $columnList);
+		if(empty($output->data)) $output->data = array();
+
 		return $output;
 	}
 
@@ -346,13 +347,7 @@ class communicationModel extends communication
 
 		$output = executeQueryArray('communication.getFriendGroups', $args);
 
-		$group_list = $output->data;
-		if(!$group_list)
-		{
-			return;
-		}
-		
-		return $group_list;
+		return empty($output->data) ? array() : $output->data;
 	}
 
 	/**
