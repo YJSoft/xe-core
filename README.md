@@ -1,7 +1,7 @@
 YJSoft XE Fork
 ============
 
-[![License](http://img.shields.io/badge/license-GNU%20LGPL-brightgreen.svg)](http://www.gnu.org/licenses/gpl.html)
+[![License](https://img.shields.io/badge/license-GPLv2%2B-brightgreen.svg)](LICENSE)
 [![Latest release](http://img.shields.io/github/release/YJSoft/xe-core.svg)](https://github.com/YJSoft/xe-core/releases)
 [![CI](https://github.com/YJSoft/xe-core/actions/workflows/ci.yml/badge.svg)](https://github.com/YJSoft/xe-core/actions/workflows/ci.yml)
 
@@ -47,20 +47,11 @@ MySQL 8.x와 구형 PHP를 함께 사용할 때는 [PHP MySQL 클라이언트의
 https://github.com/YJSoft/xe-core/graphs/contributors
 
 ## License
+
+이 변경을 포함한 배포본부터 YJSoft XE Fork 코어는 GNU 일반 공중 사용 허가서 제2판 또는 그 이후 판(`GPL-2.0-or-later`)에 따라 배포됩니다. [라이선스 전문](LICENSE)
+
+이전 배포본의 이용 조건은 해당 버전의 라이선스 파일에서 확인할 수 있습니다. 별도의 라이선스를 명시한 구성요소에는 해당 라이선스가 적용됩니다.
+
 XpressEngine의 이름 및 로고는 (주)엑스이허브 소유입니다. [브랜드 가이드라인](https://xe1.xpressengine.com/brand)에 따라 XpressEngine의 이름 및 로고를 사용하고 있습니다.
 
 Copyright 2014 XEHub. <https://www.xehub.io>
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA

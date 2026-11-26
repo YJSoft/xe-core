@@ -28,7 +28,7 @@ XE에서는 처음부터 Rhymix와 같은 전면 교체를 하지 않는다. PHP
 
 ## 2. 독립 구현 원칙
 
-이 저장소의 [LICENSE](../LICENSE)는 LGPL 2.1 이상이고, Rhymix는 [프로젝트 설명](https://github.com/rhymix/rhymix/blob/6234bfd2bc133286113421e8a525f38a9fa3eaf5/README.md)에서 GPL v2 이상을 명시한다. 사용자가 요청한 비복제 원칙에 따라 다음 방식으로 작업한다.
+이 설계안을 작성할 당시 [XE 포크의 라이선스](https://github.com/YJSoft/xe-core/blob/db6b241ed7625b32a59ee8a27f58df4f26f45dfc/LICENSE)는 LGPL 2.1 이상이었고, Rhymix는 [프로젝트 설명](https://github.com/rhymix/rhymix/blob/6234bfd2bc133286113421e8a525f38a9fa3eaf5/README.md)에서 GPL v2 이상을 명시한다. 사용자가 요청한 비복제 원칙에 따라 다음 방식으로 작업한다.
 
 1. Rhymix는 구조와 관찰 가능한 동작을 확인하는 참고 자료로만 사용한다.
 2. Rhymix의 함수 본문, 주석, 보조 클래스, 테스트, 패치를 가져오거나 이름·문법만 바꿔 이식하지 않는다.

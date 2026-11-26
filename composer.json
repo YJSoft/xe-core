@@ -1,6 +1,6 @@
 {
     "name": "xpressengine/xe-core",
-    "license": "GNU LGPL",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "XEHub",
