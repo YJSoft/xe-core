@@ -598,16 +598,16 @@
 		<value xml:lang="vi"><![CDATA[Để hiển thị ngôn ngữ đã chọn là mặc định. Hãy bấm [Lưu] phía dưới để lưu lại.]]></value>
 	</item>
 	<item name="xe_license">
-		<value xml:lang="ko"><![CDATA[XE는 LGPL을 따릅니다.]]></value>
-		<value xml:lang="en"><![CDATA[XE complies with the LGPL.]]></value>
-		<value xml:lang="jp"><![CDATA[XEのライセンスはLGPLです。]]></value>
-		<value xml:lang="zh-CN"><![CDATA[XE遵循 LGPL协议]]></value>
-		<value xml:lang="zh-TW"><![CDATA[XE遵循 LGPL協議]]></value>
-		<value xml:lang="fr"><![CDATA[XE s'applique la LGPL]]></value>
-		<value xml:lang="ru"><![CDATA[XE подчиняется Стандартной Общественной Лицензии LGPL]]></value>
-		<value xml:lang="es"><![CDATA[XE está bajo la Licencia de LGPL]]></value>
-		<value xml:lang="tr"><![CDATA[XE LGPL ile uyumludur]]></value>
-		<value xml:lang="vi"><![CDATA[XE sử dụng giấy phép LGPL]]></value>
+		<value xml:lang="ko"><![CDATA[YJSoft XE Fork 코어는 GNU GPL 제2판 또는 그 이후 판에 따라 배포됩니다.]]></value>
+		<value xml:lang="en"><![CDATA[YJSoft XE Fork is distributed under GNU GPL version 2 or later.]]></value>
+		<value xml:lang="jp"><![CDATA[YJSoft XE Fork は GNU GPL バージョン2以降の条件で配布されています。]]></value>
+		<value xml:lang="zh-CN"><![CDATA[YJSoft XE Fork 根据 GNU GPL 第 2 版或更高版本分发。]]></value>
+		<value xml:lang="zh-TW"><![CDATA[YJSoft XE Fork 依 GNU GPL 第 2 版或更新版本散布。]]></value>
+		<value xml:lang="fr"><![CDATA[YJSoft XE Fork est distribué sous la GNU GPL, version 2 ou ultérieure.]]></value>
+		<value xml:lang="ru"><![CDATA[YJSoft XE Fork распространяется на условиях GNU GPL версии 2 или более поздней.]]></value>
+		<value xml:lang="es"><![CDATA[YJSoft XE Fork se distribuye bajo la GNU GPL, versión 2 o posterior.]]></value>
+		<value xml:lang="tr"><![CDATA[YJSoft XE Fork, GNU GPL sürüm 2 veya sonraki bir sürüm kapsamında dağıtılır.]]></value>
+		<value xml:lang="vi"><![CDATA[YJSoft XE Fork được phân phối theo GNU GPL phiên bản 2 hoặc mới hơn.]]></value>
 	</item>
 	<item name="yesterday">
 		<value xml:lang="ko"><![CDATA[어제]]></value>
