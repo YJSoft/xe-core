@@ -510,19 +510,17 @@ class moduleModel extends module
 	{
 		$list = false;
 		$oCacheHandler = CacheHandler::getInstance('object', null, true);
-		if($oCacheHandler->isSupport())
+		$cache_by_site = $oCacheHandler->isSupport() && isset($args->site_srl) && count(get_object_vars($args)) === 1;
+		if($cache_by_site)
 		{
-			if(count($args) === 1 && isset($args->site_srl))
-			{
-				$object_key = 'module:mid_list_' . $args->site_srl;
-				$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
-				$list = $oCacheHandler->get($cache_key);
-			}
+			$object_key = 'module:mid_list_' . $args->site_srl;
+			$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
+			$list = $oCacheHandler->get($cache_key);
 		}
 
 		if($list === false)
 		{
-			if($oCacheHandler->isSupport() && count($args) === 1 && isset($args->site_srl))
+			if($cache_by_site)
 			{
 				$columnList = array();
 			}
@@ -531,7 +529,7 @@ class moduleModel extends module
 			if(!$output->toBool()) return $output;
 			$list = $output->data;
 
-			if($oCacheHandler->isSupport() && count($args) === 1 && isset($args->site_srl))
+			if($cache_by_site)
 			{
 				$oCacheHandler->put($cache_key, $list);
 			}

@@ -130,9 +130,10 @@ class pointAdminController extends point
 		$args = Context::getRequestVars();
 
 		$configTypeList = array('insert_document', 'insert_comment', 'upload_file', 'download_file', 'read_document', 'voted', 'blamed');
+		$module_config = array();
 		foreach($configTypeList AS $config)
 		{
-			if(is_array($args->{$config}))
+			if(isset($args->{$config}) && is_array($args->{$config}))
 			{
 				foreach($args->{$config} AS $key=>$value)
 				{
@@ -142,12 +143,9 @@ class pointAdminController extends point
 		}
 
 		$oModuleController = getController('module');
-		if(count($module_config))
+		foreach($module_config as $module_srl => $config)
 		{
-			foreach($module_config as $module_srl => $config)
-			{
-				$oModuleController->insertModulePartConfig('point',$module_srl,$config);
-			}
+			$oModuleController->insertModulePartConfig('point',$module_srl,$config);
 		}
 
 		$this->setMessage('success_updated');

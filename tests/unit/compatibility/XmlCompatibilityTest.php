@@ -4,6 +4,18 @@ require_once _XE_PATH_ . 'tests/_support/CompatibilityTestCase.php';
 /** @group compatibility */
 class XmlCompatibilityTest extends CompatibilityTestCase
 {
+	public function testXmlResponseSerializesObjectsNestedInLists()
+	{
+		require_once _XE_PATH_ . 'classes/display/XMLDisplayHandler.php';
+		$module = new BaseObject();
+		$module->add('rows', array((object)array('title' => 'One & two'), new stdClass()));
+		$handler = new XMLDisplayHandler();
+		$xml = simplexml_load_string($handler->toDoc($module));
+		$this->assertCount(2, $xml->rows->item);
+		$this->assertSame('One & two', (string)$xml->rows->item[0]->title);
+		$this->assertCount(0, $xml->rows->item[1]->children());
+	}
+
 	public function testParserCallbacksHandleAttributesRepeatedNodesAndUnicode()
 	{
 		$parser = new XeXmlParser();

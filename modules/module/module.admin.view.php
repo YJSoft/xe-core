@@ -230,19 +230,21 @@ class moduleAdminView extends module
 		$columnList = array('module_srl', 'module', 'site_srl');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($modules[0], $columnList);
 		$xml_info = $oModuleModel->getModuleActionXml($module_info->module);
-		$source_grant_list = $xml_info->grant;
 		// Grant virtual permissions for access and manager
+		$grant_list = new stdClass();
+		$grant_list->access = new stdClass();
 		$grant_list->access->title = Context::getLang('grant_access');
 		$grant_list->access->default = 'guest';
-		if(count($source_grant_list))
+		if(!empty($xml_info->grant))
 		{
-			foreach($source_grant_list as $key => $val)
+			foreach($xml_info->grant as $key => $val)
 			{
 				if(!$val->default) $val->default = 'guest';
 				if($val->default == 'root') $val->default = 'manager';
 				$grant_list->{$key} = $val;
 			}
 		}
+		$grant_list->manager = new stdClass();
 		$grant_list->manager->title = Context::getLang('grant_manager');
 		$grant_list->manager->default = 'manager';
 		Context::set('grant_list', $grant_list);

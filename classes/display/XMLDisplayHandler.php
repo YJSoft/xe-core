@@ -31,11 +31,6 @@ class XMLDisplayHandler
 	 */
 	function _makeXmlDoc($obj)
 	{
-		if(!count($obj))
-		{
-			return;
-		}
-
 		$xmlDoc = '';
 
 		foreach($obj as $key => $val)

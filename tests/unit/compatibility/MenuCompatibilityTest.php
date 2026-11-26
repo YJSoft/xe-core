@@ -4,6 +4,20 @@ require_once _XE_PATH_ . 'tests/_support/CompatibilityTestCase.php';
 /** @group compatibility */
 class MenuCompatibilityTest extends CompatibilityTestCase
 {
+	public function testArrangingLeafMenusPreservesParentsAndSiblingOrder()
+	{
+		$db = $this->useQueryFixture();
+		$db->responses['menu.updateMenu'] = null;
+		Context::set('item_key', array(10, 11, 12, 20), false);
+		Context::set('parent_key', array(0, 10, 10, 0), false);
+		Context::set('success_return_url', '/', false);
+		$controller = new CompatibilityMenuArrangeController();
+		$controller->procMenuAdminArrangeItem();
+		$this->assertSame(array(
+			array(0, 0, 10), array(10, 0, 11), array(10, 11, 12), array(0, 10, 20)
+		), $controller->moves);
+	}
+
 	public function testSitemapRegeneratesMissingMenuCacheAndAcceptsEmptyObjectLists()
 	{
 		$id = $this->fixtureName;
@@ -27,6 +41,16 @@ class MenuCompatibilityTest extends CompatibilityTestCase
 		$this->assertInstanceOf('stdClass', $list[0]->menuItems->list);
 		$view->dispMenuAdminSiteMap();
 		$this->assertSame(1, $services->generated, 'An existing cache should be reused');
+	}
+}
+
+class CompatibilityMenuArrangeController extends menuAdminController
+{
+	public $moves = array();
+
+	public function moveMenuItem($menu_srl, $parent_srl, $source_srl, $target_srl, $mode, $isShortcut = 'Y', $url = null)
+	{
+		$this->moves[] = array($parent_srl, $source_srl, $target_srl);
 	}
 }
 

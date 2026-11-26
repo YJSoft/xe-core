@@ -171,6 +171,7 @@ class pollController extends poll
 	{
 		$poll_srl = Context::get('poll_srl');
 		$poll_srl_indexes = Context::get('poll_srl_indexes');
+		$item_srls = array();
 		$tmp_item_srls = explode(',',$poll_srl_indexes);
 		for($i=0;$i<count($tmp_item_srls);$i++)
 		{

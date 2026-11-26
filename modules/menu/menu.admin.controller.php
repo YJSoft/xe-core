@@ -1308,7 +1308,6 @@ class menuAdminController extends menu
 			foreach($parentKeyList as $no=>$srl)
 			{
 				if($srl === 0) continue;
-				if(!is_array($this->map[$srl]))$this->map[$srl] = array();
 				$this->map[$srl][] = $no;
 			}
 		}
@@ -1318,14 +1317,14 @@ class menuAdminController extends menu
 		{
 			foreach($this->itemKeyList as $srl)
 			{
-				if(!$this->checked[$srl])
+				if(empty($this->checked[$srl]))
 				{
 					$target = new stdClass();
 					$this->checked[$srl] = 1;
 					$target->node = $srl;
 					$target->child= array();
 
-					while(count($this->map[$srl]))
+					while(!empty($this->map[$srl]))
 					{
 						$this->_setParent($srl, array_shift($this->map[$srl]), $target);
 					}
@@ -1369,7 +1368,7 @@ class menuAdminController extends menu
 		$child_node->child = array();
 		$target->child[] = $child_node;
 
-		while(count($this->map[$child_srl]))
+		while(!empty($this->map[$child_srl]))
 		{
 			$this->_setParent($child_srl, array_shift($this->map[$child_srl]), $child_node);
 		}
