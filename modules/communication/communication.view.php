@@ -236,12 +236,10 @@ class communicationView extends communication
 		$oCommunicationModel = getModel('communication');
 
 		// get a group list
-		$tmp_group_list = $oCommunicationModel->getFriendGroups();
-		$group_count = count($tmp_group_list);
-
-		for($i = 0; $i < $group_count; $i++)
+		$friend_group_list = array();
+		foreach($oCommunicationModel->getFriendGroups() as $group)
 		{
-			$friend_group_list[$tmp_group_list[$i]->friend_group_srl] = $tmp_group_list[$i];
+			$friend_group_list[$group->friend_group_srl] = $group;
 		}
 
 		Context::set('friend_group_list', $friend_group_list);
@@ -251,20 +249,12 @@ class communicationView extends communication
 		$columnList = array('friend_srl', 'friend_group_srl', 'target_srl', 'member.nick_name', 'friend.regdate');
 
 		$output = $oCommunicationModel->getFriends($friend_group_srl, $columnList);
-		$friend_count = count($output->data);
-
-		if($friend_count)
+		foreach($output->data as $friend)
 		{
-			foreach($output->data as $key => $val)
-			{
-				$group_srl = $val->friend_group_srl;
-				$group_title = $friend_group_list[$group_srl]->title;
-				if(!$group_title)
-				{
-					$group_title = Context::get('default_friend_group');
-				}
-				$output->data[$key]->group_title = $group_title;
-			}
+			$group_srl = $friend->friend_group_srl;
+			$friend->group_title = !empty($friend_group_list[$group_srl]->title)
+				? $friend_group_list[$group_srl]->title
+				: Context::getLang('default_friend_group');
 		}
 
 		// set a template file
