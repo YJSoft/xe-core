@@ -74,7 +74,7 @@ class autoinstall extends ModuleObject
 	{
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('autoinstall');
-		if($config->downloadServer != _XE_DOWNLOAD_SERVER_)
+		if(!isset($config->downloadServer) || $config->downloadServer !== _XE_DOWNLOAD_SERVER_)
 		{
 			$this->stop('msg_not_match_server');
 		}
@@ -101,8 +101,14 @@ class autoinstall extends ModuleObject
 	 */
 	function checkUpdate()
 	{
-		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
+		$config = $oModuleModel->getModuleConfig('autoinstall');
+		if(!isset($config->downloadServer) || $config->downloadServer !== _XE_DOWNLOAD_SERVER_)
+		{
+			return TRUE;
+		}
+
+		$oDB = DB::getInstance();
 		$oModuleController = getController('module');
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
 		if($oModuleModel->needUpdate($version_update_id))
@@ -120,13 +126,6 @@ class autoinstall extends ModuleObject
 
 			// 2011.08.08 add column 'list_order' in ai_remote_categories
 			if(!$oDB->isColumnExists('ai_remote_categories', 'list_order'))
-			{
-				return TRUE;
-			}
-
-			// 2011.08.08 set _XE_DOWNLOAD_SERVER_ at module config
-			$config = $oModuleModel->getModuleConfig('autoinstall');
-			if(!isset($config->downloadServer))
 			{
 				return TRUE;
 			}
@@ -153,6 +152,16 @@ class autoinstall extends ModuleObject
 		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
+		$config = $oModuleModel->getModuleConfig('autoinstall');
+		if(!isset($config->downloadServer) || $config->downloadServer !== _XE_DOWNLOAD_SERVER_)
+		{
+			$config = is_object($config) ? clone $config : new stdClass();
+			$config->downloadServer = _XE_DOWNLOAD_SERVER_;
+			$output = $oModuleController->insertModuleConfig('autoinstall', $config);
+			if(!$output->toBool()) return $output;
+			$GLOBALS['__ModuleConfig__'][0]['autoinstall'] = $config;
+		}
+
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
 		if($oModuleModel->needUpdate($version_update_id))
 		{
@@ -172,14 +181,6 @@ class autoinstall extends ModuleObject
 			{
 				$oDB->addColumn('ai_remote_categories', 'list_order', 'number', 11, NULL, TRUE);
 				$oDB->addIndex('ai_remote_categories', 'idx_list_order', array('list_order'));
-			}
-
-			// 2011. 08. 08 set _XE_DOWNLOAD_SERVER_ at module config
-			$config = $oModuleModel->getModuleConfig('autoinstall');
-			if(!isset($config->downloadServer))
-			{
-				$config->downloadServer = _XE_DOWNLOAD_SERVER_;
-				$oModuleController->insertModuleConfig('autoinstall', $config);
 			}
 
 			// 2012.11.12 add column 'have_instance' in autoinstall_packages

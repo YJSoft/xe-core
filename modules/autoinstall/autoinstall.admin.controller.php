@@ -193,7 +193,7 @@ class autoinstallAdminController extends autoinstall
 			$ftp_password = $_SESSION['ftp_password'];
 		}
 
-		$isSftpSupported = function_exists(ssh2_sftp);
+		$isSftpSupported = function_exists('ssh2_sftp');
 		foreach($packages as $package_srl)
 		{
 			$package = $oModel->getPackage($package_srl);
@@ -211,7 +211,7 @@ class autoinstallAdminController extends autoinstall
 			{
 				$oModuleInstaller = new SFTPModuleInstaller($package);
 			}
-			else if(function_exists(ftp_connect))
+			else if(function_exists('ftp_connect'))
 			{
 				$oModuleInstaller = new PHPFTPModuleInstaller($package);
 			}
@@ -361,6 +361,7 @@ class autoinstallAdminController extends autoinstall
 	 */
 	function uninstallPackageByPath($path)
 	{
+		$package = new stdClass();
 		$package->path = $path;
 		return $this->_uninstallPackage($package);
 	}
@@ -381,7 +382,7 @@ class autoinstallAdminController extends autoinstall
 		}
 		$ftp_info = Context::getFTPInfo();
 
-		$isSftpSupported = function_exists(ssh2_sftp);
+		$isSftpSupported = function_exists('ssh2_sftp');
 		if($oAdminModel->checkUseDirectModuleInstall($package)->toBool())
 		{
 			$oModuleInstaller = new DirectModuleInstaller($package);

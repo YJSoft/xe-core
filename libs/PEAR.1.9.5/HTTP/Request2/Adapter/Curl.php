@@ -372,7 +372,11 @@ class HTTP_Request2_Adapter_Curl extends HTTP_Request2_Adapter
         }
 
         $this->calculateRequestLength($headers);
-        if (isset($headers['content-length']) || isset($headers['transfer-encoding'])) {
+        if (HTTP_Request2::METHOD_POST === $this->request->getMethod() && is_string($this->requestBody)) {
+            // Let cURL frame the POST using the known byte length of the string.
+            unset($headers['content-length']);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->requestBody);
+        } elseif (isset($headers['content-length']) || isset($headers['transfer-encoding'])) {
             $this->workaroundPhpBug47204($ch, $headers);
         }
 

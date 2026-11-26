@@ -15,7 +15,7 @@ abstract class CompatibilityTestCase extends \Codeception\TestCase\Test
 	{
 		$this->contextState = get_object_vars(Context::getInstance());
 		$this->globalState = array();
-		foreach(array('XE_DOCUMENT_LIST', 'XE_EXTRA_KEYS', 'XE_EXTRA_VARS', '__Context__', '_loaded_module', '_called_constructor', '__MODULE_EXTEND__', '__DB__', '__XE_CACHE_HANDLER__', '__CacheFile__', '__PURIFIER_INSTANCE__', '__EMBEDFILTER_INSTANCE__', 'lang', '_SESSION', '_SERVER', 'HTTP_RAW_POST_DATA', '_time_zone') as $key)
+		foreach(array('XE_DOCUMENT_LIST', 'XE_EXTRA_KEYS', 'XE_EXTRA_VARS', '__Context__', '_loaded_module', '_called_constructor', '__MODULE_EXTEND__', '__DB__', '__XE_CACHE_HANDLER__', '__CacheFile__', '__ModuleConfig__', '__PURIFIER_INSTANCE__', '__EMBEDFILTER_INSTANCE__', 'lang', '_SESSION', '_SERVER', 'HTTP_RAW_POST_DATA', '_time_zone') as $key)
 		{
 			$this->globalState[$key] = array(array_key_exists($key, $GLOBALS), isset($GLOBALS[$key]) ? $GLOBALS[$key] : null);
 		}

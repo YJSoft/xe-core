@@ -351,6 +351,33 @@ class ModuleCompatibilityTest extends CompatibilityTestCase
 		$this->assertSame($cache->components, $editor->getComponentList(false));
 	}
 
+	public function testAutoinstallUpdatesAnOldServerAfterTheVersionUpdateWasLogged()
+	{
+		$db = $this->useQueryFixture();
+		class_exists('CacheHandler');
+		require_once _XE_PATH_ . 'classes/cache/CacheFile.class.php';
+		$GLOBALS['__CacheFile__'] = new CacheFile();
+		$GLOBALS['__CacheFile__']->cache_dir = $this->fixtureDir;
+		$oldConfig = (object)array('downloadServer' => 'https://old.example/', 'other' => 'keep');
+		$GLOBALS['__ModuleConfig__'][0]['autoinstall'] = $oldConfig;
+		$db->responses['module.getModuleUpdateLog'] = array(new stdClass());
+		$db->responses['module.deleteModuleConfig'] = null;
+		$db->responses['module.insertModuleConfig'] = null;
+
+		$module = new CompatibilityAutoinstallController();
+		$this->assertTrue($module->checkUpdate());
+		$this->assertTrue($module->moduleUpdate()->toBool());
+		$this->assertFalse($module->checkUpdate());
+		$this->assertTrue($module->moduleUpdate()->toBool());
+
+		$writes = array();
+		foreach($db->queries as $query)
+		{
+			if($query[0] === 'module.insertModuleConfig') $writes[] = unserialize($query[1]->config);
+		}
+		$this->assertEquals(array((object)array('downloadServer' => _XE_DOWNLOAD_SERVER_, 'other' => 'keep')), $writes);
+	}
+
 	public function testAutoinstallEmptyRemoteResponseDoesNotDeleteStoredCategories()
 	{
 		$db = $this->useQueryFixture();
