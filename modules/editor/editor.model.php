@@ -291,7 +291,8 @@ class editorModel extends editor
 			// Set editor mid
 			if (!empty($option->module_srl))
 			{
-				$option->mid = isset(ModuleModel::getModuleInfoByModuleSrl($option->module_srl)->mid) ? ModuleModel::getModuleInfoByModuleSrl($option->module_srl)->mid : null;
+				$module_info = getModel('module')->getModuleInfoByModuleSrl($option->module_srl);
+				$option->mid = isset($module_info->mid) ? $module_info->mid : null;
 			}
 			if (!empty($option->mid))
 			{
@@ -301,7 +302,7 @@ class editorModel extends editor
 			// Check if the file already exists
 			if ($upload_target_srl)
 			{
-				$files_count = FileModel::getFilesCount($upload_target_srl);
+				$files_count = $oFileModel->getFilesCount($upload_target_srl);
 			}
 		}
 		Context::set('files_count', (int)$files_count);

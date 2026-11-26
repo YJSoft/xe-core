@@ -284,6 +284,22 @@ class ModuleCompatibilityTest extends CompatibilityTestCase
 		}
 	}
 
+	public function testEditorLoadsTheAttachmentCountForTheDocumentBeingEdited()
+	{
+		$db = $this->useQueryFixture();
+		$db->responses['file.getFilesCount'] = (object)array('count' => 2);
+		$this->useModuleFixture('module', new CompatibilityGrantModuleModel());
+		$this->useModuleFixture('file', new CompatibilityEditorFileModel());
+		$option = (object)array('module_srl' => 123, 'allow_fileupload' => true, 'primary_key_name' => 'document_srl', 'content_key_name' => 'content');
+		$editor = getModel('editor');
+		$html = $editor->getEditor(456, $option);
+		$this->assertTrue(strpos($html, 'id="ckeditor_instance_456"') !== false);
+		$this->assertSame('notice', $option->mid);
+		$this->assertSame(2, Context::get('files_count'));
+		$this->assertSame(456, $db->queries[0][1]->upload_target_srl);
+		$this->assertSame(123, $_SESSION['upload_info'][456]->module_srl);
+	}
+
 	public function testMissingMenuConfigurationIsCreatedBeforeAssigningItsId()
 	{
 		$model = new CompatibilityModuleModel();
@@ -405,7 +421,7 @@ class CompatibilityGrantModuleModel extends moduleModel
 {
 	public function getModuleInfoByModuleSrl($module_srl, $columnList = array())
 	{
-		return (object)array('module_srl' => $module_srl, 'module' => 'board', 'site_srl' => 0);
+		return (object)array('module_srl' => $module_srl, 'module' => 'board', 'mid' => 'notice', 'site_srl' => 0);
 	}
 }
 
@@ -435,6 +451,14 @@ class CompatibilityEditorModel extends editorModel
 		return $config;
 	}
 	public function getEditor($upload_target_srl = 0, $option = null) { return $option; }
+}
+
+class CompatibilityEditorFileModel extends fileModel
+{
+	public function getUploadConfig()
+	{
+		return (object)array('allowed_filesize' => 2, 'allowed_attach_size' => 3, 'allowed_filetypes' => '*.*');
+	}
 }
 
 class CompatibilityMemberModel
