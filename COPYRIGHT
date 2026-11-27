@@ -6,3 +6,9 @@ The original spamfilter module files carry Copyright (C) NAVER <http://www.naver
 Rhymix additions are copyright their respective contributors, including
 Kijin Sung (reCAPTCHA integration) and Lastorder (Cloudflare Turnstile).
 Adapted for XE on 2026-11-27. Distributed under GPL-2.0-or-later; see LICENSE.
+
+The obsolete core file cleanup in modules/admin is adapted from the Rhymix
+maintenance controller and administrator template by Kijin Sung and contributors:
+https://github.com/rhymix/rhymix/blob/57157b24fb9ccb4e87bca1b56fa3e1a139310796/modules/admin/controllers/maintenance/Cleanup.php
+https://github.com/rhymix/rhymix/blob/57157b24fb9ccb4e87bca1b56fa3e1a139310796/modules/admin/tpl/cleanup.html
+Adapted for XE on 2026-11-27. Distributed under GPL-2.0-or-later; see LICENSE.

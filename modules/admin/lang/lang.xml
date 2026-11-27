@@ -1703,4 +1703,44 @@
 		<value xml:lang="ko"><![CDATA[알림센터 Lite 3.0.10 보안 업데이트를 적용했습니다.]]></value>
 		<value xml:lang="en"><![CDATA[Notification Center Lite security update 3.0.10 was installed.]]></value>
 	</item>
+	<item name="cleanup_title">
+		<value xml:lang="ko"><![CDATA[이전 버전의 코어 파일 정리]]></value>
+		<value xml:lang="en"><![CDATA[Clean up files from older core versions]]></value>
+	</item>
+	<item name="cleanup_view">
+		<value xml:lang="ko"><![CDATA[정리할 파일 확인]]></value>
+		<value xml:lang="en"><![CDATA[Review files]]></value>
+	</item>
+	<item name="cleanup_about">
+		<value xml:lang="ko"><![CDATA[이전 버전에서 배포한 쉬운설치 파일 중 원본과 일치하는 파일과 정리 후 비는 폴더를 삭제합니다. 직접 수정한 파일과 심볼릭 링크는 남겨 둡니다.]]></value>
+		<value xml:lang="en"><![CDATA[Cleanup removes matching Easy Install files from earlier releases and their empty directories. Locally modified files and symbolic links are kept.]]></value>
+	</item>
+	<item name="cleanup_apply">
+		<value xml:lang="ko"><![CDATA[원본 파일 정리]]></value>
+		<value xml:lang="en"><![CDATA[Remove obsolete original files]]></value>
+	</item>
+	<item name="cleanup_review">
+		<value xml:lang="ko"><![CDATA[수동 확인]]></value>
+		<value xml:lang="en"><![CDATA[Review manually]]></value>
+	</item>
+	<item name="cleanup_ready">
+		<value xml:lang="ko"><![CDATA[정리 대상]]></value>
+		<value xml:lang="en"><![CDATA[Ready to remove]]></value>
+	</item>
+	<item name="cleanup_failed">
+		<value xml:lang="ko"><![CDATA[삭제 실패 · 권한 확인]]></value>
+		<value xml:lang="en"><![CDATA[Removal failed. Check permissions.]]></value>
+	</item>
+	<item name="cleanup_remaining">
+		<value xml:lang="ko"><![CDATA[남은 경로를 확인해 주세요.]]></value>
+		<value xml:lang="en"><![CDATA[Review the remaining paths below.]]></value>
+	</item>
+	<item name="cleanup_complete">
+		<value xml:lang="ko"><![CDATA[정리했습니다. 관리자 대시보드에서 캐시파일을 재생성해 주세요.]]></value>
+		<value xml:lang="en"><![CDATA[Cleanup complete. Rebuild the cache from the admin dashboard.]]></value>
+	</item>
+	<item name="cleanup_empty">
+		<value xml:lang="ko"><![CDATA[정리할 코어 파일이 없습니다.]]></value>
+		<value xml:lang="en"><![CDATA[There are no obsolete core files to remove.]]></value>
+	</item>
 </lang>

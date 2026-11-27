@@ -10,6 +10,21 @@
  */
 class adminAdminController extends admin
 {
+	/** Apply the bundled manifest after the administrator reviews the list. */
+	function procAdminCleanupFiles()
+	{
+		$logged_info = getModel('member')->getLoggedInfo();
+		if(!isset($logged_info->is_admin) || $logged_info->is_admin !== 'Y') return new BaseObject(-1, 'msg_is_not_administrator');
+		if(!Security::checkCSRFRequest()) return new BaseObject(-1, 'msg_invalid_request');
+
+		require_once dirname(__FILE__) . '/ObsoleteFileCleanup.php';
+		$cleanup = new ObsoleteFileCleanup(_XE_PATH_);
+		$remaining = $cleanup->deleteFiles();
+		$_SESSION['admin_cleanup_failed'] = array_keys($remaining, 'failed', true);
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAdminCleanupList'));
+		$this->setMessage($remaining ? 'cleanup_remaining' : 'cleanup_complete');
+	}
+
 	/** Apply the ncenterlite security release from the administrator dashboard. */
 	function procAdminUpdateNcenterlite()
 	{

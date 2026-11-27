@@ -218,6 +218,10 @@ class adminAdminView extends admin
 	 */
 	function dispAdminIndex()
 	{
+		require_once dirname(__FILE__) . '/ObsoleteFileCleanup.php';
+		$cleanup = new ObsoleteFileCleanup(_XE_PATH_);
+		Context::set('has_obsolete_files', (bool)$cleanup->checkFiles());
+
 		$db_info = Context::getDBInfo();
 		Context::set('db_info',$db_info);
 		$oAdminAdminModel = getAdminModel('admin');
@@ -332,6 +336,22 @@ class adminAdminView extends admin
 		Context::set('layout', 'none');
 
 		$this->setTemplateFile('index');
+	}
+
+	function dispAdminCleanupList()
+	{
+		require_once dirname(__FILE__) . '/ObsoleteFileCleanup.php';
+		$cleanup = new ObsoleteFileCleanup(_XE_PATH_);
+		$files = $cleanup->checkFiles();
+		$failed = isset($_SESSION['admin_cleanup_failed']) ? $_SESSION['admin_cleanup_failed'] : array();
+		foreach($failed as $name)
+		{
+			if(isset($files[$name]) && $files[$name] === 'ready') $files[$name] = 'failed';
+		}
+		unset($_SESSION['admin_cleanup_failed']);
+		Context::set('cleanup_files', $files);
+		Context::set('can_cleanup', in_array('ready', $files, true) || in_array('failed', $files, true));
+		$this->setTemplateFile('cleanup');
 	}
 
 	/**

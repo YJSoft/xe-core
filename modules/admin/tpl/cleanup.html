@@ -1,0 +1,27 @@
+<include target="./_header.html" />
+<div class="x_page-header">
+	<h1>{$lang->cleanup_title}</h1>
+</div>
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/admin/tpl/cleanup/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+<p cond="!$cleanup_files">{$lang->cleanup_empty}</p>
+<form cond="$cleanup_files" action="./" method="post">
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="act" value="procAdminCleanupFiles" />
+	<input type="hidden" name="xe_validator_id" value="modules/admin/tpl/cleanup/1" />
+	<p>{$lang->cleanup_about}</p>
+	<table class="x_table x_table-striped">
+		<thead><tr><th scope="col">{$lang->path}</th><th scope="col">{$lang->status}</th></tr></thead>
+		<tbody>
+			<tr loop="$cleanup_files => $path, $status">
+				<td><code>{$path}</code></td>
+				<td cond="$status == 'ready'">{$lang->cleanup_ready}</td>
+				<td cond="$status == 'review'">{$lang->cleanup_review}</td>
+				<td cond="$status == 'failed'">{$lang->cleanup_failed}</td>
+			</tr>
+		</tbody>
+	</table>
+	<button cond="$can_cleanup" type="submit" class="x_btn x_btn-primary">{$lang->cleanup_apply}</button>
+</form>
+<a href="{getUrl('', 'module', 'admin')}">{$lang->control_panel}</a>

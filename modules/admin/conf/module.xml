@@ -10,6 +10,8 @@
         <action name="dispAdminViewServerEnv" type="view" />
 		<action name="dispAdminCheckServerEnv" type="view" />
 
+        <action name="dispAdminCleanupList" type="view" />
+        <action name="procAdminCleanupFiles" type="controller" method="POST" />
         <action name="procAdminRemoveIcons" type="controller" />
         <action name="procAdminUpdateNcenterlite" type="controller" method="POST" />
         <action name="procAdminConfirmSecurityPatch" type="controller" method="POST" />
