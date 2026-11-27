@@ -1145,7 +1145,7 @@ class memberController extends member
 		$member_config = $oModuleModel->getModuleConfig('member');
 		$memberInfo = array();
 		global $lang;
-		if(is_array($member_config->signupForm))
+		if(isset($member_config->signupForm) && is_array($member_config->signupForm))
 		{
 			$exceptForm=array('password', 'find_account_question');
 			foreach($member_config->signupForm as $form)
@@ -1158,10 +1158,10 @@ class memberController extends member
 		}
 		else
 		{
-			$memberInfo[$lang->user_id] = $args->user_id;
-			$memberInfo[$lang->user_name] = $args->user_name;
-			$memberInfo[$lang->nick_name] = $args->nick_name;
-			$memberInfo[$lang->email_address] = $args->email_address;
+			$memberInfo[$lang->user_id] = $member_info->user_id;
+			$memberInfo[$lang->user_name] = $member_info->user_name;
+			$memberInfo[$lang->nick_name] = $member_info->nick_name;
+			$memberInfo[$lang->email_address] = $member_info->email_address;
 		}
 		Context::set('memberInfo', $memberInfo);
 
@@ -1385,8 +1385,6 @@ class memberController extends member
 		// Log test by using email_address
 		$oMemberModel = getModel('member');
 
-		$args = new stdClass;
-		$args->email_address = $email_address;
 		$memberSrl = $oMemberModel->getMemberSrlByEmailAddress($email_address);
 		if(!$memberSrl) return new BaseObject(-1, 'msg_not_exists_member');
 
@@ -1418,7 +1416,7 @@ class memberController extends member
 
 		$memberInfo = array();
 		global $lang;
-		if(is_array($member_config->signupForm))
+		if(isset($member_config->signupForm) && is_array($member_config->signupForm))
 		{
 			$exceptForm=array('password', 'find_account_question');
 			foreach($member_config->signupForm as $form)
@@ -1454,10 +1452,10 @@ class memberController extends member
 		$oMail->setTitle( Context::getLang('msg_confirm_account_title') );
 		$oMail->setContent($content);
 		$oMail->setSender( $member_config->webmaster_name?$member_config->webmaster_name:'webmaster', $member_config->webmaster_email);
-		$oMail->setReceiptor( $args->user_name, $args->email_address );
+		$oMail->setReceiptor( $member_info->user_name, $member_info->email_address );
 		$oMail->send();
 
-		$msg = sprintf(Context::getLang('msg_confirm_mail_sent'), $args->email_address);
+		$msg = sprintf(Context::getLang('msg_confirm_mail_sent'), $member_info->email_address);
 		$this->setMessage($msg);
 
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '');
@@ -1544,7 +1542,7 @@ class memberController extends member
 		$memberInfo = array();
 
 		global $lang;
-		if(is_array($member_config->signupForm))
+		if(isset($member_config->signupForm) && is_array($member_config->signupForm))
 		{
 			$exceptForm=array('password', 'find_account_question');
 			foreach($member_config->signupForm as $form)
@@ -1951,7 +1949,7 @@ class memberController extends member
 				$title = Context::getLang('login_fail_report');
 				$message = '<ul>';
 				$content = unserialize($output->data->content);
-				if(count($content) > $config->max_error_count)
+				if(is_array($content) && count($content) > $config->max_error_count)
 				{
 					foreach($content as $val)
 					{
