@@ -219,6 +219,10 @@ class admin extends ModuleObject
 				'module' => 'trash',
 				'subMenu' => array('trash'),
 			),
+			10 => array(
+				'module' => 'packageinstaller',
+				'subMenu' => array('packageInstaller'),
+			),
 			11 => array(
 				'module' => 'layout',
 				'subMenu' => array('installedLayout'),
@@ -334,6 +338,7 @@ class admin extends ModuleObject
 			case 'spamFilter':
 				return 'content';
 				break;
+			case 'packageInstaller':
 			case 'installedLayout':
 			case 'installedModule':
 			case 'installedWidget':
@@ -380,6 +385,7 @@ class admin extends ModuleObject
 			case 'trash':
 				return 'content';
 				break;
+			case 'packageInstaller':
 			case 'installedLayout':
 			case 'installedModule':
 			case 'installedWidget':

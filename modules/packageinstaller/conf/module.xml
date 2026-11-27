@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+	<permissions />
+	<actions>
+		<action name="dispPackageinstallerAdminIndex" type="view" admin_index="true" menu_name="packageInstaller" menu_index="true" />
+		<action name="procPackageinstallerAdminApply" type="controller" method="POST" />
+	</actions>
+	<menus><menu name="packageInstaller" type="super"><title xml:lang="ko">쉬운설치</title><title xml:lang="en">Package Installer</title></menu></menus>
+</module>

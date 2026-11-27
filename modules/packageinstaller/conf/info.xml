@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module version="0.2">
+	<title xml:lang="ko">쉬운설치</title>
+	<title xml:lang="en">Package Installer</title>
+	<description xml:lang="ko">승인된 확장 자료를 설치하고 업데이트합니다.</description>
+	<description xml:lang="en">Install and update approved XE extensions.</description>
+	<version>0.1.0</version>
+	<date>2026-11-28</date>
+	<category>accessory</category>
+	<author link="https://github.com/YJSoft"><name xml:lang="ko">YJSoft</name><name xml:lang="en">YJSoft</name></author>
+</module>

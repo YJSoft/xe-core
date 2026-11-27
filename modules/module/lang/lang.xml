@@ -1139,4 +1139,8 @@ Le module [Administration des Modules] montera tous les modules installés et vo
 		<value xml:lang="ko"><![CDATA[사이트 기본 스킨 사용]]></value>
 		<value xml:lang="jp"><![CDATA[サイトデフォルトスキン使用]]></value>
 	</item>
+	<item name="package_installer">
+		<value xml:lang="ko">쉬운설치</value>
+		<value xml:lang="en">Package Installer</value>
+	</item>
 </lang>

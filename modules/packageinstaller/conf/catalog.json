@@ -1,0 +1,40 @@
+[
+  {
+    "id": "ncenterlite",
+    "title": "알림센터 Lite",
+    "author": "XE Public",
+    "repo": "YJSoft/xe-module-ncenterlite",
+    "license": "GPL-2.0",
+    "version": "3.0.10",
+    "revision": "71426b9e28c6291df69fafdf97b59320888e8af8",
+    "snapshot": false,
+    "php": "5.3.0",
+    "core": "1.11.0",
+    "size": 123860,
+    "sha256": "2d458fa9dce63d8d77e45b68e308c50776ca668f9a6706010ae8b34c95359d66",
+    "tree": "9b1fb7de3feef366bd9b04989d4098fa7e9a8d9953924c98c15a3cee99cf7769",
+    "upgrade_from": {
+      "6088961b7efc875a776f60b5cc1fc0e59e560c0df771267b21f94a0e0e6190ac": "3.0.9"
+    },
+    "type": "module"
+  },
+  {
+    "id": "advanced_mailer",
+    "title": "고급 메일 발송 모듈",
+    "author": "POESIS",
+    "repo": "YJSoft/xe-advanced-mailer",
+    "license": "GPL-2.0 or GPL-3.0",
+    "version": "1.8.5",
+    "revision": "9a272c20fb9b5dbf75119c48f2372f45689501f9",
+    "snapshot": true,
+    "php": "5.3.0",
+    "core": "1.8.3",
+    "size": 1711708,
+    "sha256": "465851f4857464b695f84462fb07be754100c035f36206361bbd7abb4a11f897",
+    "tree": "04d9a91df9777bc34d617c6c5fadfb406a07d952b7ff20cd5bdfa911b0b9cf5c",
+    "upgrade_from": {
+      "cb5d106e4f2d33e58729cda8555855e1ecae0c81eb22fade17cc8b4055a56307": "1.8.4"
+    },
+    "type": "module"
+  }
+]

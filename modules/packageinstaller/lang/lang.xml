@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lang>
+	<item name="pkg_title">
+		<value xml:lang="ko"><![CDATA[쉬운설치]]></value>
+		<value xml:lang="en"><![CDATA[Package Installer]]></value>
+	</item>
+	<item name="pkg_search_label">
+		<value xml:lang="ko"><![CDATA[자료명 또는 제작자]]></value>
+		<value xml:lang="en"><![CDATA[Package name or author]]></value>
+	</item>
+	<item name="pkg_snapshot">
+		<value xml:lang="ko"><![CDATA[개발 스냅샷]]></value>
+		<value xml:lang="en"><![CDATA[Development snapshot]]></value>
+	</item>
+	<item name="pkg_history">
+		<value xml:lang="ko"><![CDATA[최근 작업]]></value>
+		<value xml:lang="en"><![CDATA[Recent operations]]></value>
+	</item>
+	<item name="pkg_db_updates">
+		<value xml:lang="ko"><![CDATA[설치된 모듈에서 DB 테이블 생성 및 모듈 업데이트 확인]]></value>
+		<value xml:lang="en"><![CDATA[Check database installation and updates in Installed Modules]]></value>
+	</item>
+	<item name="pkg_absent">
+		<value xml:lang="ko"><![CDATA[설치되지 않음]]></value>
+		<value xml:lang="en"><![CDATA[Not installed]]></value>
+	</item>
+	<item name="pkg_recognized">
+		<value xml:lang="ko"><![CDATA[배포 원본과 일치하는 수동 설치]]></value>
+		<value xml:lang="en"><![CDATA[Manually installed, matches a known release]]></value>
+	</item>
+	<item name="pkg_managed">
+		<value xml:lang="ko"><![CDATA[쉬운설치로 관리 중]]></value>
+		<value xml:lang="en"><![CDATA[Managed by Package Installer]]></value>
+	</item>
+	<item name="pkg_modified">
+		<value xml:lang="ko"><![CDATA[등록된 배포본과 다르거나 직접 수정한 파일이 있습니다. 파일을 보존했습니다.]]></value>
+		<value xml:lang="en"><![CDATA[Files differ from the registered releases. Local files are preserved.]]></value>
+	</item>
+	<item name="pkg_manual">
+		<value xml:lang="ko"><![CDATA[수동 설치]]></value>
+		<value xml:lang="en"><![CDATA[Manually installed]]></value>
+	</item>
+	<item name="pkg_pending">
+		<value xml:lang="ko"><![CDATA[중단된 작업이 있습니다.]]></value>
+		<value xml:lang="en"><![CDATA[Interrupted operation.]]></value>
+	</item>
+	<item name="pkg_install">
+		<value xml:lang="ko"><![CDATA[파일 설치]]></value>
+		<value xml:lang="en"><![CDATA[Install files]]></value>
+	</item>
+	<item name="pkg_adopt">
+		<value xml:lang="ko"><![CDATA[쉬운설치로 관리]]></value>
+		<value xml:lang="en"><![CDATA[Manage this installation]]></value>
+	</item>
+	<item name="pkg_update">
+		<value xml:lang="ko"><![CDATA[파일 업데이트]]></value>
+		<value xml:lang="en"><![CDATA[Update files]]></value>
+	</item>
+	<item name="pkg_remove">
+		<value xml:lang="ko"><![CDATA[설치 파일 백업 후 제거]]></value>
+		<value xml:lang="en"><![CDATA[Back up and remove files]]></value>
+	</item>
+	<item name="pkg_restore">
+		<value xml:lang="ko"><![CDATA[백업에서 파일 복원]]></value>
+		<value xml:lang="en"><![CDATA[Restore files from backup]]></value>
+	</item>
+	<item name="pkg_recover">
+		<value xml:lang="ko"><![CDATA[중단된 작업 복구]]></value>
+		<value xml:lang="en"><![CDATA[Recover interrupted operation]]></value>
+	</item>
+	<item name="pkg_storage_error">
+		<value xml:lang="ko"><![CDATA[모듈 폴더와 같은 파일시스템에 웹에서 접근할 수 없는 작업 폴더가 필요합니다. XE_PACKAGE_STORAGE 설정, 쓰기 권한과 디스크 여유 공간을 확인해 주세요.]]></value>
+		<value xml:lang="en"><![CDATA[Check XE_PACKAGE_STORAGE, write permissions and free space. The private work directory must be outside the web root on the same filesystem as modules.]]></value>
+	</item>
+	<item name="pkg_requirements">
+		<value xml:lang="ko"><![CDATA[다운로드 설치에는 표시된 PHP 및 XE 버전과 PHP cURL·ZIP 확장이 필요합니다.]]></value>
+		<value xml:lang="en"><![CDATA[Downloads require compatible PHP and XE versions and the PHP cURL and ZIP extensions.]]></value>
+	</item>
+	<item name="pkg_busy">
+		<value xml:lang="ko"><![CDATA[이 자료의 다른 작업이 진행 중입니다.]]></value>
+		<value xml:lang="en"><![CDATA[Another operation is in progress for this package.]]></value>
+	</item>
+	<item name="pkg_download_error">
+		<value xml:lang="ko"><![CDATA[자료 서버에서 지정한 ZIP을 받을 수 없습니다. HTTPS 연결과 CA 인증서를 확인해 주세요.]]></value>
+		<value xml:lang="en"><![CDATA[Could not download the pinned ZIP. Check HTTPS connectivity and trusted CA certificates.]]></value>
+	</item>
+	<item name="pkg_archive_error">
+		<value xml:lang="ko"><![CDATA[배포 파일의 크기, 해시 또는 압축 내용이 등록 정보와 일치하지 않습니다.]]></value>
+		<value xml:lang="en"><![CDATA[Archive size, hash or contents did not match the registry.]]></value>
+	</item>
+	<item name="pkg_conflict">
+		<value xml:lang="ko"><![CDATA[설치 상태가 바뀌었거나 로컬 파일이 배포 원본과 다릅니다. 목록을 다시 확인해 주세요.]]></value>
+		<value xml:lang="en"><![CDATA[Installation state changed or the files differ from the approved release. Review the list again.]]></value>
+	</item>
+	<item name="pkg_recovery_error">
+		<value xml:lang="ko"><![CDATA[작업 중 파일이 바뀌었습니다. 작업 폴더와 설치 폴더의 내용을 확인해 주세요.]]></value>
+		<value xml:lang="en"><![CDATA[Unexpected files were found during recovery. Inspect the work directory and module files.]]></value>
+	</item>
+	<item name="pkg_done">
+		<value xml:lang="ko"><![CDATA[파일 작업을 마쳤습니다. 설치된 모듈에서 필요한 DB 업데이트를 확인해 주세요.]]></value>
+		<value xml:lang="en"><![CDATA[File operation complete. Check Installed Modules for database updates.]]></value>
+	</item>
+	<item name="pkg_registry_error">
+		<value xml:lang="ko">자료 목록의 서명 또는 최신 상태를 확인할 수 없습니다. HTTPS 연결, PHP cURL·OpenSSL, 서버 시각과 files/config 쓰기 권한을 확인해 주세요.</value>
+		<value xml:lang="en">Could not verify the registry. Check HTTPS, PHP cURL and OpenSSL, the server clock, and write access to files/config.</value>
+	</item>
+	<item name="pkg_latest"><value xml:lang="ko">자료실 최신 버전</value><value xml:lang="en">Latest published version</value></item>
+	<item name="pkg_withdrawn"><value xml:lang="ko">철회된 릴리스입니다.</value><value xml:lang="en">This release has been withdrawn.</value></item>
+	<item name="pkg_changed_files"><value xml:lang="ko">변경된 파일과 폴더</value><value xml:lang="en">Changed files and directories</value></item>
+	<item name="pkg_type"><value xml:lang="ko">자료 유형</value><value xml:lang="en">Package type</value></item>
+	<item name="pkg_all_types"><value xml:lang="ko">전체 유형</value><value xml:lang="en">All types</value></item>
+	<item name="pkg_type_module"><value xml:lang="ko">모듈</value><value xml:lang="en">Module</value></item>
+	<item name="pkg_type_widget"><value xml:lang="ko">위젯</value><value xml:lang="en">Widget</value></item>
+	<item name="pkg_type_layout"><value xml:lang="ko">레이아웃</value><value xml:lang="en">Layout</value></item>
+	<item name="pkg_type_addon"><value xml:lang="ko">애드온</value><value xml:lang="en">Add-on</value></item>
+</lang>
