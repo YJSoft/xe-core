@@ -72,7 +72,7 @@ else
 	/**
 	 * Download server
 	 */
-	define('_XE_DOWNLOAD_SERVER_', 'https://download.xe-patches.c01.kr/');
+	define('_XE_DOWNLOAD_SERVER_', 'http://download.xpressengine.com/');
 }
 
 /*
