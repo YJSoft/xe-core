@@ -297,6 +297,7 @@ class Mail extends PHPMailer
 		}
 		else
 		{
+			$this->ClearAddresses();
 			$this->AddAddress($email, $name);
 		}
 	}
@@ -397,6 +398,7 @@ class Mail extends PHPMailer
 		}
 		else
 		{
+			$this->ClearReplyTos();
 			$this->AddReplyTo($replyTo);
 		}
 	}
@@ -531,7 +533,7 @@ class Mail extends PHPMailer
 		{
 			$this->body = $this->header . $this->body;
 			$boundary = '----==' . uniqid(rand(), TRUE);
-			$this->header = "Content-Type: multipart/relative;" . $this->eol . "\ttype=\"multipart/alternative\";" . $this->eol . "\tboundary=\"" . $boundary . "\"" . $this->eol . $this->eol;
+			$this->header = "Content-Type: multipart/related;" . $this->eol . "\ttype=\"multipart/alternative\";" . $this->eol . "\tboundary=\"" . $boundary . "\"" . $this->eol . $this->eol;
 			$this->body = "--" . $boundary . $this->eol . $this->body . $this->eol . $this->eol;
 			$res = array();
 			$res[] = $this->body;
@@ -567,7 +569,7 @@ class Mail extends PHPMailer
 		if($this->Mailer == "mail")
 		{
 			$boundary = '----==' . uniqid(rand(), TRUE);
-			$this->eol = $GLOBALS['_qmail_compatibility'] == "Y" ? "\n" : "\r\n";
+			$this->eol = isset($GLOBALS['_qmail_compatibility']) && $GLOBALS['_qmail_compatibility'] == "Y" ? "\n" : "\r\n";
 			$this->header = "Content-Type: multipart/alternative;" . $this->eol . "\tboundary=\"" . $boundary . "\"" . $this->eol . $this->eol;
 			$this->body = sprintf(
 					"--%s" . $this->eol .
@@ -602,8 +604,25 @@ class Mail extends PHPMailer
 		}
 		else
 		{
+			// Add XE's queued files for this send only. Keep PHPMailer's own attachments.
+			$previousAttachments = $this->attachment;
+			foreach($this->cidAttachments as $cid => $attachment)
+			{
+				$path = FileHandler::getRealPath($attachment);
+				$this->AddEmbeddedImage($path, $cid, basename($path), 'base64', $this->returnMIMEType($path));
+			}
 			$this->procAttachments();
-			return parent::Send();
+			try
+			{
+				$result = parent::Send();
+			}
+			catch(Exception $e)
+			{
+				$this->attachment = $previousAttachments;
+				throw $e;
+			}
+			$this->attachment = $previousAttachments;
+			return $result;
 		}
 	}
 

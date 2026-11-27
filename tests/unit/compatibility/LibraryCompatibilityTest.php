@@ -70,6 +70,14 @@ class LibraryCompatibilityTest extends CompatibilityTestCase
 		$this->assertTrue(strpos($content, 'nofollow') !== false);
 	}
 
+	public function testMailHeaderQEncodingUsesTheOriginalBytes()
+	{
+		$mail = new Mail();
+		$this->assertSame('XE_=ED=95=9C=3F', $mail->EncodeQ('XE 한?', 'text'));
+		$this->assertSame('a=28b=29', $mail->EncodeQ('a(b)', 'comment'));
+		$this->assertSame('a=2Eb', $mail->EncodeQ('a.b', 'phrase'));
+	}
+
 	public static function pearVersions()
 	{
 		return array(array('PEAR.1.9'), array('PEAR.1.9.5'));

@@ -358,7 +358,8 @@ class importerAdminController extends importer
 			$obj->user_name = base64_decode($xmlObj->member->user_name->body);
 			$obj->nick_name = base64_decode($xmlObj->member->nick_name->body);
 			if(!$obj->user_name) $obj->user_name = $obj->nick_name;
-			$obj->email_address = base64_decode($xmlObj->member->email->body);
+			$imported_email = base64_decode($xmlObj->member->email->body);
+			$obj->email_address = $imported_email;
 			$obj->homepage = base64_decode($xmlObj->member->homepage->body);
 			$obj->blog = base64_decode($xmlObj->member->blog->body);
 			$obj->birthday = substr(base64_decode($xmlObj->member->birthday->body),0,8);
@@ -395,7 +396,6 @@ class importerAdminController extends importer
 			{
 				$obj->email_address = $obj->user_id . '@example.com';
 			}
-			list($obj->email_id, $obj->email_host) = explode('@', $obj->email);
 			// Set the mailing option
 			if($obj->allow_mailing!='Y') $obj->allow_mailing = 'N';
 			// Set the message option
@@ -434,10 +434,12 @@ class importerAdminController extends importer
 				$obj->email_address = $obj->user_id . '@example.com';
 			}
 
+			list($obj->email_id, $obj->email_host) = explode('@', $obj->email_address, 2);
+
 			// Add a member
 			$output = executeQuery('member.insertMember', $obj);
 
-			if($output->toBool() && !($obj->password))
+			if($output->toBool() && !$obj->password && $obj->email_address === $imported_email)
 			{
 				// Send a mail telling the user to reset his password.
 				$oMail = new Mail();
@@ -451,7 +453,7 @@ class importerAdminController extends importer
 						{$webmaster_name}"
 				);
 				$oMail->setSender($webmaster_name, $member_config->webmaster_email);
-				$oMail->setReceiptor( $obj->user_name, $obj->email);
+				$oMail->setReceiptor( $obj->user_name, $obj->email_address);
 				$oMail->send();
 			}
 
