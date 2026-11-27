@@ -77,18 +77,26 @@ class addonAdminView extends addon
 		}
 		$columnList = array('module_srl', 'module_category_srl', 'mid', 'browser_title');
 		$mid_list = $oModuleModel->getMidList($args, $columnList);
+		if($mid_list instanceof BaseObject) return $mid_list;
 
 		// Organize modules by category
 		if(!$site_module_info->site_srl)
 		{
 			// Get a list of module categories
 			$module_categories = $oModuleModel->getModuleCategories();
+			if($module_categories instanceof BaseObject) return $module_categories;
+			if(!$module_categories) $module_categories = array();
 
 			if(is_array($mid_list))
 			{
-				foreach($mid_list as $module_srl => $module)
+				foreach($mid_list as $mid => $module)
 				{
-					$module_categories[$module->module_category_srl]->list[$module_srl] = $module;
+					$category_srl = isset($module_categories[$module->module_category_srl]) ? $module->module_category_srl : 0;
+					if(!isset($module_categories[$category_srl]))
+					{
+						$module_categories[$category_srl] = (object)array('title' => '', 'list' => array());
+					}
+					$module_categories[$category_srl]->list[$mid] = $module;
 				}
 			}
 		}
