@@ -41,27 +41,7 @@ class addonAdminModel extends addon
 	 */
 	function getAddonListForSuperAdmin()
 	{
-		$addonList = $this->getAddonList(0, 'site');
-
-		$oAutoinstallModel = getModel('autoinstall');
-		foreach($addonList as $key => $addon)
-		{
-			// get easyinstall remove url
-			$packageSrl = $oAutoinstallModel->getPackageSrlByPath($addon->path);
-			$addonList[$key]->remove_url = $oAutoinstallModel->getRemoveUrlByPackageSrl($packageSrl);
-
-			// get easyinstall need update
-			$package = $oAutoinstallModel->getInstalledPackages($packageSrl);
-			$addonList[$key]->need_update = $package[$packageSrl]->need_update;
-
-			// get easyinstall update url
-			if($addonList[$key]->need_update == 'Y')
-			{
-				$addonList[$key]->update_url = $oAutoinstallModel->getUpdateUrlByPackageSrl($packageSrl);
-			}
-		}
-
-		return $addonList;
+		return $this->getAddonList(0, 'site');
 	}
 
 	/**

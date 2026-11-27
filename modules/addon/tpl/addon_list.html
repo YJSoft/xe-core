@@ -28,7 +28,6 @@
 				<th class="nowr">{$lang->cmd_setup}</th>
 				<th class="nowr">PC</th>
 				<th class="nowr">Mobile</th>
-				<th class="nowr">{$lang->cmd_delete}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -36,9 +35,6 @@
 				<td class="title">
 					<p><strong>{$addon->title}</strong></p>
 					<p>{$addon->description|noescape}</p>
-					<p cond="$addon->need_update == 'Y'" class="update">
-						{$lang->msg_avail_easy_update} <a href="{$addon->update_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}">{$lang->msg_do_you_like_update}</a>
-					</p>
 				</td>
 				<td>{$addon->version}</td>
 				<td class="nowr">
@@ -51,7 +47,6 @@
 				<td><a href="{getUrl('act', 'dispAddonAdminSetup', 'selected_addon', $addon->addon_name)}">{$lang->cmd_setup}</a></td>
 				<td><input type="checkbox" name="pc_on[]" title="PC" value="{htmlspecialchars($addon->addon_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" checked="checked"|cond="$addon->activated" /></td>
 				<td><input type="checkbox" name="mobile_on[]" title="Mobile" value="{htmlspecialchars($addon->addon_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" checked="checked"|cond="$addon->mactivated" /></td>
-				<td><a cond="$addon->remove_url" href="{$addon->remove_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}">{$lang->cmd_delete}</a></td>
 			</tr>
 		</tbody>
 	</table>

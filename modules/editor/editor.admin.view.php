@@ -57,22 +57,10 @@ class editorAdminView extends editor
 			$content_style_list[$style]->title = $info->title;
 		}
 
-		// Get install info, update info, count
-		$oAutoinstallModel = getModel('autoinstall');
-		foreach($component_list as $component_name => $xml_info)
+		foreach($component_list as $xml_info)
 		{
 			$component_count++;
 			$xml_info->path = './modules/editor/components/'.$xml_info->component_name;
-			$xml_info->delete_url = $oAutoinstallModel->getRemoveUrlByPath($xml_info->path);
-			$xml_info->package_srl = $oAutoinstallModel->getPackageSrlByPath($xml_info->path);
-			if($xml_info->package_srl) $targetpackages[$xml_info->package_srl] = 0;
-		}
-
-		if(is_array($targetpackages))	$packages = $oAutoinstallModel->getInstalledPackages(array_keys($targetpackages));
-
-		foreach($component_list as $component_name => $xml_info)
-		{
-			if($packages[$xml_info->package_srl])	$xml_info->need_update = $packages[$xml_info->package_srl]->need_update;
 		}
 		$editor_config_default = array( "editor_height" => "300", "comment_editor_height" => "100","content_font_size"=>"13");
 

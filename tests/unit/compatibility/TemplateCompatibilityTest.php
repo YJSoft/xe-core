@@ -163,26 +163,6 @@ class TemplateCompatibilityTest extends CompatibilityTestCase
 		}
 	}
 
-	public function testAutoinstallSortLinksClearPageWithoutUsingAnUndefinedConstant()
-	{
-		$source = file_get_contents(_XE_PATH_ . 'modules/autoinstall/tpl/list.html');
-		$start = strpos($source, '<div cond="$act');
-		$this->assertTrue($start !== false, 'The actual autoinstall sort section must exist');
-		$end = strpos($source, '</div>', $start);
-		$this->assertTrue($end !== false, 'The autoinstall sort section must have an end');
-		Context::set('act', 'dispAutoinstallAdminIndex', false);
-		Context::set('order_target', 'newest', false);
-		Context::set('order_type', 'desc', false);
-		Context::set('page', 5, true);
-		Context::set('site_module_info', (object)array('domain' => ''), false);
-		Context::set('lang', (object)array('order_newest' => 'Newest', 'order_download' => 'Downloads', 'order_popular' => 'Popular'), false);
-		$_SERVER['REQUEST_METHOD'] = 'GET';
-		$html = $this->render(substr($source, $start, $end + 6 - $start));
-		$this->assertSame(3, substr_count($html, '<a href='));
-		$this->assertFalse(strpos($html, 'page=5'));
-		$this->assertTrue(strpos($html, 'order_type=asc') !== false);
-	}
-
 	public function testPhp2ShellWarningRendersDangerPartialMitigationAndFixedStates()
 	{
 		$lang = new stdClass();

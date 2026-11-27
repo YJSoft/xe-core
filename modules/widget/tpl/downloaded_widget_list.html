@@ -14,7 +14,6 @@
 			<th scope="col">{$lang->author}</th>
 			<th scope="col">{$lang->path}</th>
 			<th scope="col">{$lang->cmd_generate_code}</th>
-			<th scope="col">{$lang->cmd_delete}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -22,9 +21,6 @@
 			<td class="title">
 				<p><strong>{$widget->title}</strong></p>
 				<p>{$widget->description|noescape}</p>
-				<p cond="$widget->need_update == 'Y'" class="update">
-					{$lang->msg_avail_easy_update} <a href="{$widget->update_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}">{$lang->msg_do_you_like_update}</a>
-				</p>
 			</td>
 			<td>{$widget->version}</td>
 			<td>
@@ -35,7 +31,6 @@
 			</td>
 			<td>{$widget->path}</td>
 			<td><a class="x_btn x_btn-link" href="{getUrl('act', 'dispWidgetAdminGenerateCode', 'selected_widget', $widget->widget)}">{$lang->cmd_generate_code}</a></td>
-			<td><a class="x_btn x_btn-link" cond="$widget->remove_url" href="{$widget->remove_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}">{$lang->cmd_delete}</a></td>
 		</tr>
 	</tbody>
 </table>

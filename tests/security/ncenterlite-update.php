@@ -11,12 +11,7 @@ require $core . 'classes/file/FileHandler.class.php';
 require $core . 'classes/xml/XeXmlParser.class.php';
 require $core . 'classes/object/BaseObject.class.php';
 register_shutdown_function(array('FileHandler', 'removeDir'), $fixture);
-foreach(array('libs/ftp.class.php', 'modules/autoinstall/autoinstall.lib.php') as $file)
-{
-	mkdir(dirname(_XE_PATH_ . $file), 0700, true);
-	copy($core . $file, _XE_PATH_ . $file);
-}
-require $core . 'modules/autoinstall/NcenterliteReleaseInstaller.php';
+require $core . 'modules/admin/NcenterliteReleaseInstaller.php';
 class Context
 {
 	public static function getLangType() { return 'ko'; }

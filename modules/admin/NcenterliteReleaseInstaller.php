@@ -1,16 +1,25 @@
 <?php
-require_once _XE_PATH_ . 'modules/autoinstall/autoinstall.lib.php';
+/* Copyright (C) XEHub <https://www.xehub.io> */
 
-class NcenterliteReleaseInstaller extends DirectModuleInstaller
+class NcenterliteReleaseInstaller
 {
 	const ZIP_URL = 'https://github.com/YJSoft/xe-module-ncenterlite/archive/refs/tags/3.0.10.zip';
 	const MODULE_PATH = './modules/ncenterlite';
 
-	public function __construct()
+	private $download_path;
+
+	protected function installModule()
 	{
-		$package = (object)array('path' => self::MODULE_PATH);
-		parent::__construct($package);
-		$this->target_path = 'modules/ncenterlite';
+		$model = getModel('module');
+		if($model->checkNeedInstall('ncenterlite'))
+		{
+			getController('install')->installModule('ncenterlite', ModuleHandler::getModulePath('ncenterlite'));
+		}
+		if($model->checkNeedUpdate('ncenterlite'))
+		{
+			$module = getModule('ncenterlite', 'class');
+			if(method_exists($module, 'moduleUpdate')) $module->moduleUpdate();
+		}
 	}
 
 	/** Read the installed manifest, including the older XE 0.1 module format. */
@@ -132,9 +141,17 @@ class NcenterliteReleaseInstaller extends DirectModuleInstaller
 			$changed[] = $file;
 		}
 
-		// Easy Install copies each complete file atomically. The version manifest is last.
-		$result = $this->_copyDir($changed);
-		if($result->toBool()) return true;
+		// Publish the version manifest last and restore completed copies on failure.
+		$copied = array();
+		foreach($changed as $file)
+		{
+			$target = $root . '/' . $file;
+			if(!$this->copyInstallFile($this->download_path . '/' . $file, $target)) break;
+			$copied[] = $target;
+		}
+		FileHandler::clearStatCache($copied, true);
+		FileHandler::invalidateOpcache($copied);
+		if(count($copied) === count($changed)) return true;
 
 		foreach(array_reverse($changed) as $file)
 		{
@@ -180,7 +197,8 @@ class NcenterliteReleaseInstaller extends DirectModuleInstaller
 			$entry = $zip->statIndex($i);
 			if($entry === false) return false;
 			$name = $entry['name'];
-			if(strpos($name, $root) !== 0 || !$this->_isSafeArchivePath($name)) return false;
+			if(strpos($name, $root) !== 0 || strpos($name, "\0") !== false
+				|| in_array('..', explode('/', str_replace('\\', '/', $name)), true)) return false;
 			$file = substr($name, strlen($root));
 			if($file === '' || substr($file, -1) === '/') continue;
 			if(!preg_match('~\A[\w-][\w.-]*(?:/[\w-][\w.-]*)*\z~', $file) || isset($files[$file])) return false;

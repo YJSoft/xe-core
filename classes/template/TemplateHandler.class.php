@@ -1067,7 +1067,7 @@ class TemplateHandler
 	function isAutoescape()
 	{
 		$absPath = str_replace(_XE_PATH_, '', $this->path);
-		$dirTpl = '(addon|admin|adminlogging|autoinstall|board|comment|communication|counter|document|editor|file|importer|install|integration_search|krzip|layout|member|menu|message|module|page|point|poll|rss|seo|session|spamfilter|syndication|tag|trash|widget)';
+		$dirTpl = '(addon|admin|adminlogging|board|comment|communication|counter|document|editor|file|importer|install|integration_search|krzip|layout|member|menu|message|module|page|point|poll|rss|seo|session|spamfilter|syndication|tag|trash|widget)';
 		$dirSkins = '(layouts\/default|layouts\/user_layout|layouts\/xedition|layouts\/xedition\/demo|m\.layouts\/colorCode|m\.layouts\/default|m\.layouts\/simpleGray|modules\/board\/m\.skins\/default|modules\/board\/m\.skins\/simpleGray|modules\/board\/skins\/default|modules\/board\/skins\/xedition|modules\/communication\/m\.skins\/default|modules\/communication\/skins\/default|modules\/editor\/skins\/ckeditor|modules\/editor\/skins\/xpresseditor|modules\/integration_search\/skins\/default|modules\/layout\/faceoff|modules\/member\/m\.skins\/default|modules\/member\/skins\/default|modules\/message\/m\.skins\/default|modules\/message\/skins\/default|modules\/message\/skins\/xedition|modules\/page\/m\.skins\/default|modules\/page\/skins\/default|modules\/poll\/skins\/default|modules\/poll\/skins\/simple|widgets\/content\/skins\/default|widgets\/counter_status\/skins\/default|widgets\/language_select\/skins\/default|widgets\/login_info\/skins\/default|widgets\/mcontent\/skins\/default|widgetstyles\/simple)';
 
 		// 'tpl'

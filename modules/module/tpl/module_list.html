@@ -1,7 +1,4 @@
 <include target="header.html" />
-<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/autoinstall/tpl/uninstall/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
-	<p>{$XE_VALIDATOR_MESSAGE}</p>
-</div>
 <table class="x_table x_table-striped x_table-hover">
 	<caption>
 		<strong>All({count($module_list)})</strong>
@@ -13,11 +10,10 @@
 			<th class="nowr">{$lang->version}</th>
 			<th class="nowr">{$lang->author}</th>
 			<th class="nowr">{$lang->path}</th>
-			<th class="nowr">{$lang->cmd_delete}</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr loop="$module_list => $key,$val" data-type1="#"|cond="in_array($val->module,$favoriteModuleList)" data-type2="#"|cond="$val->need_install || $val->need_update || $val->need_autoinstall_update">
+		<tr loop="$module_list => $key,$val" data-type1="#"|cond="in_array($val->module,$favoriteModuleList)" data-type2="#"|cond="$val->need_install || $val->need_update">
 			<td>
 				<button type="button" class="fvOn" onclick="doToggleFavoriteModule(this, '{$val->module}')" cond="in_array($val->module,$favoriteModuleList)">{$lang->favorite}({$lang->on})</button>
 				<button type="button" class="fvOff" onclick="doToggleFavoriteModule(this, '{$val->module}')" cond="!in_array($val->module,$favoriteModuleList)">{$lang->favorite}({$lang->off})</button>
@@ -30,7 +26,6 @@
 				<p>{$val->description|noescape}</p>
 				<p cond="$val->need_install" class="x_alert x_alert-info">{$lang->msg_avail_install} <button class="text" type="button" onclick="doInstallModule('{$val->module}')">{$lang->msg_do_you_like_install}</button></p>
 				<p cond="$val->need_update" class="x_alert x_alert-info">{$lang->msg_avail_update} <button class="text" type="button" onclick="doUpdateModule('{$val->module}')">{$lang->msg_do_you_like_update}</button></p>
-				<p cond="$val->need_autoinstall_update == 'Y'" class="x_alert x_alert-info">{$lang->msg_avail_easy_update} <a href="{$val->update_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}">{$lang->msg_do_you_like_update}</a></p>
 			</td>
 			<td>{$val->version}</td>
 			<td class="nowr">
@@ -43,9 +38,6 @@
 				<!--@endforeach-->
 			</td>
 			<td>{$val->path}</td>
-			<td>
-				<a href="{$val->delete_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}" cond="$val->delete_url">{$lang->cmd_delete}</a>
-			</td>
 		</tr>
 	</tbody>
 </table>

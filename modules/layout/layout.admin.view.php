@@ -27,7 +27,7 @@ class layoutAdminView extends layout
 
 		// Set a layout list
 		$oLayoutModel = getModel('layout');
-		$layout_list = $oLayoutModel->getDownloadedLayoutList($type, true);
+		$layout_list = $oLayoutModel->getDownloadedLayoutList($type);
 		if(!is_array($layout_list))
 		{
 			$layout_list = array();

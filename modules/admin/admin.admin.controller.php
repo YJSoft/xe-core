@@ -17,7 +17,7 @@ class adminAdminController extends admin
 		if(!isset($logged_info->is_admin) || $logged_info->is_admin !== 'Y') return new BaseObject(-1, 'msg_is_not_administrator');
 		if(!Security::checkCSRFRequest()) return new BaseObject(-1, 'msg_invalid_request');
 
-		require_once _XE_PATH_ . 'modules/autoinstall/NcenterliteReleaseInstaller.php';
+		require_once _XE_PATH_ . 'modules/admin/NcenterliteReleaseInstaller.php';
 		$installer = new NcenterliteReleaseInstaller();
 		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin'));
 		return $installer->install();
@@ -189,10 +189,6 @@ class adminAdminController extends admin
 			$db = DB::getInstance();
 			$db->deleteDuplicateIndexes();
 		}
-
-		// check autoinstall packages
-		$oAutoinstallAdminController = getAdminController('autoinstall');
-		$oAutoinstallAdminController->checkInstalled();
 
 		$this->setMessage('success_updated');
 	}

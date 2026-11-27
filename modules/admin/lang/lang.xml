@@ -832,15 +832,6 @@
 		<value xml:lang="tr"><![CDATA[Lütfen önbellek geri plan yordamını veya Memcached' ı yeniden başlatınız.]]></value>
 		<value xml:lang="vi"><![CDATA[Hãy thiết lập lại bộ nhớ Cache hoặc Deamon Cache.]]></value>
 	</item>
-	<item name="autoinstall">
-		<value xml:lang="ko"><![CDATA[쉬운 설치]]></value>
-		<value xml:lang="en"><![CDATA[EasyInstall]]></value>
-		<value xml:lang="jp"><![CDATA[簡単インストール]]></value>
-		<value xml:lang="zh-CN"><![CDATA[安装•更新]]></value>
-		<value xml:lang="zh-TW"><![CDATA[自動安裝]]></value>
-		<value xml:lang="tr"><![CDATA[Kolay Kurulum]]></value>
-		<value xml:lang="vi"><![CDATA[Cập nhật tự động]]></value>
-	</item>
 	<item name="last_week">
 		<value xml:lang="ko"><![CDATA[지난 주]]></value>
 		<value xml:lang="en"><![CDATA[Last week]]></value>
@@ -971,13 +962,6 @@
 		<value xml:lang="jp"><![CDATA[該当IPについてのみ管理者ページへアクセスできるため、注意してください。IP帯域情報は、/files/config/db.config.php ファイルに保存されます。Change the line to multiple IP.]]></value>
 		<value xml:lang="zh-CN"><![CDATA[请注意，只有绑定的IP才能访问后台。IP信息将保存在 /files/config/db.config.php. 每行一个IP。]]></value>
 		<value xml:lang="tr"><![CDATA[Sadece bu IP adresi üzerinden yönetici sayfasına erişim mümkündür.IP-bant bilgileri /files/config/db.config.php dosyasında saklanır. Satıra birden fazla öğe girin.]]></value>
-	</item>
-	<item name="detail_about_ftp_info">
-		<value xml:lang="ko"><![CDATA[FTP 정보를 입력하면 쉬운 설치를 가능하도록 합니다. FTP 정보는 files/config/ftp.config.php 파일에 저장됩니다. 쉬운 설치가 불가능한 경우 PHP의 safe_mode를 On으로 변경해야 합니다.]]></value>
-		<value xml:lang="en"><![CDATA[Enable easy installation if you enter FTP information. The information of FTP is stored in files/config/ftp.config.php. If you are unable to easy install, PHP's 'safe_mode' must be changed 'On']]></value>
-		<value xml:lang="jp"><![CDATA[FTP情報を入力すれば簡単設置を可能にします。FTP情報は files/config/ftp.config.php ファイルに保存されます。簡単設置ができない場合、PHPのsafe_modeをOnへ変更が必要です。]]></value>
-		<value xml:lang="zh-CN"><![CDATA[当设定FTP信息来启用快捷安装。FTP的信息保存在 /files/config/ftp.config.php. 如果不启用快捷安装，请务必将开启PHP安全模式]]></value>
-		<value xml:lang="tr"><![CDATA[Kolay kurulum sağlayan FTP bilgilerini girdiğinizde. FTP bilgi, dosya / config / ftp.config.php dosyasında saklanır. Kolay yükleme sizin için mümkün değilse, PHP'nin safe_mode ayarını On şeklinde değiştiriniz.]]></value>
 	</item>
 	<item name="allow_use_favicon">
 		<value xml:lang="ko"><![CDATA[파비콘 지정]]></value>
@@ -1366,14 +1350,6 @@
 		<value xml:lang="tr"><![CDATA[Eğer PHP güvenli mod ayarları etkinse, XE'yi kurmak için FTP hesap bilgilerini girmelisiniz.]]></value>
 		<value xml:lang="vi"><![CDATA[Nếu safe_mode của PHP mở, bạn có thể cài đặt các thành phần bổ xung cho XE một cách tự động qua FTP.]]></value>
 		<value xml:lang="mn"><![CDATA[PHP의 safe_mode가 Onбайх тохиолдолд , FTP мэдээллийг заавал оруулснаар XE идэвжvvлэх болон хэрэглэх боломжтой болно.]]></value>
-	</item>
-	<item name="msg_safe_mode_ftp_needed2">
-		<value xml:lang="ko"><![CDATA[모듈의 쉬운 설치 또는 업데이트가 가능해 집니다.]]></value>
-		<value xml:lang="en"><![CDATA[Easy installation or update of module is enabled.]]></value>
-		<value xml:lang="jp"><![CDATA[モジュールの簡単インストール、または更新が可能になります。]]></value>
-		<value xml:lang="zh-CN"><![CDATA[可用的安装或更新。]]></value>
-		<value xml:lang="zh-TW"><![CDATA[可用的安裝或更新。]]></value>
-		<value xml:lang="tr"><![CDATA[Modülün Kolay kurulumu veya güncelleme özelliği etkindir.]]></value>
 	</item>
 	<item name="msg_safe_mode_ftp_config">
 		<value xml:lang="ko"><![CDATA[이 정보는<strong>files/config/ftp.config.php</strong> 파일에 저장 됩니다. 설치 후 환경설정 페이지에서도 등록, 변경, 제거 할 수 있습니다.]]></value>

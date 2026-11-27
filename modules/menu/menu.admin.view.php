@@ -30,7 +30,6 @@ class menuAdminView extends menu
 	{
 		Context::loadLang(_XE_PATH_.'modules/document/lang/');
 		Context::loadLang(_XE_PATH_.'modules/layout/lang/');
-		Context::loadLang(_XE_PATH_.'modules/autoinstall/lang/');
 		$site_srl = Context::get('site_srl');
 		$site_module_info = Context::get('site_module_info');
 

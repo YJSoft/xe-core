@@ -336,7 +336,6 @@ class menuAdminModel extends menu
 	function getMenuAdminInstalledMenuType()
 	{
 		$oModuleModel = getModel('module');
-		$oAutoinstallModel = getModel('autoinstall');
 		$this->add('menu_types', $this->getModuleListInSitemap(0));
 
 		$_allModules = FileHandler::readDir('./modules', '/^([a-zA-Z0-9_-]+)$/');
@@ -360,9 +359,6 @@ class menuAdminModel extends menu
 			$module->defaultMobileSkin = new stdClass();
 			$module->defaultMobileSkin->skin = $defaultMobileSkin;
 			$module->defaultMobileSkin->title = $mobileSkinInfo->title ? $mobileSkinInfo->title : $defaultMobileSkin;
-
-			$module->package_srl = $oAutoinstallModel->getPackageSrlByPath('./modules/' . $module_name);
-			$module->url = _XE_LOCATION_SITE_ . '?mid=download&package_srl=' . $module->package_srl;
 
 			if($module_name == 'page')
 			{
@@ -417,29 +413,8 @@ class menuAdminModel extends menu
 		if(!$output->toBool()) return $output;
 
 		$localModuleList = array_unique($moduleList);
-
-		$oAutoinstallModel = getModel('autoinstall');
-
-		// get have instance
-		$remotePackageList = $oAutoinstallModel->getHaveInstance(array('path'));
-		$remoteModuleList = array();
-		foreach($remotePackageList as $package)
-		{
-			if(strpos($package->path, './modules/') !== 0) continue;
-
-			$pathInfo = explode('/', $package->path);
-			$remoteModuleList[] = $pathInfo[2];
-		}
-
-		// all module list
 		$allModuleList = FileHandler::readDir('./modules', '/^([a-zA-Z0-9_-]+)$/');
-
-		// union have instance and all module list
-		$haveInstance = array_intersect($remoteModuleList, $allModuleList);
-		$haveDirectory = array_intersect($localModuleList, $allModuleList);
-
-		// union
-		$moduleList = array_unique(array_merge($haveDirectory, $haveInstance));
+		$moduleList = array_intersect($localModuleList, $allModuleList);
 
 		$moduleInfoList = array();
 		Context::loadLang('modules/page/lang');

@@ -224,7 +224,7 @@ class adminAdminModel extends admin
 	 */
 	function getAdminFTPPath()
 	{
-		Context::loadLang(_XE_PATH_ . 'modules/autoinstall/lang');
+		Context::loadLang(_XE_PATH_ . 'modules/install/lang');
 		@set_time_limit(5);
 		require_once(_XE_PATH_ . 'libs/ftp.class.php');
 
@@ -369,7 +369,7 @@ class adminAdminModel extends admin
 	 */
 	function getAdminFTPList()
 	{
-		Context::loadLang(_XE_PATH_ . 'modules/autoinstall/lang');
+		Context::loadLang(_XE_PATH_ . 'modules/install/lang');
 		@set_time_limit(5);
 
 		require_once(_XE_PATH_ . 'libs/ftp.class.php');
@@ -446,7 +446,7 @@ class adminAdminModel extends admin
 	{
 		$skip = array(
 			'ext' => array('pcre', 'json', 'hash', 'dom', 'session', 'spl', 'standard', 'date', 'ctype', 'tokenizer', 'apache2handler', 'filter', 'posix', 'reflection', 'pdo')
-			, 'module' => array('addon', 'admin', 'autoinstall', 'comment', 'communication', 'counter', 'document', 'editor', 'file', 'importer', 'install', 'integration_search', 'layout', 'member', 'menu', 'message', 'module', 'opage', 'page', 'point', 'poll', 'rss', 'session', 'spamfilter', 'tag', 'trackback', 'trash', 'widget')
+			, 'module' => array('addon', 'admin', 'comment', 'communication', 'counter', 'document', 'editor', 'file', 'importer', 'install', 'integration_search', 'layout', 'member', 'menu', 'message', 'module', 'opage', 'page', 'point', 'poll', 'rss', 'session', 'spamfilter', 'tag', 'trackback', 'trash', 'widget')
 			, 'addon' => array('autolink', 'blogapi', 'captcha', 'counter', 'member_communication', 'member_extra_info', 'mobile', 'openid_delegation_id', 'point_level_icon', 'resize_image')
 			, 'layout' => array('default')
 			, 'widget' => array('content', 'language_select', 'login_info','mcontent')
@@ -857,6 +857,11 @@ class adminAdminModel extends admin
 			foreach($output->data AS $key => $value)
 			{
 				$moduleInfo = $oModuleModel->getModuleInfoXml($value->module);
+				if(!$moduleInfo)
+				{
+					unset($output->data[$key]);
+					continue;
+				}
 				$output->data[$key]->admin_index_act = $moduleInfo->admin_index_act;
 				$output->data[$key]->title = $moduleInfo->title;
 			}

@@ -296,38 +296,6 @@ class layoutAdminController extends layout
 	{
 		$oLayoutModel = getModel('layout');
 
-		if($force)
-		{
-			$layoutInfo = $oLayoutModel->getLayout($layout_srl);
-			if($layoutInfo)
-			{
-				$layoutList = $oLayoutModel->getLayoutInstanceList($layoutInfo->site_srl, $layoutInfo->layout_type, $layoutInfo->layout, array('layout_srl', 'layout'));
-				if(count($layoutList) <= 1)
-				{
-					// uninstall package
-					$path = $layoutInfo->path;
-
-					$oAutoinstallModel = getModel('autoinstall');
-					$packageSrl = $oAutoinstallModel->getPackageSrlByPath($path);
-					$oAutoinstallAdminController = getAdminController('autoinstall');
-
-					if($packageSrl)
-					{
-						$output = $oAutoinstallAdminController->uninstallPackageByPackageSrl($packageSrl);
-					}
-					else
-					{
-						$output = $oAutoinstallAdminController->uninstallPackageByPath($path);
-					}
-
-					if(!$output->toBool())
-					{
-						return new BaseObject(-1, $output->message);
-					}
-				}
-			}
-		}
-
 		$path = $oLayoutModel->getUserLayoutPath($layout_srl);
 		FileHandler::removeDir($path);
 

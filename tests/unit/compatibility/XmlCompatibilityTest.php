@@ -92,16 +92,4 @@ class XmlCompatibilityTest extends CompatibilityTestCase
 			$this->assertTrue(strpos($js, "legacy_filter('$name', form, 'communication', '$act', filterAlertMessage, [], '$confirm', {})") !== false);
 		}
 	}
-
-	public function testAutoinstallXmlGeneratorCanBeCalledStatically()
-	{
-		require_once _XE_PATH_ . 'modules/autoinstall/autoinstall.class.php';
-		$params = array('act' => 'getPackage', 'title' => '한글 <title> & text');
-		$xml = XmlGenerater::generate($params);
-		$parser = new XeXmlParser();
-		$result = $parser->parse($xml);
-		$this->assertSame('resourceapi', $params['module']);
-		$this->assertSame('getPackage', $result->methodcall->params->act->body);
-		$this->assertSame('한글 <title> & text', $result->methodcall->params->title->body);
-	}
 }

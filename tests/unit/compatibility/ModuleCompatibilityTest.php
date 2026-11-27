@@ -351,46 +351,6 @@ class ModuleCompatibilityTest extends CompatibilityTestCase
 		$this->assertSame($cache->components, $editor->getComponentList(false));
 	}
 
-	public function testAutoinstallUpdatesAnOldServerAfterTheVersionUpdateWasLogged()
-	{
-		$db = $this->useQueryFixture();
-		class_exists('CacheHandler');
-		require_once _XE_PATH_ . 'classes/cache/CacheFile.class.php';
-		$GLOBALS['__CacheFile__'] = new CacheFile();
-		$GLOBALS['__CacheFile__']->cache_dir = $this->fixtureDir;
-		$oldConfig = (object)array('downloadServer' => 'https://old.example/', 'other' => 'keep');
-		$GLOBALS['__ModuleConfig__'][0]['autoinstall'] = $oldConfig;
-		$db->responses['module.getModuleUpdateLog'] = array(new stdClass());
-		$db->responses['module.deleteModuleConfig'] = null;
-		$db->responses['module.insertModuleConfig'] = null;
-
-		$module = new CompatibilityAutoinstallController();
-		$this->assertTrue($module->checkUpdate());
-		$this->assertTrue($module->moduleUpdate()->toBool());
-		$this->assertFalse($module->checkUpdate());
-		$this->assertTrue($module->moduleUpdate()->toBool());
-
-		$writes = array();
-		foreach($db->queries as $query)
-		{
-			if($query[0] === 'module.insertModuleConfig') $writes[] = unserialize($query[1]->config);
-		}
-		$this->assertEquals(array((object)array('downloadServer' => _XE_DOWNLOAD_SERVER_, 'other' => 'keep')), $writes);
-	}
-
-	public function testAutoinstallEmptyRemoteResponseDoesNotDeleteStoredCategories()
-	{
-		$db = $this->useQueryFixture();
-		$controller = new CompatibilityAutoinstallController();
-		$this->failOnPhpWarnings();
-		foreach(array(null, new stdClass(), (object)array('response' => (object)array('packages' => null, 'categorylist' => null))) as $xml)
-		{
-			$controller->updatePackages($xml);
-			$controller->updateCategory($xml);
-		}
-		$this->assertSame(array(), $db->queries);
-	}
-
 	public function testImporterWithoutExtraVariableKeysReturnsEmptyArray()
 	{
 		$file = $this->fixture('extra.xml', '</extra_vars>');
@@ -519,9 +479,4 @@ class CompatibilityComponentCache
 	public function __construct() { $this->components = (object)array('image_link' => (object)array('enabled' => 'Y')); }
 	public function isSupport() { return true; }
 	public function get($key, $modified_time = 0) { return $this->components; }
-}
-
-class CompatibilityAutoinstallController extends autoinstallAdminController
-{
-	public function __construct() {}
 }

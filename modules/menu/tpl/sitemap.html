@@ -149,7 +149,6 @@
 						<li><a href="#add_menu" data-admin-show="#add_menu" data-param='{ "moduleName" : "${ModuleName}", "moduleTitle": "${ModuleTitle}" }'>${ModuleTitle} <i class="x_icon-circle-arrow-right"></i></a></li>
 					</script>
 				</ul>
-				<a href="#download" class="x_btn x_btn-link" data-admin-show="#download" style="position:absolute;right:5px;bottom:7px;color:#000"><i class="x_icon-plus-sign"></i> {$lang->install_other_menu_types}</a>
 			</div>
 		</section>
 		<button type="button" class="x_close" data-admin-hide="#add">&times;</button>
@@ -158,7 +157,7 @@
 		<fieldset>
 			<h1 class="_title"></h1>
 			<div class="cnt">
-				<p class="desc"><dfn class="_description"></dfn> <a class='_link x_icon-share'>{$lang->details}</a></p>
+				<p class="desc"><dfn class="_description"></dfn></p>
 				<ul>
 					<li>
 						<div class="multilingual x_input-append">
@@ -207,17 +206,6 @@
 			</div>
 		</fieldset>
 		<button type="button" class="x_close" data-admin-hide="#add_menu">&times;</button>
-	</div>
-	<div class="col download" id="download" style="display:none">
-		<section>
-			<h1>{$lang->install_other_menu_types}</h1>
-			<div class="cnt">
-				<div class="list">
-				</div>
-				<div class="_pagination"></div>
-			</div>
-		</section>
-		<button type="button" class="x_close" data-admin-hide="#download">&times;</button>
 	</div>
 	<div class="col url" id="default" style="display:none">
 		<fieldset>
@@ -430,14 +418,6 @@
 							</label>
 						</li>
 						</script>
-						<script id="tmpl_layout_list_item_add_new" type="text/x-jquery-tmpl">
-						<li data-admin-show="#downloadLayout">
-							<label><i class="x_icon-plus-sign"></i> {$lang->install_other_layouts}</label>
-							<button type="button" class="item _btnScreenshot">
-								<img src="../../../modules/layout/tpl/img/download.png" class="_thumbnail" alt="{$lang->install_other_layouts}">
-							</button>
-						</li>
-						</script>
 						<script id="tmpl_layout_list_item" type="text/x-jquery-tmpl">
 						<li class="${Selected} _layoutItem">
 							<label><input type="radio" name="layout_item" title="${Title}"> ${Title}</label>
@@ -456,7 +436,6 @@
 					<i class="mask"></i>
 				</div>
 				<!--
-				<a href="#downloadLayout" data-admin-show="#downloadLayout" class="x_btn x_btn-link" style="position:absolute;right:5px;bottom:7px;color:#000"><i class="x_icon-plus-sign"></i> {$lang->install_other_layouts}</a>
 				-->
 			</div>
 			<div class="x_btn-group siteMapUI">
@@ -482,45 +461,6 @@
 			</div>
 		</section>
 		<button type="button" class="x_close" data-admin-hide="#layoutMarkupSetup">&times;</button>
-	</div>
-
-	<div class="col download" id="downloadLayout" style="display:none">
-		<section>
-			<h1>{$lang->install_other_layouts}</h1>
-			<div class="cnt">
-				<div class="list">
-				</div>
-				<div style="margin-top:-10px" class="x_clearfix">
-					<div class="_pagination"></div>
-
-				</div>
-				<script id="tmpl_pagination" type="text/x-jquery-tmpl">
-				<div class="x_pagination" style="float:left">
-					<ul class="_list">
-					</ul>
-				</div>
-
-				<div class="search x_input-append x_pull-right">
-					<input type="search" value="" title="Search" name="search_keyword">
-					<button class="x_btn x_btn-inverse _search">검색</button>
-					<a class="x_btn _cancel" href="#">취소</a>
-				</div>
-				</script>
-				<script id="tmpl_pagination_list" type="text/x-jquery-tmpl">
-					<li class='${ActiveClass}'><a  href="#" class="_toPage" data-param='{ "page": "${Page}"}' title='${Page}' onclick="return false">${PageText}</a></li>
-				</script>
-				<script id="tmpl_pagination_jump" type="text/x-jquery-tmpl">
-					<li>
-						<a href="#goTo" data-admin-toggle="#goTo" title="${GoText}" onclick="return false">&hellip;</a>
-						<span id="goTo" class="x_input-append">
-							<input type="number" min="1" max="${LastPage}" required name="page" title="${GoText}" />
-							<button type="input" class="x_add-on _jumpTo">Go</button>
-						</span>
-					</li>
-				</script>
-			</div>
-		</section>
-		<button type="button" class="x_close" data-admin-hide="#downloadLayout">&times;</button>
 	</div>
 
 	<div class="col theme" id="skin" style="display:none">
@@ -553,15 +493,6 @@
 						</li>
 						</script>
 
-						<script id="tmpl_skin_list_item_add_new" type="text/x-jquery-tmpl">
-						<li data-admin-show="#downloadSkin">
-							<label><i class="x_icon-plus-sign"></i> {$lang->install_other_skins}</label>
-							<button type="button" class="item _btnScreenshot">
-								<img src="../../../modules/layout/tpl/img/download.png" class="_thumbnail" alt="{$lang->install_other_skins}">
-							</button>
-						</li>
-						</script>
-
 						<script id="tmpl_skin_list_item" type="text/x-jquery-tmpl">
 						<li class="_item ${Selected}">
 							<label><input type="radio" name="skin_item" title="${Title}"> ${Title}</label>
@@ -578,7 +509,6 @@
 					</ul>
 					<i class="mask"></i>
 					<!--
-					<a href="#downloadSkin" data-admin-show="#downloadSkin" class="x_btn x_btn-link" style="position:absolute;right:5px;bottom:7px;color:#000"><i class="x_icon-plus-sign"></i> {$lang->install_other_skins}</a>
 					-->
 				</div>
 			</div>
@@ -596,43 +526,6 @@
 			</div>
 		</section>
 		<button type="button" class="x_close" data-admin-hide="#skinSetup">&times;</button>
-	</div>
-	<div class="col download" id="downloadSkin" style="display:none">
-		<section>
-			<h1>{$lang->install_other_skins}</h1>
-			<div class="cnt">
-				<div class="list">
-
-					<script id="tmpl_noDownloadableItem" type="text/x-jquery-tmpl">
-						<p style="margin:15px 0">{$lang->no_downloadable_item}</p>
-					</script>
-
-					<script id="tmpl_downloadableItem" type="text/x-jquery-tmpl">
-
-						<div class="item ${IsInstalled} ${IsUpToDate}">
-							<img src="${ScreenShotURL}" alt="">
-							<h2><a target="_blank" href="${URL}">${MenuType}</a></h2>
-							<p>${MenuTypeDesc}</p>
-							<p><i class="starRating score${Score}"><i></i></i> <b class="x_badge">${Score}/${TotalVotes}</b> {$lang->package_update}: <time title="${LastUpdatedWithTime}">${LastUpdated}</time> <i>|</i> {$lang->package_downloaded_count}: ${TotalDownloads}</p>
-							<div class="_install">
-								<button type="button" class="x_icon-download-alt x_icon-white _install_this">{$lang->install}</button>
-							</div>
-							<div class="_already_installed">
-								<div class="_already_up_to_date">
-									<button type="button" class="done"><i class="x_icon-ok-sign x_icon-white"></i> {$lang->installed}</button>
-								</div>
-								<div class="_need_to_update">
-									<button type="button" class="update _install_this"><i class="x_icon-refresh x_icon-white"></i> {$lang->update}</button>
-								</div>
-							</div>
-						</div>
-					</script>
-
-				</div>
-				<div class="_pagination" style="float:left"></div>
-			</div>
-		</section>
-		<button type="button" class="x_close" data-admin-hide="#downloadSkin">&times;</button>
 	</div>
 	<div class="col" id="auth" style="display:none">
 		<fieldset>
@@ -703,9 +596,6 @@
 	xe.lang.input_new_layout_name = '{$lang->input_new_layout_name}';
 	xe.lang.skip_new_layout_name = '{$lang->skip_new_layout_name}';
 	xe.lang.confirm_delete = '{$lang->confirm_delete}';
-	xe.lang.need_to_ftp_setup = '{$lang->need_to_ftp_setup}';
-	xe.lang.go_to_ftp_setup = '{$lang->go_to_ftp_setup}';
-	xe.lang.installation_completed = '{$lang->installation_completed}';
 	xe.lang.go_to_site_design_setup = '{$lang->go_to_site_design_setup}';
 	xe.lang.how_to_modify_menu = '{$lang->how_to_modify_menu}';
 	xe.lang.can_drag_menu = '{$lang->can_drag_menu}';
@@ -717,10 +607,6 @@
 	xe.lang.msg_cannot_delete_homemenu = '{$lang->msg_cannot_delete_homemenu}';
 	xe.lang.set_as_homepage = '{$lang->set_as_homepage}';
 	xe.lang.has_been_set_as_homepage = '{$lang->has_been_set_as_homepage}';
-	xe.lang.need_ftp_password = '{$lang->need_ftp_password}';
-	xe.lang.need_ftp_password_title = '{$lang->need_ftp_password_title}';
-	xe.lang.need_core_update = '{$lang->need_core_update}';
-	xe.lang.need_core_update_continue = '{$lang->need_core_update_continue}';
 	xe.lang.password = '{$lang->password}';
 	xe.lang.not_found_module = '{$lang->not_found_module}';
 </script>
@@ -1297,114 +1183,6 @@ jQuery(function($){
 
 	$._xeAdminVar.htPrevSetting = {};
 
-	$("#tmpl_noDownloadableItem").template( "noDownloadableItem" );
-	$("#tmpl_downloadableItem").template( "downloadableItem" );
-
-	$("#tmpl_pagination").template( "pagination" );
-	$("#tmpl_pagination_list").template( "paginationList" );
-	$("#tmpl_pagination_jump").template( "paginationJump" );
-	function createPagination(htOptions){
-		var $PlaceHolder = htOptions.$PlaceHolder;
-		var fnCallback = htOptions.fnCallback;
-		var nCurPage = htOptions.nCurPage;
-		var nTotalPages = htOptions.nTotalPages;
-		var sToFirstText = htOptions.sToFirstText;
-		var sToLastText = htOptions.sToLastText;
-		var sToText = htOptions.sToText;
-		var sSearchKeyword = htOptions.sSearchKeyword;
-
-		$PlaceHolder.addClass('_pagination');
-		$PlaceHolder.data('search_keyword', sSearchKeyword);
-
-		nCurPage = parseInt(nCurPage);
-		nTotalPages = parseInt(nTotalPages);
-		var nMaxList = 5;
-
-		var $Result = $.tmpl( "pagination", {});
-
-		var nStart = nCurPage - parseInt(nMaxList/2);
-		if(nStart <= 0) nStart = 1;
-
-		// -1 because it starts from "nStart", not "after nStart".
-		var nLast = nStart + nMaxList - 1;
-		if(nLast > nTotalPages){
-			nLast = nTotalPages;
-			if(nLast >= nMaxList) nStart = nLast - nMaxList + 1;
-		}
-
-		var sActiveClass, sListHTML = "";
-
-		var sPageJump = $.tmpl("paginationJump", {GoText: sToText, LastPage:nTotalPages})[0].outerHTML
-
-		if(nCurPage === 1) sActiveClass = "x_disabled";
-		sListHTML +=  $.tmpl("paginationList", {Page: 1, PageText: sToFirstText, ActiveClass:sActiveClass})[0].outerHTML;
-		if(nCurPage > nTotalPages/2 && nTotalPages > nMaxList){
-			sListHTML +=  sPageJump;
-		}
-		for(var i=nStart; i<=nLast; i++){
-			sActiveClass = "";
-			if(i === nCurPage) sActiveClass = "x_active";
-			sListHTML +=  $.tmpl("paginationList", {Page: i, PageText:i, ActiveClass:sActiveClass})[0].outerHTML;
-		}
-		if(!(nCurPage > nTotalPages/2) && nTotalPages > nMaxList){
-			sListHTML +=  sPageJump;
-		}
-		if(nCurPage === nTotalPages) sActiveClass = "x_disabled";
-		sListHTML +=  $.tmpl("paginationList", {Page: nTotalPages, PageText: sToLastText, ActiveClass:sActiveClass})[0].outerHTML;
-		$Result.find('._list').html(sListHTML);
-
-		$PlaceHolder.html("");
-		$PlaceHolder.append($Result);
-
-		if(sSearchKeyword){
-			$PlaceHolder.find('input[name=search_keyword]').val(sSearchKeyword);
-		}
-
-		$.data($PlaceHolder[0], "fnCallback", fnCallback);
-	}
-	$(document.body).on('click', '._pagination ._search', function(ev){
-		ev.preventDefault();
-
-		var sSearchKeyword = $(this).closest('._pagination').find('input[name=search_keyword]').val();
-
-		$.data($(this).closest('._pagination')[0], "fnCallback")({
-			page: 1,
-			search_keyword: sSearchKeyword
-		});
-	});
-	$(document.body).on('click', '._pagination ._cancel', function(ev){
-		ev.preventDefault();
-
-		$.data($(this).closest('._pagination')[0], "fnCallback")({
-			page: 1,
-			search_keyword: ""
-		});
-	});
-
-	$(document.body).on('click', '._pagination ._toPage', function(ev){
-		var sSearchKeyword = $(this).closest('._pagination').data('search_keyword');
-
-		htParam = $.parseJSON($(this).attr('data-param'));
-
-		$.data($(this).parents('._pagination')[0], "fnCallback")({
-			page: htParam.page,
-			search_keyword: sSearchKeyword
-		});
-	});
-
-	$(document.body).on('click', '.x_pagination ._jumpTo', function(ev){
-		var sSearchKeyword = $(this).closest('._pagination').data('search_keyword');
-
-		htParam = $.parseJSON($(this).attr('data-param'));
-		//console.log($(this).parent().find('input[name=page]'));
-		var nPage = parseInt($(this).parent().find('input[name=page]').val());
-
-		$.data($(this).parents('._pagination')[0], "fnCallback")({
-			page: nPage,
-			search_keyword: sSearchKeyword
-		});
-	});
-
 	$.jstree._themes = '{getNotEncodedFullUrl("")}modules/menu/tpl/css/themes/';
 
 	$(document.body).on("click", ".x div.col a, .x div.col button", function(ev){
@@ -1770,30 +1548,6 @@ jQuery(function($){
 	$('#add').bind("hide", function(){
 	});
 
-	$('#download').bind("show", function(ev){
-	// ignore bubbled show events
-		if(this !== ev.target){
-			return;
-		}
-
-	//index.php?act=getAutoinstallAdminMenuPackageList
-		$('#add').nextAll().hide();
-
-		drawDownloadableList('download');
-	});
-	$('#download').bind("after-show", function(ev){
-		scrollToRight();
-	});
-	$('#download').bind("hide", function(ev){
-	// ignore bubbled show events
-		if(this !== ev.target){
-			return;
-		}
-
-		$('#download ._pagination').html("");
-	});
-
-
 	$('#add_menu').bind("show", function(ev){
 		// ignore bubbled show events
 		if(this !== ev.target){
@@ -1809,19 +1563,7 @@ jQuery(function($){
 		$title.text($._xeAdminVar.sSelectedModuleTitle);
 		var htItemType = $._xeAdminVar.htAllModules[$._xeAdminVar.sSelectedModuleName];
 
-		var $link = $(this).find("._link");
-
 		$description.text(htItemType.description || "");
-		if(htItemType.package_srl && htItemType.url){
-			$link.show();
-			$link.attr('target', '_blank');
-			$link.attr('href', htItemType.url);
-		}else{
-			$link.hide();
-			$link.removeAttr('target');
-			$link.removeAttr('href');
-		}
-
 		if($._xeAdminVar.sSelectedModuleName === "_SHORTCUT"){
 			$(this).removeClass("page");
 			$(this).addClass("url");
@@ -2432,144 +2174,6 @@ jQuery(function($){
 	}
 	<!--@end-->
 
-	$('#downloadLayout').bind("show", function(ev){
-	// ignore bubbled show events
-		if(this !== ev.target){
-			return;
-		}
-
-		//index.php?act=getAutoinstallAdminMenuPackageList
-		$('#layout').nextAll().hide();
-
-		var sMode = $._xeAdminVar.htPrevSetting.bMobilePreviewTabOpen?"M":"P";
-		drawDownloadableList('downloadLayout', { 'type': sMode});
-	});
-	$('#downloadLayout').bind("after-show", function(ev){
-		scrollToRight();
-	});
-
-	$('#downloadSkin').bind("show", function(ev){
-	// ignore bubbled show events
-		if(this !== ev.target){
-			return;
-		}
-
-	//index.php?act=getAutoinstallAdminMenuPackageList
-		$('#skin').nextAll().hide();
-		var sMode = $._xeAdminVar.htPrevSetting.bMobilePreviewTabOpen?"M":"P";
-
-		<!--@if($act == 'dispMenuAdminSiteMap')-->
-		drawDownloadableList('downloadSkin', {
-			parent_program : htNodeInfo[$._xeAdminVar.sSelectedMenuSrl].sModuleType,
-			type: sMode
-		});
-		<!--@end-->
-
-		<!--@if($act == 'dispMenuAdminSiteDesign')-->
-		drawDownloadableList('downloadSkin', {
-			parent_program : $._xeAdminVar.htSelectedMenuDesign.sModuleName,
-			type: sMode
-		});
-		<!--@end-->
-	});
-	$('#downloadSkin').bind("after-show", function(ev){
-		scrollToRight();
-	});
-
-	//function drawMenuModuleList(nPage){
-	// sItemType : download, downloadLayout, downloadSkin
-	// htParams : download/{page}, downloadLayout/{page, type}, downloadSkin/{page, type, parent_program}
-	// https://code.google.com/p/xe-core/wiki/DownloadAvailableList_GET_API
-	function drawDownloadableList(sItemType, htParams){
-		var htDownloadableListAction = {
-			download:'menu.getAutoinstallAdminMenuPackageList',
-			downloadLayout:'menu.getAutoinstallAdminLayoutPackageList',
-			downloadSkin:'menu.getAutoinstallAdminSkinPackageList'
-		};
-
-		htParams = htParams || {};
-		htParams.page = htParams.page || 1;
-		htParams.search_keyword = htParams.search_keyword || "";
-
-		var $Panel = $('#'+sItemType);
-		var sAction = htDownloadableListAction[sItemType];
-
-		//var params = {};
-		//params['page'] = nPage;
-		//"menu.getAutoinstallAdminMenuPackageList"
-		$.exec_json(sAction, htParams, function(htData){
-			//console.log(htData);
-			//var sResult = "";
-			$Panel.find('.list').html("");
-
-			var item;
-			var $node, sIsInstalled, sIsUpToDate;
-			if(htData.item_list){
-				for(var i=0, nLen=htData.item_list.length; i<nLen; i++){
-					item = htData.item_list[i];
-
-					if(item.current_version){
-						sIsInstalled = "installed";
-
-						if(item.need_update === "N"){
-							sIsUpToDate = "up_to_date";
-						}else{
-							sIsUpToDate = "";
-						}
-					}else{
-						sIsInstalled = "";
-					}
-
-					var sScreenshot = item.item_screenshot_url.replace(/^http:\/\//, "");
-					$node = $.tmpl( "downloadableItem", {
-						MenuType: item.title,
-						MenuTypeDesc: item.package_description,
-						ScreenShotURL: sScreenshot,
-						Score: item.package_star,
-						TotalVotes: item.package_voted,
-						LastUpdatedWithTime: formatUpdatedDateWithTime(item.item_regdate),
-						LastUpdated: formatUpdatedDate(item.item_regdate),
-						TotalDownloads: item.package_downloaded,
-						URL: item.url,
-						IsUpToDate: sIsUpToDate,
-						IsInstalled: sIsInstalled
-					} ).data('sItemType', sItemType).data('sPackageSrl', item.package_srl);
-
-					$Panel.find('.list').append($node);
-				}
-
-				var htInfo = htData.page_navigation;
-
-				var fnCallback = function(htNewParams){
-					htParams.page = htNewParams.page || htParams.page;
-					htParams.search_keyword = typeof htNewParams.search_keyword === "string" ? htNewParams.search_keyword : htParams.search_keyword;
-
-					return drawDownloadableList(sItemType, htParams);
-				}
-
-				//createPagination($('#download ._pagination'), drawMenuModuleList, htInfo.cur_page, htInfo.total_page, "&laquo; 첫 페이지", "끝 페이지 &raquo;", "페이지 직접 이동")
-				createPagination({
-					$PlaceHolder : $Panel.find('._pagination'),
-					fnCallback : fnCallback,
-					nCurPage : htInfo.cur_page,
-					nTotalPages : htInfo.total_page,
-					sToFirstText : "&laquo;",
-					sToLastText : "&raquo;",
-					sToText : xe.lang.cmd_go_to_page,
-					sSearchKeyword : htParams.search_keyword
-				});
-			}else{
-				$node = $.tmpl( "noDownloadableItem", {
-				} );
-
-				$Panel.find('.list').append($node);
-			}
-
-			scrollToTop($Panel.find('.cnt'));
-			scrollToRight();
-		});
-	}
-
 	$( "#tmpl_layoutItem" ).template( "design_layoutItem" );
 	$( "#tmpl_skinItem" ).template( "deisgn_skinItem" );
 
@@ -3115,7 +2719,6 @@ jQuery(function($){
 	});
 	$("#tmpl_layout_list_item_no_layout").template( "layoutListItem_nolayout" );
 	$("#tmpl_layout_list_item").template( "layoutListItem" );
-	$("#tmpl_layout_list_item_add_new").template( "layoutListItemAddNew" );
 	$('#layout').on('show', function(ev){
 		if(this !== ev.target){
 			return;
@@ -3205,9 +2808,6 @@ jQuery(function($){
 				Selected : sSelected
 			}).data('LayoutSrl', "0"));
 
-			$elItem = $.tmpl("layoutListItemAddNew", {
-			});
-			$List.append($elItem);
 
 			$._xeAdminVar.htLayoutName = {};
 			for(var i=0, nLen=htData.layout_list.length; i<nLen; i++){
@@ -3534,7 +3134,6 @@ jQuery(function($){
 
 	$("#tmpl_skin_list_item").template( "skinListItem");
 	$("#tmpl_skin_list_item_no_skin").template( "skinListItem_noskin");
-	$("#tmpl_skin_list_item_add_new").template( "skinListItemAddNew" );
 	$('#skin').on('show', function(ev){
 		if(this !== ev.target){
 			return;
@@ -3637,9 +3236,6 @@ jQuery(function($){
 			*/
 			//console.log(htDesign.sSkinName);
 
-			$elItem = $.tmpl("skinListItemAddNew", {
-			});
-			$List.append($elItem);
 
 			var sTmpName;
 			for(var sName in htData.skin_info_list){
@@ -3782,146 +3378,6 @@ jQuery(function($){
 		closeQuickHelp(true);
 	});
 
-	$('#download,#downloadLayout,#downloadSkin').on('click', '._install_this', function(ev){
-		var $item = $(this).closest('.item');
-
-		var sPackageSrl = $item.data('sPackageSrl');
-		var sPackageType = $item.data('sItemType');
-
-		installPackage(sPackageSrl, sPackageType, $item);
-	});
-	// sPackageType = menu/layout/skin
-	function installPackage(sPackageSrl, sPackageType, $item){
-
-		//act=getAutoinstallAdminIsAuthed
-		var params = {};
-		params.package_srl = sPackageSrl;
-		$.exec_json("admin.getAutoinstallAdminIsAuthed", params, function(htData){
-			// FTP 비밀번호 뿐만 아니라 정보가 전혀 없을 경우?
-			switch(htData.is_authed){
-				case -1:
-				$.xeMsgBox.confirmDialog(
-					{
-						sTitle : xe.lang.need_to_ftp_setup,
-						sText : xe.lang.go_to_ftp_setup,
-						bSmall : true,
-						fnOnOK : function(){
-							var sSuccessReturnURL = current_url.setQuery('continue_install_package', sPackageSrl).setQuery('continue_install_package_type', sPackageType);
-							window.location.href="./?module=admin&act=dispAdminConfigFtp&success_return_url="+Base64.encode(sSuccessReturnURL);
-						}
-					}
-				);
-				return;
-				break;
-
-				case 0:
-				$.xeMsgBox.confirmDialog(
-					{
-						sTitle : xe.lang.need_ftp_password,
-						sText :  xe.lang.password + ': <input type="password"/>',
-						bSmall : true,
-						fnOnOK : function(){
-							var sPw = $.xeMsgBox.$msgBox.find('input[type="password"]').val();
-							setTimeout(function(){
-								getInstallInfo(sPackageSrl, sPackageType, sPw, $item);
-							}, 0);
-						},
-						fnOnCancel: function(){
-							if($._xeAdminVar.isFromFtpSetup){
-								window.location = current_url.setQuery('continue_install_package', '').setQuery('continue_install_package_type', '');
-								$._xeAdminVar.isFromFtpSetup = false;
-							}
-						}
-					}
-				);
-				return;
-				break;
-
-				default:
-				break;
-			}
-
-			getInstallInfo(sPackageSrl, sPackageType, ".", $item);
-		});
-	}
-
-	function getInstallInfo(sPackageSrl, sPackageType, sPw, $item){
-		// get install info
-		$.exec_json('autoinstall.getAutoInstallAdminInstallInfo', {
-			package_srl: sPackageSrl
-		}, function(htData){
-			if(!htData) return;
-
-			// check contain core.
-			if(htData.package.contain_core){
-				$.xeMsgBox.confirmDialog(
-					{
-						sTitle : xe.lang.need_core_update,
-						sText : xe.lang.need_core_update_continue,
-						bSmall : true,
-						fnOnOK : function(){
-							setTimeout(function(){
-								doInstallPackage(htData.package.package_srl, sPackageType, sPw, $item);
-							}, 0);
-						}
-					}
-				);
-
-				return;
-			}
-
-			// pass all packagesrls
-			doInstallPackage(htData.package.package_srl, sPackageType, sPw, $item);
-		});
-		return;
-	}
-
-	function doInstallPackage(sPackageSrl, sPackageType, sPw, $item){
-		var htFunc = {
-			download: fillInInstalledMenuList,
-			downloadLayout: fillInInstalledLayoutList,
-			downloadSkin: fillInInstalledSkinList
-		};
-
-		//showFoggy();
-		$.xeFoggy.show(true);
-
-		$.exec_json("admin.procAutoinstallAdminPackageinstall", {
-			package_srl : sPackageSrl,
-			ftp_password : sPw
-		}, function(htData){
-			//hideFoggy();
-			$.xeFoggy.hide();
-
-			if($item){
-				$item.addClass('installed');
-				$item.addClass('up_to_date');
-				htFunc[sPackageType]();
-			}
-
-			$.xeMsgBox.alertDialog({
-				sText: xe.lang.installation_completed,
-				bNobody : true,
-				bSmall: true,
-				fnOnShow: function(){
-					if($._xeAdminVar.isFromFtpSetup){
-						setTimeout(function(){ window.location = current_url.setQuery('continue_install_package', '').setQuery('continue_install_package_type', ''); }, 500);
-						$._xeAdminVar.isFromFtpSetup = false;
-					}else{
-						setTimeout(function(){ $.xeMsgBox.$msgBox.find("._ok").trigger('click') }, 500);
-					}
-				}
-			});
-		}, function(htData){
-			$.xeMsgBox.htOptions.fnOnHide = function(){
-				if($._xeAdminVar.isFromFtpSetup){
-					window.location = current_url.setQuery('continue_install_package', '').setQuery('continue_install_package_type', '');
-					$._xeAdminVar.isFromFtpSetup = false;
-				}
-			}
-			$.xeFoggy.hide();
-		});
-	}
 	top.fullSetupDone = function(htData){
 		jQuery('#properties').show();
 		jQuery._xeAdminVar.oSetupWin.close();
@@ -4015,49 +3471,8 @@ jQuery(function($){
 		}).resize();
 	<!--@end-->
 
-	var sPackageSrl = getParameterByName('continue_install_package');
-	var sPackageType = getParameterByName('continue_install_package_type');
-	if(sPackageSrl && sPackageType)
-	{
-		$._xeAdminVar.isFromFtpSetup = true;
-		installPackage(sPackageSrl, sPackageType, null);
-	}
-
 });
 
-function getParameterByName(name){
-	name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-	var regexS = "[\\?&]" + name + "=([^&#]*)";
-	var regex = new RegExp(regexS);
-	var results = regex.exec(window.location.search);
-	if(results == null)
-	{
-
-		return "";
-	}
-	else
-	{
-		return decodeURIComponent(results[1].replace(/\+/g, " "));
-	}
-}
-
-function formatUpdatedDateWithTime(sDate){
-	//20120106184020
-	//2012-01-06 18:40:20
-	return sDate.replace(/(....)(..)(..)(..)(..)(..)/, function(all, year, mon, day, hour, min, sec){
-		//return year+"-"+mon+"-"+day+" "+hour+":"+min+":"+sec;
-		return year+"-"+mon+"-"+day+" "+hour+":"+min;
-	});
-}
-
-function formatUpdatedDate(sDate){
-	//20120106184020
-	//2012-01-06 18:40:20
-	return sDate.replace(/(....)(..)(..)(..)(..)(..)/, function(all, year, mon, day, hour, min, sec){
-		//return year+"-"+mon+"-"+day+" "+hour+":"+min+":"+sec;
-		return year+"-"+mon+"-"+day;
-	});
-}
 
 top.fullSetupWinLoaded = function(){
 	var oWin = jQuery._xeAdminVar.oSetupWin;

@@ -32,28 +32,8 @@ class moduleAdminView extends module
 		// Obtain a list of modules
 		$oAdminModel = getAdminModel('admin');
 		$oModuleModel = getModel('module');
-		$oAutoinstallModel = getModel('autoinstall');
 
 		$module_list = $oModuleModel->getModuleList();
-		if(is_array($module_list))
-		{
-			foreach($module_list as $key => $val)
-			{
-				$module_list[$key]->delete_url = $oAutoinstallModel->getRemoveUrlByPath($val->path);
-
-				// get easyinstall need update
-				$packageSrl = $oAutoinstallModel->getPackageSrlByPath($val->path);
-				$package = $oAutoinstallModel->getInstalledPackages($packageSrl);
-				$module_list[$key]->need_autoinstall_update = $package[$packageSrl]->need_update;
-
-				// get easyinstall update url
-				if($module_list[$key]->need_autoinstall_update == 'Y')
-				{
-					$module_list[$key]->update_url = $oAutoinstallModel->getUpdateUrlByPackageSrl($packageSrl);
-				}
-			}
-		}
-
 		$output = $oAdminModel->getFavoriteList('0');
 
 		$favoriteList = $output->get('favoriteList');

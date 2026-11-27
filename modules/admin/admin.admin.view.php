@@ -18,12 +18,6 @@ class adminAdminView extends admin
 	 */
 	var $layout_list;
 
-	/**
-	 * easy install check file
-	 * @var array
-	 */
-	var $easyinstallCheckFile = './files/env/easyinstall_last';
-
 	function __construct()
 	{
 		$db_info = Context::getDBInfo();
@@ -85,53 +79,6 @@ class adminAdminView extends admin
 		}
 
 		$this->showSendEnv();
-		$this->checkEasyinstall();
-	}
-
-	/**
-	 * check easy install
-	 * @return void
-	 */
-	function checkEasyinstall()
-	{
-		$lastTime = (int) FileHandler::readFile($this->easyinstallCheckFile);
-		if($lastTime > $_SERVER['REQUEST_TIME'] - 60 * 60 * 24 * 30)
-		{
-			return;
-		}
-
-		$oAutoinstallModel = getModel('autoinstall');
-		$params = array();
-		$params["act"] = "getResourceapiLastupdate";
-		$body = XmlGenerater::generate($params);
-		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
-		$xml_lUpdate = new XeXmlParser();
-		$lUpdateDoc = $xml_lUpdate->parse($buff);
-		$updateDate = $lUpdateDoc->response->updatedate->body;
-
-		if(!$updateDate)
-		{
-			$this->_markingCheckEasyinstall();
-			return;
-		}
-
-		$item = $oAutoinstallModel->getLatestPackage();
-		if(!$item || $item->updatedate < $updateDate)
-		{
-			$oController = getAdminController('autoinstall');
-			$oController->_updateinfo();
-		}
-		$this->_markingCheckEasyinstall();
-	}
-
-	/**
-	 * update easy install file content
-	 * @return void
-	 */
-	function _markingCheckEasyinstall()
-	{
-		$currentTime = $_SERVER['REQUEST_TIME'];
-		FileHandler::writeFile($this->easyinstallCheckFile, $currentTime);
 	}
 
 	/**
@@ -176,6 +123,13 @@ class adminAdminView extends admin
 		$oMenuAdminConroller = getAdminController('menu');
 		foreach((array) $menu->list as $parentKey => $parentMenu)
 		{
+			foreach((array) $parentMenu['list'] as $childKey => $childMenu)
+			{
+				if(isset($childMenu['href']) && strpos($childMenu['href'], 'act=dispAutoinstallAdminIndex') !== false)
+				{
+					unset($parentMenu['list'][$childKey], $menu->list[$parentKey]['list'][$childKey]);
+				}
+			}
 			if(!is_array($parentMenu['list']) || !count($parentMenu['list']))
 			{
 				continue;
@@ -269,7 +223,7 @@ class adminAdminView extends admin
 		$oAdminAdminModel = getAdminModel('admin');
 		Context::set('php2shell_status', $oAdminAdminModel->getPhp2ShellStatus());
 
-		require_once _XE_PATH_ . 'modules/autoinstall/NcenterliteReleaseInstaller.php';
+		require_once _XE_PATH_ . 'modules/admin/NcenterliteReleaseInstaller.php';
 		$version = NcenterliteReleaseInstaller::getAffectedVersion();
 		Context::set('ncenterlite_patch_version', $version);
 		Context::set('ncenterlite_patch_available', $version !== false && NcenterliteReleaseInstaller::canInstall());
@@ -340,40 +294,6 @@ class adminAdminView extends admin
 			}
 		}
 
-		// Get need update from easy install
-		$oAutoinstallAdminModel = getAdminModel('autoinstall');
-		$needUpdateList = $oAutoinstallAdminModel->getNeedUpdateList();
-
-		if(is_array($needUpdateList))
-		{
-			foreach($needUpdateList AS $key => $value)
-			{
-				$helpUrl = 'https://yjsoft.github.io/xe-core/help/index.html#';
-				switch($value->type)
-				{
-					case 'addon':
-						$helpUrl .= 'UMAN_terminology_addon';
-						break;
-					case 'layout':
-					case 'm.layout':
-						$helpUrl .= 'UMAN_terminology_layout';
-						break;
-					case 'module':
-						$helpUrl .= 'UMAN_terminology_module';
-						break;
-					case 'widget':
-						$helpUrl .= 'UMAN_terminology_widget';
-						break;
-					case 'widgetstyle':
-						$helpUrl .= 'UMAN_terminology_widgetstyle';
-						break;
-					default:
-						$helpUrl = '';
-				}
-				$needUpdateList[$key]->helpUrl = $helpUrl;
-			}
-		}
-
 		$site_module_info = Context::get('site_module_info');
 		$oAddonAdminModel = getAdminModel('addon');
 		$counterAddonActivated = $oAddonAdminModel->isActivatedAddon('counter', $site_module_info->site_srl );
@@ -392,11 +312,10 @@ class adminAdminView extends admin
 		Context::set('needUpdate', $isUpdated);
 		Context::set('addTables', $addTables);
 		Context::set('needUpdate', $needUpdate);
-		Context::set('newVersionList', $needUpdateList);
 		Context::set('counterAddonActivated', $counterAddonActivated);
 
 		$oSecurity = new Security();
-		$oSecurity->encodeHTML('module_list..', 'module_list..author..', 'newVersionList..');
+		$oSecurity->encodeHTML('module_list..', 'module_list..author..');
 
 		// gathering enviroment check (disabled)
 		Context::set('isEnviromentGatheringAgreement', FALSE);
@@ -498,7 +417,7 @@ class adminAdminView extends admin
 
 		$ftp_info = Context::getFTPInfo();
 		Context::set('ftp_info', $ftp_info);
-		Context::set('sftp_support', function_exists(ssh2_sftp));
+		Context::set('sftp_support', function_exists('ssh2_sftp'));
 
 		$this->setTemplateFile('config_ftp');
 

@@ -53,8 +53,6 @@ class widgetModel extends widget
 	 */
 	function getDownloadedWidgetList()
 	{
-		$oAutoinstallModel = getModel('autoinstall');
-
 		// 've Downloaded the widget and the widget's list of installed Wanted
 		$searched_list = FileHandler::readDir('./widgets');
 		$searched_count = count($searched_list);
@@ -71,20 +69,6 @@ class widgetModel extends widget
 			if(!$widget_info)
 			{
 				$widget_info = new stdClass();
-			}
-
-			// get easyinstall remove url
-			$packageSrl = $oAutoinstallModel->getPackageSrlByPath($widget_info->path);
-			$widget_info->remove_url = $oAutoinstallModel->getRemoveUrlByPackageSrl($packageSrl);
-
-			// get easyinstall need update
-			$package = $oAutoinstallModel->getInstalledPackages($packageSrl);
-			$widget_info->need_update = $package[$packageSrl]->need_update;
-
-			// get easyinstall update url
-			if ($widget_info->need_update == 'Y')
-			{
-				$widget_info->update_url = $oAutoinstallModel->getUpdateUrlByPackageSrl($packageSrl);
 			}
 
 			$list[] = $widget_info;

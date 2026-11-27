@@ -971,12 +971,6 @@
 		<value xml:lang="vi"><![CDATA[Nếu safe_mode của PHP mở, bạn có thể cài đặt các thành phần bổ xung cho XE một cách tự động qua FTP.]]></value>
 		<value xml:lang="mn"><![CDATA[PHP의 safe_mode가 Onбайх тохиолдолд , FTP мэдээллийг заавал оруулснаар XE идэвжvvлэх болон хэрэглэх боломжтой болно.]]></value>
 	</item>
-	<item name="msg_safe_mode_ftp_needed2">
-		<value xml:lang="ko"><![CDATA[모듈의 쉬운 설치 또는 업데이트가 가능해 집니다.]]></value>
-		<value xml:lang="en"><![CDATA[Easy installation or update of module is enabled.]]></value>
-		<value xml:lang="jp"><![CDATA[モジュールのイージーインストール、または更新が可能になります。]]></value>
-		<value xml:lang="zh-TW"><![CDATA[可用的安裝或更新。]]></value>
-	</item>
 	<item name="msg_safe_mode_ftp_config">
 		<value xml:lang="ko"><![CDATA[이 정보는 <strong>files/config/ftp.config.php</strong> 파일에 저장 됩니다. 설치 후 환경설정 페이지에서도 등록, 변경, 제거 할 수 있습니다.]]></value>
 		<value xml:lang="en"><![CDATA[This information is stored in <strong>files/config/ftp.config.php</strong>. You can add, change or delete this on the Settings page after the installation.]]></value>
