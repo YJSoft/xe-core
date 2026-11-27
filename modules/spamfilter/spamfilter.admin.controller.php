@@ -1,5 +1,6 @@
 <?php
 /* Copyright (C) XEHub <https://www.xehub.io> */
+/* CAPTCHA integration adapted from Rhymix on 2026-11-27. See COPYRIGHT and LICENSE. */
 /**
  * @class  spamfilterAdminController
  * @author XEHub (developers@xpressengine.com)
@@ -7,6 +8,83 @@
  */
 class spamfilterAdminController extends spamfilter
 {
+	function procSpamfilterAdminTestCaptcha()
+	{
+		return $this->configureCaptcha(true);
+	}
+
+	function procSpamfilterAdminSaveCaptcha()
+	{
+		return $this->configureCaptcha(false);
+	}
+
+	private function configureCaptcha($test)
+	{
+		$user = Context::get('logged_info');
+		if (empty($user->is_admin) || $user->is_admin !== 'Y' || Context::getRequestMethod() === 'GET') return new BaseObject(-1, 'msg_not_permitted');
+		$old = SpamfilterCaptcha::config();
+		$provider = Context::get('captcha_provider');
+		if (!in_array($provider, array('none', 'recaptcha', 'turnstile'), true)) return new BaseObject(-1, 'msg_invalid_request');
+		$site_key = Context::get('captcha_site_key');
+		$secret = Context::get('captcha_secret_key');
+		$token = Context::get(SpamfilterCaptcha::field($provider));
+		Context::set('captcha_secret_key', null);
+		Context::set('cf-turnstile-response', null);
+		Context::set('g-recaptcha-response', null);
+		if (!is_string($site_key) || !is_string($secret)) return new BaseObject(-1, 'msg_invalid_request');
+		$site_key = trim($site_key);
+		$secret = trim($secret);
+		if ($secret === '' && isset($old->provider) && $old->provider === $provider) $secret = $old->secret_key;
+		$site = SpamfilterCaptcha::site();
+		$fingerprint = hash('sha256', serialize(array($user->member_srl, $site, $provider, $site_key, $secret)));
+		if ($provider !== 'none')
+		{
+			if ($secret === '' || $site_key === '') return new BaseObject(-1, 'msg_captcha_keys');
+			if ($test)
+			{
+				$output = SpamfilterCaptcha::verify($provider, $secret, $token);
+				if (!$output->toBool()) return $output;
+				$_SESSION['spamfilter_captcha_test'] = array($fingerprint, time());
+				$this->setMessage('msg_captcha_test_ok');
+				return;
+			}
+			if (empty($_SESSION['spamfilter_captcha_test']) || $_SESSION['spamfilter_captcha_test'][0] !== $fingerprint
+				|| $_SESSION['spamfilter_captcha_test'][1] < time() - 900) return new BaseObject(-1, 'msg_captcha_test_first');
+			if (!getModel('module')->getTrigger('moduleObject.proc', 'spamfilter', 'controller', 'triggerCheckCaptcha', 'before'))
+				return new BaseObject(-1, 'msg_captcha_update');
+		}
+		elseif ($test) return new BaseObject(-1, 'msg_captcha_keys');
+
+		$legacy = isset($old->legacy) && !empty($old->provider) && $old->provider !== 'none' ? $old->legacy :
+			SpamfilterCaptcha::legacyRules(getAdminModel('addon')->getInsertedAddons($site));
+		// XE may deliver repeated HTML form values as a |@| separated string.
+		$actions = Context::get('captcha_actions');
+		$devices = Context::get('captcha_devices');
+		$custom = array('actions' => array_values(array_intersect(array_keys(SpamfilterCaptcha::$actions), is_array($actions) ? $actions : explode('|@|', (string)$actions))),
+			'devices' => array_values(array_intersect(array('pc', 'mobile'), is_array($devices) ? $devices : explode('|@|', (string)$devices))),
+			'everyone' => Context::get('captcha_users') === 'everyone', 'every_time' => Context::get('captcha_frequency') !== 'session',
+			'mids' => array(), 'exclude' => false);
+		$inherit = Context::get('captcha_inherit') === 'Y';
+		$rules = $inherit ? $legacy : array();
+		if ($custom['actions'] && $custom['devices']) $rules['custom'] = $custom;
+		if ($provider !== 'none' && !$rules) return new BaseObject(-1, 'msg_captcha_targets');
+
+		$config = (object)array('provider' => $provider, 'site_key' => $site_key, 'secret_key' => $provider === 'none' ? '' : $secret,
+			'legacy' => $legacy, 'custom' => $custom, 'inherit' => $inherit, 'rules' => $rules, 'revision' => uniqid('', true));
+		$db = DB::getInstance();
+		$db->begin();
+		$output = getController('module')->insertModuleConfig('spamfilter_captcha', $config, $site);
+		if (!$output->toBool())
+		{
+			$db->rollback();
+			return $output;
+		}
+		$db->commit();
+		unset($_SESSION['spamfilter_captcha_test']);
+		$this->setMessage('success_updated');
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispSpamfilterAdminConfigCaptcha'));
+	}
+
 	/**
 	 * @brief Initialization
 	 */

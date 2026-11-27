@@ -13,6 +13,9 @@
 		<action name="procSpamfilterAdminDeleteDeniedIP" type="controller" />
 		<action name="procSpamfilterAdminDeleteDeniedWord" type="controller" />
 		<action name="procSpamfilterAdminInsertConfig" type="controller" ruleset="insertConfig" />
+		<action name="dispSpamfilterAdminConfigCaptcha" type="view" menu_name="spamFilter" />
+		<action name="procSpamfilterAdminTestCaptcha" type="controller" method="POST" />
+		<action name="procSpamfilterAdminSaveCaptcha" type="controller" method="POST" />
 	</actions>
 	<menus>
 		<menu name="spamFilter" tyle="super">

@@ -26,6 +26,7 @@
 					<div id="warning">
 						<p>{$lang->about_keep_warning}</p>
 					</div>
+					<div cond="isset($spamfilter_captcha_actions['procMemberLogin'])" data-xe-captcha-action="procMemberLogin"></div>
 					<input type="submit" value="{$lang->cmd_login}" class="submit btn btn-inverse" />
 				</div>
 			</fieldset>

@@ -59,6 +59,7 @@
 			</div>
 		</div>
 		<div class="btnArea" style="border-top:1px solid #ccc;padding-top:10px">
+			<div cond="isset($spamfilter_captcha_actions['procMemberInsert'])" data-xe-captcha-action="procMemberInsert"></div>
 			<input type="submit" value="{$lang->cmd_registration}" class="btn btn-inverse pull-right" />
 			<a href="{getUrl('act','','member_srl','')}" class="btn pull-left">{$lang->cmd_cancel}</a>
 		</div>

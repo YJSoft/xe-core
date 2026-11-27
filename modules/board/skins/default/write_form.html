@@ -69,6 +69,7 @@
 			</span>		
 		</div>
 		<div class="btnArea">
+			<div cond="isset($spamfilter_captcha_actions['procBoardInsertDocument'])" data-xe-captcha-action="procBoardInsertDocument"></div>
 			<input type="submit" value="{$lang->cmd_registration}" class="btn" />
 			<block cond="!$oDocument->isExists() || $oDocument->get('status') == 'TEMP'">
 			<button cond="$is_logged" class="btn" type="button" onclick="doDocumentSave(this);">{$lang->cmd_temp_save}</button>

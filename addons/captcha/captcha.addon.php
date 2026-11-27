@@ -9,6 +9,10 @@ if(!defined("__XE__")) exit();
  * @brief Captcha for a particular action
  * English alphabets and voice verification added
  * */
+// The spam filter takes over only after this site's provider has been verified and saved.
+require_once _XE_PATH_ . 'modules/spamfilter/captcha/Captcha.php';
+if (SpamfilterCaptcha::enabled()) return;
+
 if(!class_exists('AddonCaptcha', false))
 {
 	class AddonCaptcha

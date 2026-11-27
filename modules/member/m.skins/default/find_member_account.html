@@ -18,6 +18,7 @@
 		</li>
 	</ul>
 	<div class="bna">
+		<div cond="isset($spamfilter_captcha_actions['procMemberFindAccount'])" data-xe-captcha-action="procMemberFindAccount"></div>
 		<input type="submit" class="bn dark" value="{$lang->cmd_send_mail}" />
 	</div>
 </form>
@@ -57,6 +58,7 @@
 			</li>
 		</ul>
 		<div class="bna">
+			<div cond="isset($spamfilter_captcha_actions['procMemberFindAccountByQuestion'])" data-xe-captcha-action="procMemberFindAccountByQuestion"></div>
 			<input type="submit" class="bn dark" value="{$lang->cmd_get_temp_password}" />
 		</div>
 	</form>

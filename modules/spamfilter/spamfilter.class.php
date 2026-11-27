@@ -1,10 +1,13 @@
 <?php
 /* Copyright (C) XEHub <https://www.xehub.io> */
+/* CAPTCHA integration adapted from Rhymix on 2026-11-27. See COPYRIGHT and LICENSE. */
 /**
  * @class  spamfilter
  * @author XEHub (developers@xpressengine.com)
  * @brief The parent class of the spamfilter module
  */
+require_once __DIR__ . '/captcha/Captcha.php';
+
 class spamfilter extends ModuleObject
 {
 	/**
@@ -14,6 +17,8 @@ class spamfilter extends ModuleObject
 	{
 		// Register action forward (to use in administrator mode)
 		$oModuleController = getController('module');
+		$output = $oModuleController->insertTrigger('moduleObject.proc', 'spamfilter', 'controller', 'triggerCheckCaptcha', 'before');
+		if(!$output->toBool()) return $output;
 		// 2007.12.7 The triggers which try to perform spam filtering when new posts/comments/trackbacks are registered
 		$oModuleController->insertTrigger('document.insertDocument', 'spamfilter', 'controller', 'triggerInsertDocument', 'before');
 		$oModuleController->insertTrigger('comment.insertComment', 'spamfilter', 'controller', 'triggerInsertComment', 'before');
@@ -35,6 +40,7 @@ class spamfilter extends ModuleObject
 		$oDB = &DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
+		if(!$oModuleModel->getTrigger('moduleObject.proc', 'spamfilter', 'controller', 'triggerCheckCaptcha', 'before')) return true;
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
 		if($oModuleModel->needUpdate($version_update_id))
 		{
@@ -70,6 +76,11 @@ class spamfilter extends ModuleObject
 		$oDB = &DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
+		if(!$oModuleModel->getTrigger('moduleObject.proc', 'spamfilter', 'controller', 'triggerCheckCaptcha', 'before'))
+		{
+			$output = $oModuleController->insertTrigger('moduleObject.proc', 'spamfilter', 'controller', 'triggerCheckCaptcha', 'before');
+			if(!$output->toBool()) return $output;
+		}
 		$version_update_id = implode('.', array(__CLASS__, __XE_VERSION__, 'updated'));
 		if($oModuleModel->needUpdate($version_update_id))
 		{

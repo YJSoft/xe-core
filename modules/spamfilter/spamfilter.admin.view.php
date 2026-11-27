@@ -1,5 +1,6 @@
 <?php
 /* Copyright (C) XEHub <https://www.xehub.io> */
+/* CAPTCHA integration adapted from Rhymix on 2026-11-27. See COPYRIGHT and LICENSE. */
 /**
  * @class  spamfilterAdminView
  * @author XEHub (developers@xpressengine.com)
@@ -7,6 +8,21 @@
  */
 class spamfilterAdminView extends spamfilter 
 {
+	function dispSpamfilterAdminConfigCaptcha()
+	{
+		$config = SpamfilterCaptcha::config();
+		$addons = getAdminModel('addon')->getInsertedAddons(SpamfilterCaptcha::site());
+		$legacy = isset($config->legacy) && $config->provider !== 'none' ? $config->legacy : SpamfilterCaptcha::legacyRules($addons);
+		Context::set('captcha_legacy', $legacy, false);
+		Context::set('captcha_inherit', isset($config->inherit) ? $config->inherit : true, false);
+		Context::set('captcha_provider', isset($config->provider) ? $config->provider : 'none', false);
+		Context::set('captcha_site_key', isset($config->site_key) ? $config->site_key : '', false);
+		Context::set('captcha_groups', array_keys(SpamfilterCaptcha::$actions), false);
+		Context::set('captcha_custom', isset($config->custom) ? $config->custom : array('actions' => $legacy ? array() : array('signup', 'document', 'comment'),
+			'devices' => array('pc', 'mobile'), 'everyone' => false, 'every_time' => true), false);
+		$this->setTemplateFile('config_captcha');
+	}
+
 	/**
 	 * @brief Initialization
 	 */

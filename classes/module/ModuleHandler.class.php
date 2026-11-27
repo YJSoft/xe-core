@@ -948,6 +948,7 @@ class ModuleHandler extends Handler
 	public static function _setInputValueToSession()
 	{
 		$requestVars = Context::getRequestVars();
+		unset($requestVars->{'cf-turnstile-response'}, $requestVars->{'g-recaptcha-response'}, $requestVars->captcha_secret_key);
 		unset($requestVars->act, $requestVars->mid, $requestVars->vid, $requestVars->success_return_url, $requestVars->error_return_url);
 		foreach($requestVars AS $key => $value)
 		{

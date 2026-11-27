@@ -1,5 +1,6 @@
 <?php
 /* Copyright (C) XEHub <https://www.xehub.io> */
+/* CAPTCHA integration adapted from Rhymix on 2026-11-27. See COPYRIGHT and LICENSE. */
 /**
  * @class  spamfilterController
  * @author XEHub (developers@xpressengine.com)
@@ -7,6 +8,44 @@
  */
 class spamfilterController extends spamfilter
 {
+	/**
+	 * CAPTCHA trigger adapted from Rhymix on 2026-11-27; see COPYRIGHT and LICENSE.
+	 * Verify before executing the action, including JSON and legacy XML requests.
+	 */
+	function triggerCheckCaptcha(&$module)
+	{
+		$config = SpamfilterCaptcha::config();
+		if (empty($config->provider) || $config->provider === 'none') return;
+		$user = Context::get('logged_info');
+		$targets = SpamfilterCaptcha::targets($config->rules, Mobile::isFromMobilePhone() ? 'mobile' : 'pc', Context::get('mid'), $user);
+		$scope = SpamfilterCaptcha::site() . ':' . $config->revision . ':' . (isset($user->member_srl) ? $user->member_srl : 0);
+		foreach ($targets as $act => $policy)
+		{
+			if ($policy !== 'every_time' && !empty($_SESSION['spamfilter_captcha'][$scope][$policy])) unset($targets[$act]);
+		}
+		$act = strtolower($module->act);
+		if (strpos($act, 'proc') === 0)
+		{
+			$targets = array_change_key_case($targets, CASE_LOWER);
+			if (!isset($targets[$act])) return;
+			$field = SpamfilterCaptcha::field($config->provider);
+			$token = Context::get($field);
+			Context::set($field, null);
+			Context::loadLang(_XE_PATH_ . 'modules/spamfilter/lang');
+			$output = SpamfilterCaptcha::verify($config->provider, $config->secret_key, $token);
+			if (!$output->toBool()) return $output;
+			if ($targets[$act] !== 'every_time') $_SESSION['spamfilter_captcha'][$scope][$targets[$act]] = true;
+		}
+		elseif ($targets && Context::getResponseMethod() === 'HTML')
+		{
+			Context::loadLang(_XE_PATH_ . 'modules/spamfilter/lang');
+			Context::set('spamfilter_captcha_actions', $targets, false);
+			Context::loadFile(array('./modules/spamfilter/tpl/js/captcha.js', 'body'));
+			Context::addHtmlFooter('<div hidden id="xe-captcha-config" data-failed="' . htmlspecialchars(Context::getLang('msg_captcha_connection'), ENT_QUOTES, 'UTF-8') . '" data-provider="' . htmlspecialchars($config->provider, ENT_QUOTES, 'UTF-8')
+				. '" data-sitekey="' . htmlspecialchars($config->site_key, ENT_QUOTES, 'UTF-8') . '" data-actions="' . implode(',', array_keys($targets)) . '"></div>');
+		}
+	}
+
 	/**
 	 * @brief Initialization
 	 */

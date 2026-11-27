@@ -20,6 +20,7 @@
 		</div>
 		<div class="bna">
 			<div class="fl"><input name="keep_signed" type="checkbox" value="Y" id="autoLogin" /> <label for="autoLogin">{$lang->keep_signed}</label></div>
+			<div cond="isset($spamfilter_captcha_actions['procMemberLogin'])" data-xe-captcha-action="procMemberLogin"></div>
 			<div class="fr"><button type="submit" class="bn dark">{$lang->cmd_login}</button></div>
 		</div>
 		<ul class="hp">

@@ -33,6 +33,7 @@
 			<label cond="$module_info->secret=='Y'" for="is_secret">{$lang->secret}</label>
 		</div>
 		<div style="float:right">
+			<div cond="isset($spamfilter_captcha_actions['procBoardInsertComment'])" data-xe-captcha-action="procBoardInsertComment"></div>
 			<button type="submit" class="btn_insert"><i class="xi-message"></i> {$lang->cmd_comment_registration}</button>
 		</div>
 	</form>

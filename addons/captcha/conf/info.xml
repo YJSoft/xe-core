@@ -9,9 +9,11 @@
 	<title xml:lang="zh-TW">圖形驗證</title>
 	<description xml:lang="ko">
 		프로그램 글 등록기를 막기 위해 게시판/ issueTracker에서 글/ 댓글을 입력하려 할 때 알파벳을 입력해야 글/댓글이 입력되는 애드온 입니다.
+		새 설치에서는 관리자 스팸필터의 캡차 탭에서 Turnstile 또는 reCAPTCHA를 설정할 수 있습니다.
 	</description>
 	<description xml:lang="en">
 		This addon helps to prevent spam messages to be posted by requesting non-logged-in users to type characters displayed in the image before submitting comments or posts.
+		For new installations, configure Turnstile or reCAPTCHA in the CAPTCHA tab of the Spam Filter settings.
 	</description>
 	<description xml:lang="vi">
 		Addon này tạo ra một hình ảnh xác nhận khi đăng kí, gửi bài, hay viết bình luận nếu thành viên không đăng nhập.
