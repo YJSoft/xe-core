@@ -390,19 +390,19 @@ class memberController extends member
 
 		// insert ProfileImage, ImageName, ImageMark
 		$profile_image = Context::get('profile_image');
-		if(is_uploaded_file($profile_image['tmp_name']))
+		if($this->isUploadedMemberImage($profile_image))
 		{
 			$this->insertProfileImage($args->member_srl, $profile_image['tmp_name']);
 		}
 
 		$image_mark = Context::get('image_mark');
-		if(is_uploaded_file($image_mark['tmp_name']))
+		if($this->isUploadedMemberImage($image_mark))
 		{
 			$this->insertImageMark($args->member_srl, $image_mark['tmp_name']);
 		}
 
 		$image_name = Context::get('image_name');
-		if(is_uploaded_file($image_name['tmp_name']))
+		if($this->isUploadedMemberImage($image_name))
 		{
 			$this->insertImageName($args->member_srl, $image_name['tmp_name']);
 		}
@@ -608,19 +608,19 @@ class memberController extends member
 		if(!$output->toBool()) return $output;
 
 		$profile_image = Context::get('profile_image');
-		if(is_uploaded_file($profile_image['tmp_name']))
+		if($this->isUploadedMemberImage($profile_image))
 		{
 			$this->insertProfileImage($args->member_srl, $profile_image['tmp_name']);
 		}
 
 		$image_mark = Context::get('image_mark');
-		if(is_uploaded_file($image_mark['tmp_name']))
+		if($this->isUploadedMemberImage($image_mark))
 		{
 			$this->insertImageMark($args->member_srl, $image_mark['tmp_name']);
 		}
 
 		$image_name = Context::get('image_name');
-		if(is_uploaded_file($image_name['tmp_name']))
+		if($this->isUploadedMemberImage($image_name))
 		{
 			$this->insertImageName($args->member_srl, $image_name['tmp_name']);
 		}
@@ -734,7 +734,7 @@ class memberController extends member
 	{
 		// Check if the file is successfully uploaded
 		$file = Context::get('profile_image');
-		if(!is_uploaded_file($file['tmp_name'])) return $this->stop('msg_not_uploaded_profile_image');
+		if(!$this->isUploadedMemberImage($file)) return $this->stop('msg_not_uploaded_profile_image');
 		// Ignore if member_srl is invalid or doesn't exist.
 		$member_srl = Context::get('member_srl');
 		if(!$member_srl) return $this->stop('msg_not_uploaded_profile_image');
@@ -843,7 +843,7 @@ class memberController extends member
 	{
 		// Check if the file is successfully uploaded
 		$file = Context::get('image_name');
-		if(!is_uploaded_file($file['tmp_name'])) return $this->stop('msg_not_uploaded_image_name');
+		if(!$this->isUploadedMemberImage($file)) return $this->stop('msg_not_uploaded_image_name');
 		// Ignore if member_srl is invalid or doesn't exist.
 		$member_srl = Context::get('member_srl');
 		if(!$member_srl) return $this->stop('msg_not_uploaded_image_name');
@@ -989,7 +989,7 @@ class memberController extends member
 	{
 		// Check if the file is successfully uploaded
 		$file = Context::get('image_mark');
-		if(!is_uploaded_file($file['tmp_name'])) return $this->stop('msg_not_uploaded_image_mark');
+		if(!$this->isUploadedMemberImage($file)) return $this->stop('msg_not_uploaded_image_mark');
 		// Ignore if member_srl is invalid or doesn't exist.
 		$member_srl = Context::get('member_srl');
 		if(!$member_srl) return $this->stop('msg_not_uploaded_image_mark');
@@ -1001,7 +1001,7 @@ class memberController extends member
 		$config = $oMemberModel->getMemberConfig();
 		if($logged_info->is_admin != 'Y' && $config->image_mark != 'Y') return $this->stop('msg_not_uploaded_image_mark');
 
-		$this->insertImageMark($member_srl, $file['tmp_name']);
+		$output = $this->insertImageMark($member_srl, $file['tmp_name']);
 		if(!$output->toBool()) return $output;
 
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyInfo');
