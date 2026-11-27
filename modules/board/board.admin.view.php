@@ -86,10 +86,10 @@ class boardAdminView extends board {
 		}
 
 		$output = executeQueryArray('board.getBoardList', $args);
-		ModuleModel::syncModuleToSite($output->data);
+		$oModuleModel = getModel('module');
+		$oModuleModel->syncModuleToSite($output->data);
 
 		// get the skins path
-		$oModuleModel = getModel('module');
 		$skin_list = $oModuleModel->getSkins($this->module_path);
 		Context::set('skin_list',$skin_list);
 

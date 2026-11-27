@@ -48,10 +48,11 @@ class moduleAdminModel extends module
 	{
 		$args->list_count = 20;
 		$args->page_count = 10;
+		if(!isset($args->site_srl)) $args->site_srl = 0;
 		$output = executeQueryArray('module.getModuleMidList', $args);
 		if(!$output->toBool()) return $output;
 
-		ModuleModel::syncModuleToSite($output->data);
+		getModel('module')->syncModuleToSite($output->data);
 
 		return $output;
 	}

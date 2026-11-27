@@ -31,7 +31,7 @@ class pageAdminView extends page
 			}
 			else
 			{
-				ModuleModel::syncModuleToSite($module_info);
+				$oModuleModel->syncModuleToSite($module_info);
 				$this->module_info = $module_info;
 				Context::set('module_info',$module_info);
 			}
@@ -67,7 +67,7 @@ class pageAdminView extends page
 		$output = executeQuery('page.getPageList', $args);
 		$oModuleModel = getModel('module');
 		$page_list = $oModuleModel->addModuleExtraVars($output->data);
-		moduleModel::syncModuleToSite($page_list);
+		$oModuleModel->syncModuleToSite($page_list);
 
 		$oModuleAdminModel = getAdminModel('module'); /* @var $oModuleAdminModel moduleAdminModel */
 
