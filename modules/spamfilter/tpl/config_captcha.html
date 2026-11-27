@@ -1,54 +1,100 @@
 <config autoescape="on" />
 <include target="./header.html" />
-<section class="section">
-	<include target="./tabs.html" />
-	<form id="xe-captcha-settings" action="./" method="post" class="x_form-horizontal" data-required="{$lang->msg_captcha_required}" data-failed="{$lang->msg_captcha_connection}">
-		<input type="hidden" name="module" value="spamfilter" />
-		<input type="hidden" name="act" value="procSpamfilterAdminSaveCaptcha" />
-		<input type="hidden" name="xe_validator_id" value="modules/spamfilter/tpl/1" />
-		<p><label>{$lang->captcha}
-			<select name="captcha_provider">
+<include target="./tabs.html" />
+<form id="xe-captcha-settings" action="./" method="post" class="x_form-horizontal" data-required="{$lang->msg_captcha_required}" data-failed="{$lang->msg_captcha_connection}">
+	<input type="hidden" name="module" value="spamfilter" />
+	<input type="hidden" name="act" value="procSpamfilterAdminSaveCaptcha" />
+	<input type="hidden" name="xe_validator_id" value="modules/spamfilter/tpl/1" />
+	<div class="x_control-group">
+		<label class="x_control-label" for="captcha_provider">{$lang->captcha_provider}</label>
+		<div class="x_controls">
+			<select id="captcha_provider" name="captcha_provider">
 				<option value="none">{$lang->notuse}</option>
 				<option value="turnstile" selected="selected"|cond="$captcha_provider === 'turnstile'">Cloudflare Turnstile</option>
 				<option value="recaptcha" selected="selected"|cond="$captcha_provider === 'recaptcha'">Google reCAPTCHA v2</option>
-			</select></label></p>
-		<p><label>{$lang->captcha_site_key} <input name="captcha_site_key" value="{$captcha_site_key}" /></label></p>
-		<p><label>{$lang->captcha_secret_key} <input name="captcha_secret_key" type="password" autocomplete="new-password" /></label></p>
-		<p>{$lang->captcha_test_help}</p>
-		<div class="captcha-preview"></div>
-		<button class="x_btn captcha-test" type="button">{$lang->captcha_test}</button>
-		<span role="status" aria-live="polite"></span>
-		<fieldset cond="$captcha_legacy">
-			<legend>{$lang->captcha_legacy}</legend>
-			<label><input type="checkbox" name="captcha_inherit" value="Y" checked="checked"|cond="$captcha_inherit" /> {$lang->captcha_inherit}</label>
-			<ul>
-				<li loop="$captcha_legacy => $name, $rule">
-					<strong>{$name}</strong> · {implode(', ', $rule['devices'])} ·
-					<span loop="$rule['actions'] => $group">{Context::getLang('captcha_' . $group)} </span> ·
-					{Context::getLang($rule['everyone'] ? 'captcha_everyone' : 'captcha_guests')} ·
-					{Context::getLang($rule['every_time'] ? 'captcha_each' : 'captcha_session')}
-					<span cond="$rule['mids']"> · {Context::getLang($rule['exclude'] ? 'captcha_exclude' : 'captcha_include')} {implode(', ', $rule['mids'])}</span>
-				</li>
-			</ul>
-		</fieldset>
-		<fieldset>
-			<legend>{$lang->captcha_targets}</legend>
-			<label class="x_inline" loop="$captcha_groups => $group"><input type="checkbox" name="captcha_actions[]" value="{$group}" checked="checked"|cond="in_array($group, $captcha_custom['actions'])" /> {Context::getLang('captcha_' . $group)}</label>
-			<p>
-				<label class="x_inline"><input type="checkbox" name="captcha_devices[]" value="pc" checked="checked"|cond="in_array('pc', $captcha_custom['devices'])" /> PC</label>
-				<label class="x_inline"><input type="checkbox" name="captcha_devices[]" value="mobile" checked="checked"|cond="in_array('mobile', $captcha_custom['devices'])" /> {$lang->mobile}</label>
-			</p>
-			<select name="captcha_users" aria-label="{$lang->captcha_targets}">
-				<option value="guests">{$lang->captcha_guests}</option>
-				<option value="everyone" selected="selected"|cond="$captcha_custom['everyone']">{$lang->captcha_everyone}</option>
 			</select>
-			<select name="captcha_frequency" aria-label="{$lang->captcha_frequency}">
-				<option value="every_time">{$lang->captcha_each}</option>
-				<option value="session" selected="selected"|cond="!$captcha_custom['every_time']">{$lang->captcha_session}</option>
-			</select>
-		</fieldset>
-		<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
-	</form>
-</section>
+		</div>
+	</div>
+	<div class="captcha-options" hidden="hidden"|cond="$captcha_provider === 'none'">
+		<div class="x_control-group">
+			<label class="x_control-label" for="captcha_site_key">{$lang->captcha_site_key}</label>
+			<div class="x_controls">
+				<input type="text" class="x_input-xlarge" id="captcha_site_key" name="captcha_site_key" value="{$captcha_site_key}" spellcheck="false" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="captcha_secret_key">{$lang->captcha_secret_key}</label>
+			<div class="x_controls">
+				<input type="password" class="x_input-xlarge" id="captcha_secret_key" name="captcha_secret_key" autocomplete="new-password" aria-describedby="captcha_secret_help" />
+				<p class="x_help-block" id="captcha_secret_help">{$lang->captcha_secret_help}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<span class="x_control-label">{$lang->captcha_test}</span>
+			<div class="x_controls">
+				<div class="captcha-preview"></div>
+				<button class="x_btn captcha-test" type="button" aria-describedby="captcha_test_help">{$lang->captcha_test}</button>
+				<span role="status" aria-live="polite"></span>
+				<p class="x_help-block" id="captcha_test_help">{$lang->captcha_test_help}</p>
+			</div>
+		</div>
+		<section class="section" cond="$captcha_legacy">
+			<h1>{$lang->captcha_legacy}</h1>
+			<div class="x_control-group">
+				<label class="x_control-label" for="captcha_inherit">{$lang->captcha_inherit_label}</label>
+				<div class="x_controls">
+					<label><input type="checkbox" id="captcha_inherit" name="captcha_inherit" value="Y" checked="checked"|cond="$captcha_inherit" /> {$lang->captcha_inherit}</label>
+					<ul>
+						<li loop="$captcha_legacy => $name, $rule">
+							<strong>{$name}</strong> · {implode(', ', $rule['devices'])} ·
+							<span loop="$rule['actions'] => $group">{Context::getLang('captcha_' . $group)} </span> ·
+							{Context::getLang($rule['everyone'] ? 'captcha_everyone' : 'captcha_guests')} ·
+							{Context::getLang($rule['every_time'] ? 'captcha_each' : 'captcha_session')}
+							<span cond="$rule['mids']"> · {Context::getLang($rule['exclude'] ? 'captcha_exclude' : 'captcha_include')} {implode(', ', $rule['mids'])}</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section class="section">
+			<h1>{$lang->captcha_targets}</h1>
+			<div class="x_control-group" role="group" aria-labelledby="captcha_actions_label">
+				<span class="x_control-label" id="captcha_actions_label">{$lang->captcha_actions_label}</span>
+				<div class="x_controls">
+					<label class="x_inline" loop="$captcha_groups => $group"><input type="checkbox" name="captcha_actions[]" value="{$group}" checked="checked"|cond="in_array($group, $captcha_custom['actions'])" /> {Context::getLang('captcha_' . $group)}</label>
+				</div>
+			</div>
+			<div class="x_control-group" role="group" aria-labelledby="captcha_devices_label">
+				<span class="x_control-label" id="captcha_devices_label">{$lang->captcha_devices_label}</span>
+				<div class="x_controls">
+					<label class="x_inline"><input type="checkbox" name="captcha_devices[]" value="pc" checked="checked"|cond="in_array('pc', $captcha_custom['devices'])" /> PC</label>
+					<label class="x_inline"><input type="checkbox" name="captcha_devices[]" value="mobile" checked="checked"|cond="in_array('mobile', $captcha_custom['devices'])" /> {$lang->mobile}</label>
+				</div>
+			</div>
+			<div class="x_control-group">
+				<label class="x_control-label" for="captcha_users">{$lang->captcha_users_label}</label>
+				<div class="x_controls">
+					<select name="captcha_users" id="captcha_users">
+						<option value="guests">{$lang->captcha_guests}</option>
+						<option value="everyone" selected="selected"|cond="$captcha_custom['everyone']">{$lang->captcha_everyone}</option>
+					</select>
+				</div>
+			</div>
+			<div class="x_control-group">
+				<label class="x_control-label" for="captcha_frequency">{$lang->captcha_frequency}</label>
+				<div class="x_controls">
+					<select name="captcha_frequency" id="captcha_frequency" aria-describedby="captcha_frequency_help">
+						<option value="every_time">{$lang->captcha_each}</option>
+						<option value="session" selected="selected"|cond="!$captcha_custom['every_time']">{$lang->captcha_session}</option>
+					</select>
+					<p class="x_help-block" id="captcha_frequency_help">{$lang->captcha_frequency_help}</p>
+				</div>
+			</div>
+		</section>
+	</div>
+	<div class="x_clearfix btnArea">
+		<div class="x_pull-right"><button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button></div>
+	</div>
+</form>
 <load target="js/captcha.js" type="body" />
 <include target="./footer.html" />

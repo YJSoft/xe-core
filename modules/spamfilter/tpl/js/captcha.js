@@ -101,6 +101,7 @@
 			widget = null;
 			status.textContent = '';
 			var provider = admin.elements.captcha_provider.value, key = $.trim(admin.elements.captcha_site_key.value);
+			admin.querySelector('.captcha-options').hidden = !providers[provider];
 			preview.innerHTML = '';
 			if (!providers[provider] || !key) return;
 			var position = document.createElement('div');
