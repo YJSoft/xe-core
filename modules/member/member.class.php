@@ -6,6 +6,12 @@
  * high class of the member module
  */
 class member extends ModuleObject {
+	protected function isUploadedMemberImage($file)
+	{
+		return is_array($file) && isset($file['tmp_name']) && is_string($file['tmp_name'])
+			&& strpos($file['tmp_name'], "\0") === false && is_uploaded_file($file['tmp_name']);
+	}
+
 	/** Spammer actions affect the whole site, including content outside one module. */
 	protected function canManageSpammer($member_srl)
 	{
