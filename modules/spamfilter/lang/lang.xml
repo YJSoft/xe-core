@@ -332,13 +332,17 @@ l'article qui comporte le mot ne sera pas affichagé.]]></value>
 		<value xml:lang="ko"><![CDATA[비밀 키]]></value>
 		<value xml:lang="en"><![CDATA[Secret key]]></value>
 	</item>
-	<item name="captcha_test_help">
-		<value xml:lang="ko"><![CDATA[캡차를 풀고 연결 시험을 마친 뒤 설정을 저장하세요. 서버에서 PHP cURL과 HTTPS 인증서 검증을 사용할 수 있어야 합니다.]]></value>
-		<value xml:lang="en"><![CDATA[Complete the CAPTCHA and test the connection before saving. The server needs PHP cURL with HTTPS certificate verification.]]></value>
+	<item name="captcha_config">
+		<value xml:lang="ko"><![CDATA[캡차 설정]]></value>
+		<value xml:lang="en"><![CDATA[CAPTCHA settings]]></value>
+	</item>
+	<item name="msg_captcha_not_configured">
+		<value xml:lang="ko"><![CDATA[캡차 설정에서 사용할 서비스를 선택하고 키를 저장하면 테스트할 수 있습니다.]]></value>
+		<value xml:lang="en"><![CDATA[Select a service and save its keys in CAPTCHA settings to run a test.]]></value>
 	</item>
 	<item name="captcha_test">
-		<value xml:lang="ko"><![CDATA[연결 시험]]></value>
-		<value xml:lang="en"><![CDATA[Test keys]]></value>
+		<value xml:lang="ko"><![CDATA[캡차 테스트]]></value>
+		<value xml:lang="en"><![CDATA[CAPTCHA test]]></value>
 	</item>
 	<item name="captcha_targets">
 		<value xml:lang="ko"><![CDATA[캡차 적용 범위]]></value>
@@ -417,12 +421,8 @@ l'article qui comporte le mot ne sera pas affichagé.]]></value>
 		<value xml:lang="en"><![CDATA[Enter a site key and secret key for this provider.]]></value>
 	</item>
 	<item name="msg_captcha_test_ok">
-		<value xml:lang="ko"><![CDATA[인증에 성공했습니다. 설정을 저장할 수 있습니다.]]></value>
-		<value xml:lang="en"><![CDATA[Verification succeeded. You can now save the settings.]]></value>
-	</item>
-	<item name="msg_captcha_test_first">
-		<value xml:lang="ko"><![CDATA[현재 키로 연결 시험을 완료한 후 저장하세요.]]></value>
-		<value xml:lang="en"><![CDATA[Test the current keys before saving.]]></value>
+		<value xml:lang="ko"><![CDATA[캡차 인증에 성공했습니다.]]></value>
+		<value xml:lang="en"><![CDATA[CAPTCHA verification succeeded.]]></value>
 	</item>
 	<item name="msg_captcha_targets">
 		<value xml:lang="ko"><![CDATA[캡차를 적용할 동작과 기기를 선택하세요.]]></value>

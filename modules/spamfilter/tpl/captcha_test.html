@@ -1,0 +1,23 @@
+<config autoescape="on" />
+<!--# Captcha test adapted for XE on 2026-11-27 from Rhymix. See COPYRIGHT and LICENSE. -->
+<include target="./header.html" />
+<include target="./tabs.html" />
+<!--@if($captcha_provider !== 'none' && $captcha_site_key)-->
+<form action="./" method="post" class="x_form-horizontal" id="xe-captcha-config" data-provider="{$captcha_provider}" data-sitekey="{$captcha_site_key}" data-actions="procSpamfilterAdminTestCaptcha" data-failed="{$lang->msg_captcha_connection}">
+	<input type="hidden" name="module" value="spamfilter" />
+	<input type="hidden" name="act" value="procSpamfilterAdminTestCaptcha" />
+	<input type="hidden" name="xe_validator_id" value="modules/spamfilter/tpl/1" />
+	<input type="hidden" name="error_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispSpamfilterAdminConfigCaptchaTest')}" />
+	<div class="x_control-group">
+		<span class="x_control-label">{$lang->captcha_test}</span>
+		<div class="x_controls" data-xe-captcha-action="procSpamfilterAdminTestCaptcha"></div>
+	</div>
+	<div class="x_clearfix btnArea">
+		<div class="x_pull-right"><button type="submit" class="x_btn x_btn-primary">{$lang->cmd_submit}</button></div>
+	</div>
+</form>
+<load target="js/captcha.js" type="body" />
+<!--@else-->
+<p>{$lang->msg_captcha_not_configured} <a href="{getUrl('', 'module', 'admin', 'act', 'dispSpamfilterAdminConfigCaptcha')}">{$lang->captcha_config}</a></p>
+<!--@end-->
+<include target="./footer.html" />

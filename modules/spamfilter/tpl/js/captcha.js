@@ -33,9 +33,7 @@
 				sitekey: key,
 				'expired-callback': function () { api.reset(id); }
 			});
-			var widget = {api: api, id: id, element: position};
-			widgets.push(widget);
-			return widget;
+			widgets.push({api: api, id: id, element: position});
 		});
 	}
 
@@ -92,37 +90,5 @@
 				}
 			});
 		});
-
-		var admin = document.getElementById('xe-captcha-settings');
-		if (!admin) return;
-		var preview = admin.querySelector('.captcha-preview'), status = admin.querySelector('[role=status]');
-		var widget;
-		function refresh() {
-			widget = null;
-			status.textContent = '';
-			var provider = admin.elements.captcha_provider.value, key = $.trim(admin.elements.captcha_site_key.value);
-			admin.querySelector('.captcha-options').hidden = !providers[provider];
-			preview.innerHTML = '';
-			if (!providers[provider] || !key) return;
-			var position = document.createElement('div');
-			preview.appendChild(position);
-			render(admin, position, provider, key).then(function (loaded) {
-				if (loaded && preview.contains(position)) widget = loaded;
-			}, function () { status.textContent = admin.getAttribute('data-failed'); });
-		}
-		$(admin.elements.captcha_provider).add(admin.elements.captcha_site_key).on('change', refresh);
-		$(admin.elements.captcha_secret_key).on('input', function () { status.textContent = ''; });
-		$(admin).find('.captcha-test').on('click', function () {
-			var token = widget && widget.api.getResponse(widget.id);
-			if (!token) { status.textContent = admin.getAttribute('data-required'); return; }
-			var provider = admin.elements.captcha_provider.value;
-			var data = {captcha_provider: provider, captcha_site_key: admin.elements.captcha_site_key.value,
-				captcha_secret_key: admin.elements.captcha_secret_key.value};
-			data[provider === 'turnstile' ? 'cf-turnstile-response' : 'g-recaptcha-response'] = token;
-			$.exec_json('spamfilter.procSpamfilterAdminTestCaptcha', data, function (result) {
-				status.textContent = result.message;
-			}, function () { status.textContent = admin.getAttribute('data-failed'); });
-		});
-		refresh();
 	});
 })(jQuery);

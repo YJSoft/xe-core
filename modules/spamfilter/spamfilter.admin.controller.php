@@ -10,15 +10,20 @@ class spamfilterAdminController extends spamfilter
 {
 	function procSpamfilterAdminTestCaptcha()
 	{
-		return $this->configureCaptcha(true);
+		$user = Context::get('logged_info');
+		if (empty($user->is_admin) || $user->is_admin !== 'Y' || Context::getRequestMethod() === 'GET') return new BaseObject(-1, 'msg_not_permitted');
+		$config = SpamfilterCaptcha::config();
+		if (empty($config->provider) || $config->provider === 'none') return new BaseObject(-1, 'msg_captcha_not_configured');
+		$field = SpamfilterCaptcha::field($config->provider);
+		$token = Context::get($field);
+		Context::set($field, null);
+		$output = SpamfilterCaptcha::verify($config->provider, $config->secret_key, $token);
+		if (!$output->toBool()) return $output;
+		$this->setMessage('msg_captcha_test_ok');
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispSpamfilterAdminConfigCaptchaTest'));
 	}
 
 	function procSpamfilterAdminSaveCaptcha()
-	{
-		return $this->configureCaptcha(false);
-	}
-
-	private function configureCaptcha($test)
 	{
 		$user = Context::get('logged_info');
 		if (empty($user->is_admin) || $user->is_admin !== 'Y' || Context::getRequestMethod() === 'GET') return new BaseObject(-1, 'msg_not_permitted');
@@ -27,33 +32,18 @@ class spamfilterAdminController extends spamfilter
 		if (!in_array($provider, array('none', 'recaptcha', 'turnstile'), true)) return new BaseObject(-1, 'msg_invalid_request');
 		$site_key = Context::get('captcha_site_key');
 		$secret = Context::get('captcha_secret_key');
-		$token = Context::get(SpamfilterCaptcha::field($provider));
 		Context::set('captcha_secret_key', null);
-		Context::set('cf-turnstile-response', null);
-		Context::set('g-recaptcha-response', null);
 		if (!is_string($site_key) || !is_string($secret)) return new BaseObject(-1, 'msg_invalid_request');
 		$site_key = trim($site_key);
 		$secret = trim($secret);
 		if ($secret === '' && isset($old->provider) && $old->provider === $provider) $secret = $old->secret_key;
 		$site = SpamfilterCaptcha::site();
-		$fingerprint = hash('sha256', serialize(array($user->member_srl, $site, $provider, $site_key, $secret)));
 		if ($provider !== 'none')
 		{
 			if ($secret === '' || $site_key === '') return new BaseObject(-1, 'msg_captcha_keys');
-			if ($test)
-			{
-				$output = SpamfilterCaptcha::verify($provider, $secret, $token);
-				if (!$output->toBool()) return $output;
-				$_SESSION['spamfilter_captcha_test'] = array($fingerprint, time());
-				$this->setMessage('msg_captcha_test_ok');
-				return;
-			}
-			if (empty($_SESSION['spamfilter_captcha_test']) || $_SESSION['spamfilter_captcha_test'][0] !== $fingerprint
-				|| $_SESSION['spamfilter_captcha_test'][1] < time() - 900) return new BaseObject(-1, 'msg_captcha_test_first');
 			if (!getModel('module')->getTrigger('moduleObject.proc', 'spamfilter', 'controller', 'triggerCheckCaptcha', 'before'))
 				return new BaseObject(-1, 'msg_captcha_update');
 		}
-		elseif ($test) return new BaseObject(-1, 'msg_captcha_keys');
 
 		$legacy = isset($old->legacy) && !empty($old->provider) && $old->provider !== 'none' ? $old->legacy :
 			SpamfilterCaptcha::legacyRules(getAdminModel('addon')->getInsertedAddons($site));
@@ -80,7 +70,6 @@ class spamfilterAdminController extends spamfilter
 			return $output;
 		}
 		$db->commit();
-		unset($_SESSION['spamfilter_captcha_test']);
 		$this->setMessage('success_updated');
 		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispSpamfilterAdminConfigCaptcha'));
 	}

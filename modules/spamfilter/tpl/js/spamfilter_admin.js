@@ -17,3 +17,9 @@ function doDeleteDeniedWord(word) {
 	fo_obj.act.value = "procSpamfilterAdminDeleteDeniedWord";
 	fo_obj.submit();
 }
+
+jQuery(function ($) {
+	$('#xe-captcha-settings [name=captcha_provider]').on('change', function () {
+		this.form.querySelector('.captcha-options').hidden = this.value === 'none';
+	});
+});

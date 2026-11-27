@@ -1,7 +1,7 @@
 <config autoescape="on" />
 <include target="./header.html" />
 <include target="./tabs.html" />
-<form id="xe-captcha-settings" action="./" method="post" class="x_form-horizontal" data-required="{$lang->msg_captcha_required}" data-failed="{$lang->msg_captcha_connection}">
+<form id="xe-captcha-settings" action="./" method="post" class="x_form-horizontal">
 	<input type="hidden" name="module" value="spamfilter" />
 	<input type="hidden" name="act" value="procSpamfilterAdminSaveCaptcha" />
 	<input type="hidden" name="xe_validator_id" value="modules/spamfilter/tpl/1" />
@@ -27,15 +27,6 @@
 			<div class="x_controls">
 				<input type="password" class="x_input-xlarge" id="captcha_secret_key" name="captcha_secret_key" autocomplete="new-password" aria-describedby="captcha_secret_help" />
 				<p class="x_help-block" id="captcha_secret_help">{$lang->captcha_secret_help}</p>
-			</div>
-		</div>
-		<div class="x_control-group">
-			<span class="x_control-label">{$lang->captcha_test}</span>
-			<div class="x_controls">
-				<div class="captcha-preview"></div>
-				<button class="x_btn captcha-test" type="button" aria-describedby="captcha_test_help">{$lang->captcha_test}</button>
-				<span role="status" aria-live="polite"></span>
-				<p class="x_help-block" id="captcha_test_help">{$lang->captcha_test_help}</p>
 			</div>
 		</div>
 		<section class="section" cond="$captcha_legacy">
@@ -96,5 +87,4 @@
 		<div class="x_pull-right"><button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button></div>
 	</div>
 </form>
-<load target="js/captcha.js" type="body" />
 <include target="./footer.html" />

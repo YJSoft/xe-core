@@ -23,6 +23,14 @@ class spamfilterAdminView extends spamfilter
 		$this->setTemplateFile('config_captcha');
 	}
 
+	function dispSpamfilterAdminConfigCaptchaTest()
+	{
+		$config = SpamfilterCaptcha::config();
+		Context::set('captcha_provider', isset($config->provider) ? $config->provider : 'none', false);
+		Context::set('captcha_site_key', isset($config->site_key) ? $config->site_key : '', false);
+		$this->setTemplateFile('captcha_test');
+	}
+
 	/**
 	 * @brief Initialization
 	 */
