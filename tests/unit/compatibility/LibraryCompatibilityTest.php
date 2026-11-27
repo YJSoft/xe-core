@@ -16,6 +16,29 @@ class LibraryCompatibilityTest extends CompatibilityTestCase
 		$this->assertSame(-1, $ftp->ftp_file_exists('present.txt'));
 	}
 
+	public function testCoreMailAttachmentsKeepTheirNameAndEncoding()
+	{
+		$path = $this->fixture('report.txt', 'attachment data');
+		$mail = new Mail();
+		$mail->eol = "\r\n";
+		$this->assertTrue($mail->addAttachment($path));
+		$this->assertTrue($mail->addAttachment($path, 'custom.txt', '8bit', 'text/plain'));
+		$mail->procAttachments();
+		$this->assertTrue(strpos($mail->body, 'filename="report.txt"') !== false);
+		$this->assertTrue(strpos($mail->body, base64_encode('attachment data')) !== false);
+		$this->assertTrue(strpos($mail->body, 'Content-Transfer-Encoding: 8bit') !== false);
+		$this->assertTrue(strpos($mail->body, 'filename="custom.txt"' . "\r\n\r\nattachment data") !== false);
+
+		$mail = new Mail();
+		$mail->addAttachment($path, 'legacy.txt');
+		$mail->addAttachment($path, 'custom.csv', 'quoted-printable', 'text/csv');
+		$mail->IsSMTP();
+		$mail->procAttachments();
+		$attachments = $mail->GetAttachments();
+		$this->assertSame('legacy.txt', $attachments[0][2]);
+		$this->assertSame(array('custom.csv', 'quoted-printable', 'text/csv'), array_slice($attachments[1], 2, 3));
+	}
+
 	public function testMailQuotedPrintableFallbackPreservesUnicodeAndLineBreaks()
 	{
 		require_once _XE_PATH_ . 'libs/phpmailer/phpmailer.php';

@@ -77,6 +77,8 @@ class Mail extends PHPMailer
 	 */
 	var $attachments = array();
 
+	private $attachmentOptions = array();
+
 	/**
 	 * Content attachements
 	 * @var array
@@ -212,13 +214,25 @@ class Mail extends PHPMailer
 	/**
 	 * Add file attachment
 	 *
-	 * @param string $filename File name to attach
-	 * @param string $orgfilename Real path of file to attach
-	 * @return void
+	 * @param string $path Path of file to attach
+	 * @param string $name File name shown to the recipient
+	 * @param string $encoding Content transfer encoding
+	 * @param string $type MIME type, inferred for PHP mail when omitted
+	 * @return bool
 	 */
-	function addAttachment($filename, $orgfilename)
+	function addAttachment($path, $name = '', $encoding = 'base64', $type = '')
 	{
-		$this->attachments[$orgfilename] = $filename;
+		if(!is_file(FileHandler::getRealPath($path))) return false;
+		if($name === '') $name = basename($path);
+		$encoding = strtolower($encoding);
+		if(!in_array($encoding, array('base64', '7bit', '8bit', 'binary', 'quoted-printable'), true)
+			|| strpbrk($name . $type, "\r\n") !== false)
+		{
+			return false;
+		}
+		$this->attachments[$name] = $path;
+		$this->attachmentOptions[$name] = array($encoding, $type);
+		return true;
 	}
 
 	/**
@@ -468,19 +482,19 @@ class Mail extends PHPMailer
 				$res[] = $this->body;
 				foreach($this->attachments as $filename => $attachment)
 				{
-					$type = $this->returnMIMEType($filename);
-					$file_handler = new FileHandler();
-					$file_str = $file_handler->readFile($attachment);
-					$chunks = chunk_split(base64_encode($file_str));
+					list($encoding, $type) = $this->getAttachmentOptions($filename);
+					if($type === '') $type = $this->returnMIMEType($filename);
+					$file_str = (string) FileHandler::readFile($attachment);
+					$chunks = $encoding === 'base64' ? chunk_split(base64_encode($file_str)) : $this->EncodeString($file_str, $encoding);
 					$tempBody = sprintf(
 							"--" . $boundary . $this->eol .
 							"Content-Type: %s;" . $this->eol .
 							"\tname=\"%s\"" . $this->eol .
-							"Content-Transfer-Encoding: base64" . $this->eol .
+							"Content-Transfer-Encoding: %s" . $this->eol .
 							"Content-Description: %s" . $this->eol .
 							"Content-Disposition: attachment;" . $this->eol .
 							"\tfilename=\"%s\"" . $this->eol . $this->eol .
-							"%s" . $this->eol . $this->eol, $type, $filename, $filename, $filename, $chunks);
+							"%s" . $this->eol . $this->eol, $type, $filename, $encoding, $filename, $filename, $chunks);
 					$res[] = $tempBody;
 				}
 				$this->body = implode("", $res);
@@ -493,10 +507,17 @@ class Mail extends PHPMailer
 			{
 				foreach($this->attachments as $filename => $attachment)
 				{
-					parent::AddAttachment($attachment);
+					list($encoding, $type) = $this->getAttachmentOptions($filename);
+					parent::AddAttachment($attachment, $filename, $encoding, $type === '' ? 'application/octet-stream' : $type);
 				}
 			}
 		}
+	}
+
+	// Extensions can also populate the public attachment map directly.
+	private function getAttachmentOptions($filename)
+	{
+		return isset($this->attachmentOptions[$filename]) ? $this->attachmentOptions[$filename] : array('base64', '');
 	}
 
 	/**
@@ -639,8 +660,7 @@ class Mail extends PHPMailer
 	 */
 	public static function returnMIMEType($filename)
 	{
-		preg_match("|\.([a-z0-9]{2,4})$|i", $filename, $fileSuffix);
-		switch(strtolower($fileSuffix[1]))
+		switch(strtolower(pathinfo($filename, PATHINFO_EXTENSION)))
 		{
 			case "js" :
 				return "application/x-javascript";
@@ -708,11 +728,7 @@ class Mail extends PHPMailer
 			case "swf" :
 				return "application/x-shockwave-flash";
 			default :
-				if(function_exists("mime_content_type"))
-				{
-					$fileSuffix = mime_content_type($filename);
-				}
-				return "unknown/" . trim($fileSuffix[0], ".");
+				return 'application/octet-stream';
 		}
 	}
 
