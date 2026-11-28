@@ -186,7 +186,8 @@ class PackageRegistry
 				}
 				if($refresh)
 				{
-					$envelope = self::fetch('index-v2.json', 262144);
+					$resource = $fresh ? 'index-v2.json?refresh=' . time() : 'index-v2.json';
+					$envelope = self::fetch($resource, 262144);
 					$index = self::index($envelope);
 					if($index['expires'] <= time() || ($previous && ($index['generation'] < $previous['generation']
 						|| ($index['generation'] === $previous['generation'] && $index !== $previous)))) throw new RuntimeException('pkg_registry_error');
@@ -205,6 +206,7 @@ class PackageRegistry
 		foreach($rows as &$row) $row['online'] = $valid;
 		unset($row);
 		self::$catalogs[$site] = $rows;
+		if($fresh && !$valid) throw new RuntimeException('pkg_registry_error');
 		return $rows;
 	}
 }

@@ -1,5 +1,5 @@
 /* Adapted from Rhymix modules/autoinstall/tpl/css/autoinstall.scss (GPL-2.0-or-later). */
-.x .pkg-toolbar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+.x .pkg-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 16px; }
 .x .pkg-toolbar form { margin: 0; }
 .x .autoinstall_list { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
 .x .autoinstall_list_item { width: calc(50% - 8px); min-width: 0; }

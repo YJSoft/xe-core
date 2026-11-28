@@ -54,6 +54,7 @@ class packageinstallerAdminView extends packageinstaller
 			$rows[] = $package;
 		}
 		Context::set('pkg_rows', $rows);
+		Context::set('pkg_token', $this->packageToken());
 		Context::setBrowserTitle(Context::getLang('pkg_title'));
 		$this->setTemplateFile('index');
 	}

@@ -10,6 +10,25 @@ class packageinstallerAdminController extends packageinstaller
 			|| Context::get('pkg_token') !== $_SESSION['packageinstaller_token']) return new BaseObject(-1, 'msg_invalid_request');
 	}
 
+	function procPackageinstallerAdminRefreshCatalog()
+	{
+		if($error = $this->checkAdminRequest()) return $error;
+		$type = Context::get('pkg_type');
+		$search = Context::get('pkg_search');
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex',
+			'type', is_string($type) && $type !== 'all' ? $type : '', 'search_keyword', is_string($search) ? $search : ''));
+		try
+		{
+			$catalog = PackageRegistry::catalog(_XE_PATH_, true);
+			$this->setMessage(sprintf(Context::getLang('pkg_catalog_refreshed'), count($catalog)));
+		}
+		catch(RuntimeException $e)
+		{
+			$this->setError(-1);
+			$this->setMessage($e->getMessage());
+		}
+	}
+
 	function procPackageinstallerAdminSaveStorage()
 	{
 		if($error = $this->checkAdminRequest()) return $error;

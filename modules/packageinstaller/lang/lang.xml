@@ -8,6 +8,14 @@
 		<value xml:lang="ko"><![CDATA[자료명 또는 제작자]]></value>
 		<value xml:lang="en"><![CDATA[Package name or author]]></value>
 	</item>
+	<item name="pkg_refresh_catalog">
+		<value xml:lang="ko">자료 목록 갱신</value>
+		<value xml:lang="en">Refresh package list</value>
+	</item>
+	<item name="pkg_catalog_refreshed">
+		<value xml:lang="ko">자료 목록을 갱신했습니다. 등록된 자료는 총 %d개입니다.</value>
+		<value xml:lang="en">Package list refreshed. The catalogue contains %d packages.</value>
+	</item>
 	<item name="pkg_snapshot">
 		<value xml:lang="ko"><![CDATA[개발 스냅샷]]></value>
 		<value xml:lang="en"><![CDATA[Development snapshot]]></value>

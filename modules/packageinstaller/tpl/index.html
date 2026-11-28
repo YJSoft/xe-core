@@ -1,6 +1,16 @@
 <config autoescape="on" />
 <include target="header.html" />
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'packageinstaller/refresh'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}"><p>{$XE_VALIDATOR_MESSAGE}</p></div>
 <div class="pkg-toolbar">
+	<form action="./" method="post">
+		<input type="hidden" name="module" value="packageinstaller" />
+		<input type="hidden" name="act" value="procPackageinstallerAdminRefreshCatalog" />
+		<input type="hidden" name="xe_validator_id" value="packageinstaller/refresh" />
+		<input type="hidden" name="pkg_token" value="{$pkg_token}" />
+		<input type="hidden" name="pkg_type" value="{$pkg_type}" />
+		<input type="hidden" name="pkg_search" value="{$pkg_search}" />
+		<button class="x_btn" type="submit">{$lang->pkg_refresh_catalog}</button>
+	</form>
 	<form action="./" method="get" class="x_input-append">
 		<input type="hidden" name="module" value="admin" />
 		<input type="hidden" name="act" value="dispAutoinstallAdminIndex" />
