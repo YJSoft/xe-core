@@ -466,86 +466,54 @@ class menuAdminModel extends menu
 		$columnList = array('modules.mid', 'modules.browser_title', 'sites.index_module_srl');
 		$start_module = $oModuleModel->getSiteInfo(0, $columnList);
 
-		$menuList = array();
 		if($menuSrl)
 		{
-			$isMenuFixed = false;
-			$output = $this->getMenu($menuSrl);
-			$php_file = sprintf(_XE_PATH_ . 'files/cache/menu/%s.php',$output->menu_srl);
-			if(file_exists($php_file)) include($php_file);
-			else $oMenuAdminController->makeXmlFile($menuSrl);
-
-			if(count($menu->list)>0)
-			{
-				foreach($menu->list AS $key=>$value)
-				{
-					$this->_menuInfoSetting($menu->list[$key], $start_module, $isMenuFixed, $menuSrl,$siteSrl);
-				}
-			}
-
-			// menu recreate
-			if($isMenuFixed)
-			{
-				$oMenuAdminController->makeXmlFile($menuSrl);
-			}
-
-			$menuItems->menuSrl = $output->menu_srl;
-			$menuItems->title = $output->title;
-			$menuItems->menuItems = $menu;
-			$menuList[] = $menuItems;
+			$record = $this->getMenu($menuSrl);
+			$menus = $record ? array($record) : array();
 		}
 		else
 		{
-			$menuListFromDB = $this->getMenus($siteSrl);
-			if(is_array($menuListFromDB))
+			$menus = (array)$this->getMenus($siteSrl);
+			$adminMenuName = getClass('admin')->getAdminMenuName();
+		}
+
+		$menuList = array();
+		foreach($menus as $record)
+		{
+			if(!$menuSrl && $record->title == $adminMenuName) continue;
+
+			$phpFile = sprintf(_XE_PATH_ . 'files/cache/menu/%s.php', $record->menu_srl);
+			if(!file_exists($phpFile))
 			{
-				$oAdmin = getClass('admin');
-				foreach($menuListFromDB AS $key=>$value)
-				{
-					if($value->title == $oAdmin->getAdminMenuName()) unset($output[$key]);
-					else
-					{
-						unset($menu);
-						unset($menuItems);
-						$value->php_file = sprintf(_XE_PATH_ . 'files/cache/menu/%s.php',$value->menu_srl);
-						if(!file_exists($value->php_file))
-						{
-							$oMenuAdminController->makeXmlFile($value->menu_srl);
-						}
+				$oMenuAdminController->makeXmlFile($record->menu_srl);
+			}
+			// Older empty-menu caches only contain the XE access guard.
+			$menu = new stdClass();
+			if(!is_readable($phpFile)) return new BaseObject(-1, 'msg_error_occured');
+			include($phpFile);
+			$menu->list = isset($menu->list) ? (array)$menu->list : array();
 
-						include($value->php_file);
+			$isMenuFixed = false;
+			foreach($menu->list as $key => $value)
+			{
+				$this->_menuInfoSetting($menu->list[$key], $start_module, $isMenuFixed, $record->menu_srl, $siteSrl);
+			}
+			if($isMenuFixed)
+			{
+				$oMenuAdminController->makeXmlFile($record->menu_srl);
+			}
 
-						$isMenuFixed = false;
-						if(count($menu->list) > 0)
-						{
-							foreach($menu->list AS $key2=>$value2)
-							{
-								$this->_menuInfoSetting($menu->list[$key2], $start_module, $isMenuFixed, $value->menu_srl,$siteSrl);
-							}
-						}
-
-						// menu recreate
-						if($isMenuFixed)
-						{
-							$oMenuAdminController->makeXmlFile($value->menu_srl);
-						}
-
-						$menuItems = new stdClass();
-						$menuItems->menuSrl = $value->menu_srl;
-						$menuItems->title = $value->title;
-						$menuItems->menuItems = $menu;
-
-						// If include home menu, move first
-						if($value->menu_srl == $this->menuSrlWithinHome)
-						{
-							$menuList[-1] = $menuItems;
-						}
-						else
-						{
-							$menuList[] = $menuItems;
-						}
-					}
-				}
+			$menuItems = new stdClass();
+			$menuItems->menuSrl = $record->menu_srl;
+			$menuItems->title = $record->title;
+			$menuItems->menuItems = $menu;
+			if(!$menuSrl && $record->menu_srl == $this->menuSrlWithinHome)
+			{
+				$menuList[-1] = $menuItems;
+			}
+			else
+			{
+				$menuList[] = $menuItems;
 			}
 		}
 		ksort($menuList);
@@ -661,12 +629,10 @@ class menuAdminModel extends menu
 			$menu['layout_srl'] = $midInfo->layout_srl;
 			$menu['browser_title'] = $midInfo->browser_title;
 		}
-		if(count($menu['list']) > 0)
+		$menu['list'] = isset($menu['list']) ? (array)$menu['list'] : array();
+		foreach($menu['list'] as $key => $value)
 		{
-			foreach($menu['list'] as $key=>$value)
-			{
-				$this->_menuInfoSetting($menu['list'][$key], $start_module, $isMenuFixed, $menuSrl, $siteSrl);
-			}
+			$this->_menuInfoSetting($menu['list'][$key], $start_module, $isMenuFixed, $menuSrl, $siteSrl);
 		}
 	}
 }

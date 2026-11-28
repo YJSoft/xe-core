@@ -18,6 +18,35 @@ class MenuCompatibilityTest extends CompatibilityTestCase
 		), $controller->moves);
 	}
 
+	public function testEmptySitemapAppearsInTheAllMenusAndSingleMenuResponses()
+	{
+		$id = $this->fixtureName;
+		$record = (object)array('menu_srl' => $id, 'title' => 'Empty menu', 'site_srl' => 0);
+		$db = $this->useQueryFixture();
+		$db->responses['menu.getMenus'] = array($record);
+		$db->responses['menu.getMenu'] = $record;
+		$db->responses['menu.getMenuItems'] = null;
+		$this->useModuleFixture('module', new CompatibilitySitemapServices($id));
+		Context::set('site_srl', 0, false);
+		$model = new menuAdminModel();
+		$file = $this->trackGeneratedFile(_XE_PATH_ . 'files/cache/menu/' . $id . '.php');
+		$this->trackGeneratedFile(_XE_PATH_ . 'files/cache/menu/' . $id . '.xml.php');
+		FileHandler::writeFile($file, '<?php if(!defined("__XE__")) exit(); ?>');
+		Context::set('menu_srl', 0, false);
+		$model->getMenuAdminSiteMap();
+		$list = $model->get('menuList');
+		$this->assertCount(1, $list);
+		$this->assertSame($id, $list[0]->menuSrl);
+		$this->assertSame(array(), $list[0]->menuItems->list);
+
+		FileHandler::removeFile($file);
+		Context::set('menu_srl', $id, false);
+		$model->getMenuAdminSiteMap();
+		$this->assertTrue(is_file($file));
+		$this->assertEquals($list, $model->get('menuList'));
+		$this->assertSame(array(), Context::get('included_menu')->list);
+	}
+
 	public function testSitemapRegeneratesMissingMenuCacheAndAcceptsEmptyObjectLists()
 	{
 		$id = $this->fixtureName;
@@ -68,6 +97,7 @@ class CompatibilitySitemapServices
 	}
 	public function getModuleListInSitemap($site_srl) { return array(); }
 	public function getLayoutList() { return array(); }
+	public function getSiteInfo($siteSrl, $columns) { return (object)array('mid' => 'home'); }
 	public function getDefaultMid() { return (object)array('layout_srl' => 0); }
 	public function getGroups() { return array(); }
 }

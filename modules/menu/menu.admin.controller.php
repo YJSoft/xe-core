@@ -1795,7 +1795,7 @@ class menuAdminController extends menu
 		{
 			$xml_buff = "<root />";
 			FileHandler::writeFile($xml_file, $xml_buff);
-			FileHandler::writeFile($php_file, '<?php if(!defined("__XE__")) exit(); ?>');
+			FileHandler::writeFile($php_file, '<?php if(!defined("__XE__")) exit(); $menu = new stdClass(); $menu->list = array(); Context::set("included_menu", $menu); ?>');
 			return $xml_file;
 		}
 		// Change to an array if only a single data is obtained
