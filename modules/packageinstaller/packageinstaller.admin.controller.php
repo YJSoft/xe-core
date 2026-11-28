@@ -41,15 +41,27 @@ class packageinstallerAdminController extends packageinstaller
 		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminPackageDetail', 'pkg_id', $id));
 		try
 		{
-			$lock = PackageStorage::lock(_XE_PATH_, LOCK_SH);
+			$lock = PackageStorage::lock(_XE_PATH_, LOCK_EX);
 			$manager = new PackageManager(_XE_PATH_, $id);
 			$manager->apply(Context::get('pkg_action'));
-			$this->setMessage('pkg_done');
+			if($manager->installedDependencies)
+				$this->setMessage(sprintf(Context::getLang('pkg_dependencies_done'), $manager->installedDependencies));
+			else
+				$this->setMessage($catalog[$id]['type'] === 'module' ? 'pkg_done' : 'pkg_files_done');
 		}
 		catch(RuntimeException $e)
 		{
 			$this->setError(-1);
-			$this->setMessage($e->getMessage());
+			$message = $e->getMessage();
+			if(!empty($manager->failedDependency))
+			{
+				$dep = $manager->failedDependency;
+				$title = isset($catalog[$dep]) ? $catalog[$dep]['title'] : $dep;
+				$message = sprintf(Context::getLang('pkg_dependency_failed'), $title, Context::getLang($message));
+			}
+			if(!empty($manager->installedDependencies))
+				$message = Context::getLang($message) . ' ' . Context::getLang('pkg_dependency_retry');
+			$this->setMessage($message);
 		}
 
 		if(isset($lock)) fclose($lock);

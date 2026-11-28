@@ -9,7 +9,7 @@ class packageinstallerAdminView extends packageinstaller
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$type = Context::get('type');
 		if($type === null) $type = Context::get('pkg_type');
-		$tabs = array_merge(array('all', 'updates'), array_keys(PackageRegistry::$directories));
+		$tabs = array_merge(array('all', 'updates'), array_keys(PackageRegistry::$directories), array_keys(PackageRegistry::$skinParents));
 		Context::set('pkg_tabs', $tabs);
 		Context::set('pkg_type', in_array($type, $tabs, true) ? $type : 'all');
 		$query = Context::get('search_keyword');

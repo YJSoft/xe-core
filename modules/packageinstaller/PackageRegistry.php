@@ -1,8 +1,13 @@
 <?php
-/** Protocol v1. The trusted public key is distributed with the core. */
+/** Catalogue schema v2. The trusted public key is distributed with the core. */
 class PackageRegistry
 {
 	public static $directories = array('module' => 'modules', 'addon' => 'addons', 'widget' => 'widgets', 'layout' => 'layouts');
+	public static $skinParents = array(
+		'module_skin' => array('modules/member/skins', 'modules/communication/skins'),
+		'widget_skin' => array('widgets/content/skins'),
+		'editor_style' => array('modules/editor/styles'),
+	);
 	private static $reserved = array(
 		'module' => ' addon admin adminlogging autoinstall board comment communication counter document editor file importer install integration_search krzip layout member menu message module packageinstaller page point poll rss seo session spamfilter tag trash widget ',
 		'addon' => ' adminlogging autolink captcha captcha_member counter member_communication member_extra_info oembed point_level_icon resize_image ',
@@ -11,6 +16,55 @@ class PackageRegistry
 	);
 	const BASE = 'https://yjsoft.github.io/xe-package-registry/v1/';
 	private static $catalogs = array();
+
+	/** Bind each catalogue ID to one reviewed installation path. */
+	public static function installPath($package)
+	{
+		$type = $package['type'];
+		$id = $package['id'];
+		if(!is_string($type) || !is_string($id) || !preg_match('/^[a-z][a-z0-9_]{0,63}$/D', $id))
+			throw new RuntimeException('pkg_registry_error');
+		if(isset(self::$skinParents[$type]))
+		{
+			if(!isset($package['source_path']) || !is_string($package['source_path'])) throw new RuntimeException('pkg_registry_error');
+			$path = $package['source_path'];
+			$parts = explode('/', $path);
+			if(count($parts) !== 4 || !in_array(implode('/', array_slice($parts, 0, 3)), self::$skinParents[$type], true)
+				|| !preg_match('/^[a-z][a-z0-9_]{0,63}$/D', $parts[3])
+				|| in_array($parts[3], array('default', 'ckeditor_light', 'ckeditor_recommend', 'dreditor', 'xestyle', 'xestyleblack'), true)
+				|| $id !== $parts[1] . ($type === 'editor_style' ? '_style_' : '_skin_') . $parts[3])
+				throw new RuntimeException('pkg_registry_error');
+			return $path;
+		}
+		if(!isset(self::$directories[$type]) || strpos(self::$reserved[$type], ' ' . $id . ' ') !== false)
+			throw new RuntimeException('pkg_registry_error');
+		$path = self::$directories[$type] . '/' . $id;
+		if(isset($package['source_path']) && $package['source_path'] !== $path) throw new RuntimeException('pkg_registry_error');
+		return $path;
+	}
+
+	/** Resolve prerequisites once, with each prerequisite before its dependants. */
+	public static function dependencies($catalog, $id)
+	{
+		$order = $visiting = array();
+		self::visitDependency($catalog, $id, $visiting, $order);
+		unset($order[$id]);
+		return array_keys($order);
+	}
+
+	private static function visitDependency(&$catalog, $id, &$visiting, &$order)
+	{
+		if(!is_string($id) || !isset($catalog[$id]) || isset($visiting[$id])) throw new RuntimeException('pkg_dependency_invalid');
+		if(isset($order[$id])) return;
+		$visiting[$id] = true;
+		if(isset($catalog[$id]['requires']))
+		{
+			if(!is_array($catalog[$id]['requires'])) throw new RuntimeException('pkg_dependency_invalid');
+			foreach($catalog[$id]['requires'] as $dep) self::visitDependency($catalog, $dep, $visiting, $order);
+		}
+		unset($visiting[$id]);
+		$order[$id] = true;
+	}
 
 	private static function fetch($resource, $limit)
 	{
@@ -40,7 +94,7 @@ class PackageRegistry
 		if(!$payload || !$sig || openssl_verify($payload, $sig, $key, 'sha256') !== 1) throw new RuntimeException('pkg_registry_error');
 		$index = json_decode($payload, true);
 		if(!isset($index['schema'], $index['issued'], $index['expires'], $index['generation'], $index['packages'])
-			|| $index['schema'] !== 1 || !is_int($index['generation']) || !is_int($index['issued']) || !is_int($index['expires'])
+			|| $index['schema'] !== 2 || !is_int($index['generation']) || !is_int($index['issued']) || !is_int($index['expires'])
 			|| $index['generation'] < 1 || $index['issued'] > time() + 300 || $index['expires'] <= $index['issued']
 			|| $index['expires'] - $index['issued'] > 31 * 86400 || !is_array($index['packages']) || count($index['packages']) > 256)
 			throw new RuntimeException('pkg_registry_error');
@@ -66,10 +120,8 @@ class PackageRegistry
 				|| $p['id'] !== $id || !preg_match('~\A[A-Za-z0-9_-]+/[A-Za-z0-9_-]+\z~D', $p['repo'])
 				|| !is_string($p['title']) || !is_string($p['author']) || !is_string($p['license'])
 				|| !is_array($p['upgrade_from']) || !is_array($p['releases']) || !$p['releases']) throw new RuntimeException('pkg_registry_error');
-			$type = isset($p['type']) ? $p['type'] : 'module';
-			if(!is_string($type) || !isset(self::$directories[$type]) || strpos(self::$reserved[$type], ' ' . $id . ' ') !== false)
-				throw new RuntimeException('pkg_registry_error');
-			$p['type'] = $type;
+			$p['type'] = isset($p['type']) ? $p['type'] : 'module';
+			self::installPath($p);
 			foreach($p['upgrade_from'] as $tree => $version)
 			{
 				if(!preg_match('/\A[0-9a-f]{64}\z/D', $tree) || !self::isVersion($version)) throw new RuntimeException('pkg_registry_error');
@@ -103,7 +155,7 @@ class PackageRegistry
 	{
 		$site = realpath($site);
 		if(!$fresh && isset(self::$catalogs[$site])) return self::$catalogs[$site];
-		$path = $site . '/files/config/package-registry.json';
+		$path = $site . '/files/config/package-registry-v2.json';
 		$rows = array();
 		foreach(json_decode(file_get_contents(dirname(__FILE__) . '/conf/catalog.json'), true) as $p) $rows[$p['id']] = $p;
 		$valid = false;
@@ -134,7 +186,7 @@ class PackageRegistry
 				}
 				if($refresh)
 				{
-					$envelope = self::fetch('index.json', 262144);
+					$envelope = self::fetch('index-v2.json', 262144);
 					$index = self::index($envelope);
 					if($index['expires'] <= time() || ($previous && ($index['generation'] < $previous['generation']
 						|| ($index['generation'] === $previous['generation'] && $index !== $previous)))) throw new RuntimeException('pkg_registry_error');

@@ -3,12 +3,16 @@
 	<tr><th scope="row">{$lang->pkg_release_version}</th><td><strong>{$pkg['version']}</strong> <span cond="$pkg['snapshot']">({$lang->pkg_snapshot} · <code>{substr($pkg['revision'], 0, 8)}</code>)</span></td></tr>
 	<tr cond="!empty($pkg['latest']) && $pkg['latest'] !== $pkg['version']"><th scope="row">{$lang->pkg_latest}</th><td>{$pkg['latest']}</td></tr>
 	<tr><th scope="row">{$lang->status}</th><td>{Context::getLang('pkg_' . $pkg['local']['status'])} {$pkg['local']['version']}</td></tr>
-	<tr><th scope="row">{$lang->pkg_path}</th><td><code>{$pkg['directory']}/{$pkg['id']}/</code></td></tr>
+	<tr><th scope="row">{$lang->pkg_path}</th><td><code>{$pkg['install_path']}/</code></td></tr>
 	<tr><th scope="row">{$lang->pkg_environment}</th><td>XE ≥ {$pkg['core']} · PHP ≥ {$pkg['php']}</td></tr>
 	<tr><th scope="row">{$lang->pkg_license}</th><td>{$pkg['license']}</td></tr>
 	<tr cond="!empty($pkg['notes'])"><th scope="row">{$lang->pkg_release_notes}</th><td>{$pkg['notes']}</td></tr>
+	<tr cond="$pkg['dependencies']"><th scope="row">{$lang->pkg_requires}</th><td><ul>
+		<li loop="$pkg['dependencies'] => $dep_id, $dep"><a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminPackageDetail', 'pkg_id', $dep_id)}">{$dep['title']}</a> · {Context::getLang('pkg_dep_' . $dep['step'])}</li>
+	</ul></td></tr>
 </tbody></table>
 <div class="buttons">
+	<p cond="$pkg['download_url']"><a href="{$pkg['download_url']}">{$lang->pkg_download_zip}</a></p>
 	<p cond="!empty($pkg['withdrawn'])" class="message error">{$lang->pkg_withdrawn}</p>
 	<p cond="!$pkg['online']" class="message error">{$lang->pkg_registry_error}</p>
 	<div cond="$pkg['local']['storage_issue']" class="message error">

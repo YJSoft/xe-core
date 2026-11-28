@@ -12,6 +12,8 @@ class PackageManager
 	private $work;
 	private $target;
 	private $package;
+	public $failedDependency;
+	public $installedDependencies = 0;
 
 	public function __construct($site, $id)
 	{
@@ -19,8 +21,8 @@ class PackageManager
 		if(!is_string($id) || !isset($catalog[$id])) throw new RuntimeException('msg_invalid_request');
 		$this->package = $catalog[$id];
 		$this->site = $site = realpath($site);
-		$this->parentDirectory = $site . DIRECTORY_SEPARATOR . PackageRegistry::$directories[$this->package['type']];
-		$this->target = $this->parentDirectory . DIRECTORY_SEPARATOR . $id;
+		$this->target = $site . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, PackageRegistry::installPath($this->package));
+		$this->parentDirectory = dirname($this->target);
 		$this->storage = new PackageStorage($site);
 		$this->store = $this->storage->directory;
 		$this->work = $this->store . DIRECTORY_SEPARATOR . $id;
@@ -94,6 +96,8 @@ class PackageManager
 				&& $current !== $state['previous']['tree']) $actions[] = 'restore';
 		}
 		return array('status' => $status, 'version' => $known ? $known['version'] : '',
+			'approved_install' => !$pending && !$changed && $known && isset($p['approved'])
+				&& (isset($p['approved'][$current]) || (isset($p['upgrade_from'][$current]) && in_array($p['upgrade_from'][$current], $p['approved'], true))),
 			'actions' => $actions, 'storage' => $available, 'storage_issue' => $issue, 'download' => $download,
 			'differences' => $differences, 'history' => isset($state['history']) ? array_reverse($state['history']) : array());
 	}
@@ -126,7 +130,7 @@ class PackageManager
 			$relative = substr($file->getPathname(), strlen($tree));
 			if(substr($relative, -5) === '.html')
 			{
-				$template = basename($this->parentDirectory) . '/' . $this->package['id'] . str_replace(DIRECTORY_SEPARATOR, '/', $relative);
+				$template = PackageRegistry::installPath($this->package) . str_replace(DIRECTORY_SEPARATOR, '/', $relative);
 				$compiled = $this->site . '/files/cache/template_compiled/' . md5($template . __XE_VERSION__) . '.compiled.php';
 				if(is_file($compiled))
 				{
@@ -196,17 +200,62 @@ class PackageManager
 		}
 	}
 
+	public function dependencyPlan()
+	{
+		$catalog = PackageRegistry::catalog($this->site);
+		$plan = array();
+		foreach(PackageRegistry::dependencies($catalog, $this->package['id']) as $id)
+		{
+			$manager = new self($this->site, $id);
+			$info = $manager->inspect();
+			$step = 'blocked';
+			if($info['approved_install']) $step = 'ready';
+			elseif(in_array('install', $info['actions'], true)) $step = 'install';
+			elseif(in_array('update', $info['actions'], true)) $step = 'update';
+			$plan[$id] = array('title' => $catalog[$id]['title'], 'step' => $step);
+		}
+		return $plan;
+	}
+
 	public function apply($action)
 	{
-		if(!in_array($action, array('install', 'update', 'adopt', 'remove', 'restore', 'recover'), true)) throw new RuntimeException('msg_invalid_request');
-		if(in_array($action, array('install', 'update', 'adopt', 'restore'), true))
+		if(!in_array($action, array('install', 'update', 'restore', 'adopt', 'dependencies'), true)) return $this->applyFiles($action);
+		$id = $this->package['id'];
+		$catalog = PackageRegistry::catalog($this->site, true);
+		if(empty($catalog[$id]['online'])) throw new RuntimeException('pkg_registry_error');
+		if($catalog[$id]['revision'] !== $this->package['revision']) throw new RuntimeException('pkg_conflict');
+		$this->package = $catalog[$id];
+		$info = $this->inspect();
+		if($action === 'dependencies')
 		{
-			$catalog = PackageRegistry::catalog($this->site, true);
-			$id = $this->package['id'];
-			if(!isset($catalog[$id]) || !$catalog[$id]['online']) throw new RuntimeException('pkg_registry_error');
-			if($catalog[$id]['revision'] !== $this->package['revision']) throw new RuntimeException('pkg_conflict');
-			$this->package = $catalog[$id];
+			if(!$info['approved_install'] || empty($this->package['requires'])) throw new RuntimeException('pkg_conflict');
 		}
+		elseif(!in_array($action, $info['actions'], true)) throw new RuntimeException('pkg_conflict');
+
+		$plan = $this->dependencyPlan();
+		foreach($plan as $dep => $item)
+		{
+			if($item['step'] === 'blocked')
+			{
+				$this->failedDependency = $dep;
+				throw new RuntimeException('pkg_dependency_blocked');
+			}
+		}
+		foreach($plan as $dep => $item)
+		{
+			if($item['step'] === 'ready') continue;
+			$this->failedDependency = $dep;
+			$manager = new self($this->site, $dep);
+			$manager->applyFiles($item['step']);
+			$this->installedDependencies++;
+			$this->failedDependency = null;
+		}
+		if($action !== 'dependencies') $this->applyFiles($action);
+	}
+
+	private function applyFiles($action)
+	{
+		if(!in_array($action, array('install', 'update', 'adopt', 'remove', 'restore', 'recover'), true)) throw new RuntimeException('msg_invalid_request');
 		$issue = $this->storage->check($this->parentDirectory, $this->package['id']);
 		if($issue) throw new RuntimeException($issue['error']);
 		foreach(array($this->store, $this->work) as $dir)

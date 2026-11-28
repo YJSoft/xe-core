@@ -12,7 +12,7 @@
 <div class="autoinstall_list">
 	<div loop="$pkg_rows => $pkg" class="autoinstall_list_item">
 		<a class="x_thumbnail" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminPackageDetail', 'pkg_id', $pkg['id'], 'type', $pkg_type === 'all' ? '' : $pkg_type, 'search_keyword', $pkg_search)}">
-			<div class="thumb thumb-{$pkg['icon']}"><i class="xi-{$pkg['icon']}" aria-hidden="true"></i></div>
+			<div class="thumb thumb-{$pkg['icon']}"><i class="xi-{$pkg['icon']}" aria-hidden="true"></i><img class="pkg-thumbnail" cond="$pkg['thumbnail_url']" src="{$pkg['thumbnail_url']}" alt="" onerror="this.hidden=true" /></div>
 			<div class="info">
 				<div class="package_type">{Context::getLang('pkg_type_' . $pkg['type'])} <span class="license_details">· {$pkg['license']}</span></div>
 				<h3>{$pkg['title']}</h3>

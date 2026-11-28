@@ -224,4 +224,20 @@
 	<item name="pkg_uncertain"><value xml:lang="ko">현재 설치 상태를 확인할 수 없습니다. 상태를 다시 확인해 주세요.</value><value xml:lang="en">Could not confirm the current installation state. Check the status again.</value></item>
 	<item name="pkg_checking"><value xml:lang="ko">현재 상태를 확인하고 있습니다…</value><value xml:lang="en">Checking the current status…</value></item>
 	<item name="pkg_recheck"><value xml:lang="ko">상태 다시 확인</value><value xml:lang="en">Check status again</value></item>
+	<item name="pkg_download_zip"><value xml:lang="ko">ZIP 다운로드</value><value xml:lang="en">Download ZIP</value></item>
+	<item name="pkg_type_module_skin"><value xml:lang="ko">모듈 스킨</value><value xml:lang="en">Module skins</value></item>
+	<item name="pkg_type_widget_skin"><value xml:lang="ko">위젯 스킨</value><value xml:lang="en">Widget skins</value></item>
+	<item name="pkg_type_editor_style"><value xml:lang="ko">에디터 본문 스타일</value><value xml:lang="en">Editor styles</value></item>
+	<item name="pkg_requires"><value xml:lang="ko">함께 설치할 자료</value><value xml:lang="en">Required packages</value></item>
+	<item name="pkg_dependencies"><value xml:lang="ko">누락된 필수 자료 설치</value><value xml:lang="en">Install missing requirements</value></item>
+	<item name="pkg_dep_ready"><value xml:lang="ko">설치됨</value><value xml:lang="en">Installed</value></item>
+	<item name="pkg_dep_install"><value xml:lang="ko">함께 설치</value><value xml:lang="en">Will install</value></item>
+	<item name="pkg_dep_update"><value xml:lang="ko">함께 업데이트</value><value xml:lang="en">Will update</value></item>
+	<item name="pkg_dep_blocked"><value xml:lang="ko">설치 상태 확인 필요</value><value xml:lang="en">Needs attention</value></item>
+	<item name="pkg_dependency_invalid"><value xml:lang="ko">자료실의 필수 자료 목록이 올바르지 않습니다.</value><value xml:lang="en">Invalid package dependency graph.</value></item>
+	<item name="pkg_dependency_blocked"><value xml:lang="ko">필수 자료의 상세페이지에서 로컬 변경이나 설치 조건을 확인해 주세요.</value><value xml:lang="en">Check the required package for local changes or unmet installation requirements.</value></item>
+	<item name="pkg_dependency_failed"><value xml:lang="ko">필수 자료 %s 처리 중 중단했습니다. %s</value><value xml:lang="en">Stopped while processing required package %s. %s</value></item>
+	<item name="pkg_files_done"><value xml:lang="ko">파일 작업을 마쳤습니다.</value><value xml:lang="en">File operation complete.</value></item>
+	<item name="pkg_dependencies_done"><value xml:lang="ko">파일 작업을 마쳤습니다. 필수 자료 %d개의 설치를 완료했습니다.</value><value xml:lang="en">File operation complete. Installed or updated %d required packages.</value></item>
+	<item name="pkg_dependency_retry"><value xml:lang="ko">이미 설치한 필수 자료는 다시 시도할 때 건너뜁니다.</value><value xml:lang="en">Retrying will skip the required packages already installed.</value></item>
 </lang>

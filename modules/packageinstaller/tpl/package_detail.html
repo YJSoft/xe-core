@@ -5,12 +5,12 @@
 <p cond="!$pkg" class="message">{$lang->pkg_unknown}</p>
 <div class="autoinstall_package_detail" cond="$pkg">
 	<div class="header">
-		<div class="thumb thumb-{$pkg['icon']}"><i class="xi-{$pkg['icon']}" aria-hidden="true"></i></div>
+		<div class="thumb thumb-{$pkg['icon']}"><i class="xi-{$pkg['icon']}" aria-hidden="true"></i><img class="pkg-thumbnail" cond="$pkg['thumbnail_url']" src="{$pkg['thumbnail_url']}" alt="" onerror="this.hidden=true" /></div>
 		<div class="info">
 			<div class="package_type">{Context::getLang('pkg_type_' . $pkg['type'])}</div>
 			<h2>{$pkg['title']}</h2>
 			<p class="description" cond="$pkg['description']">{$pkg['description']}</p>
-			<div class="meta">{$pkg['author']} · <a href="https://github.com/{$pkg['repo']}/tree/{$pkg['revision']}">{$lang->pkg_source}</a></div>
+			<div class="meta">{$pkg['author']} · <a href="{$pkg['source_url']}">{$lang->pkg_source}</a></div>
 		</div>
 	</div>
 	<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'packageinstaller/apply'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}"><p>{$XE_VALIDATOR_MESSAGE}</p></div>

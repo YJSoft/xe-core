@@ -24,6 +24,8 @@
 	align-items: center;
 	justify-content: center;
 	flex-shrink: 0;
+	position: relative;
+	overflow: hidden;
 	width: 112px;
 	height: 90px;
 	border-radius: 4px;
@@ -31,6 +33,8 @@
 	color: #42647c;
 	font-size: 34px;
 }
+.x .pkg-thumbnail { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.x .pkg-thumbnail[hidden] { display: none; }
 .x .autoinstall_list .thumb-bell, .x .autoinstall_package_detail .thumb-bell { background: #faf1de; color: #98681e; }
 .x .autoinstall_list .thumb-envelope, .x .autoinstall_package_detail .thumb-envelope { background: #e7f1f2; color: #346e75; }
 .x .autoinstall_list .info, .x .autoinstall_package_detail .info { flex: 1; min-width: 0; }

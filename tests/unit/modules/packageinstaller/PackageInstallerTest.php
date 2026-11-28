@@ -128,6 +128,72 @@ class PackageInstallerTest extends CompatibilityTestCase
 		$this->assertSame('5.0.0', $selected['upgrade_from'][$withdrawn['tree']]);
 	}
 
+	public function testSharedDependenciesAreOrderedOnceAndInvalidGraphsAreRejected()
+	{
+		$catalog = array('layout' => array('requires' => array('a', 'b')), 'a' => array('requires' => array('shared')),
+			'b' => array('requires' => array('shared')), 'shared' => array());
+		$this->assertSame(array('shared', 'a', 'b'), PackageRegistry::dependencies($catalog, 'layout'));
+		foreach(array('layout', 'missing') as $bad)
+		{
+			$catalog['shared']['requires'] = array($bad);
+			try
+			{
+				PackageRegistry::dependencies($catalog, 'layout');
+				$this->fail('An invalid dependency graph must stop installation.');
+			}
+			catch(RuntimeException $e) { $this->assertSame('pkg_dependency_invalid', $e->getMessage()); }
+		}
+	}
+
+	public function testComponentIdsCannotSelectAnotherSkinOrCoreDirectory()
+	{
+		$skin = array('id' => 'member_skin_simplestrap', 'type' => 'module_skin', 'source_path' => 'modules/member/skins/simplestrap');
+		$this->assertSame($skin['source_path'], PackageRegistry::installPath($skin));
+		foreach(array('modules/member/skins/default', 'modules/communication/skins/simplestrap', 'modules/member/skins/../conf') as $other)
+		{
+			$skin['source_path'] = $other;
+			try
+			{
+				PackageRegistry::installPath($skin);
+				$this->fail('Accepted a destination outside the assigned skin.');
+			}
+			catch(RuntimeException $e) { $this->assertSame('pkg_registry_error', $e->getMessage()); }
+		}
+	}
+
+	public function testSplitArchiveExtractsOnlyTheSelectedSkin()
+	{
+		if(!class_exists('ZipArchive')) $this->markTestSkipped('Requires ZipArchive.');
+		$skin = array('id' => 'content_skin_example', 'type' => 'widget_skin', 'source_path' => 'widgets/content/skins/example');
+		$this->fixture('original/skin.xml', '<skin/>');
+		$skin['tree'] = PackageArchive::fingerprint($this->fixtureDir . 'original');
+		$archive = $this->fixtureDir . 'skin.zip';
+		$zip = new ZipArchive();
+		$this->assertTrue($zip->open($archive, ZipArchive::CREATE));
+		$zip->addFromString($skin['source_path'] . '/skin.xml', '<skin/>');
+		$zip->close();
+
+		$target = $this->fixtureDir . 'extracted';
+		mkdir($target);
+		$skin['sha256'] = hash_file('sha256', $archive);
+		$skin['size'] = filesize($archive);
+		PackageArchive::extract($skin, $archive, $target);
+		$this->assertSame('<skin/>', file_get_contents($target . '/skin.xml'));
+
+		$zip->open($archive);
+		$zip->addFromString('widgets/content/content.class.php', 'sibling');
+		$zip->close();
+		clearstatcache();
+		$skin['sha256'] = hash_file('sha256', $archive);
+		$skin['size'] = filesize($archive);
+		try
+		{
+			PackageArchive::extract($skin, $archive, $target);
+			$this->fail('Accepted a file outside the selected component.');
+		}
+		catch(RuntimeException $e) { $this->assertSame('pkg_archive_error', $e->getMessage()); }
+	}
+
 	public function testVerifiedArchiveInstallsOnlyInsideEachDeclaredPackageDirectory()
 	{
 		if(!class_exists('ZipArchive')) $this->markTestSkipped('Requires ZipArchive.');

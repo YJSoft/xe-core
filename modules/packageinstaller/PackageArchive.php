@@ -32,7 +32,7 @@ class PackageArchive
 			throw new RuntimeException('pkg_archive_error');
 		$zip = new ZipArchive();
 		if($zip->open($archive, ZipArchive::CHECKCONS) !== true) throw new RuntimeException('pkg_archive_error');
-		$prefix = basename($package['repo']) . '-' . $package['revision'] . '/';
+		$prefix = (isset($package['source_path']) ? PackageRegistry::installPath($package) : basename($package['repo']) . '-' . $package['revision']) . '/';
 		$total = 0;
 		$seen = array();
 		if($zip->numFiles > self::MAX_ENTRIES) throw new RuntimeException('pkg_archive_error');
@@ -65,7 +65,8 @@ class PackageArchive
 		$zip->close();
 		$entries = array('module' => $package['id'] . '.class.php', 'widget' => $package['id'] . '.class.php',
 			'addon' => $package['id'] . '.addon.php', 'layout' => 'layout.html');
-		if(!is_file($directory . '/' . $entries[$package['type']]) || !is_file($directory . '/conf/info.xml')
+		$skin = isset(PackageRegistry::$skinParents[$package['type']]);
+		if((!$skin && !is_file($directory . '/' . $entries[$package['type']])) || !is_file($directory . ($skin ? '/skin.xml' : '/conf/info.xml'))
 			|| self::fingerprint($directory) !== $package['tree']) throw new RuntimeException('pkg_archive_error');
 	}
 

@@ -5,6 +5,13 @@
     "author": "XE Public",
     "repo": "YJSoft/xe-module-ncenterlite",
     "license": "GPL-2.0",
+    "upgrade_from": {
+      "6088961b7efc875a776f60b5cc1fc0e59e560c0df771267b21f94a0e0e6190ac": "3.0.9"
+    },
+    "type": "module",
+    "description": "새 댓글과 쪽지 등 사이트 안에서 발생한 소식을 회원에게 알려줍니다.",
+    "icon": "bell",
+    "thumbnail": "ncenterlite.png",
     "version": "3.0.10",
     "revision": "71426b9e28c6291df69fafdf97b59320888e8af8",
     "snapshot": false,
@@ -13,12 +20,8 @@
     "size": 123860,
     "sha256": "2d458fa9dce63d8d77e45b68e308c50776ca668f9a6706010ae8b34c95359d66",
     "tree": "9b1fb7de3feef366bd9b04989d4098fa7e9a8d9953924c98c15a3cee99cf7769",
-    "upgrade_from": {
-      "6088961b7efc875a776f60b5cc1fc0e59e560c0df771267b21f94a0e0e6190ac": "3.0.9"
-    },
-    "type": "module",
-    "description": "새 댓글과 쪽지 등 사이트 안에서 발생한 소식을 회원에게 알려줍니다.",
-    "icon": "bell"
+    "withdrawn": false,
+    "notes": "비회원 댓글 알림의 보안 문제를 수정한 릴리스."
   },
   {
     "id": "advanced_mailer",
@@ -26,6 +29,13 @@
     "author": "POESIS",
     "repo": "YJSoft/xe-advanced-mailer",
     "license": "GPL-2.0 or GPL-3.0",
+    "upgrade_from": {
+      "cb5d106e4f2d33e58729cda8555855e1ecae0c81eb22fade17cc8b4055a56307": "1.8.4"
+    },
+    "type": "module",
+    "description": "외부 SMTP 서버와 메일 서비스 API를 이용해 사이트 메일을 발송합니다.",
+    "icon": "envelope",
+    "thumbnail": "advanced_mailer.png",
     "version": "1.8.5",
     "revision": "9a272c20fb9b5dbf75119c48f2372f45689501f9",
     "snapshot": true,
@@ -34,11 +44,132 @@
     "size": 1711708,
     "sha256": "465851f4857464b695f84462fb07be754100c035f36206361bbd7abb4a11f897",
     "tree": "04d9a91df9777bc34d617c6c5fadfb406a07d952b7ff20cd5bdfa911b0b9cf5c",
+    "withdrawn": false,
+    "notes": "메일 발송 API 및 PHP 8 관리자 테스트 발송 수정. 빈 도메인 그룹의 설정 화면 오류 수정."
+  },
+  {
+    "id": "simplestrap",
+    "type": "layout",
+    "title": "심플스트랩 레이아웃",
+    "author": "코미 (윈컴이)",
+    "repo": "wincomi/xe-simplestrap",
+    "source_path": "layouts/simplestrap",
+    "license": "GPL-2.0",
+    "description": "Bootstrap 3 기반의 반응형 레이아웃입니다. 회원·커뮤니케이션 스킨과 에디터 스타일에서 사용하는 CSS를 포함합니다.",
+    "thumbnail": "simplestrap.png",
     "upgrade_from": {
-      "cb5d106e4f2d33e58729cda8555855e1ecae0c81eb22fade17cc8b4055a56307": "1.8.4"
+      "9ae1d1395b4c73bff741802ec4a928d138f670037c1ec954b2099a09059615a0": "3.0"
     },
-    "type": "module",
-    "description": "외부 SMTP 서버와 메일 서비스 API를 이용해 사이트 메일을 발송합니다.",
-    "icon": "envelope"
+    "version": "3.0",
+    "revision": "1cdcdab80d467b071e6cda8af869ff76b4fe132d",
+    "snapshot": false,
+    "php": "5.3.0",
+    "core": "1.11.0",
+    "size": 1323317,
+    "sha256": "c9c1ea8ba57af7a222f65ca237c47dd2ce5b48078567cd9bb759367fd9935384",
+    "tree": "db9813ac3775e3eda845cda3e28d308cd54804efe69a43777cf07f594f5c0385",
+    "withdrawn": false,
+    "notes": "원본 저장소에서 이 구성요소와 GPLv2 라이선스 파일을 분리해 배포합니다.",
+    "requires": [
+      "member_skin_simplestrap",
+      "communication_skin_simplestrap",
+      "content_skin_simplestrap_sb"
+    ]
+  },
+  {
+    "id": "member_skin_simplestrap",
+    "type": "module_skin",
+    "title": "심플스트랩 회원 스킨",
+    "author": "코미 (윈컴이)",
+    "repo": "wincomi/xe-simplestrap",
+    "source_path": "modules/member/skins/simplestrap",
+    "license": "GPL-2.0",
+    "description": "로그인, 회원 가입, 회원 정보 화면에 Bootstrap 3 스타일을 적용합니다. 심플스트랩 레이아웃과 함께 사용할 수 있습니다.",
+    "thumbnail": "member_skin_simplestrap.png",
+    "upgrade_from": {
+      "1a5ab3d0e0176d7db519488b87c4908403dd22fbcde494147a701cd62f82e8b8": "2.0"
+    },
+    "version": "2.0",
+    "revision": "1cdcdab80d467b071e6cda8af869ff76b4fe132d",
+    "snapshot": false,
+    "php": "5.3.0",
+    "core": "1.11.0",
+    "size": 32373,
+    "sha256": "b0771b5e45bfe579733cf59605487d61f2fb2b1a4145f8e20908abbf1438a6ce",
+    "tree": "5e28dbf0c977ae7cd7c3fbf4aab3aacc88a9c6eb61ee3b930b57ca4c5c3e3f52",
+    "withdrawn": false,
+    "notes": "원본 저장소에서 이 구성요소와 GPLv2 라이선스 파일을 분리해 배포합니다."
+  },
+  {
+    "id": "communication_skin_simplestrap",
+    "type": "module_skin",
+    "title": "심플스트랩 커뮤니케이션 스킨",
+    "author": "코미 (윈컴이)",
+    "repo": "wincomi/xe-simplestrap",
+    "source_path": "modules/communication/skins/simplestrap",
+    "license": "GPL-2.0",
+    "description": "쪽지와 친구 목록 화면용 스킨입니다. 쪽지 쓰기 화면은 심플스트랩 레이아웃에 포함된 CSS를 사용합니다.",
+    "thumbnail": "communication_skin_simplestrap.png",
+    "upgrade_from": {
+      "7e19a97794e502746aeea96bab546ba3867389805a4d76399bfcae37bec6e1fb": "2.0.1"
+    },
+    "version": "2.0.1",
+    "revision": "1cdcdab80d467b071e6cda8af869ff76b4fe132d",
+    "snapshot": false,
+    "php": "5.3.0",
+    "core": "1.11.0",
+    "size": 18868,
+    "sha256": "58f089cc355c356ddf7e8777160a043b1e6ef5a7ba23a35ba62be47c8cf2831c",
+    "tree": "8727340954bbd3c9b3a7830a807f461bd465258e6d632f0b8ac0826ee4a5cc39",
+    "withdrawn": false,
+    "notes": "원본 저장소에서 이 구성요소와 GPLv2 라이선스 파일을 분리해 배포합니다."
+  },
+  {
+    "id": "editor_style_simplestrap",
+    "type": "editor_style",
+    "title": "심플스트랩 에디터 본문 스타일",
+    "author": "코미 (윈컴이)",
+    "repo": "wincomi/xe-simplestrap",
+    "source_path": "modules/editor/styles/simplestrap",
+    "license": "GPL-2.0",
+    "description": "에디터 본문에 심플스트랩의 글꼴과 스타일을 적용합니다. 심플스트랩 레이아웃을 먼저 설치하세요.",
+    "thumbnail": "editor_style_simplestrap.png",
+    "upgrade_from": {
+      "4940b9a9e1b923a3a00ee170c873662453a2943a7eb6ee830cb807f9f6458d32": "0.1"
+    },
+    "version": "0.1",
+    "revision": "1cdcdab80d467b071e6cda8af869ff76b4fe132d",
+    "snapshot": false,
+    "php": "5.3.0",
+    "core": "1.11.0",
+    "size": 7974,
+    "sha256": "acf8aaec4e2e10027f73ada78cf756d3de58bbee98b2227b0353c567377cdc54",
+    "tree": "d313750435f967c47f6ea11ec31cc27cacd11786987591bdce17b1f06aed8075",
+    "withdrawn": false,
+    "notes": "원본 저장소에서 이 구성요소와 GPLv2 라이선스 파일을 분리해 배포합니다."
+  },
+  {
+    "id": "content_skin_simplestrap_sb",
+    "type": "widget_skin",
+    "title": "심플스트랩 사이드바 최신 글",
+    "author": "코미 (윈컴이)",
+    "repo": "wincomi/xe-simplestrap",
+    "source_path": "widgets/content/skins/simplestrap_sb",
+    "license": "GPL-2.0",
+    "description": "콘텐츠 위젯으로 사이드바에 최신 글을 표시하는 Bootstrap 3 스킨입니다.",
+    "thumbnail": "content_skin_simplestrap_sb.png",
+    "upgrade_from": {
+      "aa2fc825d827033e55439ad477aa6f09acc3e702d2f551663875db68c768842f": "1.0.2"
+    },
+    "version": "1.0.2",
+    "revision": "1cdcdab80d467b071e6cda8af869ff76b4fe132d",
+    "snapshot": false,
+    "php": "5.3.0",
+    "core": "1.11.0",
+    "size": 8131,
+    "sha256": "e1a968020286efcf1c73e365e4e34b8525e4896002fef6a0adc85f37ace16d84",
+    "tree": "dcbbe8541a4f5ec35495f2e4d46eab8e688d1eadd4d0b4bef3f2ca6f927378d7",
+    "withdrawn": false,
+    "notes": "원본 저장소에서 이 구성요소와 GPLv2 라이선스 파일을 분리해 배포합니다."
   }
 ]
