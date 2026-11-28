@@ -12,3 +12,9 @@ maintenance controller and administrator template by Kijin Sung and contributors
 https://github.com/rhymix/rhymix/blob/57157b24fb9ccb4e87bca1b56fa3e1a139310796/modules/admin/controllers/maintenance/Cleanup.php
 https://github.com/rhymix/rhymix/blob/57157b24fb9ccb4e87bca1b56fa3e1a139310796/modules/admin/tpl/cleanup.html
 Adapted for XE on 2026-11-27. Distributed under GPL-2.0-or-later; see LICENSE.
+
+The Easy Install administrator catalogue and detail templates, CSS and button interactions
+in modules/packageinstaller/tpl are adapted from the Rhymix Easy Install UI
+by Kijin Sung and contributors (GPL-2.0-or-later):
+https://github.com/rhymix/rhymix/tree/57157b24fb9ccb4e87bca1b56fa3e1a139310796/modules/autoinstall/tpl
+Adapted for XE templates, XEIcon and the signed registry on 2026-11-28.

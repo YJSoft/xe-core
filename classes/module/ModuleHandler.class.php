@@ -12,6 +12,8 @@
  * */
 class ModuleHandler extends Handler
 {
+	// Bookmarked Easy Install views are served by the signed package installer.
+	private static $packageInstallerViews = array('dispAutoinstallAdminIndex', 'dispAutoinstallAdminPackageDetail', 'dispAutoinstallAdminInstall');
 
 	var $module = NULL; ///< Module
 	var $act = NULL; ///< action
@@ -57,6 +59,11 @@ class ModuleHandler extends Handler
 		// Set variables from request arguments
 		$this->module = $module ? $module : Context::get('module');
 		$this->act = $act ? $act : Context::get('act');
+		if($this->module === 'autoinstall' && in_array($this->act, self::$packageInstallerViews, true))
+		{
+			$this->module = 'admin';
+			Context::set('module', 'admin');
+		}
 		$this->mid = $mid ? $mid : Context::get('mid');
 		$this->document_srl = $document_srl ? (int) $document_srl : (int) Context::get('document_srl');
 		$this->module_srl = $module_srl ? (int) $module_srl : (int) Context::get('module_srl');
@@ -588,7 +595,7 @@ class ModuleHandler extends Handler
 			// 1. Look for the module with action name
 			if(preg_match('/^([a-z]+)([A-Z])([a-z0-9\_]+)(.*)$/', $this->act, $matches))
 			{
-				$module = strtolower($matches[2] . $matches[3]);
+				$module = in_array($this->act, self::$packageInstallerViews, true) ? 'packageinstaller' : strtolower($matches[2] . $matches[3]);
 				$xml_info = $oModuleModel->getModuleActionXml($module);
 
 				if($xml_info->action->{$this->act} && ((stripos($this->act, 'admin') !== FALSE) || $xml_info->action->{$this->act}->standalone != 'false'))

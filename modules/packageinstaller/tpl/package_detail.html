@@ -1,0 +1,20 @@
+<config autoescape="on" />
+<include target="header.html" />
+<load target="./js/package_detail.js" />
+<a class="pkg-back" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'type', $pkg_type === 'all' ? '' : $pkg_type, 'search_keyword', $pkg_search)}">← {$lang->cmd_list}</a>
+<p cond="!$pkg" class="message">{$lang->pkg_unknown}</p>
+<div class="autoinstall_package_detail" cond="$pkg">
+	<div class="header">
+		<div class="thumb thumb-{$pkg['icon']}"><i class="xi-{$pkg['icon']}" aria-hidden="true"></i></div>
+		<div class="info">
+			<div class="package_type">{Context::getLang('pkg_type_' . $pkg['type'])}</div>
+			<h2>{$pkg['title']}</h2>
+			<p class="description" cond="$pkg['description']">{$pkg['description']}</p>
+			<div class="meta">{$pkg['author']} · <a href="https://github.com/{$pkg['repo']}/tree/{$pkg['revision']}">{$lang->pkg_source}</a></div>
+		</div>
+	</div>
+	<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'packageinstaller/apply'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}"><p>{$XE_VALIDATOR_MESSAGE}</p></div>
+	<div class="pkg-feedback" role="status" aria-live="polite" data-working="{$lang->pkg_working}" data-uncertain="{$lang->pkg_uncertain}" data-checking="{$lang->pkg_checking}"></div>
+	<button type="button" class="x_btn pkg-recheck" hidden>{$lang->pkg_recheck}</button>
+	<div class="pkg-state"><include target="_package_state.html" /></div>
+</div>

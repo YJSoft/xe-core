@@ -16,7 +16,9 @@
     "upgrade_from": {
       "6088961b7efc875a776f60b5cc1fc0e59e560c0df771267b21f94a0e0e6190ac": "3.0.9"
     },
-    "type": "module"
+    "type": "module",
+    "description": "새 댓글과 쪽지 등 사이트 안에서 발생한 소식을 회원에게 알려줍니다.",
+    "icon": "bell"
   },
   {
     "id": "advanced_mailer",
@@ -35,6 +37,8 @@
     "upgrade_from": {
       "cb5d106e4f2d33e58729cda8555855e1ecae0c81eb22fade17cc8b4055a56307": "1.8.4"
     },
-    "type": "module"
+    "type": "module",
+    "description": "외부 SMTP 서버와 메일 서비스 API를 이용해 사이트 메일을 발송합니다.",
+    "icon": "envelope"
   }
 ]

@@ -1,5 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/PackageManager.php';
 
 class packageinstallerAdminController extends packageinstaller
 {
@@ -13,18 +12,34 @@ class packageinstallerAdminController extends packageinstaller
 		$catalog = PackageRegistry::catalog(_XE_PATH_);
 		if(!is_string($id) || !isset($catalog[$id]) || Context::get('pkg_revision') !== $catalog[$id]['revision'])
 			return new BaseObject(-1, 'msg_invalid_request');
-		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispPackageinstallerAdminIndex'));
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminPackageDetail', 'pkg_id', $id));
 		try
 		{
 			$manager = new PackageManager(_XE_PATH_, $id);
 			$manager->apply(Context::get('pkg_action'));
+			$this->setMessage('pkg_done');
 		}
 		catch(RuntimeException $e)
 		{
 			$this->setError(-1);
 			$this->setMessage($e->getMessage());
-			return;
 		}
-		$this->setMessage('pkg_done');
+
+		if(Context::getRequestMethod() === 'JSON')
+		{
+			try
+			{
+				$catalog = PackageRegistry::catalog(_XE_PATH_);
+				if(!isset($catalog[$id])) return;
+				Context::set('pkg', $this->packageInfo($catalog[$id]));
+				Context::set('pkg_token', $_SESSION['packageinstaller_token']);
+				$template = TemplateHandler::getInstance();
+				$this->add('panel', $template->compile($this->module_path . 'tpl', '_package_state'));
+			}
+			catch(RuntimeException $e)
+			{
+				// Keep the action outcome. The client can request the current state again.
+			}
+		}
 	}
 }

@@ -1,35 +1,63 @@
 <?php
-require_once dirname(__FILE__) . '/PackageManager.php';
 
 class packageinstallerAdminView extends packageinstaller
 {
-	function dispPackageinstallerAdminIndex()
+	function init()
 	{
 		$user = getModel('member')->getLoggedInfo();
 		if(empty($user->is_admin) || $user->is_admin !== 'Y') return $this->stop('msg_is_not_administrator');
-		if(empty($_SESSION['packageinstaller_token'])) $_SESSION['packageinstaller_token'] = Security::getRandomToken();
+		$this->setTemplatePath($this->module_path . 'tpl');
+		$type = Context::get('type');
+		if($type === null) $type = Context::get('pkg_type');
+		$tabs = array_merge(array('all', 'updates'), array_keys(PackageRegistry::$directories));
+		Context::set('pkg_tabs', $tabs);
+		Context::set('pkg_type', in_array($type, $tabs, true) ? $type : 'all');
+		$query = Context::get('search_keyword');
+		if($query === null) $query = Context::get('pkg_search');
+		Context::set('pkg_search', is_string($query) ? trim($query) : '');
+	}
 
+	function dispAutoinstallAdminIndex()
+	{
 		$query = Context::get('pkg_search');
-		$query = is_string($query) ? trim($query) : '';
 		$type = Context::get('pkg_type');
-		$type = is_string($type) && isset(PackageRegistry::$directories[$type]) ? $type : '';
 		$rows = array();
-		foreach(PackageRegistry::catalog(_XE_PATH_) as $id => $package)
+		foreach(PackageRegistry::catalog(_XE_PATH_) as $package)
 		{
-			if($type !== '' && $package['type'] !== $type) continue;
-			if($query !== '' && stripos(implode(' ', array($id, $package['title'], $package['author'], $package['repo'])), $query) === false) continue;
-			$manager = new PackageManager(_XE_PATH_, $id);
-			try { $package['local'] = $manager->inspect(); }
+			if($type !== 'all' && $type !== 'updates' && $package['type'] !== $type) continue;
+			if($query !== '' && stripos(implode(' ', array($package['id'], $package['title'], $package['author'], $package['repo'])), $query) === false) continue;
+			try { $package = $this->packageInfo($package); }
 			catch(RuntimeException $e) { return $this->stop($e->getMessage()); }
-			$package['directory'] = PackageRegistry::$directories[$package['type']];
+			if($type === 'updates' && $package['badge'] !== 'updatable') continue;
 			$rows[] = $package;
 		}
 		Context::set('pkg_rows', $rows);
-		Context::set('pkg_types', array_keys(PackageRegistry::$directories));
-		Context::set('pkg_type', $type);
-		Context::set('pkg_search', $query);
-		Context::set('pkg_token', $_SESSION['packageinstaller_token']);
-		$this->setTemplatePath($this->module_path . 'tpl');
+		Context::setBrowserTitle(Context::getLang('pkg_title'));
 		$this->setTemplateFile('index');
+	}
+
+	function dispPackageinstallerAdminIndex()
+	{
+		return $this->dispAutoinstallAdminIndex();
+	}
+
+	function dispAutoinstallAdminPackageDetail()
+	{
+		$id = Context::get('pkg_id');
+		$catalog = PackageRegistry::catalog(_XE_PATH_);
+		$this->setTemplateFile('package_detail');
+		Context::set('pkg', null);
+		if(!is_string($id) || !isset($catalog[$id])) return;
+		try { $package = $this->packageInfo($catalog[$id]); }
+		catch(RuntimeException $e) { return $this->stop($e->getMessage()); }
+		if(empty($_SESSION['packageinstaller_token'])) $_SESSION['packageinstaller_token'] = Security::getRandomToken();
+		Context::set('pkg', $package);
+		Context::set('pkg_token', $_SESSION['packageinstaller_token']);
+		Context::setBrowserTitle($package['title'] . ' - ' . Context::getLang('pkg_title'));
+	}
+
+	function dispAutoinstallAdminInstall()
+	{
+		return $this->dispAutoinstallAdminPackageDetail();
 	}
 }

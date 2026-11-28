@@ -1,0 +1,32 @@
+<config autoescape="on" />
+<table class="x_table x_table-striped"><tbody>
+	<tr><th scope="row">{$lang->pkg_release_version}</th><td><strong>{$pkg['version']}</strong> <span cond="$pkg['snapshot']">({$lang->pkg_snapshot} · <code>{substr($pkg['revision'], 0, 8)}</code>)</span></td></tr>
+	<tr cond="!empty($pkg['latest']) && $pkg['latest'] !== $pkg['version']"><th scope="row">{$lang->pkg_latest}</th><td>{$pkg['latest']}</td></tr>
+	<tr><th scope="row">{$lang->status}</th><td>{Context::getLang('pkg_' . $pkg['local']['status'])} {$pkg['local']['version']}</td></tr>
+	<tr><th scope="row">{$lang->pkg_path}</th><td><code>{$pkg['directory']}/{$pkg['id']}/</code></td></tr>
+	<tr><th scope="row">{$lang->pkg_environment}</th><td>XE ≥ {$pkg['core']} · PHP ≥ {$pkg['php']}</td></tr>
+	<tr><th scope="row">{$lang->pkg_license}</th><td>{$pkg['license']}</td></tr>
+	<tr cond="!empty($pkg['notes'])"><th scope="row">{$lang->pkg_release_notes}</th><td>{$pkg['notes']}</td></tr>
+</tbody></table>
+<div class="buttons">
+	<p cond="!empty($pkg['withdrawn'])" class="message error">{$lang->pkg_withdrawn}</p>
+	<p cond="!$pkg['online']" class="message error">{$lang->pkg_registry_error}</p>
+	<p cond="!$pkg['local']['storage']" class="message error">{$lang->pkg_storage_error}</p>
+	<p cond="$pkg['online'] && empty($pkg['withdrawn']) && !$pkg['local']['download']" class="message">{$lang->pkg_requirements}</p>
+	<div class="pkg-actions" cond="$pkg['local']['actions'] && $pkg_token">
+		<form loop="$pkg['local']['actions'] => $operation" class="pkg-action" method="post" action="./">
+			<input type="hidden" name="module" value="packageinstaller" /><input type="hidden" name="act" value="procPackageinstallerAdminApply" />
+			<input type="hidden" name="pkg_id" value="{$pkg['id']}" /><input type="hidden" name="pkg_revision" value="{$pkg['revision']}" />
+			<input type="hidden" name="pkg_token" value="{$pkg_token}" /><input type="hidden" name="xe_validator_id" value="packageinstaller/apply" />
+			<input type="hidden" name="pkg_action" value="{$operation}" />
+			<button type="submit" class="x_btn"|cond="$operation === 'remove'" class="x_btn x_btn-primary"|cond="$operation !== 'remove'">{Context::getLang('pkg_' . $operation)}</button>
+		</form>
+	</div>
+</div>
+<details cond="$pkg['local']['differences']"><summary>{$lang->pkg_changed_files} ({count($pkg['local']['differences'])})</summary>
+	<ul><li loop="$pkg['local']['differences'] => $changed_path"><code>{$changed_path}</code></li></ul>
+</details>
+<details cond="$pkg['local']['history']"><summary>{$lang->pkg_history} (UTC)</summary>
+	<ul><li loop="$pkg['local']['history'] => $event">{$event['time']} · {Context::getLang('pkg_' . $event['action'])} {$event['from']} → {$event['to']}</li></ul>
+</details>
+<p cond="$pkg['type'] === 'module' && $pkg['local']['status'] !== 'absent'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispModuleAdminContent')}">{$lang->pkg_db_updates}</a></p>

@@ -1,0 +1,8 @@
+<load target="./css/packageinstaller.css" />
+<load target="../../../common/xeicon/xeicon.min.css" />
+<div class="x_page-header"><h1>{$lang->pkg_title}</h1></div>
+<ul class="x_nav x_nav-tabs">
+	<li loop="$pkg_tabs => $tab" class="x_active"|cond="$pkg_type === $tab">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'type', $tab === 'all' ? '' : $tab, 'search_keyword', $pkg_search)}">{Context::getLang('pkg_type_' . $tab)}</a>
+	</li>
+</ul>

@@ -24,7 +24,7 @@ XE 코어는 모듈, 애드온, 에디터 컴포넌트, 위젯, 레이아웃의 
 
 ### 새 쉬운설치 사용하기 (master)
 
-**관리자 → 고급 → 설치된 모듈 → 쉬운설치**에서 자료명이나 제작자를 검색하고 버전·출처·설치 위치를 확인한 뒤 설치하세요. 파일 설치 후 DB 테이블 생성이나 모듈 업데이트가 필요하면 **설치된 모듈**에 표시됩니다. [공개 자료실](https://yjsoft.github.io/xe-package-registry/) · [자료 등록 저장소](https://github.com/YJSoft/xe-package-registry)
+**관리자 → 고급 → 쉬운설치**(`index.php?module=admin&act=dispAutoinstallAdminIndex`)에서 자료명이나 제작자를 검색하세요. 자료 카드를 누르면 버전·출처·설치 위치와 변경 내역이 표시됩니다. 상세페이지에서 설치·업데이트·복원을 실행하면 페이지 이동 없이 결과와 현재 설치 버전을 확인할 수 있습니다. 파일 설치 후 DB 테이블 생성이나 모듈 업데이트가 필요하면 **설치된 모듈**에 표시됩니다. [공개 자료실](https://yjsoft.github.io/xe-package-registry/) · [자료 등록 저장소](https://github.com/YJSoft/xe-package-registry)
 
 파일 설치에는 PHP cURL·OpenSSL·ZIP 확장, HTTPS CA 인증서, `modules/`와 `files/config/` 쓰기 권한이 필요합니다. 다운로드와 백업은 기본적으로 XE 설치 폴더의 상위 경로에 사이트별 비공개 디렉터리를 만들어 저장합니다. 상위 경로에 쓸 수 없거나 그 경로가 웹 문서 루트 안에 있으면, 문서 루트 밖의 같은 파일시스템에 PHP가 쓸 수 있는 폴더를 준비하고 `config/config.user.inc.php`에서 지정하세요.
 

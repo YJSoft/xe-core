@@ -1,0 +1,68 @@
+/* Adapted from Rhymix modules/autoinstall/tpl/css/autoinstall.scss (GPL-2.0-or-later). */
+.x .pkg-toolbar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+.x .pkg-toolbar form { margin: 0; }
+.x .autoinstall_list { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
+.x .autoinstall_list_item { width: calc(50% - 8px); min-width: 0; }
+.x .autoinstall_list_item .x_thumbnail {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	height: 100%;
+	padding: 12px;
+	border: 1px solid #d8dce0;
+	border-radius: 5px;
+	box-shadow: 1px 1px 3px #eee;
+	color: #333;
+	text-decoration: none;
+}
+.x .autoinstall_list_item .x_thumbnail:hover,
+.x .autoinstall_list_item .x_thumbnail:focus { border-color: #8fa8bb; background: #f7f9fa; }
+.x .autoinstall_list_item .x_thumbnail:focus-visible { outline: 2px solid #34698c; outline-offset: 2px; }
+.x .autoinstall_list .thumb, .x .autoinstall_package_detail .thumb {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 112px;
+	height: 90px;
+	border-radius: 4px;
+	background: #ecf1f5;
+	color: #42647c;
+	font-size: 34px;
+}
+.x .autoinstall_list .thumb-bell, .x .autoinstall_package_detail .thumb-bell { background: #faf1de; color: #98681e; }
+.x .autoinstall_list .thumb-envelope, .x .autoinstall_package_detail .thumb-envelope { background: #e7f1f2; color: #346e75; }
+.x .autoinstall_list .info, .x .autoinstall_package_detail .info { flex: 1; min-width: 0; }
+.x .autoinstall_list .package_type, .x .autoinstall_package_detail .package_type { margin: 0 0 4px; color: #346987; font-size: 12px; }
+.x .autoinstall_list .license_details, .x .autoinstall_list .meta, .x .autoinstall_package_detail .meta { color: #626970; font-size: 12px; }
+.x .autoinstall_list h3 { margin: 0 0 4px; color: #292e32; font-size: 16px; line-height: 1.5; }
+.x .autoinstall_list .description, .x .autoinstall_package_detail .description { margin: 0 0 8px; color: #545b60; line-height: 1.55; }
+.x .autoinstall_list .meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; }
+.x .pkg-badge { margin-left: auto; font-size: 12px; color: #55616a; }
+.x .badge-updatable, .x .badge-installable { color: #286b61; }
+.x .pkg-back { display: inline-block; margin-bottom: 14px; }
+.x .autoinstall_package_detail { max-width: 960px; }
+.x .autoinstall_package_detail .header { display: flex; align-items: center; gap: 18px; margin-bottom: 20px; }
+.x .autoinstall_package_detail .thumb { width: 150px; height: 106px; font-size: 44px; }
+.x .autoinstall_package_detail h2 { margin: 0 0 8px; font-size: 20px; line-height: 1.5; }
+.x .autoinstall_package_detail th { width: 9em; }
+.x .autoinstall_package_detail td { overflow-wrap: anywhere; }
+.x .autoinstall_package_detail .buttons, .x .autoinstall_package_detail details { margin-bottom: 16px; }
+.x .autoinstall_package_detail .buttons form { display: flex; flex-wrap: wrap; gap: 8px; }
+@media screen and (max-width: 960px) {
+	.x .autoinstall_list_item { width: 100%; }
+	.x .autoinstall_list .thumb { width: 90px; height: 68px; }
+}
+@media screen and (max-width: 560px) {
+	.x .autoinstall_list .thumb, .x .autoinstall_package_detail .thumb { width: 60px; height: 60px; font-size: 26px; }
+	.x .autoinstall_package_detail .header { align-items: flex-start; gap: 12px; }
+	.x .autoinstall_package_detail th { width: 6em; }
+	.x .autoinstall_list .license_details { display: none; }
+	.x .pkg-badge { margin-left: 0; }
+}
+.x .pkg-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.x .pkg-feedback:not(:empty) { padding: 10px 12px; margin-bottom: 12px; border-left: 3px solid #447b78; background: #f0f6f5; }
+.x .pkg-feedback.error { border-color: #ae5947; background: #fcf3ef; }
+.x .pkg-recheck { margin-bottom: 12px; }
+.x .pkg-recheck[hidden] { display: none; }

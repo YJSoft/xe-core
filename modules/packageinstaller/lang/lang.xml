@@ -113,4 +113,27 @@
 	<item name="pkg_type_widget"><value xml:lang="ko">위젯</value><value xml:lang="en">Widget</value></item>
 	<item name="pkg_type_layout"><value xml:lang="ko">레이아웃</value><value xml:lang="en">Layout</value></item>
 	<item name="pkg_type_addon"><value xml:lang="ko">애드온</value><value xml:lang="en">Add-on</value></item>
+	<item name="pkg_type_all"><value xml:lang="ko">전체 자료</value><value xml:lang="en">All packages</value></item>
+	<item name="pkg_type_updates"><value xml:lang="ko">업데이트</value><value xml:lang="en">Updates</value></item>
+	<item name="pkg_no_updates"><value xml:lang="ko">현재 조건에서 업데이트할 자료가 없습니다.</value><value xml:lang="en">No updates match these filters.</value></item>
+	<item name="pkg_no_results"><value xml:lang="ko">조건에 맞는 자료가 없습니다.</value><value xml:lang="en">No matching packages.</value></item>
+	<item name="pkg_unknown"><value xml:lang="ko">해당 자료를 찾을 수 없습니다. 전체 자료에서 검색해 주세요.</value><value xml:lang="en">Package not found. Search the catalogue to find its current entry.</value></item>
+	<item name="pkg_source"><value xml:lang="ko">소스 저장소</value><value xml:lang="en">Source repository</value></item>
+	<item name="pkg_release_version"><value xml:lang="ko">설치 버전</value><value xml:lang="en">Package version</value></item>
+	<item name="pkg_path"><value xml:lang="ko">설치 경로</value><value xml:lang="en">Installation path</value></item>
+	<item name="pkg_environment"><value xml:lang="ko">요구 환경</value><value xml:lang="en">Requirements</value></item>
+	<item name="pkg_license"><value xml:lang="ko">라이선스</value><value xml:lang="en">License</value></item>
+	<item name="pkg_release_notes"><value xml:lang="ko">변경 내역</value><value xml:lang="en">Release notes</value></item>
+	<item name="pkg_badge_updatable"><value xml:lang="ko">업데이트 가능</value><value xml:lang="en">Update available</value></item>
+	<item name="pkg_badge_installable"><value xml:lang="ko">설치 가능</value><value xml:lang="en">Available to install</value></item>
+	<item name="pkg_badge_absent"><value xml:lang="ko">미설치</value><value xml:lang="en">Not installed</value></item>
+	<item name="pkg_badge_managed"><value xml:lang="ko">설치됨</value><value xml:lang="en">Installed</value></item>
+	<item name="pkg_badge_recognized"><value xml:lang="ko">수동 설치됨</value><value xml:lang="en">Manually installed</value></item>
+	<item name="pkg_badge_manual"><value xml:lang="ko">수동 설치됨</value><value xml:lang="en">Manually installed</value></item>
+	<item name="pkg_badge_modified"><value xml:lang="ko">로컬 변경 있음</value><value xml:lang="en">Local changes</value></item>
+	<item name="pkg_badge_pending"><value xml:lang="ko">복구 필요</value><value xml:lang="en">Recovery needed</value></item>
+	<item name="pkg_working"><value xml:lang="ko">파일 작업을 진행하고 있습니다…</value><value xml:lang="en">Applying the file operation…</value></item>
+	<item name="pkg_uncertain"><value xml:lang="ko">현재 설치 상태를 확인할 수 없습니다. 상태를 다시 확인해 주세요.</value><value xml:lang="en">Could not confirm the current installation state. Check the status again.</value></item>
+	<item name="pkg_checking"><value xml:lang="ko">현재 상태를 확인하고 있습니다…</value><value xml:lang="en">Checking the current status…</value></item>
+	<item name="pkg_recheck"><value xml:lang="ko">상태 다시 확인</value><value xml:lang="en">Check status again</value></item>
 </lang>

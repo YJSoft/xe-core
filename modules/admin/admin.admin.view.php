@@ -98,7 +98,10 @@ class adminAdminView extends admin
 		}
 
 		$oAdminAdminModel = getAdminModel('admin');
-		$lang->menu_gnb_sub = $oAdminAdminModel->getAdminMenuLang();
+		$lang->menu_gnb_sub = (array)$oAdminAdminModel->getAdminMenuLang();
+		Context::loadLang(_XE_PATH_ . 'modules/packageinstaller/lang');
+		// Both names occur in menus saved by earlier releases.
+		$lang->menu_gnb_sub['easyInstall'] = $lang->menu_gnb_sub['packageInstaller'] = $lang->pkg_title;
 
 		$result = $oAdminAdminModel->checkAdminMenu();
 		include $result->php_file;
@@ -123,16 +126,17 @@ class adminAdminView extends admin
 		$oMenuAdminConroller = getAdminController('menu');
 		foreach((array) $menu->list as $parentKey => $parentMenu)
 		{
-			foreach((array) $parentMenu['list'] as $childKey => $childMenu)
-			{
-				if(isset($childMenu['href']) && strpos($childMenu['href'], 'act=dispAutoinstallAdminIndex') !== false)
-				{
-					unset($parentMenu['list'][$childKey], $menu->list[$parentKey]['list'][$childKey]);
-				}
-			}
 			if(!is_array($parentMenu['list']) || !count($parentMenu['list']))
 			{
 				continue;
+			}
+			foreach($parentMenu['list'] as $childKey => $childMenu)
+			{
+				if(isset($childMenu['href']) && strpos($childMenu['href'], 'act=dispPackageinstallerAdminIndex') !== false)
+				{
+					$href = str_replace('act=dispPackageinstallerAdminIndex', 'act=dispAutoinstallAdminIndex', $childMenu['href']);
+					$parentMenu['list'][$childKey]['href'] = $menu->list[$parentKey]['list'][$childKey]['href'] = $href;
+				}
 			}
 			if($parentMenu['href'] == '#' && count($parentMenu['list']))
 			{
