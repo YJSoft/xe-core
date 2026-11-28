@@ -161,6 +161,25 @@ class PackageInstallerTest extends CompatibilityTestCase
 		}
 	}
 
+	public function testMobilePackagesAreBoundToTheirOwnDestinations()
+	{
+		$mobile = array('type' => 'mobile_module_skin', 'id' => 'board_mskin_example', 'source_path' => 'modules/board/m.skins/example');
+		$layout = array('type' => 'mobile_layout', 'id' => 'mobile_layout_example', 'source_path' => 'm.layouts/example');
+		$this->assertSame($mobile['source_path'], PackageRegistry::installPath($mobile));
+		$this->assertSame($layout['source_path'], PackageRegistry::installPath($layout));
+		foreach(array(array_merge($mobile, array('source_path' => 'modules/board/skins/example')),
+			array_merge($layout, array('source_path' => 'layouts/example')),
+			array('type' => 'mobile_layout', 'id' => 'mobile_layout_default', 'source_path' => 'm.layouts/default')) as $invalid)
+		{
+			try
+			{
+				PackageRegistry::installPath($invalid);
+				$this->fail('Accepted an unrelated or built-in mobile destination.');
+			}
+			catch(RuntimeException $e) { $this->assertSame('pkg_registry_error', $e->getMessage()); }
+		}
+	}
+
 	public function testSplitArchiveExtractsOnlyTheSelectedSkin()
 	{
 		if(!class_exists('ZipArchive')) $this->markTestSkipped('Requires ZipArchive.');

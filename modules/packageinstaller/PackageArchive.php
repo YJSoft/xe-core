@@ -64,7 +64,7 @@ class PackageArchive
 		}
 		$zip->close();
 		$entries = array('module' => $package['id'] . '.class.php', 'widget' => $package['id'] . '.class.php',
-			'addon' => $package['id'] . '.addon.php', 'layout' => 'layout.html');
+			'addon' => $package['id'] . '.addon.php', 'layout' => 'layout.html', 'mobile_layout' => 'layout.html');
 		$skin = isset(PackageRegistry::$skinParents[$package['type']]);
 		if((!$skin && !is_file($directory . '/' . $entries[$package['type']])) || !is_file($directory . ($skin ? '/skin.xml' : '/conf/info.xml'))
 			|| self::fingerprint($directory) !== $package['tree']) throw new RuntimeException('pkg_archive_error');

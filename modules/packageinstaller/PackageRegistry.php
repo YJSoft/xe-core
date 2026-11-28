@@ -1,18 +1,21 @@
 <?php
-/** Catalogue schema v2. The trusted public key is distributed with the core. */
+/** Catalogue schema v3. The trusted public key is distributed with the core. */
 class PackageRegistry
 {
-	public static $directories = array('module' => 'modules', 'addon' => 'addons', 'widget' => 'widgets', 'layout' => 'layouts');
+	public static $directories = array('module' => 'modules', 'addon' => 'addons', 'widget' => 'widgets', 'layout' => 'layouts', 'mobile_layout' => 'm.layouts');
 	public static $skinParents = array(
-		'module_skin' => array('modules/member/skins', 'modules/communication/skins'),
+		'module_skin' => array('modules/board/skins', 'modules/member/skins', 'modules/communication/skins'),
+		'mobile_module_skin' => array('modules/board/m.skins', 'modules/member/m.skins', 'modules/communication/m.skins'),
 		'widget_skin' => array('widgets/content/skins'),
 		'editor_style' => array('modules/editor/styles'),
 	);
+	private static $skinIdParts = array('module_skin' => '_skin_', 'mobile_module_skin' => '_mskin_', 'widget_skin' => '_skin_', 'editor_style' => '_style_');
 	private static $reserved = array(
 		'module' => ' addon admin adminlogging autoinstall board comment communication counter document editor file importer install integration_search krzip layout member menu message module packageinstaller page point poll rss seo session spamfilter tag trash widget ',
 		'addon' => ' adminlogging autolink captcha captcha_member counter member_communication member_extra_info oembed point_level_icon resize_image ',
 		'widget' => ' content counter_status language_select login_info mcontent ',
 		'layout' => ' default user_layout xedition ',
+		'mobile_layout' => ' default simplegray colorcode ',
 	);
 	const BASE = 'https://yjsoft.github.io/xe-package-registry/v1/';
 	private static $catalogs = array();
@@ -31,10 +34,17 @@ class PackageRegistry
 			$parts = explode('/', $path);
 			if(count($parts) !== 4 || !in_array(implode('/', array_slice($parts, 0, 3)), self::$skinParents[$type], true)
 				|| !preg_match('/^[a-z][a-z0-9_]{0,63}$/D', $parts[3])
+				|| ($path === 'modules/board/skins/xedition' || $path === 'modules/board/m.skins/simplegray')
 				|| in_array($parts[3], array('default', 'ckeditor_light', 'ckeditor_recommend', 'dreditor', 'xestyle', 'xestyleblack'), true)
-				|| $id !== $parts[1] . ($type === 'editor_style' ? '_style_' : '_skin_') . $parts[3])
+				|| $id !== $parts[1] . self::$skinIdParts[$type] . $parts[3])
 				throw new RuntimeException('pkg_registry_error');
 			return $path;
+		}
+		if($type === 'mobile_layout')
+		{
+			if(!isset($package['source_path']) || !preg_match('/^mobile_layout_([a-z][a-z0-9_]*)$/D', $id, $match))
+				throw new RuntimeException('pkg_registry_error');
+			$id = $match[1];
 		}
 		if(!isset(self::$directories[$type]) || strpos(self::$reserved[$type], ' ' . $id . ' ') !== false)
 			throw new RuntimeException('pkg_registry_error');
@@ -94,7 +104,7 @@ class PackageRegistry
 		if(!$payload || !$sig || openssl_verify($payload, $sig, $key, 'sha256') !== 1) throw new RuntimeException('pkg_registry_error');
 		$index = json_decode($payload, true);
 		if(!isset($index['schema'], $index['issued'], $index['expires'], $index['generation'], $index['packages'])
-			|| $index['schema'] !== 2 || !is_int($index['generation']) || !is_int($index['issued']) || !is_int($index['expires'])
+			|| $index['schema'] !== 3 || !is_int($index['generation']) || !is_int($index['issued']) || !is_int($index['expires'])
 			|| $index['generation'] < 1 || $index['issued'] > time() + 300 || $index['expires'] <= $index['issued']
 			|| $index['expires'] - $index['issued'] > 31 * 86400 || !is_array($index['packages']) || count($index['packages']) > 256)
 			throw new RuntimeException('pkg_registry_error');
@@ -155,7 +165,7 @@ class PackageRegistry
 	{
 		$site = realpath($site);
 		if(!$fresh && isset(self::$catalogs[$site])) return self::$catalogs[$site];
-		$path = $site . '/files/config/package-registry-v2.json';
+		$path = $site . '/files/config/package-registry-v3.json';
 		$rows = array();
 		foreach(json_decode(file_get_contents(dirname(__FILE__) . '/conf/catalog.json'), true) as $p) $rows[$p['id']] = $p;
 		$valid = false;
@@ -186,7 +196,7 @@ class PackageRegistry
 				}
 				if($refresh)
 				{
-					$resource = $fresh ? 'index-v2.json?refresh=' . time() : 'index-v2.json';
+					$resource = $fresh ? 'index-v3.json?refresh=' . time() : 'index-v3.json';
 					$envelope = self::fetch($resource, 262144);
 					$index = self::index($envelope);
 					if($index['expires'] <= time() || ($previous && ($index['generation'] < $previous['generation']

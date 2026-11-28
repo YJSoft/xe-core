@@ -233,6 +233,8 @@
 	<item name="pkg_checking"><value xml:lang="ko">현재 상태를 확인하고 있습니다…</value><value xml:lang="en">Checking the current status…</value></item>
 	<item name="pkg_recheck"><value xml:lang="ko">상태 다시 확인</value><value xml:lang="en">Check status again</value></item>
 	<item name="pkg_download_zip"><value xml:lang="ko">ZIP 다운로드</value><value xml:lang="en">Download ZIP</value></item>
+	<item name="pkg_type_mobile_layout"><value xml:lang="ko">모바일 레이아웃</value><value xml:lang="en">Mobile layouts</value></item>
+	<item name="pkg_type_mobile_module_skin"><value xml:lang="ko">모바일 모듈 스킨</value><value xml:lang="en">Mobile module skins</value></item>
 	<item name="pkg_type_module_skin"><value xml:lang="ko">모듈 스킨</value><value xml:lang="en">Module skins</value></item>
 	<item name="pkg_type_widget_skin"><value xml:lang="ko">위젯 스킨</value><value xml:lang="en">Widget skins</value></item>
 	<item name="pkg_type_editor_style"><value xml:lang="ko">에디터 본문 스타일</value><value xml:lang="en">Editor styles</value></item>
