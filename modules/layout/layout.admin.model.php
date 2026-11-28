@@ -89,6 +89,18 @@ class layoutAdminModel extends layout
 
 		foreach($layout_info->extra_var as $var_name => $val)
 		{
+			if($val->type === 'checkbox')
+			{
+				$value = isset($val->value) ? $val->value : '';
+				if(is_array($value))
+				{
+					$val->value = array_map('strval', array_filter($value, 'is_scalar'));
+				}
+				else
+				{
+					$val->value = is_scalar($value) && (string)$value !== '' ? explode('|@|', (string)$value) : array();
+				}
+			}
 			if(isset($layout_info->{$var_name}->description))
 			{
 				$layout_info->{$var_name}->description = nl2br(trim($val->description));
