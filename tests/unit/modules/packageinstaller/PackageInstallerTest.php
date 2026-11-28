@@ -4,6 +4,56 @@ require_once _XE_PATH_ . 'modules/packageinstaller/PackageManager.php';
 
 class PackageInstallerTest extends CompatibilityTestCase
 {
+	public function testChangingStoragePreservesHistoryAndRejectsAConcurrentInstall()
+	{
+		$target = dirname($this->fixture('site/modules/index.html', ''));
+		$site = dirname($target);
+		$_SERVER['DOCUMENT_ROOT'] = $site;
+		$this->fixture('site/files/config/index.html', '');
+		$newBase = dirname($this->fixture('private/index.html', ''));
+		$original = new PackageStorage($site);
+		$new = new PackageStorage($site, $newBase);
+		$lock = PackageStorage::lock($site, LOCK_SH);
+		try
+		{
+			$new->save($target);
+			$this->fail('A write is already using the old location.');
+		}
+		catch(RuntimeException $e) { $this->assertSame('pkg_storage_busy', $e->getMessage()); }
+		fclose($lock);
+
+		mkdir($original->directory, 0700);
+		file_put_contents($original->directory . '/history', 'keep');
+		try
+		{
+			$new->save($target);
+			$this->fail('Existing records must stay with the installation.');
+		}
+		catch(RuntimeException $e) { $this->assertSame('pkg_storage_has_records', $e->getMessage()); }
+		rename($original->directory, $new->directory);
+		$new->save($target);
+		$reloaded = new PackageStorage($site);
+		$this->assertSame($newBase, $reloaded->base);
+		$this->assertSame('keep', file_get_contents($reloaded->directory . '/history'));
+	}
+
+	public function testStorageReportsTheDirectoryThatNeedsAttention()
+	{
+		$target = dirname($this->fixture('site/modules/index.html', ''));
+		$site = dirname($target);
+		$_SERVER['DOCUMENT_ROOT'] = $site;
+		$public = new PackageStorage($site, $site);
+		$this->assertSame(array('error' => 'pkg_storage_public', 'path' => $site), $public->check($target));
+
+		$storage = new PackageStorage($site);
+		mkdir($storage->directory, 0700);
+		$this->assertNull($storage->check($target));
+		$work = $storage->directory . '/ncenterlite';
+		mkdir($work, 0700);
+		chmod($work, 0755);
+		$this->assertSame(array('error' => 'pkg_storage_private', 'path' => $work), $storage->check($target, 'ncenterlite'));
+	}
+
 	public function testRecoveryRestoresPreviousDirectoryAfterInterruptedSwap()
 	{
 		$site = $this->fixtureDir . 'site';

@@ -1,12 +1,14 @@
 <?php
 require_once dirname(__FILE__) . '/PackageArchive.php';
 require_once dirname(__FILE__) . '/PackageRegistry.php';
+require_once dirname(__FILE__) . '/PackageStorage.php';
 
 class PackageManager
 {
 	private $site;
 	private $parentDirectory;
 	private $store;
+	private $storage;
 	private $work;
 	private $target;
 	private $package;
@@ -19,32 +21,9 @@ class PackageManager
 		$this->site = $site = realpath($site);
 		$this->parentDirectory = $site . DIRECTORY_SEPARATOR . PackageRegistry::$directories[$this->package['type']];
 		$this->target = $this->parentDirectory . DIRECTORY_SEPARATOR . $id;
-		$base = defined('XE_PACKAGE_STORAGE') ? rtrim(XE_PACKAGE_STORAGE, '/\\') : dirname($site);
-		$this->store = $base . DIRECTORY_SEPARATOR . '.xe-packages-' . substr(hash('sha256', $site), 0, 16);
+		$this->storage = new PackageStorage($site);
+		$this->store = $this->storage->directory;
 		$this->work = $this->store . DIRECTORY_SEPARATOR . $id;
-	}
-
-	private function storageAvailable()
-	{
-		$site = dirname($this->parentDirectory);
-		$parent = dirname($this->store);
-		if(realpath($parent) !== $parent || realpath($this->parentDirectory) !== $this->parentDirectory
-			|| is_link($this->store) || is_link($this->work)) return false;
-		$roots = array($site);
-		if(!empty($_SERVER['DOCUMENT_ROOT']) && realpath($_SERVER['DOCUMENT_ROOT'])) $roots[] = realpath($_SERVER['DOCUMENT_ROOT']);
-		foreach($roots as $root)
-		{
-			if(strpos($this->store . DIRECTORY_SEPARATOR, rtrim($root, '/\\') . DIRECTORY_SEPARATOR) === 0) return false;
-		}
-		$base = file_exists($this->store) ? $this->store : $parent;
-		foreach(array($this->store, $this->work) as $dir)
-		{
-			if(file_exists($dir) && (!is_dir($dir) || (fileperms($dir) & 0077) || !is_writable($dir))) return false;
-		}
-		if(!is_writable($base) || !is_writable($this->parentDirectory)) return false;
-		$a = stat($base);
-		$b = stat($this->parentDirectory);
-		return $a && $b && $a['dev'] === $b['dev'];
 	}
 
 	private function readRecord($name)
@@ -52,7 +31,7 @@ class PackageManager
 		$path = $this->work . '/' . $name . '.json';
 		if(!file_exists($path)) return null;
 		$value = json_decode(file_get_contents($path), true);
-		if(!is_array($value)) throw new RuntimeException('pkg_storage_error');
+		if(!is_array($value)) throw new RuntimeException('pkg_storage_record');
 		return $value;
 	}
 
@@ -82,7 +61,8 @@ class PackageManager
 	public function inspect()
 	{
 		$p = $this->package;
-		$available = $this->storageAvailable();
+		$issue = $this->storage->check($this->parentDirectory, $p['id']);
+		$available = !$issue;
 		$state = $available ? $this->readRecord('state') : null;
 		$pending = $available && file_exists($this->work . '/transaction.json');
 		$inventory = array();
@@ -114,7 +94,7 @@ class PackageManager
 				&& $current !== $state['previous']['tree']) $actions[] = 'restore';
 		}
 		return array('status' => $status, 'version' => $known ? $known['version'] : '',
-			'actions' => $actions, 'storage' => $available, 'download' => $download,
+			'actions' => $actions, 'storage' => $available, 'storage_issue' => $issue, 'download' => $download,
 			'differences' => $differences, 'history' => isset($state['history']) ? array_reverse($state['history']) : array());
 	}
 
@@ -227,12 +207,14 @@ class PackageManager
 			if($catalog[$id]['revision'] !== $this->package['revision']) throw new RuntimeException('pkg_conflict');
 			$this->package = $catalog[$id];
 		}
-		if(!$this->storageAvailable()) throw new RuntimeException('pkg_storage_error');
+		$issue = $this->storage->check($this->parentDirectory, $this->package['id']);
+		if($issue) throw new RuntimeException($issue['error']);
 		foreach(array($this->store, $this->work) as $dir)
 		{
-			if(!is_dir($dir) && !@mkdir($dir, 0700) && !is_dir($dir)) throw new RuntimeException('pkg_storage_error');
+			if(!is_dir($dir) && !@mkdir($dir, 0700) && !is_dir($dir)) throw new RuntimeException('pkg_storage_mkdir');
 		}
-		if(!$this->storageAvailable()) throw new RuntimeException('pkg_storage_error');
+		$issue = $this->storage->check($this->parentDirectory, $this->package['id']);
+		if($issue) throw new RuntimeException($issue['error']);
 		$lock = @fopen($this->work . '/lock', 'c');
 		if(!$lock || !flock($lock, LOCK_EX | LOCK_NB)) throw new RuntimeException('pkg_busy');
 		try
@@ -293,7 +275,7 @@ class PackageManager
 		elseif($action !== 'remove')
 		{
 			$free = disk_free_space($this->work);
-			if($free !== false && $free < PackageArchive::MAX_BYTES + $p['size']) throw new RuntimeException('pkg_storage_error');
+			if($free !== false && $free < PackageArchive::MAX_BYTES + $p['size']) throw new RuntimeException('pkg_storage_space');
 			if(!mkdir($source, 0755)) throw new RuntimeException('pkg_storage_error');
 			$archive = $this->work . '/download.zip';
 			PackageArchive::download($p, $archive);

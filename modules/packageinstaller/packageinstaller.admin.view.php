@@ -17,6 +17,28 @@ class packageinstallerAdminView extends packageinstaller
 		Context::set('pkg_search', is_string($query) ? trim($query) : '');
 	}
 
+	private function packageToken()
+	{
+		if(empty($_SESSION['packageinstaller_token'])) $_SESSION['packageinstaller_token'] = Security::getRandomToken();
+		return $_SESSION['packageinstaller_token'];
+	}
+
+	function dispPackageinstallerAdminStorage()
+	{
+		try { $storage = new PackageStorage(_XE_PATH_); }
+		catch(RuntimeException $e) { return $this->stop($e->getMessage()); }
+		$attempt = isset($_SESSION['packageinstaller_storage_attempt']) ? $_SESSION['packageinstaller_storage_attempt'] : null;
+		unset($_SESSION['packageinstaller_storage_attempt']);
+		Context::set('pkg_attempt', $attempt);
+		$target = realpath(_XE_PATH_) . DIRECTORY_SEPARATOR . 'modules';
+		Context::set('pkg_storage', $storage);
+		Context::set('pkg_storage_issue', $storage->check($target));
+		$root = empty($_SERVER['DOCUMENT_ROOT']) ? false : realpath($_SERVER['DOCUMENT_ROOT']);
+		Context::set('pkg_example', dirname($root ? $root : realpath(_XE_PATH_)) . DIRECTORY_SEPARATOR . 'xe-private');
+		Context::set('pkg_token', $this->packageToken());
+		$this->setTemplateFile('storage');
+	}
+
 	function dispAutoinstallAdminIndex()
 	{
 		$query = Context::get('pkg_search');
@@ -50,9 +72,8 @@ class packageinstallerAdminView extends packageinstaller
 		if(!is_string($id) || !isset($catalog[$id])) return;
 		try { $package = $this->packageInfo($catalog[$id]); }
 		catch(RuntimeException $e) { return $this->stop($e->getMessage()); }
-		if(empty($_SESSION['packageinstaller_token'])) $_SESSION['packageinstaller_token'] = Security::getRandomToken();
 		Context::set('pkg', $package);
-		Context::set('pkg_token', $_SESSION['packageinstaller_token']);
+		Context::set('pkg_token', $this->packageToken());
 		Context::setBrowserTitle($package['title'] . ' - ' . Context::getLang('pkg_title'));
 	}
 

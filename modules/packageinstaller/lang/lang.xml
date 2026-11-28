@@ -69,8 +69,96 @@
 		<value xml:lang="en"><![CDATA[Recover interrupted operation]]></value>
 	</item>
 	<item name="pkg_storage_error">
-		<value xml:lang="ko"><![CDATA[모듈 폴더와 같은 파일시스템에 웹에서 접근할 수 없는 작업 폴더가 필요합니다. XE_PACKAGE_STORAGE 설정, 쓰기 권한과 디스크 여유 공간을 확인해 주세요.]]></value>
-		<value xml:lang="en"><![CDATA[Check XE_PACKAGE_STORAGE, write permissions and free space. The private work directory must be outside the web root on the same filesystem as modules.]]></value>
+		<value xml:lang="ko">파일을 쓰거나 이동하지 못했습니다. 쉬운설치의 작업 폴더 설정에서 경로와 권한을 확인한 뒤 다시 시도해 주세요.</value>
+		<value xml:lang="en">Could not write or move a file. Review the paths and permissions in Work folder settings and try again.</value>
+	</item>
+	<item name="pkg_storage_settings">
+		<value xml:lang="ko">작업 폴더 설정</value>
+		<value xml:lang="en">Work folder settings</value>
+	</item>
+	<item name="pkg_storage_intro">
+		<value xml:lang="ko">쉬운설치는 다운로드한 파일과 복원용 백업을 이곳에 보관합니다. 기본 위치를 사용할 수 있으면 바로 자료를 설치할 수 있습니다.</value>
+		<value xml:lang="en">Easy Install keeps downloads and restore backups here. If the default location is ready, you can install packages immediately.</value>
+	</item>
+	<item name="pkg_storage_ready">
+		<value xml:lang="ko">현재 위치를 모듈 설치에 사용할 수 있습니다.</value>
+		<value xml:lang="en">The current location is ready for module installations.</value>
+	</item>
+	<item name="pkg_storage_label">
+		<value xml:lang="ko">보관 위치</value>
+		<value xml:lang="en">Storage location</value>
+	</item>
+	<item name="pkg_storage_help">
+		<value xml:lang="ko">다른 위치를 쓰려면 웹 공개 폴더 밖에 준비한 폴더의 서버 경로를 입력하세요. 예시</value>
+		<value xml:lang="en">To use another location, enter the full server path of an existing directory outside the public web folder. Example</value>
+	</item>
+	<item name="pkg_storage_actual">
+		<value xml:lang="ko">현재 사이트의 작업 폴더</value>
+		<value xml:lang="en">Current site work folder</value>
+	</item>
+	<item name="pkg_storage_save">
+		<value xml:lang="ko">확인 후 저장</value>
+		<value xml:lang="en">Check and save</value>
+	</item>
+	<item name="pkg_storage_saved">
+		<value xml:lang="ko">작업 폴더 설정을 저장했습니다.</value>
+		<value xml:lang="en">Work folder settings saved.</value>
+	</item>
+	<item name="pkg_storage_base">
+		<value xml:lang="ko">서버에서 보관 위치를 열 수 없습니다. 이미 만들어진 폴더의 절대 경로를 입력해 주세요. 바로가기나 심볼릭 링크는 사용할 수 없습니다.</value>
+		<value xml:lang="en">Enter the absolute path of an existing directory accessible to PHP. Use the actual path without symbolic links.</value>
+	</item>
+	<item name="pkg_storage_public">
+		<value xml:lang="ko">작업 폴더가 웹에 공개되는 위치에 있습니다. 다음 경로 밖에 비공개 폴더를 만들고 보관 위치에 입력해 주세요.</value>
+		<value xml:lang="en">Choose a private directory outside the following public web folder.</value>
+	</item>
+	<item name="pkg_storage_directory">
+		<value xml:lang="ko">다음 경로에 일반 파일이나 심볼릭 링크가 있습니다. 작업 폴더 설정에서 비공개 디렉터리를 보관 위치로 선택해 주세요.</value>
+		<value xml:lang="en">A file or symlink occupies this path. Choose a private directory in Work folder settings.</value>
+	</item>
+	<item name="pkg_storage_private">
+		<value xml:lang="ko">PHP가 다음 작업 폴더를 읽고 쓸 수 있고 소유자만 접근하도록 호스팅 업체나 서버 관리자에게 요청해 주세요. 리눅스 권한은 700입니다.</value>
+		<value xml:lang="en">Ask your host to make this directory readable and writable by PHP and accessible only to its owner (mode 700 on Linux).</value>
+	</item>
+	<item name="pkg_storage_create">
+		<value xml:lang="ko">PHP가 작업 폴더를 만들 수 없습니다. 호스팅 업체나 서버 관리자에게 다음 폴더를 만들고 PHP 실행 계정 소유로 권한 700을 설정해 달라고 요청하세요. 그런 다음 이 화면을 새로고침하세요.</value>
+		<value xml:lang="en">Ask your host to create the directory shown here, assign it to the PHP account and set its permissions to 700. Then refresh this page.</value>
+	</item>
+	<item name="pkg_storage_target_path">
+		<value xml:lang="ko">자료를 설치할 다음 경로가 실제 폴더인지 서버 관리자에게 확인해 주세요. 심볼릭 링크를 통해서는 설치할 수 없습니다.</value>
+		<value xml:lang="en">Ask your host to check that this installation path exists and is a directory without symlinks.</value>
+	</item>
+	<item name="pkg_storage_target_write">
+		<value xml:lang="ko">PHP가 자료를 설치할 폴더에 쓸 수 없습니다. 호스팅 업체나 서버 관리자에게 다음 폴더에 PHP 실행 계정의 쓰기 권한을 요청하세요.</value>
+		<value xml:lang="en">Ask your host to grant the PHP account write access to this installation directory.</value>
+	</item>
+	<item name="pkg_storage_device">
+		<value xml:lang="ko">작업 폴더와 설치 폴더의 디스크가 다릅니다. 호스팅 업체에 다음 설치 경로와 같은 파일시스템에 비공개 폴더를 마련해 달라고 요청하고, 그 경로를 보관 위치로 입력하세요.</value>
+		<value xml:lang="en">Ask your host for a private directory on the same filesystem as the installation path shown here. Enter that directory as the storage location.</value>
+	</item>
+	<item name="pkg_storage_config_error">
+		<value xml:lang="ko">작업 폴더 설정 파일을 읽거나 쓸 수 없습니다. 서버 관리자에게 XE의 files/config 폴더와 기존 설정 파일을 PHP가 읽고 쓸 수 있는지 확인해 달라고 요청하세요.</value>
+		<value xml:lang="en">Ask your host to check that PHP can read and write the XE files/config directory and its storage settings file.</value>
+	</item>
+	<item name="pkg_storage_busy">
+		<value xml:lang="ko">쉬운설치에서 다른 작업을 진행 중입니다. 작업이 끝난 뒤 다시 시도하세요.</value>
+		<value xml:lang="en">Another installer operation is running. Try again when it finishes.</value>
+	</item>
+	<item name="pkg_storage_has_records">
+		<value xml:lang="ko">현재 작업 폴더에 설치 기록이나 백업이 남아 있습니다. 위치를 바꾸려면 서버 관리자에게 현재 사이트의 작업 폴더 전체를 새 보관 위치로 옮겨 달라고 요청한 뒤 저장하세요.</value>
+		<value xml:lang="en">The current work folder contains backups or installation records. Have your host move the entire site work folder into the new storage location before saving.</value>
+	</item>
+	<item name="pkg_storage_record">
+		<value xml:lang="ko">설치 기록을 읽을 수 없습니다. 작업 폴더 설정에 표시된 사이트 작업 폴더에서 해당 자료의 state.json과 transaction.json을 서버 관리자에게 점검해 달라고 요청하세요.</value>
+		<value xml:lang="en">Ask your host to check the package’s state.json and transaction.json files inside the site work folder shown in Work folder settings.</value>
+	</item>
+	<item name="pkg_storage_mkdir">
+		<value xml:lang="ko">작업 폴더를 만들지 못했습니다. 작업 폴더 설정에서 현재 사이트의 작업 폴더 경로를 확인하고 서버 관리자에게 폴더 생성 권한을 요청하세요.</value>
+		<value xml:lang="en">Could not create the work folder. Open Work folder settings and ask your host for permission to create the displayed directory.</value>
+	</item>
+	<item name="pkg_storage_space">
+		<value xml:lang="ko">파일을 풀 디스크 공간이 부족합니다. 작업 폴더가 있는 디스크의 여유 공간을 확보한 뒤 다시 설치하세요.</value>
+		<value xml:lang="en">There is not enough space to extract the package. Free space on the disk containing the work folder and retry.</value>
 	</item>
 	<item name="pkg_requirements">
 		<value xml:lang="ko"><![CDATA[다운로드 설치에는 표시된 PHP 및 XE 버전과 PHP cURL·ZIP 확장이 필요합니다.]]></value>

@@ -1,0 +1,24 @@
+<config autoescape="on" />
+<include target="header.html" />
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'packageinstaller/storage'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}"><p>{$XE_VALIDATOR_MESSAGE} <code cond="!empty($pkg_attempt['path'])">{$pkg_attempt['path']}</code></p></div>
+<h2>{$lang->pkg_storage_settings}</h2>
+<p>{$lang->pkg_storage_intro}</p>
+<div cond="$pkg_storage_issue && !$pkg_attempt" class="message error">
+	<p>{Context::getLang($pkg_storage_issue['error'])} <code>{$pkg_storage_issue['path']}</code></p>
+</div>
+<p cond="!$pkg_storage_issue && !$pkg_attempt" class="message">{$lang->pkg_storage_ready}</p>
+<form action="./" method="post" class="x_form-horizontal">
+	<input type="hidden" name="module" value="packageinstaller" />
+	<input type="hidden" name="act" value="procPackageinstallerAdminSaveStorage" />
+	<input type="hidden" name="xe_validator_id" value="packageinstaller/storage" />
+	<input type="hidden" name="pkg_token" value="{$pkg_token}" />
+	<div class="x_control-group">
+		<label for="pkg_storage_base" class="x_control-label">{$lang->pkg_storage_label}</label>
+		<div class="x_controls">
+			<input type="text" id="pkg_storage_base" name="pkg_storage_base" value="{$pkg_attempt ? $pkg_attempt['base'] : $pkg_storage->base}" class="x_input-xxlarge" required="required" />
+			<p class="x_help-block">{$lang->pkg_storage_help} <code>{$pkg_example}</code></p>
+		</div>
+	</div>
+	<div class="x_control-group"><span class="x_control-label">{$lang->pkg_storage_actual}</span><div class="x_controls"><code>{$pkg_storage->directory}</code></div></div>
+	<div class="btnArea"><button type="submit" class="x_btn x_btn-primary">{$lang->pkg_storage_save}</button></div>
+</form>

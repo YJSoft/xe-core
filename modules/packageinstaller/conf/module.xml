@@ -7,6 +7,8 @@
 		<action name="dispAutoinstallAdminPackageDetail" type="view" menu_name="packageInstaller" />
 		<action name="dispAutoinstallAdminInstall" type="view" menu_name="packageInstaller" />
 		<action name="dispPackageinstallerAdminIndex" type="view" menu_name="packageInstaller" />
+		<action name="dispPackageinstallerAdminStorage" type="view" menu_name="packageInstaller" />
+		<action name="procPackageinstallerAdminSaveStorage" type="controller" method="POST" />
 		<action name="procPackageinstallerAdminApply" type="controller" method="POST" />
 	</actions>
 	<menus>

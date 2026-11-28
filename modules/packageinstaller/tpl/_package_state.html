@@ -11,7 +11,10 @@
 <div class="buttons">
 	<p cond="!empty($pkg['withdrawn'])" class="message error">{$lang->pkg_withdrawn}</p>
 	<p cond="!$pkg['online']" class="message error">{$lang->pkg_registry_error}</p>
-	<p cond="!$pkg['local']['storage']" class="message error">{$lang->pkg_storage_error}</p>
+	<div cond="$pkg['local']['storage_issue']" class="message error">
+		<p>{Context::getLang($pkg['local']['storage_issue']['error'])} <code>{$pkg['local']['storage_issue']['path']}</code></p>
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispPackageinstallerAdminStorage')}">{$lang->pkg_storage_settings}</a>
+	</div>
 	<p cond="$pkg['online'] && empty($pkg['withdrawn']) && !$pkg['local']['download']" class="message">{$lang->pkg_requirements}</p>
 	<div class="pkg-actions" cond="$pkg['local']['actions'] && $pkg_token">
 		<form loop="$pkg['local']['actions'] => $operation" class="pkg-action" method="post" action="./">
